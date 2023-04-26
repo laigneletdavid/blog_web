@@ -12,7 +12,7 @@ class CategorieController extends AbstractController
     #[Route('/{slug}', name: 'show')]
     public function show(): Response
     {
-        return $this->render('categorie/index.html.twig', [
+        return $this->render('categorie/show.html.twig', [
             'controller_name' => 'CategorieController',
         ]);
     }

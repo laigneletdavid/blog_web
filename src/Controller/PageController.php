@@ -12,7 +12,7 @@ class PageController extends AbstractController
     #[Route('/{slug}', name: 'show')]
     public function show(): Response
     {
-        return $this->render('page/index.html.twig', [
+        return $this->render('page/show.html.twig', [
             'controller_name' => 'PageController',
         ]);
     }

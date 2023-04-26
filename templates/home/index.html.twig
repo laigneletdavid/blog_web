@@ -1,20 +1,143 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}{{ title_page }}{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Utilisateur/PhpstormProjects/blog_web/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Utilisateur/PhpstormProjects/blog_web/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
+<div class="top_page">
+    <div class="img_top">
+        <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
+    </div>
+    <div class="container title_page mt-5">
+        <h1>{{ title_page }}</h1>
+        <h2>{{ text_page }}</h2>
+    </div>
+</div>
+
+<div class="container pages_cards">
+    <div class="row mb-5">
+        <div class="d-flex flex-row hstack gap-3 justify-content-evenly">
+            <div class="card col-md-2">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Card 1</a></h5>
+                </div>
+            </div>
+
+            <div class="card col-md-2">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Card 2</a></h5>
+                </div>
+            </div>
+            <div class="card col-md-2">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Card 3</a></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container articles">
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary">Catégories</strong>
+                    <h3 class="mb-0">Title</h3>
+                    <div class="mb-1 text-body-secondary">Date</div>
+                    <p class="card-text mb-auto">Featured text</p>
+                    <a href="#" class="btn btn-primary btn-sm">Voir +</a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary">Catégories</strong>
+                    <h3 class="mb-0">Title</h3>
+                    <div class="mb-1 text-body-secondary">Date</div>
+                    <p class="card-text mb-auto">Featured text</p>
+                    <a href="#" class="btn btn-primary btn-sm">Voir +</a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="headband bg-secondary bg-opacity-25">
+    <div class="container">
+        <div class="row d-flex flex-row hstack gap-3 justify-content-between pt-5 pb-5">
+            <div class="card col-md-2 pb-5">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Catégorie 1</a></h5>
+                </div>
+            </div>
+
+            <div class="card col-md-2 pt-5">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Catégorie 2</a></h5>
+                </div>
+            </div>
+            <div class="card col-md-2 pb-5">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Catégorie 3</a></h5>
+                </div>
+            </div>
+            <div class="card col-md-2 pt-5">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Catégorie 4</a></h5>
+                </div>
+            </div>
+            <div class="card col-md-2 pb-5">
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#" class="">Catégorie 5</a></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container team">
+    <div class="d-flex flex-row row mt-5 mb-5">
+        <div class="col-6 team_img rounded-circle">
+            <img src="{{ asset('images/exemple/img-500.png') }}" alt="" class="counter_img rounded-circle">
+        </div>
+        <div class="col-6 team_text d-flex flex-column justify-content-evenly align-items-center">
+            <h4 class="team_name">Nom team</h4>
+            <p class="team_text fst-italic">Ceci est mon texte de présentation. Je dois me présenter rapidement sans een décrivant pourquoi je participe a ses projet.</p>
+        </div>
+    </div>
+    <div class="d-flex flex-row row pt-3 pb-3 team_counter justify-content-evenly">
+        <div class="counter col-2 d-flex flex-column align-items-center">
+            <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
+            <h5 class="counter_title">Counter</h5>
+            <span class="counter">255</span>
+        </div>
+        <div class="counter col-2 d-flex flex-column align-items-center">
+            <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
+            <h5 class="counter_title">Counter</h5>
+            <span class="counter">255</span>
+        </div>
+        <div class="counter col-2 d-flex flex-column align-items-center">
+            <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
+            <h5 class="counter_title">Counter</h5>
+            <span class="counter">255</span>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -13,7 +13,7 @@ class ArticleController extends AbstractController
     #[Route('/{slug}', name: 'show')]
     public function show(): Response
     {
-        return $this->render('article/index.html.twig', [
+        return $this->render('article/show.html.twig', [
             'controller_name' => 'ArticleController',
         ]);
     }

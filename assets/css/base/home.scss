@@ -1,0 +1,32 @@
+.top_page{
+  height: 300px;
+
+  .img_top {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    max-height: 850px;
+  }
+
+  .title_page {
+    vertical-align: bottom;
+    color: white;
+    font-family: Montserrat;
+  }
+}
+
+.headband {
+
+  .card {
+    background-color: transparent;
+    border: none;
+
+    .card-title {
+      text-align: center;
+    }
+  }
+  .round {
+    border-radius: 20em;
+  }
+
+}
