@@ -13,7 +13,8 @@ class PageController extends AbstractController
     public function show(): Response
     {
         return $this->render('page/show.html.twig', [
-            'controller_name' => 'PageController',
+            'title_page' => 'ShowPage',
+            'text_page' => 'TextPage',
         ]);
     }
 }

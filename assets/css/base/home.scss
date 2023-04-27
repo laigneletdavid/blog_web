@@ -1,4 +1,4 @@
-.top_page{
+.top_home{
   height: 300px;
 
   .img_top {
@@ -7,12 +7,12 @@
     z-index: -1;
     max-height: 850px;
   }
+}
 
-  .title_page {
-    vertical-align: bottom;
-    color: white;
-    font-family: Montserrat;
-  }
+.title_page {
+  vertical-align: bottom;
+  color: white;
+  font-family: Montserrat;
 }
 
 .headband {

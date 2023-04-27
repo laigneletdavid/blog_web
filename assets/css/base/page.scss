@@ -1,0 +1,14 @@
+.top_page{
+  height: 345px;
+
+  .img_top {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    max-height: 850px;
+  }
+
+}
+.page_galerie {
+  height: 20rem;
+}
