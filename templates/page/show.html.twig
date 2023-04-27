@@ -17,50 +17,10 @@
     <div class="row">
          <div class="col-4">
              <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
-                 <div class="p-4 widget_register">
-                     <form>
-                         <span class="footer_section">Inscrivez-vous</span>
-                         <p>Recevez directement tous les articles et parution du site en créant un compte.</p>
-                         <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-                             <label for="newsletter1" class="visually-hidden">Email address</label>
-                             <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
-                             <button class="btn btn-primary" type="button">Envoyer</button>
-                         </div>
-                     </form>
-                 </div>
-                 <div class="p-4 widget_categories">
-                     <h4 class="fst-italic">Catégories</h4>
-                     <ul class="list-unstyled mb-0">
-                         <li><a href="#">Cat 1</a></li>
-                         <li><a href="#">Cat 2</a></li>
-                         <li><a href="#">Cat 3</a></li>
-                         <li><a href="#">Cat 4</a></li>
-                     </ul>
-                 </div>
-                 <div class="p-4 widget_article">
-                         <h4 class="fst-italic">Dernier article</h4>
-                         <div class="d-none d-lg-block widget_article_img">
-                             <img src="{{ asset('images/exemple/img-500.png') }}" alt="{{ title_page }}"/>
-                         </div>
-                         <div class="pt-2 d-flex flex-column">
-                             <strong class="d-inline-block mb-2 text-primary">Catégories</strong>
-                             <h3 class="mb-0">Title</h3>
-                             <div class="mb-1 text-body-secondary">Date</div>
-                             <p class="card-text mb-auto">Featured text</p>
-                             <a href="#" class="btn btn-primary btn-sm">Voir +</a>
-                         </div>
-
-                 </div>
-                 <div class="p-4 widget_archives">
-                     <h4 class="fst-italic">Archives</h4>
-                     <ul class="list-unstyled mb-0">
-                         <li><a href="#">March 2021</a></li>
-                         <li><a href="#">February 2021</a></li>
-                         <li><a href="#">January 2021</a></li>
-                         <li><a href="#">December 2020</a></li>
-                         <li><a href="#">November 2020</a></li>
-                     </ul>
-                 </div>
+                {% include 'widgets/subscribe.html.twig' %}
+                {% include 'widgets/caterogires.html.twig' %}
+                {% include 'widgets/last_article.html.twig' %}
+                {% include 'widgets/archives.html.twig' %}
              </div>
          </div>
          <div class="col-8">
