@@ -9,9 +9,22 @@
         <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
     </div>
     <div class="container title_page mt-5">
-        <h1>{{ title_page }}</h1>
-        <h2>{{ text_page }}</h2>
+        <div class="title_page_groupe d-flex flex-column justify-content-between">
+            <div class="title">
+                <h1>{{ title_page }}</h1>
+                <h2>{{ text_page }}</h2>
+            </div>
+            <div class="breadcrum">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
     </div>
+
 </div>
 <div class="container">
     <div class="row">
