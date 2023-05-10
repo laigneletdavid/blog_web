@@ -1,0 +1,24 @@
+<article class="mb-5">
+    <div class="row">
+        <div class="col-8">
+            <h2>
+                <a class="text-decoration-none" href="{{ path('app_article_show', { 'slug': article.slug}) }}">{{ article.title }}</a>
+            </h2>
+            <p>{{ article.createdAt|date('d M Y') }}</p>
+            {{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}
+        </div>
+        <div class="col-4">
+
+
+            {% if article.featuredMedia %}
+                <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
+                    <img src="/uploads/{{ article.featuredMedia.filename }}" alt="{{ article/featured_media.altText }}" loading="lazy" width="350" height="205">
+                </a>
+            {% else %}
+                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
+            {% endif %}
+
+
+        </div>
+    </div>
+</article>

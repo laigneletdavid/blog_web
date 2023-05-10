@@ -1,24 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ title_page }}{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
 
-    <div class="top_page">
+    <div class="top_page" xmlns="http://www.w3.org/1999/html">
         <div class="img_top">
-            <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
+            {% if article.featuredMedia %}
+                <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
+                    <img src="/uploads/{{ article.featuredMedia.filename }}" alt="{{ article/featured_media.altText }}" loading="lazy" width="350" height="205">
+                </a>
+            {% else %}
+                <img src="{{ asset('images/exemple/img-1920-600.png') }}" class="card-img-top" alt="{{ article.title }}">
+            {% endif %}
         </div>
         <div class="container title_page mt-5">
             <div class="title_page_groupe d-flex flex-column justify-content-between">
                 <div class="title">
-                    <h1>{{ title_page }}</h1>
-                    <h2>{{ text_page }}</h2>
+                    <h1>{{ article.title }}</h1>
+                    <h2>{{ article.featuredText }}</h2>
                 </div>
                 <div class="breadcrum">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
+                            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Blog - {{ article.title }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -36,27 +42,43 @@
                 </div>
             </div>
             <div class="col-8">
-                <div class="content_article d-flex flex-column p-5">
-                    <h2 class="pb-4">{{ title_page }}</h2>
-
-                    <p>
-
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed maximus sem vitae mollis fermentum. Nulla sollicitudin finibus tortor ac ornare. Etiam iaculis sapien a orci semper posuere. Donec eu enim rutrum, tincidunt turpis sit amet, facilisis felis. In accumsan pulvinar massa, et ullamcorper leo vehicula ultricies. Vestibulum gravida sollicitudin condimentum. Phasellus aliquam nulla eu sapien auctor, a consectetur est tincidunt. Quisque nec justo imperdiet, auctor enim ut, lobortis massa. Etiam vitae ligula libero. Vivamus eget leo et dolor bibendum porta ac ac enim. In dui sem, rhoncus eget placerat volutpat, faucibus sed risus.
-
-                        Cras dictum placerat enim et laoreet. Sed erat lectus, vehicula in felis sit amet, pellentesque consequat quam. Ut sem massa, tempus a imperdiet eget, blandit sit amet purus. Nulla bibendum viverra enim dignissim malesuada. Donec facilisis laoreet nisl porttitor ullamcorper. Nulla enim mi, pulvinar vitae ligula id, lacinia rutrum justo. Sed finibus nulla augue, sit amet laoreet dui suscipit vitae. Curabitur euismod in ex non blandit. Morbi faucibus, orci at lacinia venenatis, massa risus iaculis tellus, at ultricies eros enim in urna. Nulla sagittis est eu massa faucibus, quis gravida urna posuere. Nunc eu viverra tellus. Nulla cursus tellus eget ipsum gravida viverra.
-
-                        Quisque vehicula elit quis dui aliquam vehicula. Duis nec lectus a elit semper dictum. Vivamus eu varius mauris, sed facilisis elit. Duis malesuada felis vel tempus interdum. Proin luctus gravida enim a feugiat. Fusce faucibus ante eu urna luctus bibendum. Etiam eget arcu non augue dignissim auctor a eu nunc. Proin non facilisis urna. Proin ac commodo sem, nec dapibus neque. Aenean tellus leo, porttitor vitae pulvinar eget, lacinia at massa.
-
-                        Quisque ultrices sit amet elit vel lacinia. Curabitur a leo euismod, laoreet magna eu, tincidunt augue. Quisque nec lectus sit amet ante vulputate porta et sed nunc. Cras aliquam neque urna, eu consectetur dolor dignissim at. Fusce suscipit, tortor nec sollicitudin gravida, lorem sapien ullamcorper sapien, commodo egestas nisl urna in nibh. Quisque congue volutpat lorem a vestibulum. Nunc sollicitudin mattis odio, in feugiat nisi sodales vitae.
-
-                        Aenean pharetra dolor orci, quis interdum tellus sodales sit amet. Cras elementum felis eu enim malesuada vulputate eu sit amet augue. Proin at elit risus. Integer in auctor nunc. Vivamus nunc nibh, consectetur nec enim et, imperdiet vulputate orci. Nullam ornare et mi sed imperdiet. Praesent at tortor non dui gravida mollis. Pellentesque mollis urna a lorem ultrices tincidunt. Vestibulum ac sapien orci. Vivamus at elementum sapien. Donec ultricies lorem quis sapien feugiat, vitae egestas libero tempor. Nulla a cursus arcu, at porttitor quam. Pellentesque in convallis ante. In sit amet turpis non turpis lobortis imperdiet. </p>
+                <div class="article_content d-flex flex-column p-5">
+                    <h2 class="pb-4">{{ article.title }}</h2>
+                    <hr>
+                   {#  <h3 class="categorie pb-4">{{ article.categories }}</h3>#}
+                    <p class="date">{{ article.createdAt|date('d/m/y') }}</p>
+                    <p class="content">{{ article.content|raw }}</p>
 
 
-                    <div class="article_more bg-secondary bg-opacity-75">
-                        <h3>Autres articles de même catégorie</h3>
+
+                </div>
+
+                <div class="article_comment d-flex flex-column p-5">
+                    <h3 class="comment_title mb-4">
+                        <span class="comment_count">{{ article.comments|length }} commentaire(s)</span>
+
+
+                    </h3>
+                    <hr>
+                    <div class="comment_area mb-4">
+                        {{ form_start(commentForm) }}
+                        {{ form_widget(commentForm) }}
+                        <input type="submit" class="btn btn-small btn-primary" value="Envoyer">
+                        {{ form_end(commentForm) }}
+                    </div>
+
+                    <div class="comment-list">
+                        {% for comment in article.comments %}
+
+                            {% include 'comment/index.html.twig' with [comment] %}
+                        {% endfor %}
                     </div>
                 </div>
 
+
+                <div class="article_more bg-secondary bg-opacity-75">
+                    <h3>Autres articles de même catégorie</h3>
+                </div>
 
             </div>
         </div>

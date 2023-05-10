@@ -28,7 +28,7 @@ class Categorie
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $featured_media = null;
 
-    #[ORM\ManyToMany(targetEntity: Article::class, inversedBy: 'categories')]
+    #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'categories')]
     private Collection $articles;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'categorie')]
@@ -142,5 +142,10 @@ class Categorie
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

@@ -9,7 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Article>
  *
- * @method Article|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Article|null find($id, $lockMode = null, $lockVersion = null, $published = TRUE)
  * @method Article|null findOneBy(array $criteria, array $orderBy = null)
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
@@ -39,20 +39,47 @@ class ArticleRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Article[] Returns an array of Article objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Article[] Returns an array of All Published Articles
+     */
+    public function findAllPublished(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.published = TRUE')
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Article[] Returns an array of All Published Articles
+     */
+    public function lastArticle(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.published = TRUE')
+            ->orderBy('a.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Article[] Returns an array of All Published Articles
+     */
+    public function homeArticles(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.published = TRUE')
+            ->orderBy('a.id', 'ASC')
+            ->setMaxResults(2)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 
 //    public function findOneBySomeField($value): ?Article
 //    {

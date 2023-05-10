@@ -1,9 +1,9 @@
 <div class="p-4 widget_categories">
     <h4 class="fst-italic">Catégories</h4>
     <ul class="list-unstyled mb-0">
-        <li><a href="#">Cat 1</a></li>
-        <li><a href="#">Cat 2</a></li>
-        <li><a href="#">Cat 3</a></li>
-        <li><a href="#">Cat 4</a></li>
+        {% for categorie in categories %}
+            <li><a href="{{ path('app_categorie_show', { 'slug': categorie.slug}) }}">{{ categorie.name }}</a></li>
+        {% endfor %}
+
     </ul>
 </div>

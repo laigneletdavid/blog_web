@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\TimestampedInterface;
 use App\Repository\PageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
-class Page
+class Page implements TimestampedInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -127,7 +128,7 @@ class Page
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(\DateTimeInterface|null $updated_at): self
     {
         $this->updated_at = $updated_at;
 

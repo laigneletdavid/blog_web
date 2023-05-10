@@ -2,7 +2,7 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Blog&Web{% endblock %}</title>
+        <title>Blog&Web - {% block title %}{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -16,6 +16,16 @@
     <body>
 
         <div class="header">
+            <div class="header-admin  bg-dark">
+                <div class="container d-flex flex-row justify-content-between align-items-center">
+                    <nav class="navbar">
+                        <ul class="nav d-flex flex-row">
+                            <li class="nav-item p-2"><a href="{{ path('admin') }}" class="nav-link text-decoration-none  text-light">Administration</a></li>
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         <div class="header_info">
             <div class="container d-flex flex-row justify-content-between border-1 border-bottom border-secondary pt-3 pb-3">
                 <div class="header_logo">
@@ -60,11 +70,11 @@
             <div class="container d-flex flex-row justify-content-between align-items-center">
                 <nav class="navbar">
                     <ul class="nav d-flex flex-row">
-                        <li class="nav-item p-2"><a href="#" class="nav-link">Accueil</li></a>
-                        <li class="nav-item p-2"><a href="#" class="nav-link">Page 1</li></a>
-                        <li class="nav-item p-2"><a href="#" class="nav-link">Page 2</li></a>
-                        <li class="nav-item p-2"><a href="#" class="nav-link">Blog</li></a>
-                        <li class="nav-item p-2"><a href="#" class="nav-link">Contact</li></a>
+                        <li class="nav-item p-2"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+                        <li class="nav-item p-2"><a href="#" class="nav-link">Page 1</a></li>
+                        <li class="nav-item p-2"><a href="#" class="nav-link">Page 2</a></li>
+                        <li class="nav-item p-2"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
+                        <li class="nav-item p-2"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
                     </ul>
                 </nav>
                 <div class="header_search">

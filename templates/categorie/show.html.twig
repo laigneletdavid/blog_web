@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ categorie.name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
+                    {% include 'widgets/subscribe.html.twig' %}
+                    {% include 'widgets/caterogires.html.twig' %}
+                    {% include 'widgets/last_article.html.twig' %}
+                    {% include 'widgets/archives.html.twig' %}
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="articles_list d-flex flex-column">
+
+                    <h3 class="pb-4 mb-4 fst-italic border-bottom border-secondary border-1">{{ categorie.name }}</h3>
+
+                    {% include 'article/article_liste.html.twig' with { articles: categorie.articles } %}
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
