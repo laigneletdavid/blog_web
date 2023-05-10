@@ -5,10 +5,10 @@
     </div>
     <div class="pt-2 d-flex flex-column">
         <strong class="d-inline-block mb-2 text-primary">Catégories</strong>
-        <h3 class="mb-0">Title</h3>
-        <div class="mb-1 text-body-secondary">Date</div>
-        <p class="card-text mb-auto">Featured text</p>
-        <a href="#" class="btn btn-primary btn-sm">Voir +</a>
+        <h3 class="mb-0">{{ widget_article.title }}</h3>
+        <div class="mb-1 text-body-secondary">{{ widget_article.createdAt|date ('d/m/Y') }}</div>
+        <p class="card-text mb-auto">{{ widget_article.featuredText }}</p>
+        <a href="{{ path('app_article_show', { 'slug': widget_article.slug}) }}" class="btn btn-primary btn-sm">Voir +</a>
     </div>
 
 </div>
