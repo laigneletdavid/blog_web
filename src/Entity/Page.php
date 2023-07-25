@@ -35,7 +35,7 @@ class Page implements TimestampedInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updated_at = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
@@ -160,5 +160,9 @@ class Page implements TimestampedInterface
         }
 
         return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->title;
     }
 }

@@ -6,10 +6,12 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -31,6 +33,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Comment::class)]
     private Collection $comments;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $first_name = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $news = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $articles = null;
 
     public function __construct()
     {
@@ -135,5 +149,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->first_name;
+    }
+
+    public function setFirstName(?string $first_name): self
+    {
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    public function isNews(): ?bool
+    {
+        return $this->news;
+    }
+
+    public function setNews(?bool $news): self
+    {
+        $this->news = $news;
+
+        return $this;
+    }
+
+    public function isArticles(): ?bool
+    {
+        return $this->articles;
+    }
+
+    public function setArticles(?bool $articles): self
+    {
+        $this->articles = $articles;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->email;
     }
 }

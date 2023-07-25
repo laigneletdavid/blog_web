@@ -1,11 +1,7 @@
 <div class="p-4 widget_register">
-    <form>
-        <span class="footer_section">Inscrivez-vous</span>
-        <p>Recevez directement tous les articles et parution du site en créant un compte.</p>
-        <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-            <label for="newsletter1" class="visually-hidden">Email address</label>
-            <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
-            <button class="btn btn-primary" type="button">Envoyer</button>
-        </div>
-    </form>
+    <span class="footer_section">Inscrivez-vous</span>
+    <p>Recevez directement tous les articles et parution du site en créant un compte.</p>
+    <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+        <a class="btn btn-primary" type="button" href="{{ path('app_register')}}">Inscrivez-vous !</a>
+    </div>
 </div>

@@ -42,16 +42,21 @@ class Article implements TimestampedInterface
     private ?string $featured_text = null;
 
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'articles')]
+    #[ORM\OrderBy(['name' => 'ASC'])]
     private Collection $categories;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['created_at' => 'ASC'])]
     private Collection $comments;
+
+
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'article')]
+    #[ORM\OrderBy(['tag' => 'ASC'])]
+    private Collection $tag;
 
     #[ORM\ManyToOne]
     private ?Media $featured_media = null;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'article')]
-    private Collection $tag;
 
     public function __construct()
     {
@@ -219,17 +224,6 @@ class Article implements TimestampedInterface
         return $this;
     }
 
-    public function getFeaturedMedia(): ?Media
-    {
-        return $this->featured_media;
-    }
-
-    public function setFeaturedMedia(?Media $featured_media): self
-    {
-        $this->featured_media = $featured_media;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Tag>
@@ -260,6 +254,19 @@ class Article implements TimestampedInterface
 
     public function __toString(): string
     {
-        return $this->id;
+        return $this->title;
     }
+
+    public function getFeaturedMedia(): ?Media
+    {
+        return $this->featured_media;
+    }
+
+    public function setFeaturedMedia(?Media $featured_media): self
+    {
+        $this->featured_media = $featured_media;
+
+        return $this;
+    }
+
 }

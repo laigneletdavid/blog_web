@@ -1,14 +1,23 @@
-.top_page{
-  height: 345px;
 
-  .img_top {
-    position: absolute;
-    top: 0;
-    z-index: -1;
-    max-height: 850px;
-  }
-
-}
 .page_galerie {
   height: 20rem;
+}
+
+.article {
+
+  .article_block {
+    height: 100%;
+
+  }
+}
+
+.article_block_img {
+  max-height: 100%;
+
+  .img-back{
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+  }
+
 }

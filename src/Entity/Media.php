@@ -21,14 +21,10 @@ class Media
     #[ORM\Column(length: 255)]
     private ?string $file_name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $alt_text = null;
-
-    #[ORM\Column(length: 10)]
-    private ?string $extention = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'media')]
     private Collection $tag;
+
 
     public function __construct()
     {
@@ -64,30 +60,6 @@ class Media
         return $this;
     }
 
-    public function getAltText(): ?string
-    {
-        return $this->alt_text;
-    }
-
-    public function setAltText(?string $alt_text): self
-    {
-        $this->alt_text = $alt_text;
-
-        return $this;
-    }
-
-    public function getExtention(): ?string
-    {
-        return $this->extention;
-    }
-
-    public function setExtention(string $extention): self
-    {
-        $this->extention = $extention;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Tag>
      */
@@ -114,4 +86,10 @@ class Media
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return  $this->getName();
+    }
+
 }

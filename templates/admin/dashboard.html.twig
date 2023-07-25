@@ -1,1 +1,73 @@
-<h1>{{ chart }}</h1>
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% set url_site = ea_url()
+    .setController('App\\Controller\\Admin\\SiteCrudController')
+    .setAction('index') %}
+
+{% set url_page = ea_url()
+    .setController('App\\Controller\\Admin\\PageCrudController')
+    .setAction('index') %}
+
+{% set url_blog = ea_url()
+    .setController('App\\Controller\\Admin\\ArticleCrudController')
+    .setAction('index') %}
+
+
+{% block content_title %}{{ title_admin }}{% endblock %}
+{% block page_actions %}
+    <a class="btn btn-primary" href="...">Some Action</a>
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        {% if is_granted('ROLE_COORECTEUR') %}
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
+                <i class="fa-fw fas fa-gear"></i>
+                <h3 class="fs-2">Réglage de votre site</h3>
+            </div>
+
+            <p>Ce sont les informations de base de votre site web et de votre identité. Remplissez les consciencieusement, ce sont avec ces informations que les visiteurs vous trouveront et vous contacteront.</p>
+            <a href="{{ url_site }}" class="btn btn-primary" target="_self" rel="" referrerpolicy="origin-when-cross-origin">Entrer les informations</a>
+        </div>
+        {% endif %}
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
+                <i class="fa-fw fas fa-file"></i>
+                <h3 class="fs-2">Vos pages</h3>
+            </div>
+
+            <p>Les pages de votre site web sont la base de la navigation et la source principale d'information pour les visiteurs de votre site web. Réfléchissez bien aux messages que vous souhaitez faire passer !</p>
+            <a href="{{ url_page }}" class="btn btn-primary" target="_self" rel="" referrerpolicy="origin-when-cross-origin">Voir les pages</a>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
+                <i class="menu-icon fa-fw fas fa-newspaper"></i>
+                <h3 class="fs-2">Votre blog</h3>
+            </div>
+
+            <p>Un blog est une source permanante d'information pour vos visiteurs, mais également pour le référencement de votre site. Un blog bien tenu et régulièrement alimenté, permet d'augmenter les visites et le référencement naturel de votre site.</p>
+            <a href="{{ url_blog }}" class="btn btn-primary" target="_self" rel="" referrerpolicy="origin-when-cross-origin">Voir les articles</a>
+        </div>
+    </div>
+
+
+    <p>Voici ma page d'administration à configurer selon les besoins et avec CharBuilder (à tester), sinon je fais ma page d'accueil admin comme prévu</p>
+    <table class="datagrid">
+        <thead>
+        <tr>
+            <td>Some Column</td>
+            <td>Another Column</td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>test</td>
+                <td>test2</td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock %}

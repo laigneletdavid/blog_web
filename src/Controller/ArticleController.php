@@ -6,7 +6,6 @@ use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
-use App\Repository\CategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,35 +18,30 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticleController extends AbstractController
 {
     #[Route('/', name: 'show_all')]
-    public function showAll(ArticleRepository $articleRepository, CategorieRepository $categorieRepository): Response
+    public function showAll(ArticleRepository $articleRepository): Response
     {
         return $this->render('article/show_all.html.twig', [
             'title_page' => 'ShowAll',
             'text_page' => 'TextPage',
             'articles' => $articleRepository->findAllPublished(),
-            'widget_article' => $articleRepository->lastArticle()['0'],
-            'categories' => $categorieRepository->findAll(),
         ]);
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(?Article $article, ArticleRepository $articleRepository, CategorieRepository $categorieRepository, Request $request,  EntityManagerInterface $em): Response
+    public function show(?Article $article, Request $request,  EntityManagerInterface $em): Response
     {
-
-
         $slug = $article->getSlug();
-
         if (!$article) {
             return $this->redirectToRoute('app_home');
         }
+        $user = $this->getUser();
 
         $comment = new Comment($article);
         $comment->setCreatedAt(new \DateTime());
-        $comment->setArticle($article);
-        //$comment->setUser('1');
-
+        $comment->setUser($user);
         $commentForm = $this->createForm(CommentType::class, $comment);
         $commentForm->handleRequest($request);
+
 
         if($commentForm->isSubmitted() && $commentForm->isValid()) {
 
@@ -61,8 +55,6 @@ class ArticleController extends AbstractController
         return $this->renderForm('article/show.html.twig', [
             'title_page' => 'Article',
             'article' => $article,
-            'widget_article' => $articleRepository->lastArticle()['0'],
-            'categories' => $categorieRepository->findAll(),
             'commentForm' => $commentForm,
         ]);
     }

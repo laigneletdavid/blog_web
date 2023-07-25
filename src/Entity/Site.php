@@ -25,8 +25,7 @@ class Site
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $phone = null;
+
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $town = null;
@@ -42,6 +41,11 @@ class Site
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $google_maps = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $phone = null;
+
+
 
     public function getId(): ?int
     {
@@ -96,17 +100,7 @@ class Site
         return $this;
     }
 
-    public function getPhone(): ?int
-    {
-        return $this->phone;
-    }
 
-    public function setPhone(?int $phone): self
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
 
     public function getTown(): ?string
     {
@@ -167,4 +161,18 @@ class Site
 
         return $this;
     }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+
 }

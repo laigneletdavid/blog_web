@@ -31,7 +31,7 @@ class Categorie
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'categories')]
     private Collection $articles;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'categorie')]
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'categories')]
     private Collection $tag;
 
     public function __construct()

@@ -1,24 +1,26 @@
-<article class="mb-5">
+<article class="col-6 article">
+    <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
     <div class="row">
-        <div class="col-8">
-            <h2>
-                <a class="text-decoration-none" href="{{ path('app_article_show', { 'slug': article.slug}) }}">{{ article.title }}</a>
-            </h2>
+
+        <div class="col-6 article_block">
+            <h2>{{ article.title }}</h2>
+            <div class="categories d-flex flex-row">
+                {% for cat in article.categories %}
+
+                    <strong class="d-inline-block mb-2 me-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
+
+                {% endfor %}
+            </div>
             <p>{{ article.createdAt|date('d M Y') }}</p>
             {{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}
         </div>
-        <div class="col-4">
+        <div class="col-6 article_block_img" >
 
-
-            {% if article.featuredMedia %}
-                <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
-                    <img src="/uploads/{{ article.featuredMedia.filename }}" alt="{{ article/featured_media.altText }}" loading="lazy" width="350" height="205">
-                </a>
-            {% else %}
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
-            {% endif %}
+            <div class="img-back" style="background-image: url({{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}); display: block"><span></span></div>
 
 
         </div>
+
     </div>
+    </a>
 </article>

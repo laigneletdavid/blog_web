@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
@@ -14,6 +15,11 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Regex(
+        pattern: '/[a-zA-Z0-9 -.,]+$/i',
+        htmlPattern: '[a-zA-Z0-9 -.,]+$',
+        message: 'Votre message contient des caractères interdits, vous ne pouvez utiliser que des chiffres, lettres, espaces, tirets, virgules et points.',
+    )]
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
@@ -29,10 +35,10 @@ class Comment
     private ?User $user = null;
 
 
-    /*public function __construct(Article $article)
+    public function __construct(?Article $article=null)
     {
         $this->article = $article;
-    }*/
+    }
 
     public function getId(): ?int
     {

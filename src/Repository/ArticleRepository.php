@@ -46,6 +46,8 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
             ->orderBy('a.id', 'ASC')
             ->getQuery()
             ->getResult()
@@ -59,6 +61,8 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
             ->orderBy('a.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
@@ -73,6 +77,8 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
             ->orderBy('a.id', 'ASC')
             ->setMaxResults(2)
             ->getQuery()

@@ -39,20 +39,32 @@ class MenuRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Menu[] Returns an array of Menu objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Menu[] Returns an array of Menu objects
+     */
+    public function findByVisible($visible): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.is_visible = :val')
+            ->setParameter('val', $visible)
+            ->orderBy('m.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Menu[] Returns an array of Menu objects
+     */
+    public function findMenuVisible(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.is_visible = true')
+            ->orderBy('m.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
 //    public function findOneBySomeField($value): ?Menu
 //    {

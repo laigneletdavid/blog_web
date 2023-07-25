@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Modifier votre mot de passe</h1>
+
+        <p class="bg-success">Bonjour {{ user.name }} {{ user.firstName }}, vous allez modifier le mot de passe pour l'adresse e-mail {{ user.email }} !</p>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary mb-5 mt-3">{{ button_label|default('Sauvegarder') }}</button>
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

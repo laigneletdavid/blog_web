@@ -16,10 +16,8 @@ class CategorieCrudController extends AbstractCrudController
         return Categorie::class;
     }
 
-
     public function configureFields(string $pageName): iterable
     {
-
         yield TextField::new('name');
 
         yield SlugField::new('slug')
@@ -27,5 +25,4 @@ class CategorieCrudController extends AbstractCrudController
 
         yield ColorField::new('color');
     }
-
 }

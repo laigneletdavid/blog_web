@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Article;
 use App\Entity\Comment;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -21,13 +22,15 @@ class CommentCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->remove(Crud::PAGE_INDEX, Action::NEW);
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT);
     }
 
 
     public function configureFields(string $pageName): iterable
     {
-        yield TextareaField::new('content');
+        yield TextareaField::new('content',);
+        yield AssociationField::new('article');
         yield DateTimeField::new('createdAt');
         yield AssociationField::new('user');
     }

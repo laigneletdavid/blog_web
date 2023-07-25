@@ -36,6 +36,11 @@ class Menu
     #[ORM\ManyToOne]
     private ?Page $page = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $target = null;
+
+
+
     public function __construct()
     {
         $this->sub_menu = new ArrayCollection();
@@ -141,4 +146,24 @@ class Menu
 
         return $this;
     }
+
+
+    public function getTarget(): ?string
+    {
+        return $this->target;
+    }
+
+    public function setTarget(string $target): self
+    {
+        $this->target = $target;
+
+        return $this;
+    }
+
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
 }
