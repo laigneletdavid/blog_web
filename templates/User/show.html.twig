@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Compte{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Mon compte</h1>
+
+    <table class="table">
+        <tbody>
+
+        <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th>Nom</th>
+            <td>{{ user.name ? user.name: '' }}</td>
+        </tr>
+        <tr>
+            <th>Prénom</th>
+            <td>{{ user.firstName ? user.firstName : '' }}</td>
+        </tr>
+        <tr>
+            <th>Abonnement newsletter</th>
+            <td>{{ user.news != 0 ? 'Oui' : 'Non' }}</td>
+        </tr>
+        <tr>
+            <th>Abonnement nouveaux articles</th>
+            <td>{{ user.articles != 0 ? 'Oui' : 'Non' }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <a class="btn btn-primary mb-5 mt-3" href="{{ path('app_user_edit', {'id': user.id}) }}">Modifier</a>
+
+    <a class="btn btn-primary mb-5 mt-3" href="{{ path('app_home_find') }}">Modifier mon mot de passe</a>
+</div>
+{% endblock %}

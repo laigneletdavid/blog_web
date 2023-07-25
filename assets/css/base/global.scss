@@ -6,9 +6,25 @@ a {
   color: #1C2226;
 }
 .title_page {
-  height: 100%;
 
   .title_page_groupe {
     height: 100%;
+  }
+}
+
+.top_page {
+  height: 23.1245em;
+
+  .img_top {
+    width: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    max-height: 43.6em;
+
+    img {
+      width: 100%;
+    }
   }
 }

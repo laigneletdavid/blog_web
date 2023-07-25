@@ -1,0 +1,26 @@
+{% for article in articles %}
+
+<article class="col-12 article mb-5">
+    <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
+        <div class="row">
+
+            <div class="col-6 article_block">
+                <h2>{{ article.title }}</h2>
+                <p>{{ article.createdAt|date('d M Y') }}</p>
+                {{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}
+            </div>
+            <div class="col-6 article_block_img" >
+                {% if article.featuredMedia.fileName is defined %}
+                    <div class="img-back" style="background-image: url({{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}); display: block"><span></span></div>
+                {% else %}
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+    </a>
+</article>
+
+{% endfor %}

@@ -7,7 +7,7 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>Blog&Web</title>
+        <title>Blog&Web - {% block title %}{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -38,7 +38,7 @@
                     <div class="container d-flex flex-row justify-content-between border-1 border-bottom border-secondary pt-3 pb-3">
                         <div class="header_logo">
                             <a href="{{ path('app_home') }}">
-                             <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo"/>
+                             <img src="{{ asset('images/Logo Blog & Web-250px.png') }}" alt="votre-logo"/>
                             </a>
                         </div>
                         <div class="header_action d_flex flex-column">

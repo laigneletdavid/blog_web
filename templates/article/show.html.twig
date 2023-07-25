@@ -7,9 +7,9 @@
     <div class="top_page" xmlns="http://www.w3.org/1999/html">
         <div class="img_top">
             {% if article.featuredMedia %}
-                <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
-                    <img src="/uploads/{{ article.featuredMedia.filename }}" alt="{{ article/featured_media.altText }}" loading="lazy" width="350" height="205">
-                </a>
+
+                    <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
+
             {% else %}
                 <img src="{{ asset('images/exemple/img-1920-600.png') }}" class="card-img-top" alt="{{ article.title }}">
             {% endif %}
@@ -43,33 +43,34 @@
             </div>
             <div class="col-8">
                 <div class="article_content d-flex flex-column p-5">
-                    <h2 class="pb-4">{{ article.title }}</h2>
+                    <h2 class="pb-2">{{ article.title }}</h2>
+                    <div class="categories d-flex flex-row">
+                        {% for cat in article.categories %}
+                            <strong class="d-inline-block mb-2 me-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
+                        {% endfor %}
+                    </div>
                     <hr>
-                   {#  <h3 class="categorie pb-4">{{ article.categories }}</h3>#}
                     <p class="date">{{ article.createdAt|date('d/m/y') }}</p>
                     <p class="content">{{ article.content|raw }}</p>
-
-
-
                 </div>
 
                 <div class="article_comment d-flex flex-column p-5">
                     <h3 class="comment_title mb-4">
                         <span class="comment_count">{{ article.comments|length }} commentaire(s)</span>
-
-
                     </h3>
                     <hr>
-                    <div class="comment_area mb-4">
-                        {{ form_start(commentForm) }}
-                        {{ form_widget(commentForm) }}
-                        <input type="submit" class="btn btn-small btn-primary" value="Envoyer">
-                        {{ form_end(commentForm) }}
-                    </div>
+
+                    {% if is_granted('ROLE_USER') %}
+                        <div class="comment_area mb-4">
+                            {{ form_start(commentForm) }}
+                            {{ form_widget(commentForm) }}
+                            <input type="submit" class="btn btn-small btn-primary" value="Envoyer">
+                            {{ form_end(commentForm) }}
+                        </div>
+                    {% endif %}
 
                     <div class="comment-list">
                         {% for comment in article.comments %}
-
                             {% include 'comment/index.html.twig' with [comment] %}
                         {% endfor %}
                     </div>

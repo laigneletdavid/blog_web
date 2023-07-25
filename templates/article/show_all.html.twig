@@ -36,9 +36,7 @@
             </div>
             <div class="col-8">
                 <div class="articles_list d-flex flex-column">
-                    {% for article in articles %}
-                        {% include 'article/item.html.twig' with { articles } %}
-                    {% endfor %}
+                        {% include 'article/article_liste_large.html.twig' with { articles } %}
                 </div>
             </div>
         </div>

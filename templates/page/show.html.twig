@@ -6,19 +6,19 @@
 
 <div class="top_page">
     <div class="img_top">
-        <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
+        <img src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
     </div>
     <div class="container title_page mt-5">
         <div class="title_page_groupe d-flex flex-column justify-content-between">
             <div class="title">
-                <h1>{{ title_page }}</h1>
+                <h1>{{ page.title }}</h1>
                 <h2>{{ text_page }}</h2>
             </div>
             <div class="breadcrum">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
                     </ol>
                 </nav>
             </div>
@@ -27,39 +27,21 @@
 
 </div>
 <div class="container">
-    <div class="row">
-         <div class="col-4">
-             <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
+    <div class="row flex-row-reverse">
+         <div class="col-5">
+             <div class="widget d-flex flex-column-reverse position-sticky" style="top: 1rem;">
                 {% include 'widgets/subscribe.html.twig' %}
                 {% include 'widgets/caterogires.html.twig' %}
                 {% include 'widgets/last_article.html.twig' %}
                 {% include 'widgets/archives.html.twig' %}
              </div>
          </div>
-         <div class="col-8">
+         <div class="col-7">
             <div class="content_page d-flex flex-column p-5">
-                <h2 class="pb-4">{{ title_page }}</h2>
-
-                <p>
-
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed maximus sem vitae mollis fermentum. Nulla sollicitudin finibus tortor ac ornare. Etiam iaculis sapien a orci semper posuere. Donec eu enim rutrum, tincidunt turpis sit amet, facilisis felis. In accumsan pulvinar massa, et ullamcorper leo vehicula ultricies. Vestibulum gravida sollicitudin condimentum. Phasellus aliquam nulla eu sapien auctor, a consectetur est tincidunt. Quisque nec justo imperdiet, auctor enim ut, lobortis massa. Etiam vitae ligula libero. Vivamus eget leo et dolor bibendum porta ac ac enim. In dui sem, rhoncus eget placerat volutpat, faucibus sed risus.
-
-                    Cras dictum placerat enim et laoreet. Sed erat lectus, vehicula in felis sit amet, pellentesque consequat quam. Ut sem massa, tempus a imperdiet eget, blandit sit amet purus. Nulla bibendum viverra enim dignissim malesuada. Donec facilisis laoreet nisl porttitor ullamcorper. Nulla enim mi, pulvinar vitae ligula id, lacinia rutrum justo. Sed finibus nulla augue, sit amet laoreet dui suscipit vitae. Curabitur euismod in ex non blandit. Morbi faucibus, orci at lacinia venenatis, massa risus iaculis tellus, at ultricies eros enim in urna. Nulla sagittis est eu massa faucibus, quis gravida urna posuere. Nunc eu viverra tellus. Nulla cursus tellus eget ipsum gravida viverra.
-
-                    Quisque vehicula elit quis dui aliquam vehicula. Duis nec lectus a elit semper dictum. Vivamus eu varius mauris, sed facilisis elit. Duis malesuada felis vel tempus interdum. Proin luctus gravida enim a feugiat. Fusce faucibus ante eu urna luctus bibendum. Etiam eget arcu non augue dignissim auctor a eu nunc. Proin non facilisis urna. Proin ac commodo sem, nec dapibus neque. Aenean tellus leo, porttitor vitae pulvinar eget, lacinia at massa.
-
-                    Quisque ultrices sit amet elit vel lacinia. Curabitur a leo euismod, laoreet magna eu, tincidunt augue. Quisque nec lectus sit amet ante vulputate porta et sed nunc. Cras aliquam neque urna, eu consectetur dolor dignissim at. Fusce suscipit, tortor nec sollicitudin gravida, lorem sapien ullamcorper sapien, commodo egestas nisl urna in nibh. Quisque congue volutpat lorem a vestibulum. Nunc sollicitudin mattis odio, in feugiat nisi sodales vitae.
-
-                    Aenean pharetra dolor orci, quis interdum tellus sodales sit amet. Cras elementum felis eu enim malesuada vulputate eu sit amet augue. Proin at elit risus. Integer in auctor nunc. Vivamus nunc nibh, consectetur nec enim et, imperdiet vulputate orci. Nullam ornare et mi sed imperdiet. Praesent at tortor non dui gravida mollis. Pellentesque mollis urna a lorem ultrices tincidunt. Vestibulum ac sapien orci. Vivamus at elementum sapien. Donec ultricies lorem quis sapien feugiat, vitae egestas libero tempor. Nulla a cursus arcu, at porttitor quam. Pellentesque in convallis ante. In sit amet turpis non turpis lobortis imperdiet. </p>
-
-
-                <div class="page_galerie bg-secondary bg-opacity-75">
-                    <h3>Galerie photo (option)</h3>
-                </div>
+                <h2 class="pb-4">{{ page.title }}</h2>
+                <p>{{ page.content|raw }}</p>
             </div>
-
-
-     </div>
+         </div>
     </div>
 </div>
 {% endblock %}

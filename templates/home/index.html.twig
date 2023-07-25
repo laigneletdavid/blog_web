@@ -5,7 +5,7 @@
 {% block body %}
 
 
-<div class="top_home">
+<div class="container top_home">
     <div class="img_top">
         <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
     </div>
@@ -15,53 +15,10 @@
     </div>
 </div>
 
-<div class="container pages_cards">
-    <div class="row mb-5">
-        <div class="d-flex flex-row hstack gap-3 justify-content-evenly">
-            <div class="card col-md-2">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Card 1</a></h5>
-                </div>
-            </div>
-
-            <div class="card col-md-2">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Card 2</a></h5>
-                </div>
-            </div>
-            <div class="card col-md-2">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top" alt="{{ title_page }}">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Card 3</a></h5>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="container articles">
     <div class="row mb-5">
-        <div class="col-md-6">
-
             {% include 'article/article_liste.html.twig' with { articles } %}
-
-        </div>
-        <div class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <strong class="d-inline-block mb-2 text-primary">Catégories</strong>
-                    <h3 class="mb-0">Title</h3>
-                    <div class="mb-1 text-body-secondary">Date</div>
-                    <p class="card-text mb-auto">Featured text</p>
-                    <a href="#" class="btn btn-primary btn-sm">Voir +</a>
-                </div>
-                <div class="col-auto d-none d-lg-block">
-                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

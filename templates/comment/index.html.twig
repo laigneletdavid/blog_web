@@ -3,8 +3,8 @@
     <div class="comment mb-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><span class="author">Username</span> - {{ comment.createdAt|date ('d/m/y à H:i:s') }} </h5>
-                <p class="card-text"> {{ comment.content }}</p >
+                <h5 class="card-title"><span class="author">Username</span> - {{ comment.createdAt|format_datetime (pattern='dd MMMM y à HH:mm') }} </h5>
+                <p class="card-text"> {{ comment.content|escape }}</p >
             </div>
 
         </div>

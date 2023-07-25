@@ -1,18 +1,15 @@
 .top_home{
-  height: 300px;
 
-  .img_top {
-    position: absolute;
-    top: 0;
-    z-index: -1;
-    max-height: 850px;
+  .img_top img {
+    max-width: 100%;
   }
 }
 
 .title_page {
   vertical-align: bottom;
-  color: white;
+  color: $primary;
   font-family: Montserrat;
+  height: 100%;
 }
 
 .headband {
@@ -26,7 +23,9 @@
     }
   }
   .round {
-    border-radius: 20em;
+    border-radius: 10em;
   }
 
 }
+
+
