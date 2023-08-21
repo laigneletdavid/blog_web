@@ -12,6 +12,11 @@
   text-transform: uppercase;
 }
 .header .desk .header_info .btn-font:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
+}
+.header .desk .header_info .btn-font:hover {
   color: #FFFFFF;
 }
 .header .desk .header_info .header_logo img {
@@ -21,11 +26,11 @@
   margin-right: 0.75rem;
   border-color: #0455C0;
 }
-.header .desk .header_nav {
+.header .desk .header_nav, .header .desk .header-admin {
   background-color: #0455C0;
   font-size: 1.25rem;
 }
-.header .desk .header_nav .nav-link {
+.header .desk .header_nav .nav-link, .header .desk .header-admin .nav-link {
   font-family: "Titillium Web", sans-serif;
   text-transform: uppercase;
   color: #FFF;
@@ -34,7 +39,7 @@
   transition: all 1s 0.2s;
   border-radius: 0.5rem;
 }
-.header .desk .header_nav .nav-link:hover {
+.header .desk .header_nav .nav-link:hover, .header .desk .header-admin .nav-link:hover {
   color: #F1A341;
   text-decoration: underline;
   transition: color, text-decoration 0.8s 0.2s;
@@ -70,6 +75,11 @@
   text-transform: uppercase;
 }
 .title_page .btn-font:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
+}
+.title_page .btn-font:hover {
   color: #FFFFFF;
 }
 
@@ -90,6 +100,11 @@
   font-family: "Titillium Web", sans-serif !important;
   text-transform: uppercase;
   color: #FFFFFF;
+}
+.headband .card .card-body .btn-head:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
 }
 .headband .card .card-body .btn-head:hover {
   color: #FFFFFF;
@@ -272,13 +287,45 @@ a {
   margin-bottom: 2rem;
 }
 
-.login {
+.security {
   width: 50%;
   background-color: #DCEDF5;
   border: solid 1px #0455C0;
   margin: auto;
   padding: 2rem;
   border-radius: 2rem;
+}
+.security .btn-font {
+  font-family: "Titillium Web", sans-serif !important;
+  text-transform: uppercase;
+}
+.security .btn-font:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
+}
+
+.title_form {
+  font-family: "Expletus Sans", cursive;
+  font-size: 2.5rem;
+  color: #0455C0;
+}
+
+.user_infos {
+  width: 75%;
+  border: solid 1px #0455C0;
+  margin: auto;
+  padding: 2rem;
+  border-radius: 2rem;
+}
+.user_infos .btn-font {
+  font-family: "Titillium Web", sans-serif !important;
+  text-transform: uppercase;
+}
+.user_infos .btn-font:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
 }
 
 /*!

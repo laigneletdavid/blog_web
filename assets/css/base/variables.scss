@@ -34,4 +34,10 @@ $bw-gray-light : #DFDEDE;
 @mixin btn-font {
   font-family: 'Titillium Web', sans-serif !important;
   text-transform: uppercase;
+
+  &:hover {
+    background-color: $bw-orange !important;
+    border-color: $bw-orange !important;
+    color: #FFF;
+  }
 }
