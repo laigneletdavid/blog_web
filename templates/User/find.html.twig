@@ -4,14 +4,14 @@
 
 {% block body %}
     <div class="container">
+        <div class="security mb-5">
 
+            <h1 class="title-one">Me trouver</h1>
 
-        <h1>Me trouver</h1>
-
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button class="btn btn-primary mb-5 mt-3">{{ button_label|default('Me trouver') }}</button>
-        {{ form_end(form) }}
-
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button class="btn-font btn btn-primary mb-3 mt-3">{{ button_label|default('Me trouver') }}</button>
+            {{ form_end(form) }}
+        </div>
     </div>
 {% endblock %}

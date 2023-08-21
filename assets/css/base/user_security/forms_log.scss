@@ -1,0 +1,16 @@
+.security {
+  width: 50%;
+  background-color: $bw_blue-light;
+  border: solid 1px $primary;
+  margin: auto;
+  padding: 2rem;
+  border-radius: 2rem;
+
+  .btn-font {
+    @include btn-font;
+  }
+}
+
+.title_form {
+  @include title-one;
+}
