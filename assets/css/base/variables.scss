@@ -1,0 +1,37 @@
+
+$bw-blue : #0455C0;
+$bw-orange : #F1A341;
+$bw-blue-light : #DCEDF5;
+$bw-gray-dark : #1D2226;
+$bw-red : #BE3636;
+$bw-blue-back : #81A9DF;
+$bw-gray-light : #DFDEDE;
+
+
+
+
+@mixin title-one {
+  font-family: 'Expletus Sans', cursive;
+  font-size: 2.5rem;
+  color: $bw-blue;
+}
+
+@mixin title-two {
+  font-family: 'Expletus Sans', cursive;
+  font-size: 1.25rem;
+  color: $bw-orange !important;
+  text-decoration: underline;
+}
+
+@mixin link-menu {
+  font-family: 'Titillium Web', sans-serif;
+  text-transform: uppercase;
+  color: #FFF;
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+@mixin btn-font {
+  font-family: 'Titillium Web', sans-serif !important;
+  text-transform: uppercase;
+}

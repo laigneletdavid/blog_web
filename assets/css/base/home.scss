@@ -7,23 +7,100 @@
 
 .title_page {
   vertical-align: bottom;
-  color: $primary;
-  font-family: Montserrat;
   height: 100%;
+
+  .btn-font {
+    @include btn-font;
+
+    &:hover{
+      color: #FFFFFF;
+    }
+  }
 }
 
 .headband {
+  background-color: $bw-blue-light;
 
   .card {
     background-color: transparent;
     border: none;
+    .card-body {
+      padding: 2rem 0;
 
-    .card-title {
+      .card-title {
+        text-align: center;
+      }
+
+      .btn-head {
+        @include btn-font;
+        color: #FFFFFF;
+
+        &:hover {
+          color: #FFFFFF;
+          background-color: $secondary;
+          border-color: $secondary;
+        }
+      }
+    }
+    .collapse {
+      background-color: #FFFFFF;
+      padding: 0 2rem;
+      border-radius: 0.5rem;
       text-align: center;
     }
+
   }
   .round {
     border-radius: 10em;
+  }
+
+}
+
+.team {
+  .team_img {
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .team_name {
+    @include title-one;
+  }
+
+  .team_text {
+    text-align: center;
+  }
+}
+
+.article {
+  .article_block_img{
+    height: 20rem;
+
+    .article_img {
+      width: 100%;
+      object-fit: cover;
+      max-height: 100%;
+    }
+  }
+
+  .article_block {
+
+    .article_title {
+      @include title-one;
+    }
+
+    .article_categories strong {
+      font-family: 'Expletus Sans', cursive;
+      font-size: 1.25rem;
+      text-decoration: underline;
+    }
+
+    .article_credit, .article_text {
+      color: $bw-gray-dark;
+    }
+  }
+  .article_link {
+    text-decoration: none;
   }
 
 }

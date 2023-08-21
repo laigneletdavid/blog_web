@@ -18,8 +18,8 @@ class HomeController extends AbstractController
     {
 
         return $this->render('home/index.html.twig', [
-            'title_page' => 'Feet Trip',
-            'text_page' => 'Un nouveau monde s\'ouvre à vous !',
+            'title_page' => 'Blog & Web',
+            'text_page' => 'Un CMS proche de vous !',
             'articles' => $articleRepository->homeArticles(),
         ]);
 

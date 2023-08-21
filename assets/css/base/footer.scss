@@ -1,0 +1,45 @@
+.footer{
+  color: #FFFFFF;
+  background-color: $bw-gray-dark;
+
+
+  .footer_mentions {
+
+    .footer_logo {
+      max-width: 100%;
+      padding: 0 2rem;
+    }
+    .mentions {
+      text-align: center;
+    }
+  }
+
+  .footer_contact {
+    .footer_section {
+      font-family: 'Titillium Web', sans-serif !important;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      .nav-link {
+        font-family: 'Titillium Web', sans-serif !important;
+        color: #FFFFFF;
+
+        &:hover {
+          color: $bw-red;
+        }
+      }
+    }
+  }
+
+  .footer_search {
+    .social-icon {
+      color: #FFFFFF;
+    }
+
+  }
+  .footer_bw {
+    text-align: center;
+    border-top: solid 1px #FFFFFF;
+  }
+}

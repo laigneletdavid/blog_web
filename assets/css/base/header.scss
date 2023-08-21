@@ -1,0 +1,66 @@
+.header {
+
+  .desk {
+    display: block;
+    @media (max-width: 991.98px) {
+      display: none;
+    }
+    .header_info {
+      .btn-font {
+        @include btn-font;
+
+        &:hover{
+          color: #FFFFFF;
+        }
+      }
+      .header_logo img {
+        height: 8.75rem;
+      }
+
+      .search {
+        margin-right: 0.75rem;
+        border-color: $primary;
+      }
+
+
+    }
+
+    .header_nav {
+      background-color: $primary;
+      font-size: 1.25rem;
+
+      .nav-link {
+        @include link-menu;
+        transition: all 1s 0.2s;
+        border-radius: 0.5rem;
+
+        &:hover {
+          color: $secondary;
+          text-decoration: underline;
+          transition: color, text-decoration 0.8s 0.2s;
+        }
+      }
+    }
+  }
+
+  .smart {
+    display: none;
+    @media (max-width: 991.98px) {
+      display: block;
+    }
+
+    .header_cont {
+      border-bottom: solid 1px $primary;
+
+      .smart_header_logo {
+        max-height: 5rem;
+      }
+    }
+
+    .offcanvas-body {
+      display:block;
+    }
+  }
+}
+
+

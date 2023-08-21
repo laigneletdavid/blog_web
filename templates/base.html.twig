@@ -8,7 +8,12 @@
     <head>
         <meta charset="UTF-8">
         <title>Blog&Web</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ asset('images/site.webmanifest') }}"><link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Expletus+Sans:ital@0;1&family=Open+Sans:ital@0;1&family=Titillium+Web:ital@0;1&display=swap" rel="stylesheet">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
@@ -20,7 +25,7 @@
     </head>
     <body>
 
-        <div class="header">
+        <div class="header mb-5">
             <div class="desk">
                 {% if is_granted('ROLE_CORRECTOR') %}
                 <div class="header-admin  bg-dark">
@@ -28,20 +33,19 @@
                         <nav class="navbar">
                             <ul class="nav d-flex flex-row">
                                 <li class="nav-item p-2"><a href="{{ path('admin') }}" class="nav-link text-decoration-none  text-light">Administration</a></li>
-
                             </ul>
                         </nav>
                     </div>
                 </div>
                 {% endif %}
                 <div class="header_info">
-                    <div class="container d-flex flex-row justify-content-between border-1 border-bottom border-secondary pt-3 pb-3">
+                    <div class="container d-flex flex-row justify-content-between pt-3 pb-3">
                         <div class="header_logo">
                             <a href="{{ path('app_home') }}">
                              <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo"/>
                             </a>
                         </div>
-                        <div class="header_action d_flex flex-column">
+                        <div class="header_action d-flex flex-column justify-content-between">
                             <div class="header_social">
                                 <ul class="d-flex flex-row-reverse list-unstyled m-0">
                                     <li class="social-icon p-2"><a href="#">
@@ -70,17 +74,25 @@
                                     </ul>
                                     </div>
                                 {% else %}
-                                    <ul class="nav d-flex flex-row-reverse">
-                                        <li class="nav-item d-flex flex-row align-items-center p-2"><a href="{{ path('app_register')}}">
-                                            <span>Créer un compte</span></a>
+                                    <ul class="nav d-flex flex-row-reverse justify-content-evenly">
+                                        <li class="nav-item d-flex flex-row align-items-center">
+                                            <a class="btn-font btn btn-outline-secondary shadow-sm" href="{{ path('app_register')}}"><span>Créer un compte</span></a>
                                         </li>
-                                        <li class="nav-item d-flex flex-row align-items-center p-2"><a href="{{ path('app_login')}}">
-                                            <span>Se connecter</span></a>
+                                        <li class="nav-item d-flex flex-row align-items-center">
+                                            <a class="btn-font btn btn-primary shadow-sm" href="{{ path('app_login')}}"><span>Se connecter</span></a>
                                         </li>
                                     </ul>
                                 {% endif %}
                             </div>
-
+                            <div class="header_search dropdown" data-controller="search">
+                                <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
+                                    <input type="search" name="q" class="search form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
+                                    <button class="btn-font btn btn-outline-primary shadow-sm" type="submit">Chercher</button>
+                                </form>
+                                <div class="dropdown-menu" data-search-target="results">
+                                    <a class="dropdown-item" href="#">Contenu</a>
+                                </div><!-- c'est ma div qui va gérer l'affichage de la recherche en Dropdown -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,13 +100,13 @@
                     <div class="container d-flex flex-row justify-content-between align-items-center">
                         <nav class="navbar">
                             <ul class="nav d-flex flex-row">
-                                <li class="nav-item p-2"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+                                <li class="nav-item mr-2"><a href="{{ path('app_home') }}" class="nav-link p-3">Accueil</a></li>
 
                                 {% for menu in menus %}
                                     {% set sub_menus = menu.getSubMenu() %}
                                     {% if sub_menus.count > 0 %}
                                         <div class="dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <a class="nav-link dropdown-toggle p-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 {{ menu.name }}
                                             </a>
                                             <ul class="dropdown-menu">
@@ -104,34 +116,30 @@
                                             </ul>
                                         </div>
                                     {% else %}
-                                        <li class="nav-item p-2"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                                        <li class="nav-item mr-2"><a href="{{ menu|menuLink }}" class="nav-link p-3">{{ menu.name }}</a></li>
                                     {% endif %}
                                 {% endfor %}
 
-                                <li class="nav-item p-2"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
+                                <li class="nav-item mr-2"><a href="{{ path('app_contact') }}" class="nav-link p-3">Contact</a></li>
                             </ul>
                         </nav>
-                        <div class="header_search dropdown" data-controller="search">
-                            <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
-                                <input type="search" name="q" class="form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
-                                <button class="btn btn-primary" type="submit">Chercher</button>
-                            </form>
-                            <div class="dropdown-menu" data-search-target="results">
-                                <a class="dropdown-item" href="#">Contenu</a>
-                            </div><!-- c'est ma div qui va gérer l'affichage de la recherche en Dropdown -->
-                        </div>
+
                     </div>
                 </div>
             </div>
-            <div class="smallcreen" style="display: none;">
+            <div class="smart">
                 <nav class="navbar">
-                    <div class="container-fluid">
-                        <a href="{{ path('app_home') }}">
-                            <img src="{{ asset('images/logo_long.png') }}" alt="votre-logo"/>
-                        </a>
+                    <div class="container-fluid header_cont ms-3 me-3">
                         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
+                        <a href="{{ path('app_home') }}">
+                                <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo" class="smart_header_logo"/>
+                            </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#" aria-controls="o" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
                         <div class="offcanvas offcanvas-start" tabindex="+1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                             <div class="offcanvas-header">
                                 <img src="{{ asset('images/logo_long.png') }}" alt="Feet Trip" style="max-width: 80%;">
@@ -199,30 +207,28 @@
         {% endfor %}
         {% block body %}{% endblock %}
 
-        <div class="footer bg-secondary bg-opacity-25">
-            <div class="container pt-5 pb-5">
+        <div class="footer">
+            <div class="container pt-5 pb-3">
                 <div class="footer_info row d-flex flex-row">
-                    <div class="footer_contact d-flex flex-column col-3 mb-3">
-                        <span class="footer_section">Section</span>
+                    <div class="footer_logo col-4 mb-5">
+                        <div class="footer_mentions d-flex flex-column align-items-center">
+                            <a href="{{ path('app_home') }}">
+                                <img class="footer_logo" src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
+                            </a>
+                            <span class="mentions">© Tous droits réservés {% block title_page %}Blog&Web{% endblock %}</span>
+                        </div>
+                    </div>
+                    <div class="footer_contact d-flex flex-column col-4 mb-5 ps-5">
+                        <span class="footer_section mb-3">Service client</span>
                         <ul class="nav flex-column">
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Home</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Features</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Pricing</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">FAQs</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">About</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Contact</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Aide & assistance</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Mentions légales</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Confidentialité & Cookies</a></li>
                         </ul>
                     </div>
-                    <div class="footer_categories d-flex flex-column col-3 mb-3">
-                        <span class="footer_section">Section</span>
-                        <ul class="nav flex-column">
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Home</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Features</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Pricing</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">FAQs</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">About</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer_subscribe col-5 offset-1 mb-3">
+
+                    <div class="footer_search  d-flex flex-column justify-content-evenly align-items-center col-4 mb-5">
                         <div class="footer_search dropdown" data-controller="search">
                             <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
                                 <input type="search" name="q" class="form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
@@ -230,19 +236,24 @@
                             </form>
                             <div class="dropdown-menu" data-search-target="results">
                                 <a class="dropdown-item" href="#">Contenu</a>
-                            </div><!-- c'est ma div qui va gérer l'affichage de la recherche en Dropdown -->
+                            </div>
                         </div>
-                        <div class="subscribe">
-                                <span class="footer_section">Inscrivez-vous</span>
-                                <p>Recevez directement tous les articles et parution du site en créant un compte.</p>
-                                <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-                                    <a class="btn btn-primary" type="button" href="{{ path('app_register')}}">Inscrivez-vous !</a>
-                                </div>
-                        </div>
+                        <ul class="d-flex flex-row-reverse list-unstyled m-0 footer_social">
+                            <li class="p-2"><a href="#" class="social-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                                    </svg></a>
+                            </li>
+                            <li class="p-2"><a href="#" class="social-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+                                        <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+                                    </svg></a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div class="footer_mentions">
-                    <span class="mentions"><a href="#" class="legal">Mentions légales</a> - <a href="#" class="cookies">confidentialité & Cookies</a> - © Tous droits réservés {% block title_page %}Blog&Web{% endblock %}</span>
+                <div class="footer_bw pt-3">
+                    <span class="mentions mt-3">Site imaginé et créé avec <a href="#" target="_blank" class="cookies">Blog&Web</a> !</span>
                 </div>
             </div>
 

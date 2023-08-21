@@ -5,86 +5,102 @@
 {% block body %}
 
 
-<div class="container top_home">
+<div class="container top_home d-flex flex-row mb-5">
+    <div class="container title_page mt-5 d-flex flex-column justify-content-evenly">
+        <h1 class="title-one">{{ title_page }}</h1>
+        <h2 class="title-two mb-5">{{ text_page }}</h2>
+        <p>Blog & Web est un système de gestion de contenu web, Content Management Système, qui vous permet de gérer votre site web en toute simplicité.</p>
+        <p>Tout au long de votre projet, vous serez accompagnés par un professionnel du web qui vous aidera à construitre votre site internet.</p>
+        <a href="{{ path('app_contact') }}" class="btn-font btn btn-outline-secondary shadow mt-5">Essayez Blog & Web</a>
+    </div>
     <div class="img_top">
-        <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
-    </div>
-    <div class="container title_page mt-5">
-        <h1>{{ title_page }}</h1>
-        <h2>{{ text_page }}</h2>
+        <img src="{{ asset('images/b&w-accueil-web1920.jpg') }}" alt="{{ title_page }}"/>
     </div>
 </div>
 
 
-<div class="container articles">
-    <div class="row mb-5">
-            {% include 'article/article_liste.html.twig' with { articles } %}
-    </div>
-</div>
-
-<div class="headband bg-secondary bg-opacity-25">
+<div class="headband mb-5">
     <div class="container">
-        <div class="row d-flex flex-row hstack gap-3 justify-content-between pt-5 pb-5">
+        <div class="row d-flex flex-row hstack gap-3 justify-content-between pt-5 pb-3">
             <div class="card col-md-2 pb-5">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <img src="{{ asset('images/b&w-ico-blog.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Catégorie 1</a></h5>
+                    <h5 class="card-title"><a class="btn-head btn btn-primary" data-bs-toggle="collapse" href="#collapseBlog" role="button" aria-expanded="false" aria-controls="collapseBlog">Bloguez en liberté</a></h5>
+                </div>
+                <div class="collapse" id="collapseBlog">
+                    <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                    </div>
                 </div>
             </div>
 
             <div class="card col-md-2 pt-5">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <img src="{{ asset('images/b&w-ico-page.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Catégorie 2</a></h5>
+                    <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapsePage" role="button" aria-expanded="false" aria-controls="collapseBlog">Gérez vos pages</a></h5>
+                </div>
+                <div class="collapse" id="collapsePage">
+                    <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                    </div>
                 </div>
             </div>
             <div class="card col-md-2 pb-5">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <img src="{{ asset('images/b&w-ico-stat.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Catégorie 3</a></h5>
+                    <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapseMenu" role="button" aria-expanded="false" aria-controls="collapseBlog">Créez votre menu</a></h5>
+                </div>
+                <div class="collapse" id="collapseMenu">
+                    <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                    </div>
                 </div>
             </div>
             <div class="card col-md-2 pt-5">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <img src="{{ asset('images/b&w-ico-post.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Catégorie 4</a></h5>
+                    <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false" aria-controls="collapseBlog">Aide & Assistance</a></h5>
+                </div>
+                <div class="collapse" id="collapseHelp">
+                    <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                    </div>
                 </div>
             </div>
             <div class="card col-md-2 pb-5">
-                <img src="{{ asset('images/exemple/img-500.png') }}" class="card-img-top round" alt="{{ title_page }}">
+                <img src="{{ asset('images/b&w-ico-contact.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="#" class="">Catégorie 5</a></h5>
+                    <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapseContact" role="button" aria-expanded="false" aria-controls="collapseBlog">Restez en contact</a></h5>
+                </div>
+                <div class="collapse" id="collapseContact">
+                    <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="container articles">
+    <div class="row mb-5">
+        {% include 'article/article_liste.html.twig' with { articles } %}
     </div>
 </div>
 
 <div class="container team">
-    <div class="d-flex flex-row row mt-5 mb-5">
-        <div class="col-6 team_img rounded-circle">
-            <img src="{{ asset('images/exemple/img-500.png') }}" alt="" class="counter_img rounded-circle">
+    <div class="d-flex flex-row row pt-5 mb-5">
+        <div class="col-4 team_img rounded-circle">
+            <img src="{{ asset('images/profil.jpg') }}" alt="" class="counter_img rounded-circle">
         </div>
-        <div class="col-6 team_text d-flex flex-column justify-content-evenly align-items-center">
-            <h4 class="team_name">Nom team</h4>
-            <p class="team_text fst-italic">Ceci est mon texte de présentation. Je dois me présenter rapidement sans een décrivant pourquoi je participe a ses projet.</p>
-        </div>
-    </div>
-    <div class="d-flex flex-row row pt-3 pb-3 team_counter justify-content-evenly">
-        <div class="counter col-2 d-flex flex-column align-items-center">
-            <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
-            <h5 class="counter_title">Counter</h5>
-            <span class="counter">255</span>
-        </div>
-        <div class="counter col-2 d-flex flex-column align-items-center">
-            <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
-            <h5 class="counter_title">Counter</h5>
-            <span class="counter">255</span>
-        </div>
-        <div class="counter col-2 d-flex flex-column align-items-center">
-            <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
-            <h5 class="counter_title">Counter</h5>
-            <span class="counter">255</span>
+        <div class="col-8 team_text d-flex flex-column justify-content-evenly align-items-center">
+            <h4 class="team_name">David Laignelet</h4>
+            <div class="team_text fst-italic">
+                <p>C'est sur le tard que je me suis mis à la programmation, mais une fois commencé je n'ai pas réussi à m'arréter !</p>
+                <p>Fort d'une expérience de plus de 15 ans dans le commerce et le management, j'ai créé Blog & Web pour faciliter l'accès à internet aux entreprises et personnes qui souhaitent une expérience facile et accessible.</p>
+                <p>Blog & Web est un outil à taille humaine proche de vous.</p>
+
+            </div>
         </div>
     </div>
 </div>
