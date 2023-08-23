@@ -2,9 +2,14 @@
 
     <div class="comment mb-3">
         <div class="card">
-            <div class="card-body">
-                <h5 class="card-title"><span class="author">Username</span> - {{ comment.createdAt|format_datetime (pattern='dd MMMM y à HH:mm') }} </h5>
-                <p class="card-text"> {{ comment.content|escape }}</p >
+            <div class="card-body d-flex flex-column">
+                <div class="card-title d-flex flex-row justify-content-between">
+                    <span class="author">{{ comment.user.name }} {{ comment.user.firstname }}</span>
+                    <span>{{ comment.createdAt|format_datetime (pattern='dd MMMM y à HH:mm') }}</span>
+                </div>
+                <div class="card-text ms-4 p-3">
+                    <span>{{ comment.content|escape }}</span>
+                </div >
             </div>
 
         </div>

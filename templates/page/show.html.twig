@@ -3,45 +3,40 @@
 {% block title %}{{ title_page }}{% endblock %}
 
 {% block body %}
-
-<div class="top_page">
-    <div class="img_top">
-        <img src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
+<div class="container">
+    <div class="breadcrum">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+            </ol>
+        </nav>
     </div>
-    <div class="container title_page mt-5">
-        <div class="title_page_groupe d-flex flex-column justify-content-between">
-            <div class="title">
-                <h1>{{ page.title }}</h1>
-                <h2>{{ text_page }}</h2>
-            </div>
-            <div class="breadcrum">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
-                    </ol>
-                </nav>
-            </div>
+    <div class=" top_page">
+        <div class="img_top">
+            <img class="img_top" src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
+        </div>
+        <div class="title">
+            <h1 class="title-one text-light">{{ page.title }}</h1>
+            <h2 class="title-two">{{ text_page }}</h2>
         </div>
     </div>
-
-</div>
-<div class="container">
-    <div class="row flex-row-reverse">
-         <div class="col-5">
-             <div class="widget d-flex flex-column-reverse position-sticky" style="top: 1rem;">
+    <div class="row flex-row">
+         <div class="col-8">
+             <div class="container container-page mt-3">
+                 <div class="d-flex flex-column m-2">
+                     <div class="content_page">{{ page.content|raw }}</div>
+                 </div>
+             </div>
+         </div>
+        <div class="col-4">
+            <div class="widget d-flex flex-column position-sticky pt-3" style="top: 1rem;">
                 {% include 'widgets/subscribe.html.twig' %}
                 {% include 'widgets/caterogires.html.twig' %}
                 {% include 'widgets/last_article.html.twig' %}
                 {% include 'widgets/archives.html.twig' %}
-             </div>
-         </div>
-         <div class="col-7">
-            <div class="content_page d-flex flex-column p-5">
-                <h2 class="pb-4">{{ page.title }}</h2>
-                <p>{{ page.content|raw }}</p>
             </div>
-         </div>
+        </div>
     </div>
 </div>
 {% endblock %}

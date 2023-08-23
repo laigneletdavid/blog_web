@@ -1,26 +1,28 @@
 <div class="p-4 widget_article">
     <h4 class="fst-italic">Dernier article</h4>
-    <div class="d-none d-lg-block widget_article_img">
-        {% if widget_article.featuredMedia.fileName is defined %}
-            <img src="{{ asset('documents/medias/' ~ widget_article.featuredMedia.fileName) }}" alt="{{ widget_article.featuredMedia.name }}"/>
-        {% else %}
+    <div class="d-flex felx-row">
+        <div class="widget_article_img">
+            {% if widget_article.featuredMedia.fileName is defined %}
+                <img src="{{ asset('documents/medias/' ~ widget_article.featuredMedia.fileName) }}" alt="{{ widget_article.featuredMedia.name }}"/>
+            {% else %}
 
-        {% endif %}
-    </div>
-    <div class="pt-2 d-flex flex-column">
-
-
-        <h3 class="mb-0">{{ widget_article.title }}</h3>
-        <div class="categories d-flex flex-row">
-            {% for cat in widget_article.categories %}
-
-                <strong class="d-inline-block mb-2 me-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
-
-            {% endfor %}
+            {% endif %}
         </div>
-        <div class="mb-1 text-body-secondary">{{ widget_article.createdAt|date ('d/m/Y') }}</div>
-        <p class="card-text mb-auto">{{ widget_article.featuredText }}</p>
-        <a href="{{ path('app_article_show', { 'slug': widget_article.slug}) }}" class="btn btn-primary btn-sm">Voir +</a>
+        <div class="ps-3 d-flex flex-column justify-content-evenly">
+            <h5 class="mb-0">{{ widget_article.title }}</h5>
+            <div class="categories d-flex flex-row">
+                {% for cat in widget_article.categories %}
+
+                    <strong class="d-inline-block mb-2 me-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
+
+                {% endfor %}
+            </div>
+            <div class="mb-1 text-body-secondary">{{ widget_article.createdAt|date ('d/m/Y') }}</div>
+        </div>
+    </div>
+    <div class="d-flex flex-column pt-3">
+        <p class="card-text pb-3">{{ widget_article.featuredText }}</p>
+        <a href="{{ path('app_article_show', { 'slug': widget_article.slug}) }}" class="btn-font btn btn-primary ">Voir +</a>
     </div>
 
 </div>

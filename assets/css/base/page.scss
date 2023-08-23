@@ -3,3 +3,19 @@
   height: 20rem;
 }
 
+.top_page {
+  margin-bottom: -5rem;
+  .img_top{
+    width: 100%;
+
+    img {
+      max-width: 100%;
+    }
+  }
+  .title {
+    position: relative;
+    top: -10rem;
+    left: 5rem;
+
+  }
+}
