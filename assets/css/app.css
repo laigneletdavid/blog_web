@@ -202,21 +202,6 @@ a {
   height: 100%;
 }
 
-.top_page {
-  height: 23.1245em;
-}
-.top_page .img_top {
-  width: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  z-index: -1;
-  max-height: 43.6em;
-}
-.top_page .img_top img {
-  width: 100%;
-}
-
 .title-one {
   font-family: "Expletus Sans", cursive;
   font-size: 2.5rem;
@@ -230,38 +215,157 @@ a {
   text-decoration: underline;
 }
 
+.btn-font {
+  font-family: "Titillium Web", sans-serif !important;
+  text-transform: uppercase;
+}
+.btn-font:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
+}
+.btn-font:hover {
+  color: #FFFFFF;
+}
+
 .dropdown-menu {
   border-color: #0455C0;
 }
 .dropdown-menu .dropdown-item {
   font-family: "Titillium Web", sans-serif;
-  color: #BE3636;
-  font-size: 1.25rem;
+  color: #1D2226;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 .dropdown-menu .dropdown-item:hover {
-  font-weight: 700;
-  text-decoration: underline;
   color: #BE3636;
+}
+
+.breadcrum {
+  border-bottom: solid 1px #0455C0;
 }
 
 .page_galerie {
   height: 20rem;
 }
 
-.widget_article {
+.top_page {
+  margin-bottom: -5rem;
+}
+.top_page .img_top {
+  width: 100%;
+}
+.top_page .img_top img {
   max-width: 100%;
 }
-.widget_article img {
-  width: 100%;
-  height: 10rem;
+.top_page .title {
+  position: relative;
+  top: -10rem;
+  left: 5rem;
 }
 
-.contact_list .logo img {
+.article_content .title_article_groupe .article_title .title-one {
+  font-family: "Expletus Sans", cursive;
+  font-size: 2.5rem;
+  color: #0455C0;
+}
+.article_content .title_article_groupe .article_title .title-two {
+  font-family: "Expletus Sans", cursive;
+  font-size: 1.25rem;
+  color: #F1A341 !important;
+  text-decoration: underline;
+  margin-bottom: 0;
+}
+.article_content .title_article_groupe .article_data .date {
+  margin-bottom: 0;
+}
+.article_content .img_article img {
+  width: 100%;
+}
+.article_content .content {
+  border-bottom: solid 2px #0455C0;
+}
+
+.article_comment .accordion .title-accordion {
+  font-family: "Expletus Sans", cursive;
+  color: #F1A341 !important;
+  text-decoration: underline;
+}
+.article_comment .accordion .title-accordion .accordion-button {
+  color: #F1A341;
+  font-size: 1.5rem;
+}
+.article_comment .comment-list .comment .card {
+  border: none;
+}
+.article_comment .comment-list .comment .card .card-body .card-title .author {
+  font-family: "Expletus Sans", cursive;
+  color: #BE3636 !important;
+  text-decoration: underline;
+}
+.article_comment .comment-list .comment .card .card-body .card-text {
+  background-color: #DCEDF5;
+  border-radius: 1rem;
+}
+
+.breadcrum {
+  margin-top: -2rem;
+}
+
+.widget h4, .widget .h4 {
+  font-family: "Expletus Sans", cursive;
+  text-decoration: underline;
+  font-size: 1.5rem;
+  color: #F1A341;
+}
+.widget .btn-font {
+  font-family: "Titillium Web", sans-serif !important;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+.widget .btn-font:hover {
+  background-color: #F1A341 !important;
+  border-color: #F1A341 !important;
+  color: #FFF;
+}
+.widget .btn-font:hover {
+  color: #FFFFFF;
+  background-color: #F1A341;
+  border-color: #F1A341;
+}
+.widget .widget_article {
   max-width: 100%;
 }
+.widget .widget_article h5, .widget .widget_article .h5 {
+  font-family: "Expletus Sans", cursive;
+  font-size: 1.5rem;
+  color: #0455C0;
+}
+.widget .widget_article .widget_article_img {
+  width: 10rem;
+  height: 7.5rem;
+}
+.widget .widget_article .widget_article_img img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.widget .widget_link {
+  font-family: "Titillium Web", sans-serif !important;
+  color: #1D2226;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.widget .widget_link:hover {
+  color: #BE3636;
+}
+.widget .widget_register {
+  background-color: #DCEDF5;
+  border-radius: 2rem;
+}
+
 .contact_list .contact_list_item {
-  background-color: #F1A341;
+  background-color: #DCEDF5;
   border-radius: 0.5rem;
   padding: 0.75rem 1.5rem;
   margin: 1.5rem;
@@ -271,6 +375,10 @@ a {
 }
 .contact_list .contact_list_item a svg {
   margin-right: 1rem;
+}
+
+.logo img {
+  max-width: 75%;
 }
 
 .maps {
@@ -285,6 +393,20 @@ a {
 .contact_widgets {
   border-left: solid 1px #F1A341;
   margin-bottom: 2rem;
+}
+
+.contact .form-label {
+  font-family: "Titillium Web", sans-serif;
+  font-weight: 600;
+}
+.contact .form-control {
+  border-color: #0455C0;
+}
+
+.articles_list .article .article_list_img img {
+  width: 100%;
+  object-fit: cover;
+  max-height: 10rem;
 }
 
 .security {

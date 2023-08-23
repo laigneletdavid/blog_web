@@ -4,68 +4,42 @@
 
 {% block body %}
 
-<div class="top_page">
-    <div class="img_top">
-        <img src="{{ asset('images/exemple/img-1920-600.png') }}" alt="{{ title_page }}"/>
-    </div>
-    <div class="container title_page mt-5">
-        <div class="title_page_groupe d-flex flex-column justify-content-between">
-            <div class="title">
-                <h1>{{ title_page }}</h1>
-                <h2>{{ text_page }}</h2>
-            </div>
-            <div class="breadcrum">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
 
-</div>
 <div class="container">
+    <div class="breadcrum">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
+            </ol>
+        </nav>
+    </div>
     <div class="team">
-        <div class="d-flex flex-row row mt-5 mb-5">
-            <div class="col-6 team_img rounded-circle">
-                <img src="{{ asset('images/exemple/img-500.png') }}" alt="" class="counter_img rounded-circle">
+        <div class="d-flex flex-row row pt-5 mb-5">
+            <div class="col-4 team_img rounded-circle">
+                <img src="{{ asset('images/profil.jpg') }}" alt="" class="counter_img rounded-circle">
             </div>
-            <div class="col-6 team_text d-flex flex-column justify-content-evenly align-items-center">
-                <h4 class="team_name">Nom team</h4>
-                <p class="team_text fst-italic">Ceci est mon texte de présentation. Je dois me présenter rapidement sans een décrivant pourquoi je participe a ses projet.</p>
-            </div>
-        </div>
-        <div class="d-flex flex-row row pt-3 pb-3 team_counter justify-content-evenly">
-            <div class="counter col-2 d-flex flex-column align-items-center">
-                <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
-                <h5 class="counter_title">Counter</h5>
-                <span class="counter">255</span>
-            </div>
-            <div class="counter col-2 d-flex flex-column align-items-center">
-                <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
-                <h5 class="counter_title">Counter</h5>
-                <span class="counter">255</span>
-            </div>
-            <div class="counter col-2 d-flex flex-column align-items-center">
-                <img src="{{ asset('images/exemple/img-200.png') }}" alt="" class="counter_img">
-                <h5 class="counter_title">Counter</h5>
-                <span class="counter">255</span>
+            <div class="col-8 team_text d-flex flex-column justify-content-evenly align-items-center">
+                <h4 class="team_name">David Laignelet</h4>
+                <div class="team_text fst-italic">
+                    <p>C'est sur le tard que je me suis mis à la programmation, mais une fois commencé je n'ai pas réussi à m'arréter !</p>
+                    <p>Fort d'une expérience de plus de 15 ans dans le commerce, le management et le web, j'ai créé Blog & Web pour faciliter l'accès à internet aux entreprises et particuliers qui souhaitent une expérience facile et accessible.</p>
+                    <p>Blog & Web est un outil à taille humaine proche de vous.</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="contact">
         <div class="row">
             <div class="col-8 p-5 contact_form">
-                <h2>{{ title_page }}</h2>
+                <h2 class="title-one">{{ title_page }}</h2>
                 <form action="#">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nom</label>
                         <input type="text" class="form-control" id="name">
                     </div>
                     <div class="mb-3">
-                        <label for="firstname" class="form-label">Préom</label>
+                        <label for="firstname" class="form-label">Prénom</label>
                         <input type="text" class="form-control" id="firstname">
                     </div>
                     <div class="mb-3">
@@ -78,16 +52,17 @@
                     </div>
                     <div class="mb-3">
                         <label for="message" class="form-label">Votre message</label>
-                        <textarea class="form-control" placeholder="Votre massage ..." id="message" style="height: 100px"></textarea>
+                        <textarea class="form-control" placeholder="Votre message ..." id="message" style="height: 100px"></textarea>
                     </div>
                     <button class="btn btn-primary" type="submit">Envoyer</button>
                 </form>
             </div>
             <div class="col-4 contact_widgets">
+                <div class="logo d-flex flex-column align-items-center">
+                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo"/>
+                </div>
                 <ul class="contact_list position-sticky">
-                    <li class="logo list-unstyled">
-                        <img src="{{ asset('images/logo_long.png') }}" alt="votre-logo"/>
-                    </li>
+
                     <li class="contact_list_item list-unstyled">
                         <a href="tel:+33622283754">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-outbound" viewBox="0 0 16 16">

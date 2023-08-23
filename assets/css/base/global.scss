@@ -13,23 +13,6 @@ a {
   }
 }
 
-.top_page {
-  height: 23.1245em;
-
-  .img_top {
-    width: 100%;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    z-index: -1;
-    max-height: 43.6em;
-
-    img {
-      width: 100%;
-    }
-  }
-}
-
 .title-one {
   @include title-one;
 }
@@ -37,21 +20,34 @@ a {
   @include title-two;
 }
 
+.btn-font {
+  @include btn-font;
+
+  &:hover{
+    color: #FFFFFF;
+  }
+}
+
 .dropdown-menu {
   border-color: $primary;
 
   .dropdown-item {
     font-family: 'Titillium Web', sans-serif;
-    color: $bw-red;
-    font-size: 1.25rem;
+    color: $bw-gray-dark;
+    font-size: 1.2rem;
     font-weight: 500;
+
     &:hover {
-      font-weight: 700;
-      text-decoration: underline;
       color: $bw-red;
     }
   }
 }
+
+.breadcrum {
+  border-bottom: solid 1px $primary;
+}
+
+
 
 
 

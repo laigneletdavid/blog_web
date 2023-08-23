@@ -29,7 +29,7 @@ class HomeController extends AbstractController
     public function contact(): Response
     {
         return $this->render('home/contact.html.twig', [
-            'title_page' => 'Contact',
+            'title_page' => 'Formulaire de contact',
             'text_page' => 'Envoyez-moi un message',
         ]);
     }
