@@ -21,15 +21,15 @@
             <h2 class="title-two">{{ text_page }}</h2>
         </div>
     </div>
-    <div class="row flex-row">
-         <div class="col-8">
+    <div class="d-flex flex-lg-row flex-column">
+         <div class="col-lg-8">
              <div class="container container-page mt-3">
                  <div class="d-flex flex-column m-2">
                      <div class="content_page">{{ page.content|raw }}</div>
                  </div>
              </div>
          </div>
-        <div class="col-4">
+        <div class="col-lg-4">
             <div class="widget d-flex flex-column position-sticky pt-3" style="top: 1rem;">
                 {% include 'widgets/subscribe.html.twig' %}
                 {% include 'widgets/caterogires.html.twig' %}

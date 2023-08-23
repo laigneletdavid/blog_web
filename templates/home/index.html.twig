@@ -4,8 +4,7 @@
 
 {% block body %}
 
-
-<div class="container top_home d-flex flex-row mb-5">
+<div class="container top_home d-flex flex-lg-row flex-column-reverse mb-5">
     <div class="container title_page mt-5 d-flex flex-column justify-content-evenly">
         <h1 class="title-one">{{ title_page }}</h1>
         <h2 class="title-two mb-5">{{ text_page }}</h2>
@@ -18,11 +17,10 @@
     </div>
 </div>
 
-
 <div class="headband mb-5">
     <div class="container">
-        <div class="row d-flex flex-row hstack gap-3 justify-content-between pt-5 pb-3">
-            <div class="card col-md-2 pb-5">
+        <div class="row d-flex flex-lg-row flex-column hstack gap-lg-3 justify-content-lg-between pb-lg-3 p-2" >
+            <div class="card col-md-2 mt-5 d-flex flex-column align-items-center">
                 <img src="{{ asset('images/b&w-ico-blog.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
                     <h5 class="card-title"><a class="btn-head btn btn-primary" data-bs-toggle="collapse" href="#collapseBlog" role="button" aria-expanded="false" aria-controls="collapseBlog">Bloguez en liberté</a></h5>
@@ -33,8 +31,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card col-md-2 pt-5">
+            <div class="card col-md-2 mb-lg-5 d-flex flex-column align-items-center">
                 <img src="{{ asset('images/b&w-ico-page.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
                     <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapsePage" role="button" aria-expanded="false" aria-controls="collapseBlog">Gérez vos pages</a></h5>
@@ -45,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card col-md-2 pb-5">
+            <div class="card col-md-2 mt-lg-5 d-flex flex-column align-items-center">
                 <img src="{{ asset('images/b&w-ico-stat.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
                     <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapseMenu" role="button" aria-expanded="false" aria-controls="collapseBlog">Créez votre menu</a></h5>
@@ -56,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card col-md-2 pt-5">
+            <div class="card col-md-2 mb-lg-5 d-flex flex-column align-items-center">
                 <img src="{{ asset('images/b&w-ico-post.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
                     <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false" aria-controls="collapseBlog">Aide & Assistance</a></h5>
@@ -67,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card col-md-2 pb-5">
+            <div class="card col-md-2 mt-lg-5 d-flex flex-column align-items-center">
                 <img src="{{ asset('images/b&w-ico-contact.png') }}" class="card-img-top round" alt="{{ title_page }}">
                 <div class="card-body">
                     <h5 class="card-title"><a class="btn-head btn btn-primary"  data-bs-toggle="collapse" href="#collapseContact" role="button" aria-expanded="false" aria-controls="collapseBlog">Restez en contact</a></h5>
@@ -83,17 +80,17 @@
 </div>
 
 <div class="container articles">
-    <div class="row mb-5">
+    <div class="row mb-0 mb-lg-5">
         {% include 'article/article_liste.html.twig' with { articles } %}
     </div>
 </div>
 
 <div class="container team">
-    <div class="d-flex flex-row row pt-5 mb-5">
-        <div class="col-4 team_img rounded-circle">
+    <div class="d-flex flex-column flex-lg-row row-lg pt-2 mb-5">
+        <div class="col-12 col-lg-4 team_img rounded-circle d-flex align-items-center mb-4 mb-lg-0">
             <img src="{{ asset('images/profil.jpg') }}" alt="" class="counter_img rounded-circle">
         </div>
-        <div class="col-8 team_text d-flex flex-column justify-content-evenly align-items-center">
+        <div class="co-12 col-lg-8 team_text d-flex flex-column justify-content-evenly align-items-center">
             <h4 class="team_name">David Laignelet</h4>
             <div class="team_text fst-italic">
                 <p>C'est sur le tard que je me suis mis à la programmation, mais une fois commencé je n'ai pas réussi à m'arréter !</p>

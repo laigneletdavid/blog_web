@@ -1,5 +1,9 @@
 .contact_list {
+  @media (max-width: 991.98px) {
+    padding: 0;
+  }
   .contact_list_item {
+
     background-color: $bw-blue-light;
     border-radius: 0.5rem;
     padding: 0.75rem 1.5rem;
@@ -20,6 +24,10 @@
   }
 }
 .maps {
+  @media (max-width: 991.98px) {
+    padding: 0;
+    margin:1.5rem;
+  }
   max-width: 100%;
   padding-left: 2rem;
   margin:1.5rem;
@@ -30,6 +38,9 @@
 }
 
 .contact_widgets {
+  @media (max-width: 991.98px) {
+    border-left: none;
+  }
   border-left: solid 1px $secondary;
   margin-bottom: 2rem;
 }

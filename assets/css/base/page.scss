@@ -13,6 +13,11 @@
     }
   }
   .title {
+    @media (max-width: 991.98px) {
+      position: relative;
+      top: -6rem;
+      left: 1rem;
+    }
     position: relative;
     top: -10rem;
     left: 5rem;

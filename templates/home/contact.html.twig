@@ -15,11 +15,11 @@
         </nav>
     </div>
     <div class="team">
-        <div class="d-flex flex-row row pt-5 mb-5">
-            <div class="col-4 team_img rounded-circle">
+        <div class="d-flex flex-column flex-lg-row row pt-5 mb-5">
+            <div class="col-lg-4 team_img rounded-circle  d-flex align-items-center mb-4 mb-lg-0">
                 <img src="{{ asset('images/profil.jpg') }}" alt="" class="counter_img rounded-circle">
             </div>
-            <div class="col-8 team_text d-flex flex-column justify-content-evenly align-items-center">
+            <div class="col-lg-8 team_text d-flex flex-column justify-content-evenly align-items-center">
                 <h4 class="team_name">David Laignelet</h4>
                 <div class="team_text fst-italic">
                     <p>C'est sur le tard que je me suis mis à la programmation, mais une fois commencé je n'ai pas réussi à m'arréter !</p>
@@ -30,8 +30,8 @@
         </div>
     </div>
     <div class="contact">
-        <div class="row">
-            <div class="col-8 p-5 contact_form">
+        <div class="d-flex flex-column-reverse flex-lg-row">
+            <div class="col-lg-8 p-5 contact_form">
                 <h2 class="title-one">{{ title_page }}</h2>
                 <form action="#">
                     <div class="mb-3">
@@ -54,10 +54,10 @@
                         <label for="message" class="form-label">Votre message</label>
                         <textarea class="form-control" placeholder="Votre message ..." id="message" style="height: 100px"></textarea>
                     </div>
-                    <button class="btn btn-primary" type="submit">Envoyer</button>
+                    <button class="btn-font btn btn-primary" type="submit">Envoyer</button>
                 </form>
             </div>
-            <div class="col-4 contact_widgets">
+            <div class="col-lg-4 contact_widgets">
                 <div class="logo d-flex flex-column align-items-center">
                     <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo"/>
                 </div>

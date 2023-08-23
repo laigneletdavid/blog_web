@@ -40,6 +40,7 @@ class UserType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'label' => 'Recevez une notification pour les nouveau articles'
+
             ])
         ;
     }

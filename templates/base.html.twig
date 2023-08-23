@@ -25,7 +25,7 @@
     </head>
     <body>
 
-        <div class="header mb-5">
+        <div class="header mb-lg-5 mb-3">
             <div class="desk">
                 {% if is_granted('ROLE_CORRECTOR') %}
                 <div class="header-admin bg-dark ps-5">
@@ -128,32 +128,43 @@
                     </div>
                 </div>
             </div>
-            <div class="smart">
+            <div class="smart pb-3">
                 <nav class="navbar">
                     <div class="container-fluid header_cont ms-3 me-3">
                         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
+                            <span class="navbar-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                                </svg>
+                            </span>
                         </button>
                         <a href="{{ path('app_home') }}">
-                                <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo" class="smart_header_logo"/>
-                            </a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#" aria-controls="o" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
+                            <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo" class="smart_header_logo"/>
+                        </a>
 
                         <div class="offcanvas offcanvas-start" tabindex="+1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                             <div class="offcanvas-header">
-                                <img src="{{ asset('images/logo_long.png') }}" alt="Feet Trip" style="max-width: 80%;">
+                                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web">
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">
+                                <div class="header_search dropdown" data-controller="search">
+                                    <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
+                                        <input type="search" name="q" class="search form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
+                                        <button class="btn-font btn btn-outline-primary shadow-sm ms-2" type="submit">Chercher</button>
+                                    </form>
+                                    <div class="dropdown-menu" data-search-target="results">
+                                        <a class="dropdown-item" href="#">Contenu</a>
+                                    </div><!-- c'est ma div qui va gérer l'affichage de la recherche en Dropdown -->
+                                </div>
+
                                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 mb-5">
                                     <li class="nav-item p-2"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
 
                                     {% for menu in menus %}
                                         {% set sub_menus = menu.getSubMenu() %}
                                         {% if sub_menus.count > 0 %}
-                                            <div class="dropdown">
+                                            <div class="dropdown p-2">
                                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                     {{ menu.name }}
                                                 </a>
@@ -172,18 +183,20 @@
 
                                 </ul>
 
+
+
                                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                     <div class="text-end d-flex flex-column justify-content-evenly align-items-center">
                                         <p>Bonjour {{ app.user.email }} !</p>
                                         <div class="d-flex flex-row">
-                                            <a href="{{ path('app_user_show', {'id': app.user.id}) }}" type="button" class="btn btn-primary me-2 qa_up text-light">Mon profil</a>
-                                            <a href="{{ path('app_logout') }}" type="button" class="btn btn-outline-warning me-2 qa_up">Se déconnecter</a>
+                                            <a href="{{ path('app_user_show', {'id': app.user.id}) }}" type="button" class="btn-font btn btn-primary me-2 qa_up text-light">Mon profil</a>
+                                            <a href="{{ path('app_logout') }}" type="button" class="btn-font btn btn-outline-warning me-2 qa_up">Se déconnecter</a>
                                         </div>
                                     </div>
                                 {% else %}
-                                    <div class="d-flex flex-row">
-                                        <a href="{{ path('app_login') }}" type="button" class="btn btn-primary me-2 qa_up text-light">Se connecter</a>
-                                        <a href="{{ path('app_register') }}" type="button" class="btn btn-outline-secondary qa_up">Créer un compte</a>
+                                    <div class="d-flex flex-column">
+                                        <a href="{{ path('app_login') }}" type="button" class="btn-font btn btn-primary mb-3 qa_up text-light">Se connecter</a>
+                                        <a href="{{ path('app_register') }}" type="button" class="btn-font btn btn-outline-secondary qa_up">Créer un compte</a>
                                     </div>
                                 {% endif %}
 
@@ -210,8 +223,8 @@
 
         <div class="footer">
             <div class="container pt-5 pb-3">
-                <div class="footer_info row d-flex flex-row">
-                    <div class="footer_logo col-4 mb-5">
+                <div class="footer_info row d-flex flex-column flex-lg-row align-items-center">
+                    <div class="footer_logo col-lg-4 mb-5">
                         <div class="footer_mentions d-flex flex-column align-items-center">
                             <a href="{{ path('app_home') }}">
                                 <img class="footer_logo" src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
@@ -219,9 +232,9 @@
                             <span class="mentions">© Tous droits réservés {% block title_page %}Blog&Web{% endblock %}</span>
                         </div>
                     </div>
-                    <div class="footer_contact d-flex flex-column col-4 mb-5 ps-5">
+                    <div class="footer_contact d-flex flex-column col-lg-4 mb-5 ps-lg-5 align-items-center align-content-lg-start">
                         <span class="footer_section mb-3">Service client</span>
-                        <ul class="nav flex-column">
+                        <ul class="nav flex-column align-items-center align-content-lg-start">
                             <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Contact</a></li>
                             <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Aide & assistance</a></li>
                             <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Mentions légales</a></li>
@@ -229,7 +242,7 @@
                         </ul>
                     </div>
 
-                    <div class="footer_search  d-flex flex-column justify-content-evenly align-items-center col-4 mb-5">
+                    <div class="footer_search  d-flex flex-column justify-content-evenly align-items-center col-lg-4 mb-5">
                         <div class="footer_search dropdown" data-controller="search">
                             <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
                                 <input type="search" name="q" class="form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">

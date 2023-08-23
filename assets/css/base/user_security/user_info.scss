@@ -1,4 +1,9 @@
 .user_infos {
+  @media (max-width: 991.98px) {
+    width: 90%;
+    padding: 1rem;
+    margin: auto;
+  }
   width: 75%;
   border: solid 1px $primary;
   margin: auto;
@@ -7,5 +12,15 @@
 
   .btn-font {
     @include btn-font;
+  }
+  .table {
+    @media (max-width: 991.98px) {
+      max-width: 100%;
+      font-size: 0.8rem;
+    }
+  }
+  .form-label, .col-form-label {
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 600;
   }
 }

@@ -16,8 +16,8 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col-4">
+        <div class="d-flex flex-column-reverse flex-lg-row">
+            <div class="col-lg-4">
                 <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
                     {% include 'widgets/subscribe.html.twig' %}
                     {% include 'widgets/caterogires.html.twig' %}
@@ -25,15 +25,15 @@
                     {% include 'widgets/archives.html.twig' %}
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-lg-8">
 
                 <artcle class="article_content d-flex flex-column ps-2">
-                    <div class="title_article_groupe d-flex flex-row justify-content-between mb-5">
+                    <div class="title_article_groupe d-flex flex-column flex-lg-row justify-content-between mb-lg-5 mb-3">
                         <div class="article_title d-flex flex-column">
                             <h1 class="title-one">{{ article.title }}</h1>
                             <h2 class="title-two">{{ article.featuredText }}</h2>
                         </div>
-                        <div class="article_data d-flex flex-column justify-content-between align-items-end">
+                        <div class="article_data d-flex flex-row flex-lg-column justify-content-between align-items-lg-end mt-3 mt-lg-0">
                             {% for cat in article.categories %}
                                 <strong class="d-inline-block ms-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
                             {% endfor %}

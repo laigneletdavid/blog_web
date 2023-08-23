@@ -1,7 +1,12 @@
 .articles_list {
   .article {
-    .article_list_img {
+    .article_list_large_img {
       img {
+        @media (max-width: 991.98px) {
+          max-width: 100%;
+          object-fit: cover;
+          max-height: 15rem;
+        }
         width: 100%;
         object-fit: cover;
         max-height: 10rem;

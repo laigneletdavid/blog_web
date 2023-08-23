@@ -1,14 +1,14 @@
 {% for article in articles %}
 
 <article class="col-12 article mb-5">
-    <div class="row">
-        <div class="col-4 article_list_img" >
+    <div class="d-flex flex-lg-row flex-column">
+        <div class="col-lg-4 article_list_large_img" >
             {% if article.featuredMedia %}
                 <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
             {% else %}
             {% endif %}
         </div>
-        <div class="col-8 article_block d-flex flex-column justify-content-evenly">
+        <div class="col-lg-8 ps-lg-3 article_block d-flex flex-column justify-content-evenly">
             <div class="d-flex flex-row justify-content-between align-items-center">
                 <h2 class="title-two">{{ article.title }}</h2>
                 <span>{{ article.createdAt|date('d M Y') }}</span>

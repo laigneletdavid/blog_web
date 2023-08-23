@@ -4,12 +4,13 @@
 
 {% block body %}
     <div class="container">
-        <h1>Modifier les données de mon compte</h1>
+        <div class="user_infos">
+            <h1 class="title-one">Modifier les données de mon compte</h1>
 
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button class="btn btn-primary mb-5 mt-3">{{ button_label|default('Sauvegarder') }}</button>
-        {{ form_end(form) }}
-
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button class="btn-font btn btn-primary mb-5 mt-3">{{ button_label|default('Sauvegarder') }}</button>
+            {{ form_end(form) }}
         </div>
+    </div>
 {% endblock %}
