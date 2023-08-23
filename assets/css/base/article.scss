@@ -1,0 +1,70 @@
+.article_content {
+
+  .title_article_groupe {
+    .article_title{
+      .title-one {
+        @include title-one;
+      }
+      .title-two {
+        @include title-two;
+        margin-bottom: 0;
+      }
+    }
+    .article_data {
+      .date {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .img_article {
+    img{
+      width: 100%;
+    }
+  }
+
+  .content {
+    border-bottom: solid 2px $primary;
+  }
+
+}
+
+.article_comment {
+  .accordion {
+    .title-accordion {
+      font-family: 'Expletus Sans', cursive;
+      color: $bw-orange !important;
+      text-decoration: underline;
+
+      .accordion-button {
+        color: $bw-orange;
+        font-size: 1.5rem;
+      }
+    }
+  }
+  .comment-list {
+    .comment {
+      .card {
+        border: none;
+
+        .card-body {
+          .card-title {
+            .author {
+              font-family: 'Expletus Sans', cursive;
+              color: $bw-red !important;
+              text-decoration: underline;
+            }
+          }
+          .card-text {
+            background-color: $bw-blue-light;
+            border-radius: 1rem;
+          }
+        }
+      }
+    }
+
+  }
+}
+.breadcrum {
+  margin-top: -2rem;
+}

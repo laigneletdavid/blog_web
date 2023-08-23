@@ -4,6 +4,17 @@
 
 {% block body %}
     <div class="container">
+        <div class="breadcrum mb-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Catégorie - {{ categorie.name }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
         <div class="row">
             <div class="col-4">
                 <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
@@ -13,10 +24,10 @@
                     {% include 'widgets/archives.html.twig' %}
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-8 ps-2">
                 <div class="articles_list d-flex flex-column">
 
-                    <h3 class="pb-4 mb-4 fst-italic border-bottom border-secondary border-1">{{ categorie.name }}</h3>
+                    <h3 class="title-one pb-3">{{ categorie.name }}</h3>
 
                     {% include 'article/article_liste_large.html.twig' with { articles: categorie.articles } %}
 

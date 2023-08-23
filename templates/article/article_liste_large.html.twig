@@ -1,26 +1,23 @@
 {% for article in articles %}
 
 <article class="col-12 article mb-5">
-    <a href="{{ path('app_article_show', { 'slug': article.slug}) }}">
-        <div class="row">
-
-            <div class="col-6 article_block">
-                <h2>{{ article.title }}</h2>
-                <p>{{ article.createdAt|date('d M Y') }}</p>
-                {{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}
-            </div>
-            <div class="col-6 article_block_img" >
-                {% if article.featuredMedia.fileName is defined %}
-                    <div class="img-back" style="background-image: url({{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}); display: block"><span></span></div>
-                {% else %}
-
-                {% endif %}
-
-
-            </div>
-
+    <div class="row">
+        <div class="col-4 article_list_img" >
+            {% if article.featuredMedia %}
+                <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
+            {% else %}
+            {% endif %}
         </div>
-    </a>
+        <div class="col-8 article_block d-flex flex-column justify-content-evenly">
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <h2 class="title-two">{{ article.title }}</h2>
+                <span>{{ article.createdAt|date('d M Y') }}</span>
+            </div>
+            <div>{{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}</div>
+            <a class="btn-font btn btn-primary btn-sm" href="{{ path('app_article_show', { 'slug': article.slug}) }}">En savoir +</a>
+        </div>
+
+    </div>
 </article>
 
 {% endfor %}
