@@ -41,3 +41,15 @@ $bw-gray-light : #DFDEDE;
     color: #FFF !important;
   }
 }
+
+@mixin btn-font-secondary {
+  font-family: 'Titillium Web', sans-serif !important;
+  text-transform: uppercase;
+  color: #FFF !important;
+
+  &:hover {
+    background-color: $bw-blue !important;
+    border-color: $bw-blue !important;
+    color: #FFF !important;
+  }
+}

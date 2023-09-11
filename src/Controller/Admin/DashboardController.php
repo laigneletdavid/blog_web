@@ -12,6 +12,8 @@ use App\Entity\Site;
 use App\Entity\User;
 use App\Repository\SiteRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -36,26 +38,21 @@ class DashboardController extends AbstractDashboardController
         $site = $this->siteRepository->find('1');
 
         return $this->render('admin/dashboard.html.twig', [
-            'title_admin' => 'Bienvenue sur votre espace d\'administration',
+            'title_admin' => $site->getName(),
             'site' => $site,
         ]);
-
     }
 
     public function configureDashboard(): Dashboard
     {
-        $site = null;
-        $site = $this->siteRepository->find('1');
-        if ($site !== null) {
-            $site_name = $this->siteRepository->find('1')->getName();
-        }
-        else {
-            $site_name = 'Administration';
-        }
+        $site_name = 'Blog & Web';
 
         return Dashboard::new()
-            ->setTitle($site_name)
-            ->setLocales(['fr']);
+            //Impossible de charger l'image peut-être car on est en local!
+            ->setTitle('<img src="public/images/BlogWebbeta.svg" alt="Blog & Web"/>')
+            ->setLocales(['fr'])
+            ->setFaviconPath('images/favicon-16x16.png')
+            ->disableDarkMode();
     }
 
     public function configureMenuItems(): iterable
@@ -157,6 +154,12 @@ class DashboardController extends AbstractDashboardController
             ->setAction(Action::INDEX)
             ->generateUrl();
 
+    }
+
+    public function configureAssets(): Assets
+    {
+        return parent::configureAssets()
+            ->addCssFile('build/app.css');
     }
 
 }

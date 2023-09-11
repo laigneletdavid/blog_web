@@ -268,6 +268,20 @@ a {
   color: #FFFFFF;
 }
 
+.btn-font-secondary {
+  font-family: "Titillium Web", sans-serif !important;
+  text-transform: uppercase;
+  color: #FFF !important;
+}
+.btn-font-secondary:hover {
+  background-color: #0455C0 !important;
+  border-color: #0455C0 !important;
+  color: #FFF !important;
+}
+.btn-font-secondary:hover {
+  color: #FFFFFF;
+}
+
 .dropdown-menu {
   border-color: #0455C0;
 }
@@ -566,6 +580,81 @@ a {
 }
 .offcanvas-body form {
   margin-bottom: 0;
+}
+
+.ea a {
+  text-decoration: none;
+}
+.ea .sidebar {
+  background-color: #DCEDF5 !important;
+}
+.ea .sidebar .logo-custom {
+  font-family: "Expletus Sans", cursive;
+  font-size: 1.5rem;
+  color: #0455C0;
+}
+.ea .sidebar .menu .menu-header-contents {
+  font-size: 1.2rem;
+}
+.ea .sidebar .menu .menu-header-contents .menu-item-label {
+  font-family: "Expletus Sans", cursive;
+  color: #0455C0;
+}
+.ea .sidebar .menu .menu-item-contents {
+  padding-left: 1rem !important;
+}
+.ea .sidebar .menu .menu-item-contents .menu-icon {
+  color: #0455C0 !important;
+}
+.ea .sidebar .menu .menu-item-contents .menu-item-label {
+  font-family: "Titillium Web", sans-serif;
+  color: #0455C0;
+}
+.ea .sidebar .menu .menu-item-contents .submenu-toggle-icon {
+  color: #0455C0 !important;
+}
+.ea .content-top {
+  background-color: #DCEDF5;
+}
+.ea .content-top .navbar-custom-menu .user-name {
+  color: #0455C0 !important;
+}
+.ea .content-top .dropdown-settings .dropdown-settings-button i {
+  color: #0455C0 !important;
+}
+.ea .content-wrapper .title_admin {
+  font-family: "Expletus Sans", cursive;
+  font-size: 1.5rem;
+}
+.ea .content-wrapper .feature {
+  background-color: #DFDEDE;
+  border-radius: 0 1.5rem 1.5rem 1.5rem;
+  padding: 1rem;
+  height: 18rem;
+}
+@media (max-width: 991.98px) {
+  .ea .content-wrapper .feature {
+    margin: 2rem 1rem;
+  }
+}
+.ea .content-wrapper .feature .feature-icon i {
+  color: #0455C0 !important;
+}
+.ea .content-wrapper .feature .feature-title {
+  font-family: "Expletus Sans", cursive;
+  font-size: 2.5rem;
+  color: #0455C0;
+}
+.ea .content-wrapper .content-dashboard .content-help .content-color {
+  background-color: #81A9DF;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  color: #FFF;
+  text-align: center;
+}
+.ea .content-wrapper .content-dashboard .content-help .content-color .help-title {
+  font-family: "Expletus Sans", cursive;
+  font-size: 1.5rem;
 }
 
 /*!

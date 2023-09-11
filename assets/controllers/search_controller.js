@@ -39,7 +39,7 @@ export default class extends Controller {
         }
     }
 
-    dosSearch() {
+    dosSearchdetail() {
         if (this.hasFormTarget && this.hasQTarget && this.hasResultsTarget) {
             this.resultsTarget.innerHTML = ''; //je vide le contenu du résultat
 

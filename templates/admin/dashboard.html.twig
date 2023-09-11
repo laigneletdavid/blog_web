@@ -13,61 +13,69 @@
     .setAction('index') %}
 
 
-{% block content_title %}{{ title_admin }}{% endblock %}
+{% block content_title %}
+    <h1 class="title_admin">{{ title_admin }}</h1>
+{% endblock %}
 {% block page_actions %}
-    <a class="btn btn-primary" href="...">Some Action</a>
+   {# <a class="btn btn-primary" href="...">Some Action</a> #}
 {% endblock %}
 
 {% block main %}
 
 
-    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-        {% if is_granted('ROLE_COORECTEUR') %}
-        <div class="feature col">
-            <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                <i class="fa-fw fas fa-gear"></i>
-                <h3 class="fs-2">Réglage de votre site</h3>
-            </div>
+    <div class="row g-4 pb-5 pt-3 row-cols-1 row-cols-lg-3">
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="col-12 col-lg-4">
+                <div class="feature d-flex flex-column justify-content-between">
+                    <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
+                        <i class="fa-fw fas fa-gear"></i>
+                        <h3 class="fs-2 ps-1 feature-title">Réglage de votre site</h3>
+                    </div>
 
-            <p>Ce sont les informations de base de votre site web et de votre identité. Remplissez les consciencieusement, ce sont avec ces informations que les visiteurs vous trouveront et vous contacteront.</p>
-            <a href="{{ url_site }}" class="btn btn-primary" target="_self" rel="" referrerpolicy="origin-when-cross-origin">Entrer les informations</a>
-        </div>
+                    <p>Ce sont les informations de base de votre site web et de votre identité. Remplissez les consciencieusement, ce sont avec ces informations que les visiteurs vous trouveront et vous contacteront.</p>
+                    <a href="{{ url_site }}" class="btn-font-secondary btn btn-secondary" target="_self">Entrer les informations</a>
+                </div>
+            </div>
         {% endif %}
-        <div class="feature col">
-            <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                <i class="fa-fw fas fa-file"></i>
-                <h3 class="fs-2">Vos pages</h3>
-            </div>
+        <div class="col-12 col-lg-4">
+            <div class="feature d-flex flex-column justify-content-between">
+                <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
+                    <i class="fa-fw fas fa-file"></i>
+                    <h3 class="fs-2 ps-1 feature-title">Vos pages</h3>
+                </div>
 
-            <p>Les pages de votre site web sont la base de la navigation et la source principale d'information pour les visiteurs de votre site web. Réfléchissez bien aux messages que vous souhaitez faire passer !</p>
-            <a href="{{ url_page }}" class="btn btn-primary" target="_self" rel="" referrerpolicy="origin-when-cross-origin">Voir les pages</a>
+                <p>Les pages de votre site web sont la base de la navigation et la source principale d'information pour les visiteurs de votre site web. Réfléchissez bien aux messages que vous souhaitez faire passer !</p>
+                <a href="{{ url_page }}" class="btn-font-secondary btn btn-secondary" target="_self">Voir les pages</a>
+            </div>
         </div>
-        <div class="feature col">
-            <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                <i class="menu-icon fa-fw fas fa-newspaper"></i>
-                <h3 class="fs-2">Votre blog</h3>
-            </div>
+        <div class="col-12 col-lg-4">
+            <div class="feature d-flex flex-column justify-content-between">
+                <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
+                    <i class="menu-icon fa-fw fas fa-newspaper"></i>
+                    <h3 class="fs-2 ps-1 feature-title ">Votre blog</h3>
+                </div>
 
-            <p>Un blog est une source permanante d'information pour vos visiteurs, mais également pour le référencement de votre site. Un blog bien tenu et régulièrement alimenté, permet d'augmenter les visites et le référencement naturel de votre site.</p>
-            <a href="{{ url_blog }}" class="btn btn-primary" target="_self" rel="" referrerpolicy="origin-when-cross-origin">Voir les articles</a>
+                <p>Un blog est une source permanante d'information pour vos visiteurs, mais également pour le référencement de votre site. Un blog bien tenu et régulièrement alimenté, permet d'augmenter les visites et le référencement naturel de votre site.</p>
+                <a href="{{ url_blog }}" class="btn-font-secondary btn btn-secondary" target="_self">Voir les articles</a>
+            </div>
         </div>
     </div>
 
+    <div class="row content-dashboard d-flex flex-column flex-lg-row">
 
-    <p>Voici ma page d'administration à configurer selon les besoins et avec CharBuilder (à tester), sinon je fais ma page d'accueil admin comme prévu</p>
-    <table class="datagrid">
-        <thead>
-        <tr>
-            <td>Some Column</td>
-            <td>Another Column</td>
-        </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>test</td>
-                <td>test2</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="content-content col-12 col-lg-8">
+            <p>Voici ma page d'administration à configurer selon les besoins, sinon je fais ma page d'accueil admin comme prévu</p>
+        </div>
+        <div class="content-help col-12 col-lg-4 d-flex flex-column">
+            <div class="content-color">
+                <h2 class="help-title">Aide et astuces</h2>
+                <p>On retrouvera ici des astuces sur la création du site, et les base d'un référencement réussi.</p>
+            </div>
+        </div>
+
+    </div>
+
+
+
 
 {% endblock %}

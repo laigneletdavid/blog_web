@@ -28,6 +28,14 @@ a {
   }
 }
 
+.btn-font-secondary {
+  @include btn-font-secondary;
+
+  &:hover{
+    color: #FFFFFF;
+  }
+}
+
 .dropdown-menu {
   border-color: $primary;
 

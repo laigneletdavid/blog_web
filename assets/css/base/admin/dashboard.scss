@@ -1,0 +1,91 @@
+.ea {
+  a {
+    text-decoration: none;
+  }
+  .sidebar {
+    background-color: $bw-blue-light !important;
+    .logo-custom {
+      font-family: 'Expletus Sans', cursive;
+      font-size: 1.5rem;
+      color: $bw-blue;
+    }
+
+    .menu {
+      .menu-header-contents {
+        font-size: 1.2rem;
+        .menu-item-label {
+          font-family: 'Expletus Sans', cursive;
+          color: $bw-blue;
+        }
+      }
+
+      .menu-item-contents {
+        padding-left: 1rem !important;
+        .menu-icon {
+          color: $bw-blue !important;
+        }
+        .menu-item-label {
+          font-family: 'Titillium Web', sans-serif;
+          color: $bw-blue;
+        }
+        .submenu-toggle-icon {
+          color: $bw-blue !important;
+        }
+      }
+    }
+  }
+
+  .content-top {
+    background-color: $bw-blue-light;
+    .navbar-custom-menu {
+      .user-name {
+        color: $bw-blue !important;
+      }
+    }
+    .dropdown-settings {
+      .dropdown-settings-button i {
+        color: $bw-blue !important;
+      }
+    }
+  }
+
+  .content-wrapper {
+    .title_admin {
+      font-family: 'Expletus Sans', cursive;
+      font-size: 1.5rem;
+    }
+    .feature {
+      @media (max-width: 991.98px) {
+        margin: 2rem 1rem;
+      }
+      background-color: $bw-gray-light;
+      border-radius: 0 1.5rem 1.5rem 1.5rem;
+      padding: 1rem;
+      height: 18rem;
+
+      .feature-icon i {
+        color: $bw-blue !important;
+      }
+      .feature-title {
+        @include title-one;
+      }
+    }
+
+    .content-dashboard {
+      .content-help {
+        .content-color {
+          background-color: $bw-blue-back;
+          border-radius: 1.5rem;
+          padding: 1rem;
+          color: #FFF;
+          text-align: center;
+
+          .help-title {
+            font-family: 'Expletus Sans', cursive;
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}
