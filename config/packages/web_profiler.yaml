@@ -15,3 +15,13 @@ when@test:
 
     framework:
         profiler: { collect: false }
+
+when@prod:
+    web_profiler:
+        toolbar: false
+        intercept_redirects: false
+
+    framework:
+        profiler:
+            only_exceptions: false
+            collect_serializer_data: false
