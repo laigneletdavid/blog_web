@@ -1,0 +1,14 @@
+# Prod overrides — use: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  php:
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+    restart: always
+
+  nginx:
+    restart: always
+
+  db:
+    restart: always
+    ports: []

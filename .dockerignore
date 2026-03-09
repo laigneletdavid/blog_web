@@ -1,0 +1,11 @@
+.git
+.idea
+.claude
+node_modules
+var/cache
+var/log
+vendor
+public/build
+*.md
+docker-compose.override.yml
+docker-compose.prod.yml

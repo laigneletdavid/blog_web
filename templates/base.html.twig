@@ -1,5 +1,6 @@
 {% set menus = menu_service.findMenuTwig %}
-{% set widget_article = widget_service.findLastArticle['0'] %}
+{% set widget_articles = widget_service.findLastArticle %}
+{% set widget_article = widget_articles['0'] | default(null) %}
 {% set categories = widget_service.findCategories %}
 
 
