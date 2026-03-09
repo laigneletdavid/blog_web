@@ -20,7 +20,11 @@
       "Bash(docker compose exec php php bin/console doctrine:database:create)",
       "Bash(docker compose exec php php bin/console doctrine:schema:create)",
       "Bash(docker compose exec php composer show symfony/doctrine-messenger)",
-      "Bash(docker compose exec php composer require symfony/brevo-mailer --no-interaction)"
+      "Bash(docker compose exec php composer require symfony/brevo-mailer --no-interaction)",
+      "Bash(docker compose exec php php bin/console list app)",
+      "Bash(docker compose exec php ls -la /var/www/html/var/)",
+      "Bash(docker compose exec php sh -c \"ls -la /var/www/html/var/\")",
+      "Bash(docker compose exec php sh -c \"mkdir -p /var/www/html/var/sessions/dev && php bin/console cache:clear\")"
     ]
   }
 }

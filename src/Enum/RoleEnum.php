@@ -8,6 +8,7 @@ enum RoleEnum:string
     case ROLE_CORRECTOR = 'ROLE_CORRECTOR';
     case ROLE_AUTHOR = 'ROLE_AUTHOR';
     case ROLE_ADMIN = 'ROLE_ADMIN';
+    case ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     public function label()
     {
@@ -16,6 +17,7 @@ enum RoleEnum:string
             self::ROLE_CORRECTOR => 'Correcteur',
             self::ROLE_AUTHOR => 'Auteur',
             self::ROLE_ADMIN => 'Admin',
+            self::ROLE_SUPER_ADMIN => 'Super Admin',
             default => $this->name,
         };
     }

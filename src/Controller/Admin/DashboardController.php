@@ -35,10 +35,10 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $site = $this->siteRepository->find('1');
+        $site = $this->siteRepository->find(1);
 
         return $this->render('admin/dashboard.html.twig', [
-            'title_admin' => $site->getName(),
+            'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
         ]);
     }
