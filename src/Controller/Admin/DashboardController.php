@@ -11,7 +11,6 @@ use App\Entity\Page;
 use App\Entity\Site;
 use App\Entity\User;
 use App\Service\SiteContext;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -19,16 +18,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Routing\Attribute\Route;
 
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private AdminUrlGenerator $adminUrlGenerator,
         private SiteContext $siteContext,
-    )
-    {
+    ) {
     }
 
     #[Route('/admin', name: 'admin')]
@@ -44,10 +41,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        $site_name = 'Blog & Web';
-
         return Dashboard::new()
-            //Impossible de charger l'image peut-être car on est en local!
             ->setTitle('<img src="public/images/BlogWebbeta.svg" alt="Blog & Web"/>')
             ->setLocales(['fr'])
             ->setFaviconPath('images/favicon-16x16.png')
@@ -56,87 +50,41 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-
-        yield MenuItem::section('Navigation');
-
+        // --- Navigation ---
         yield MenuItem::linkToUrl('Tableau de bord', 'fa fa-gauge', $this->generateUrl('admin'));
-        yield MenuItem::linkToUrl('Aller sur le site', 'fa fa-undo', $this->generateUrl('app_home'));
+        yield MenuItem::linkToUrl('Aller sur le site', 'fa fa-external-link-alt', $this->generateUrl('app_home'));
 
-        yield MenuItem::section('Réglages');
+        // --- Contenu ---
+        yield MenuItem::section('Contenu');
 
-        // Identité du site
+        if ($this->isGranted('ROLE_AUTHOR')) {
+            yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
+            yield MenuItem::linkToCrud('Catégories', 'fas fa-list', Categorie::class);
+            yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
+            yield MenuItem::linkToCrud('Médias', 'fas fa-photo-video', Media::class);
+        } elseif ($this->isGranted('ROLE_CORRECTOR')) {
+            yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
+            yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
+        }
+
+        yield MenuItem::linkToCrud('Commentaires', 'fas fa-comment', Comment::class);
+
+        // --- Administration (ROLE_ADMIN) ---
         if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::section('Administration');
+
             yield MenuItem::linkToCrud('Identité du site', 'fas fa-gear', Site::class)
-                ->setAction(Crud::PAGE_DETAIL)->setEntityId($this->siteContext->getCurrentSiteId());
+                ->setAction(Crud::PAGE_DETAIL)
+                ->setEntityId($this->siteContext->getCurrentSiteId());
+
+            yield MenuItem::linkToCrud('Navigation', 'fas fa-bars', Menu::class);
+
+            yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
         }
 
-        // Gestion des articles
-        if ($this->isGranted('ROLE_AUTHOR')) {
-            yield MenuItem::subMenu('Articles', 'fas fa-newspaper')->setSubItems([
-                MenuItem::linkToCrud('Tous les articles', 'fas fa-newspaper', Article::class),
-                MenuItem::linkToCrud('Ajouter un article', 'fas fa-plus', Article::class)->setAction(Crud::PAGE_NEW),
-                MenuItem::linkToCrud('Catégories', 'fas fa-list', Categorie::class),
-            ]);
-        }
-        else if ($this->isGranted('ROLE_CORRECTOR')) {
-            yield MenuItem::subMenu('Articles', 'fas fa-newspaper')->setSubItems([
-                MenuItem::linkToCrud('Tous les articles', 'fas fa-newspaper', Article::class),
-            ]);
-        }
-
-        // Gestion des pages
-        if ($this->isGranted('ROLE_AUTHOR')) {
-            yield MenuItem::subMenu('Pages', 'fas fa-file')->setSubItems([
-                MenuItem::linkToCrud('Toutes les pages', 'fas fa-file', Page::class),
-                MenuItem::linkToCrud('Ajouter une page', 'fas fa-plus', Page::class)->setAction(Crud::PAGE_NEW),
-            ]);
-        }
-        else if ($this->isGranted('ROLE_CORRECTOR')) {
-            yield MenuItem::subMenu('Pages', 'fas fa-file')->setSubItems([
-                MenuItem::linkToCrud('Toutes les pages', 'fas fa-file', Page::class),
-            ]);
-        }
-
-        //Gestion des médias
-        if ($this->isGranted('ROLE_AUTHOR')) {
-            yield MenuItem::subMenu('Media', 'fas fa-photo-video')->setSubItems([
-                MenuItem::linkToCrud('Toutes les médias', 'fas fa-photo-video', Media::class),
-                MenuItem::linkToCrud('Ajouter un média', 'fas fa-plus', Media::class)->setAction(Crud::PAGE_NEW),
-            ]);
-        }
-
-        // Gestion des menus, Utilisateurs et Commenatires
-        if ($this->isGranted('ROLE_ADMIN')) {
-            yield MenuItem::subMenu('Menus', 'fas fa-bars')->setSubItems([
-                MenuItem::linkToCrud('Tous les liens du menu', 'fas fa-bars', Menu::class)
-                    ->setController(MenuCrudController::class),
-                MenuItem::linkToCrud('Une page', 'fas fa-plus', Menu::class)
-                    ->setController(MenuPageCrudController::class)
-                    ->setQueryParameter('target', 'page'),
-                MenuItem::linkToCrud('Une catégorie', 'fas fa-plus', Menu::class)
-                    ->setController(MenuCategoriesCrudController::class)
-                    ->setQueryParameter('target', 'categorie'),
-
-                MenuItem::linkToCrud('Un article', 'fas fa-plus', Menu::class)
-                    ->setController(MenuArticleCrudController::class)
-                    ->setQueryParameter('target', 'article'),
-            ]);
-
-            yield MenuItem::subMenu('Utilisateurs', 'fas fa-user')->setSubItems([
-                MenuItem::linkToCrud('Toutes les utilisateurs', 'fas fa-user', User::class),
-                MenuItem::linkToCrud('Ajouter un utilisateur', 'fas fa-plus', User::class)->setAction(Crud::PAGE_NEW),
-            ]);
-
-            yield MenuItem::linkToCrud('Commentaires', 'fas fa-comment', Comment::class);
-        }
-
-        yield MenuItem::section('Aide & Formation');
-
-        yield MenuItem::linkToRoute('Aide', 'fa fa-question', 'app_home');
-
-        yield MenuItem::linkToUrl('Formation', 'fab fa-leanpub', 'https://google.com');
-
-        yield MenuItem::linkToRoute('Contact support', 'fa fa-envelope', 'app_home');
+        // --- Aide ---
+        yield MenuItem::section('Aide');
+        yield MenuItem::linkToRoute('Aide', 'fa fa-question-circle', 'app_home');
     }
 
     public function configureAssets(): Assets
@@ -144,5 +92,4 @@ class DashboardController extends AbstractDashboardController
         return parent::configureAssets()
             ->addCssFile('build/app.css');
     }
-
 }
