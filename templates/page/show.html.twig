@@ -13,9 +13,11 @@
         </nav>
     </div>
     <div class=" top_page">
-        <div class="img_top">
-            <img class="img_top" src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
-        </div>
+        {% if page.featuredMedia %}
+            <div class="img_top">
+                <img class="img_top" src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
+            </div>
+        {% endif %}
         <div class="title">
             <h1 class="title-one text-light">{{ page.title }}</h1>
             <h2 class="title-two">{{ text_page }}</h2>
