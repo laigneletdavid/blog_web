@@ -11,7 +11,6 @@ use App\Entity\Page;
 use App\Entity\Site;
 use App\Entity\User;
 use App\Repository\SiteRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -138,22 +137,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl('Formation', 'fab fa-leanpub', 'https://google.com');
 
         yield MenuItem::linkToRoute('Contact support', 'fa fa-envelope', 'app_home');
-    }
-
-    public function url(){
-       $url_site = $this->adminUrlGenerator
-            ->setController(SiteCrudController::class)
-            ->setAction(Action::INDEX)
-            ->generateUrl();
-        $url_page = $this->adminUrlGenerator
-            ->setController(PageCrudController::class)
-            ->setAction(Action::INDEX)
-            ->generateUrl();
-        $url_blog = $this->adminUrlGenerator
-            ->setController(ArticleCrudController::class)
-            ->setAction(Action::INDEX)
-            ->generateUrl();
-
     }
 
     public function configureAssets(): Assets

@@ -129,18 +129,26 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 **Fichiers modifiés :** `HomeController`, `UserController`, `ArticleController`, `PageController`, `UserCrudController`, `framework.yaml`, `security.yaml`, `RoleEnum.php`, `DashboardController`, `base.html.twig`, `login.html.twig`
 **Fichiers supprimés :** `config/packages/sensio_framework_extra.yaml`
 
-#### 1.4 Nettoyage code mort
+#### 1.4 Nettoyage code mort ✅
 
-- [ ] Supprimer `DataUserRepository.php`, `User1Type.php`
-- [ ] Supprimer import `ContainerCxexD47` dans `ArticleCrudController`
-- [ ] Supprimer/finaliser stubs (`CommentController`, `TagController`)
-- [ ] Supprimer méthode morte `DashboardController::url()`
-- [ ] Nettoyer templates stub (`site/`, `tag/`, `media/index.html.twig`)
-- [ ] Corriger typo `caterogires.html.twig` → `categories.html.twig`
-- [ ] Corriger `mappedBy: 'User'` → `'user'` dans `User.php`
-- [ ] Supprimer boucle morte `CategorieController::show()`
-- [ ] Corriger `CategorieRepository::findByArticle()` (DQL invalide)
-- [ ] Déplacer `phpdocumentor` et `phpstan` en `require-dev`
+- [x] Supprimer `DataUserRepository.php`, `User1Type.php`, `FindUserType.php`
+- [x] Supprimer import `ContainerCxexD47` dans `ArticleCrudController`
+- [x] Supprimer/finaliser stubs (`CommentController`, `TagController`)
+- [x] Supprimer méthode morte `DashboardController::url()`
+- [x] Nettoyer templates stub (`site/`, `tag/`, `media/index.html.twig`)
+- [x] Corriger typo `caterogires.html.twig` → `categories.html.twig`
+- [x] Corriger `mappedBy: 'User'` → `'user'` dans `User.php`
+- [x] Supprimer boucle morte `CategorieController::show()`
+- [x] Corriger `CategorieRepository::findByArticle()` (DQL invalide)
+- [x] Déplacer `phpdocumentor` et `phpstan` en `require-dev`
+- [x] Recréer `comment/index.html.twig` comme template partiel de commentaire
+- [x] Corriger syntaxe `{% include %}` commentaires dans `article/show.html.twig`
+- [x] Corriger typo `<artcle>` → `<article>` dans `article/show.html.twig`
+- [x] Corriger type hints `?user` → `?User` dans `Comment.php`
+
+**Fichiers supprimés :** `DataUserRepository.php`, `User1Type.php`, `FindUserType.php`, `CommentController.php`, `TagController.php`, `templates/site/`, `templates/tag/`, `templates/media/`
+**Fichiers modifiés :** `ArticleCrudController`, `DashboardController`, `CategorieController`, `CategorieRepository`, `User.php`, `Comment.php`, `article/show.html.twig`, 4 templates (renommage widget categories)
+**Fichiers créés :** `templates/comment/index.html.twig` (template partiel commentaire)
 
 #### 1.5 Conventions future-proof
 
