@@ -8,13 +8,14 @@ CMS Symfony prêt à vendre. Un site propre, sécurisé, avec SEO intégré, clo
 
 ## Stack technique
 
-- **Backend** : PHP 8.4 / Symfony 7.4 LTS (migration depuis PHP 8.1 / Symfony 6.1)
-- **ORM** : Doctrine ORM + Migrations
-- **Admin** : EasyAdmin Bundle 4.x
+- **Backend** : PHP 8.4 / Symfony 7.4 LTS
+- **ORM** : Doctrine ORM 3.3 + Migrations
+- **Admin** : EasyAdmin Bundle 4.12
 - **Frontend** : Webpack Encore + Bootstrap 5.3 + Stimulus/Hotwire
 - **Templates** : Twig 3
 - **BDD** : MariaDB 11
 - **Infra** : Docker (PHP-FPM 8.4 + Nginx + MariaDB 11 + Mailpit)
+- **Mailer** : Brevo (via `symfony/brevo-mailer`)
 
 ## Architecture
 
@@ -78,16 +79,16 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 | `node` | Node 20 Alpine | - | Build Webpack (run only) |
 | `mailer` | Mailpit | 1025/8025 | Capture emails dev |
 
-- [ ] Créer `docker/php/Dockerfile` — PHP 8.4-FPM + extensions (pdo_mysql, intl, gd, zip, opcache, apcu)
-- [ ] Créer `docker/nginx/default.conf` — Config Nginx Symfony
-- [ ] Réécrire `docker-compose.yml` — Tous les services
-- [ ] Créer `docker-compose.override.yml` — Dev (ports, xdebug, mailpit)
+- [x] Créer `docker/php/Dockerfile` — PHP 8.4-FPM + extensions (pdo_mysql, intl, gd, zip, opcache, apcu)
+- [x] Créer `docker/nginx/default.conf` — Config Nginx Symfony
+- [x] Réécrire `docker-compose.yml` — Tous les services (port DB : 3307 externe)
+- [x] Créer `docker-compose.override.yml` — Dev (Xdebug, Node pour assets)
 - [ ] Créer `docker-compose.prod.yml` — Prod (opcache max, restart always)
-- [ ] Créer `Makefile` — `make up`, `make down`, `make sh`, `make db`, `make cc`, `make assets`
-- [ ] Créer `.dockerignore`
-- [ ] Créer `.env.local.example` — Template pour chaque client
-- [ ] Configurer `DATABASE_URL=mysql://app:app@db:3306/blog_web`
-- [ ] Configurer `doctrine.yaml` → `server_version: 'mariadb-11.0'`
+- [x] Créer `Makefile` — `make up`, `make down`, `make sh`, `make db`, `make cc`, `make assets`
+- [x] Créer `.dockerignore`
+- [x] Créer `.env.local.example` — Template pour chaque client
+- [x] Configurer `DATABASE_URL=mysql://app:app@db:3306/blog_web`
+- [x] Configurer `doctrine.yaml` → `server_version: 'mariadb-11.0.0'`, `enable_lazy_ghost_objects`, `type: attribute`
 
 **Fichiers :**
 - Nouveau : `docker/php/Dockerfile`, `docker/nginx/default.conf`
@@ -96,26 +97,37 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 
 #### 1.2 Upgrade PHP 8.4 + Symfony 7.4 LTS
 
-- [ ] `composer.json` : `php >= 8.4`, `symfony/* 7.4.*`
-- [ ] `composer update` dans le container PHP
-- [ ] Adapter les deprecations Symfony 7 (security, routing, forms)
-- [ ] Mettre à jour EasyAdmin compatible Symfony 7
-- [ ] Mettre à jour `package.json` + `npm install`
-- [ ] Tester le build Webpack Encore
+- [x] `composer.json` : `php >= 8.4`, `symfony/* 7.4.*`, Doctrine ORM ^3.3, EasyAdmin ^4.12
+- [x] `composer update` dans le container PHP
+- [x] Adapter les deprecations Symfony 7 : `SecurityRequestAttributes`, `eraseCredentials(): void`, `Routing\Attribute\Route`
+- [x] Supprimer `sensio/framework-extra-bundle` + config
+- [x] Supprimer `doctrine/annotations` (tout est en attributs PHP 8)
+- [x] Déplacer dépendances dev (`phpunit`, `phpstan`, `browser-kit`, etc.) en `require-dev`
+- [x] `config/routes/annotations.yaml` : `annotation` → `attribute`
+- [x] `config/bundles.php` : supprimé `SensioFrameworkExtraBundle`
+- [x] Tester le build Webpack Encore
+- [x] Installer `symfony/brevo-mailer` pour l'envoi d'emails
+- [x] Configurer `MESSENGER_TRANSPORT_DSN=doctrine://default`
+- [x] Configurer sessions persistantes (`save_path` dans `framework.yaml`)
 
-**Fichiers :** `composer.json`, `composer.lock`, `symfony.lock`, `package.json`, `package-lock.json`, `config/packages/security.yaml`, `config/bundles.php`
+**Fichiers modifiés :** `composer.json`, `composer.lock`, `symfony.lock`, `config/bundles.php`, `config/packages/doctrine.yaml`, `config/packages/framework.yaml`, `config/packages/messenger.yaml`, `config/routes/annotations.yaml`, `.env`, `src/Entity/User.php`, `src/Security/UserAuthenticator.php`
 
 #### 1.3 Failles de sécurité critiques
 
-- [ ] **Reset password** : flow token-based avec `VerifyEmailBundle`. Supprimer `/find`
-- [ ] **IDOR profil** : ownership check dans `UserController::edit()` et `editPass()`
-- [ ] **XSS** : `HtmlSanitizer` sur contenu article/page avant persistance
-- [ ] **Null checks** : guard avant `$article->getSlug()` + null check `PageController`
-- [ ] **CSRF** : décommenter `csrf_protection: true` dans `framework.yaml`
-- [ ] **Comment auth** : `denyAccessUnlessGranted('ROLE_USER')` sur bloc commentaire
-- [ ] **Admin password** : surcharger `updateEntity()` dans `UserCrudController`
+- [x] **Reset password** : `ResetPasswordBundle` installé, controller token-based (`ResetPasswordController`), route `/find` supprimée, templates créés
+- [x] **IDOR profil** : ownership check `$user !== $this->getUser()` + `#[IsGranted('ROLE_USER')]` sur `UserController`, route `edit_pass` supprimée
+- [x] **XSS** : `HtmlSanitizer` via Doctrine listener `ContentSanitizeListener` (prePersist/preUpdate) sur Article et Page
+- [x] **Null checks** : guard null avant `$article->getSlug()`, 404 propre sur `ArticleController` et `PageController`
+- [x] **CSRF** : `csrf_protection: true` activé dans `framework.yaml`
+- [x] **Comment auth** : formulaire commentaire affiché uniquement si user connecté
+- [x] **Admin password** : ajout `updateEntity()` dans `UserCrudController` — hash à la création ET à l'édition
+- [x] **Commande super admin** : `app:create-super-admin` pour créer le compte initial
+- [x] **Commande init site** : `app:init-site` pour configurer le site
+- [x] **Rôle SUPER_ADMIN** : ajouté dans `RoleEnum` + `role_hierarchy` dans `security.yaml`
 
-**Fichiers :** `HomeController`, `UserController`, `ArticleController`, `PageController`, `UserCrudController`, `framework.yaml`
+**Fichiers créés :** `src/Command/CreateSuperAdminCommand.php`, `src/Command/InitSiteCommand.php`, `src/Controller/ResetPasswordController.php`, `src/Entity/ResetPasswordRequest.php`, `src/Repository/ResetPasswordRequestRepository.php`, `src/EventListener/ContentSanitizeListener.php`, `config/packages/html_sanitizer.yaml`, `templates/reset_password/`
+**Fichiers modifiés :** `HomeController`, `UserController`, `ArticleController`, `PageController`, `UserCrudController`, `framework.yaml`, `security.yaml`, `RoleEnum.php`, `DashboardController`, `base.html.twig`, `login.html.twig`
+**Fichiers supprimés :** `config/packages/sensio_framework_extra.yaml`
 
 #### 1.4 Nettoyage code mort
 
@@ -228,11 +240,11 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 ## Problèmes connus (issus de l'audit)
 
 ### Critiques (Phase 1)
-- Reset password sans token — n'importe qui peut changer n'importe quel MDP
-- IDOR `/user/{id}/edit` — pas d'ownership check
-- XSS via `|raw` sans sanitisation
-- Null pointer `ArticleController::show()` avant null check
-- CSRF commenté dans `framework.yaml`
+- ~~Reset password sans token~~ → ✅ ResetPasswordBundle token-based
+- ~~IDOR `/user/{id}/edit`~~ → ✅ ownership check + IsGranted
+- ~~XSS via `|raw` sans sanitisation~~ → ✅ HtmlSanitizer Doctrine listener
+- ~~Null pointer `ArticleController::show()`~~ → ✅ null guard + 404
+- ~~CSRF commenté dans `framework.yaml`~~ → ✅ activé
 
 ### Importants (Phase 1)
 - Conflit PostgreSQL/MySQL → résolu : MariaDB 11
@@ -276,15 +288,19 @@ make logs        # Logs tous services
 |---------|-----|
 | Application | http://localhost:8080 |
 | Mailpit | http://localhost:8025 |
-| MariaDB | localhost:3306 (app/app) |
+| MariaDB | localhost:3307 (app/app) |
 
 ### Installation nouveau client
+
+Voir `SETUP.md` pour le process complet.
 
 ```bash
 git clone git@repo:blog_web.git /var/www/clients/client-x
 cd /var/www/clients/client-x
-cp .env.local.example .env.local    # Éditer BDD, APP_SECRET, domaine
-make up && make db
+cp .env.local.example .env.local    # Éditer BDD, APP_SECRET, MAILER_DSN (Brevo)
+make up && make db && make assets
+docker compose exec php php bin/console app:create-super-admin
+docker compose exec php php bin/console app:init-site
 # Se connecter /admin → personnaliser le site
 ```
 
