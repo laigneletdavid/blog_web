@@ -1,17 +1,9 @@
-{% block body %}
-
-    <div class="comment mb-3">
-        <div class="card">
-            <div class="card-body d-flex flex-column">
-                <div class="card-title d-flex flex-row justify-content-between">
-                    <span class="author">{{ comment.user.name }} {{ comment.user.firstname }}</span>
-                    <span>{{ comment.createdAt|format_datetime (pattern='dd MMMM y à HH:mm') }}</span>
-                </div>
-                <div class="card-text ms-4 p-3">
-                    <span>{{ comment.content|escape }}</span>
-                </div >
-            </div>
-
-        </div>
+<div class="comment d-flex flex-column mb-3 p-3 border rounded">
+    <div class="comment_header d-flex justify-content-between align-items-center mb-2">
+        <strong class="comment_author">{{ comment.user.firstName }} {{ comment.user.name }}</strong>
+        <small class="comment_date text-muted">{{ comment.createdAt|date('d/m/Y à H:i') }}</small>
     </div>
-{% endblock %}
+    <div class="comment_body">
+        <p class="mb-0">{{ comment.content }}</p>
+    </div>
+</div>

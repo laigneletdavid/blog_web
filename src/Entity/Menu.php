@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
+#[ORM\Index(columns: ['is_visible'], name: 'idx_menu_is_visible')]
 class Menu
 {
     #[ORM\Id]

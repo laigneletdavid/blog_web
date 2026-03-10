@@ -10,9 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
-
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/article', name: 'app_article_')]
 class ArticleController extends AbstractController
@@ -28,31 +26,33 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(?Article $article, Request $request,  EntityManagerInterface $em): Response
+    public function show(?Article $article, Request $request, EntityManagerInterface $em): Response
     {
-        $slug = $article->getSlug();
         if (!$article) {
-            return $this->redirectToRoute('app_home');
+            throw $this->createNotFoundException('Article introuvable.');
         }
+
+        $commentForm = null;
         $user = $this->getUser();
 
-        $comment = new Comment($article);
-        $comment->setCreatedAt(new \DateTime());
-        $comment->setUser($user);
-        $commentForm = $this->createForm(CommentType::class, $comment);
-        $commentForm->handleRequest($request);
+        if ($user) {
+            $comment = new Comment($article);
+            $comment->setCreatedAt(new \DateTime());
+            $comment->setUser($user);
+            $commentForm = $this->createForm(CommentType::class, $comment);
+            $commentForm->handleRequest($request);
 
+            if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+                $em->persist($comment);
+                $em->flush();
 
-        if($commentForm->isSubmitted() && $commentForm->isValid()) {
-
-            $em->persist($comment);
-            $em->flush();
-            return $this->redirectToRoute('app_article_show', [
-                'slug' => $slug,
+                return $this->redirectToRoute('app_article_show', [
+                    'slug' => $article->getSlug(),
                 ]);
+            }
         }
 
-        return $this->renderForm('article/show.html.twig', [
+        return $this->render('article/show.html.twig', [
             'title_page' => 'Article',
             'article' => $article,
             'commentForm' => $commentForm,

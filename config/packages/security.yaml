@@ -38,6 +38,7 @@ security:
         ROLE_CORRECTOR: ROLE_USER
         ROLE_AUTHOR: ROLE_CORRECTOR
         ROLE_ADMIN: ROLE_AUTHOR
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
 
 when@test:
     security:

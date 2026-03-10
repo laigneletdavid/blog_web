@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}E-mail envoyé{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="security mb-5">
+        <h1 class="title_form mb-3">E-mail envoyé !</h1>
+        <p>Si un compte existe avec cette adresse, un e-mail a été envoyé avec un lien pour réinitialiser votre mot de passe.</p>
+        {% if tokenLifetime %}
+            <p>Ce lien expire dans <strong>{{ tokenLifetime / 3600 }} heure(s)</strong>.</p>
+        {% endif %}
+        <a href="{{ path('app_login') }}" class="btn btn-primary">Retour à la connexion</a>
+    </div>
+</div>
+{% endblock %}

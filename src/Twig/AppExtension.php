@@ -22,34 +22,23 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function menuLink(Menu $menu)
+    public function menuLink(Menu $menu): string
     {
-        $url = '#';
-
         $article = $menu->getArticle();
-
-        if ($article) {
-            $name = 'app_article_show';
-            $slug = $article->getSlug();
+        if ($article !== null && $article->getSlug() !== null) {
+            return $this->router->generate('app_article_show', ['slug' => $article->getSlug()]);
         }
 
         $categorie = $menu->getCategorie();
-
-        if ($categorie) {
-            $name = 'app_categorie_show';
-            $slug = $categorie->getSlug();
+        if ($categorie !== null && $categorie->getSlug() !== null) {
+            return $this->router->generate('app_categorie_show', ['slug' => $categorie->getSlug()]);
         }
 
         $page = $menu->getPage();
-
-        if ($page) {
-            $name = 'app_page_show';
-            $slug = $page->getSlug();
+        if ($page !== null && $page->getSlug() !== null) {
+            return $this->router->generate('app_page_show', ['slug' => $page->getSlug()]);
         }
 
-
-        return $this->router->generate($name, [
-            'slug' => $slug,
-        ]);
+        return '#';
     }
 }

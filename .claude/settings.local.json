@@ -20,7 +20,15 @@
       "Bash(docker compose exec php php bin/console doctrine:database:create)",
       "Bash(docker compose exec php php bin/console doctrine:schema:create)",
       "Bash(docker compose exec php composer show symfony/doctrine-messenger)",
-      "Bash(docker compose exec php composer require symfony/brevo-mailer --no-interaction)"
+      "Bash(docker compose exec php composer require symfony/brevo-mailer --no-interaction)",
+      "Bash(docker compose exec php php bin/console list app)",
+      "Bash(docker compose exec php ls -la /var/www/html/var/)",
+      "Bash(docker compose exec php sh -c \"ls -la /var/www/html/var/\")",
+      "Bash(docker compose exec php sh -c \"mkdir -p /var/www/html/var/sessions/dev && php bin/console cache:clear\")",
+      "Bash(docker compose exec php composer require symfonycasts/reset-password-bundle --no-interaction)",
+      "Bash(docker compose exec php php bin/console make:reset-password --no-interaction)",
+      "Bash(grep -i \"reset-password\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/composer.json //wsl.localhost/Ubuntu/home/laign/projects/blog_web/composer.lock)",
+      "Bash(wsl -d Ubuntu bash -c \"rm /home/laign/projects/blog_web/templates/media/index.html.twig && rmdir /home/laign/projects/blog_web/templates/media 2>/dev/null; echo ''Done''\")"
     ]
   }
 }
