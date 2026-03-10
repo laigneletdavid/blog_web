@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Site;
-use App\Repository\SiteRepository;
+use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,7 +19,7 @@ class InitSiteCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly SiteRepository $siteRepository,
+        private readonly SiteContext $siteContext,
     ) {
         parent::__construct();
     }
@@ -28,7 +28,7 @@ class InitSiteCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $existing = $this->siteRepository->find(1);
+        $existing = $this->siteContext->getCurrentSite();
         if ($existing) {
             $io->warning('A site already exists. Use /admin to edit it.');
             return Command::SUCCESS;

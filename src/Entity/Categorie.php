@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
@@ -19,14 +18,14 @@ class Categorie
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 10)]
     private ?string $color = null;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $featured_media = null;
+    #[ORM\ManyToOne]
+    private ?Media $featured_media = null;
 
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'categories')]
     private Collection $articles;
@@ -81,12 +80,12 @@ class Categorie
         return $this;
     }
 
-    public function getFeaturedMedia(): ?int
+    public function getFeaturedMedia(): ?Media
     {
         return $this->featured_media;
     }
 
-    public function setFeaturedMedia(?int $featured_media): self
+    public function setFeaturedMedia(?Media $featured_media): self
     {
         $this->featured_media = $featured_media;
 

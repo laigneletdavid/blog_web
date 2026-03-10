@@ -10,7 +10,7 @@ use App\Entity\Menu;
 use App\Entity\Page;
 use App\Entity\Site;
 use App\Entity\User;
-use App\Repository\SiteRepository;
+use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -26,7 +26,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private AdminUrlGenerator $adminUrlGenerator,
-        private SiteRepository $siteRepository
+        private SiteContext $siteContext,
     )
     {
     }
@@ -34,7 +34,7 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $site = $this->siteRepository->find(1);
+        $site = $this->siteContext->getCurrentSite();
 
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
@@ -67,7 +67,7 @@ class DashboardController extends AbstractDashboardController
         // Identité du site
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::linkToCrud('Identité du site', 'fas fa-gear', Site::class)
-                ->setAction(Crud::PAGE_DETAIL)->setEntityId(1);
+                ->setAction(Crud::PAGE_DETAIL)->setEntityId($this->siteContext->getCurrentSiteId());
         }
 
         // Gestion des articles

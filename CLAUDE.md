@@ -150,23 +150,28 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 **Fichiers modifiés :** `ArticleCrudController`, `DashboardController`, `CategorieController`, `CategorieRepository`, `User.php`, `Comment.php`, `article/show.html.twig`, 4 templates (renommage widget categories)
 **Fichiers créés :** `templates/comment/index.html.twig` (template partiel commentaire)
 
-#### 1.5 Conventions future-proof
+#### 1.5 Conventions future-proof ✅
 
-- [ ] Créer `src/Service/SiteContext.php` — `getCurrentSite()` retourne `find(1)` pour l'instant
-- [ ] Remplacer tous les `->find('1')` / `->find(1)` par `SiteContext`
-- [ ] Créer `src/Model/TenantAwareInterface.php` (interface vide, préparation)
-- [ ] Vérifier que toutes les requêtes passent par les repositories
+- [x] Créer `src/Service/SiteContext.php` — `getCurrentSite()` avec cache mémoire
+- [x] Remplacer tous les `->find(1)` par `SiteContext` (DashboardController, InitSiteCommand)
+- [x] Remplacer `setEntityId(1)` par `setEntityId($siteContext->getCurrentSiteId())`
+- [x] Créer `src/Model/TenantAwareInterface.php` (interface vide, préparation)
+- [x] Vérifier que toutes les requêtes passent par les repositories
 
-**Fichiers :** Nouveau `SiteContext.php`, `TenantAwareInterface.php`. Modifié `DashboardController`
+**Fichiers créés :** `src/Service/SiteContext.php`, `src/Model/TenantAwareInterface.php`
+**Fichiers modifiés :** `DashboardController`, `InitSiteCommand`
 
-#### 1.6 Corrections fonctionnelles
+#### 1.6 Corrections fonctionnelles ✅
 
-- [ ] `AppExtension::menuLink()` : gérer les menus sans lien (return `'#'`)
-- [ ] Null check sur `widget_service.findLastArticle` dans `base.html.twig`
-- [ ] `Categorie.featured_media` : SMALLINT → vraie relation ManyToOne Media
-- [ ] Index UNIQUE sur `article.slug`, `page.slug`, `categorie.slug`, `tag.slug`
-- [ ] Index sur `article.published`, `menu.is_visible`
-- [ ] Password min → 12 caractères
+- [x] `AppExtension::menuLink()` : retourne `'#'` si aucun article/catégorie/page associé
+- [x] Null check sur `widget_service.findLastArticle` dans `base.html.twig` (fait en 1.3)
+- [x] `Categorie.featured_media` : SMALLINT → vraie relation ManyToOne Media
+- [x] Index UNIQUE sur `article.slug`, `page.slug`, `categorie.slug`, `tag.slug`
+- [x] Index sur `article.published`, `menu.is_visible`
+- [x] Password min → 12 caractères (RegistrationFormType + PassType)
+
+**Migration :** `Version20260310051607.php` (⚠️ à exécuter manuellement)
+**Fichiers modifiés :** `AppExtension.php`, `Categorie.php`, `Article.php`, `Page.php`, `Tag.php`, `Menu.php`, `RegistrationFormType.php`, `PassType.php`
 
 ---
 
