@@ -38,6 +38,12 @@ class Page implements TimestampedInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updated_at = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $blocks = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $draftBlocks = null;
+
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
     private Collection $tag;
 
@@ -164,5 +170,29 @@ class Page implements TimestampedInterface
     public function __toString(): string
     {
         return $this->title;
+    }
+
+    public function getBlocks(): ?array
+    {
+        return $this->blocks;
+    }
+
+    public function setBlocks(?array $blocks): self
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    public function getDraftBlocks(): ?array
+    {
+        return $this->draftBlocks;
+    }
+
+    public function setDraftBlocks(?array $draftBlocks): self
+    {
+        $this->draftBlocks = $draftBlocks;
+
+        return $this;
     }
 }
