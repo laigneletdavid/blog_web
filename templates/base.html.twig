@@ -211,13 +211,12 @@
 
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="container">
-                    <div class="toast-body bg-{{ label }}">
+                <div class="container mt-2">
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
                         {{ message }}
-
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                     </div>
                 </div>
-
             {% endfor %}
         {% endfor %}
         {% block body %}{% endblock %}
@@ -236,7 +235,7 @@
                     <div class="footer_contact d-flex flex-column col-lg-4 mb-5 ps-lg-5 align-items-center align-content-lg-start">
                         <span class="footer_section mb-3">Service client</span>
                         <ul class="nav flex-column align-items-center align-content-lg-start">
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Contact</a></li>
+                            <li class="nav-item mb-2"><a href="{{ path('app_contact') }}" class="nav-link p-0">Contact</a></li>
                             <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Aide & assistance</a></li>
                             <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Mentions légales</a></li>
                             <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Confidentialité & Cookies</a></li>

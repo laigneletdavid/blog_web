@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Service\ArticleNotificationService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -15,6 +16,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ArticleCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly ArticleNotificationService $notificationService,
+    ) {
+    }
     public static function getEntityFqcn(): string
     {
         return Article::class;
@@ -88,11 +93,18 @@ class ArticleCrudController extends AbstractCrudController
         $entityInstance->setCreatedAt(new \DateTime());
         $entityInstance->setUpdatedAt(new \DateTime());
 
+        $isNewlyPublished = false;
         if ($entityInstance->isPublished() && $entityInstance->getPublishedAt() === null) {
             $entityInstance->setPublishedAt(new \DateTime());
+            $isNewlyPublished = true;
         }
 
         parent::persistEntity($entityManager, $entityInstance);
+
+        // Notification aux abonnés si l'article est publié à la création
+        if ($isNewlyPublished) {
+            $this->notificationService->notifySubscribers($entityInstance);
+        }
     }
 
     public function updateEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void
@@ -100,10 +112,17 @@ class ArticleCrudController extends AbstractCrudController
         /** @var Article $entityInstance */
         $entityInstance->setUpdatedAt(new \DateTime());
 
+        $isNewlyPublished = false;
         if ($entityInstance->isPublished() && $entityInstance->getPublishedAt() === null) {
             $entityInstance->setPublishedAt(new \DateTime());
+            $isNewlyPublished = true;
         }
 
         parent::updateEntity($entityManager, $entityInstance);
+
+        // Notification aux abonnés si l'article vient d'être publié
+        if ($isNewlyPublished) {
+            $this->notificationService->notifySubscribers($entityInstance);
+        }
     }
 }

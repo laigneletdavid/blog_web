@@ -8,8 +8,9 @@
         <div class="breadcrum mb-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Blog - {{ article.title }}</li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_article_show_all') }}">Blog</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ article.title }}</li>
                 </ol>
             </nav>
         </div>
@@ -31,50 +32,62 @@
                     <div class="title_article_groupe d-flex flex-column flex-lg-row justify-content-between mb-lg-5 mb-3">
                         <div class="article_title d-flex flex-column">
                             <h1 class="title-one">{{ article.title }}</h1>
-                            <h2 class="title-two">{{ article.featuredText }}</h2>
+                            {% if article.featuredText %}
+                                <h2 class="title-two">{{ article.featuredText }}</h2>
+                            {% endif %}
                         </div>
                         <div class="article_data d-flex flex-row flex-lg-column justify-content-between align-items-lg-end mt-3 mt-lg-0">
                             {% for cat in article.categories %}
                                 <strong class="d-inline-block ms-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
                             {% endfor %}
-                            <p class="date">{{ article.createdAt|date('d/m/y') }}</p>
+                            <div class="d-flex flex-column align-items-lg-end">
+                                <p class="date mb-1">{{ article.createdAt|date('d/m/Y') }}</p>
+                                <span class="reading-time"><i class="fas fa-clock"></i> {{ article.content|readingTime }} min de lecture</span>
+                            </div>
                         </div>
                     </div>
                     <div class="img_article">
                         {% if article.featuredMedia %}
-                            <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
-                        {% else %}
+                            <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name }}" loading="lazy">
                         {% endif %}
                     </div>
                     <div class="content mt-5 pb-5">{{ article.content|raw }}</div>
+
+                    {# --- Boutons de partage --- #}
+                    <div class="share-buttons">
+                        {% set articleUrl = url('app_article_show', { slug: article.slug }) %}
+                        {% set articleTitle = article.title|url_encode %}
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ articleUrl }}" target="_blank" rel="noopener" class="share-btn share-facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ articleUrl }}&text={{ articleTitle }}" target="_blank" rel="noopener" class="share-btn share-twitter">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ articleUrl }}" target="_blank" rel="noopener" class="share-btn share-linkedin">
+                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                        </a>
+                        <button class="share-btn share-copy" onclick="navigator.clipboard.writeText('{{ articleUrl }}');this.innerHTML='<i class=\'fas fa-check\'></i> Copie !'">
+                            <i class="fas fa-link"></i> Copier le lien
+                        </button>
+                    </div>
                 </article>
 
+                {# --- Commentaires (visibles directement, sans accordion) --- #}
                 <div class="article_comment d-flex flex-column p-3">
                     <h3 class="comment_title mb-4">
                         <span class="comment_count title-one">{{ article.comments|length }} commentaire(s)</span>
                     </h3>
 
                     {% if is_granted('ROLE_USER') %}
-
-                    <div class="accordion mb-4" id="accordionExample">
-                        <div class="accordion-item">
-                            <span class="title-accordion accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Ecrire un commentaire
-                                </button>
-                            </span>
-                            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                                <div class="accordion-body comment_area mb-4">
-                                    {{ form_start(commentForm) }}
-                                    {{ form_widget(commentForm) }}
-                                    <input type="submit" class="btn-font btn btn-small btn-primary" value="Envoyer">
-                                    {{ form_end(commentForm) }}
-                                </div>
-                            </div>
+                        <div class="comment_area mb-4 p-3" style="background: #f8f9fa; border-radius: 0.5rem;">
+                            <h4 class="mb-3" style="font-size: 1rem;">Ecrire un commentaire</h4>
+                            {{ form_start(commentForm) }}
+                            {{ form_widget(commentForm) }}
+                            <input type="submit" class="btn-font btn btn-small btn-primary mt-2" value="Envoyer">
+                            {{ form_end(commentForm) }}
                         </div>
-                    </div>
-
-
+                    {% else %}
+                        <p class="text-muted mb-4"><a href="{{ path('app_login') }}">Connectez-vous</a> pour laisser un commentaire.</p>
                     {% endif %}
 
                     <div class="comment-list">
@@ -84,10 +97,25 @@
                     </div>
                 </div>
 
-
-                <div class="article_more bg-secondary bg-opacity-75">
-                    <h3>Autres articles de même catégorie</h3>
-                </div>
+                {# --- Articles connexes --- #}
+                {% if relatedArticles is defined and relatedArticles|length > 0 %}
+                    <div class="related-articles">
+                        <h3>Articles similaires</h3>
+                        <div class="related-grid">
+                            {% for related in relatedArticles %}
+                                <a href="{{ path('app_article_show', { slug: related.slug }) }}" class="related-card">
+                                    {% if related.featuredMedia %}
+                                        <img src="{{ asset('documents/medias/' ~ related.featuredMedia.fileName) }}" alt="{{ related.title }}" loading="lazy">
+                                    {% endif %}
+                                    <div class="related-card-body">
+                                        <h4>{{ related.title }}</h4>
+                                        <span class="related-date">{{ related.createdAt|date('d/m/Y') }}</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
 
             </div>
         </div>

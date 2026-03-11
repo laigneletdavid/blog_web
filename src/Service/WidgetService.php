@@ -32,4 +32,13 @@ class WidgetService
         return $this->articleRepository->lastArticle();
     }
 
+    /**
+     * Archives : mois/annee avec nombre d'articles.
+     *
+     * @return array<array{year: int, month: int, count: int}>
+     */
+    public function findArchives(): array
+    {
+        return $this->articleRepository->findArchiveMonths();
+    }
 }

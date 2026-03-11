@@ -15,7 +15,7 @@
     <div class=" top_page">
         {% if page.featuredMedia %}
             <div class="img_top">
-                <img class="img_top" src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
+                <img class="img_top" src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}" loading="lazy"/>
             </div>
         {% endif %}
         <div class="title">

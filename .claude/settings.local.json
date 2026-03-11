@@ -32,7 +32,9 @@
       "Bash(ls \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\src\\\\Controller\\\\Admin\\\\LikeCrudController.php\")",
       "Bash(ls \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\src\\\\Controller\\\\Admin\\\\OptionCrudController.php\")",
       "Read(//mnt/wslg/home/laign/projects/**)",
-      "Read(//root/**)"
+      "Read(//root/**)",
+      "Bash(docker compose run --rm node npm run dev)",
+      "Bash(cd \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\")"
     ]
   }
 }

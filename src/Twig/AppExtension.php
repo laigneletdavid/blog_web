@@ -19,7 +19,22 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('menuLink', [$this, 'menuLink']),
+            new TwigFilter('readingTime', [$this, 'readingTime']),
         ];
+    }
+
+    /**
+     * Estime le temps de lecture en minutes.
+     */
+    public function readingTime(?string $content): int
+    {
+        if (!$content) {
+            return 1;
+        }
+
+        $wordCount = str_word_count(strip_tags($content));
+
+        return max(1, (int) ceil($wordCount / 200));
     }
 
     public function menuLink(Menu $menu): string
