@@ -46,8 +46,11 @@ class ContentSanitizeListener
         } else {
             // Pas de blocks → sanitiser le content brut (rétrocompatibilité)
             $content = $entity->getContent();
-            if ($content !== null) {
+            if ($content !== null && $content !== '') {
                 $entity->setContent($this->appContentSanitizer->sanitize($content));
+            } elseif ($content === null) {
+                // Nouvel article sans contenu — éviter une erreur DB (colonne NOT NULL)
+                $entity->setContent('');
             }
         }
     }

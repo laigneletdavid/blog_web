@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ArticleCrudController extends AbstractCrudController
@@ -37,7 +37,13 @@ class ArticleCrudController extends AbstractCrudController
 
         yield TextField::new('title', 'Titre de l\'article');
 
-        yield TextEditorField::new('content', 'Contenu de l\'article')
+        yield TextareaField::new('blocksJson', 'Contenu de l\'article')
+            ->setFormTypeOptions([
+                'attr' => [
+                    'data-tiptap-editor' => '',
+                    'style' => 'display: none',
+                ],
+            ])
             ->hideOnIndex();
 
         // --- Panel Paramètres ---
