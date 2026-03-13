@@ -1,3 +1,7 @@
-@import "main";
+// Variables and Bootstrap overrides must come BEFORE Bootstrap
+@import "./base/variables";
+@import "./base/_variables-custom";
 @import '../../node_modules/bootstrap/scss/bootstrap';
 
+// Components (variables already loaded)
+@import "./main";

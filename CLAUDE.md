@@ -333,11 +333,11 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 
 ### Phase 3 — Thème personnalisable (~1 jour)
 
-#### 3.1 CSS custom properties
+#### 3.1 CSS custom properties ✅ (fait en Phase 5)
 
-- [ ] Modifier `assets/css/base/variables.scss` : remplacer `$bw-blue` etc. par `var(--primary)`, `var(--secondary)`, `var(--accent)`
-- [ ] Conserver les valeurs SCSS comme fallback pour le build
-- [ ] Vérifier que tous les composants utilisent les CSS custom properties
+- [x] Modifier `assets/css/base/variables.scss` : remplacer `$bw-blue` etc. par `var(--primary)`, `var(--secondary)`, `var(--accent)`
+- [x] Conserver les valeurs SCSS comme fallback pour le build
+- [x] Vérifier que tous les composants utilisent les CSS custom properties
 
 #### 3.2 Structure multi-templates
 
@@ -443,14 +443,88 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - [x] Breadcrumbs uniformes sur article, page, blog
 - [x] Lien Contact footer câblé
 
-#### 4.9 UX Visuels & Mobile
+#### 4.9 UX Visuels & Mobile — partiellement fait (Phase 5)
 
-- [ ] Animations hover cards articles (scale + shadow transition CSS)
-- [ ] Transitions CSS sur les boutons (0.2s ease)
-- [ ] Breakpoint tablette 768px (optimiser le layout 2 colonnes)
-- [ ] Tailles tactiles min 44x44px sur les boutons/liens mobiles
+- [x] Animations hover cards articles (scale + shadow transition CSS) → fait en Phase 5
+- [x] Transitions CSS sur les boutons (0.2s ease) → fait en Phase 5
+- [x] Breakpoint tablette 768px (optimiser le layout 2 colonnes) → fait en Phase 5
+- [x] Tailles tactiles min 44x44px sur les boutons/liens mobiles → fait en Phase 5
 - [ ] Images responsives `srcset` sur les articles (si Media gère plusieurs tailles)
 - [ ] Page résultats de recherche dédiée (remplacer le dropdown) avec highlighting du terme
+
+---
+
+### Phase 5 — Refonte Design & CSS ✅
+
+> Refonte complète du thème par défaut : design moderne, coloré, inspiré SaaS (référence : lintello.fr).
+
+#### 5.1 Design Tokens & Variables ✅
+
+- [x] `assets/css/base/variables.scss` — palette complète : `#2563EB` primary, `#F59E0B` secondary, `#8B5CF6` accent
+- [x] CSS custom properties dans `:root` (couleurs, shadows 4 niveaux, radius, transitions)
+- [x] Typographie unifiée : Inter (display + body) + JetBrains Mono (code)
+- [x] Mixins sans `!important` : `title-one`, `title-two`, `link-menu`, `btn-font`
+- [x] `_variables-custom.scss` — overrides Bootstrap 5 (couleurs, typo, radius, buttons, inputs, cards)
+
+#### 5.2 Header ✅
+
+- [x] `header.scss` — sticky header avec `backdrop-filter: blur(12px)`, border-bottom subtile
+- [x] Logo contraint à 42px desktop / 36px mobile (plus de logo géant)
+- [x] Nav links `font-weight: 600`, padding `0.5rem 1rem`, hover primary-light
+- [x] Admin bar sombre, search input avec transition width
+- [x] Mobile : offcanvas Bootstrap, hamburger 44px touch target
+
+#### 5.3 Homepage ✅
+
+- [x] `home.scss` + `home/index.html.twig` — refonte complète
+- [x] **Hero** : gradient bleu→violet, cercles décoratifs, badge "CMS professionnel"
+  - 2 boutons visibles : btn-light (blanc) + btn-outline-light (bordure)
+  - 3 badges de confiance (Installation 30 min, RGPD, Hébergé en France)
+- [x] **Features** : grille 3 colonnes (responsive 2→1), 6 cards avec icônes SVG inline
+  - Éditeur, Pages & Layouts, Navigation, SEO, Contact & Notifications, Design personnalisable
+- [x] **Metrics** : bande de chiffres clés (30 min, 100%, 0, 1) avec border top/bottom
+- [x] **CTA final** : section gradient "Prêt à lancer votre site ?" avec bouton contact
+- [x] Team section nettoyée (texte raccourci, layout amélioré)
+
+#### 5.4 Footer ✅
+
+- [x] `footer.scss` + `base.html.twig` — refonte complète
+- [x] Logo 40px max, tagline descriptive
+- [x] 3 colonnes : Logo+social | Navigation | Informations légales
+- [x] Recherche supprimée du footer
+- [x] Icônes sociales en carrés arrondis avec fond semi-transparent
+- [x] Copyright dynamique `{{ "now"|date("Y") }}`
+- [x] Gradient accent line en haut du footer
+
+#### 5.5 Composants globaux ✅
+
+- [x] `global.scss` — `.btn-gradient`, dropdowns modernes, breadcrumbs, form controls focus ring
+- [x] `article.scss` — article detail avec `clamp()` titre, category badges pills, comments cards
+- [x] `article_list.scss` — blog listing cards avec hover translateY + shadow
+- [x] `blocks.scss` — tokens CSS custom properties (plus de couleurs hardcodées)
+- [x] `widgets.scss` — cards avec border/radius/shadow, subscribe gradient
+- [x] `contact.scss` — contact info en surface cards
+- [x] `page.scss` — featured image avec titre overlay gradient
+- [x] `offcanevas-menu.scss` — mobile nav avec border-bottom items
+- [x] `forms_log.scss` — login/register en card centrée
+- [x] `user_info.scss` — profil utilisateur card
+
+#### 5.6 Isolation CSS EasyAdmin ✅
+
+- [x] Supprimé `addCssFile('build/app.css')` dans `DashboardController::configureAssets()`
+- [x] Les styles front ne débordent plus sur l'admin (boutons, liens, form-controls)
+- [x] EasyAdmin utilise ses propres styles natifs, seuls `admin_editor` et `admin_menu` sont injectés
+
+**Fichier modifié :** `DashboardController.php`
+
+#### 5.7 À affiner (prochaine passe)
+
+- [ ] Affiner les couleurs (nuances primary/secondary/accent)
+- [ ] Ajuster les marges/paddings sur certaines sections
+- [ ] Vérifier le rendu sur toutes les pages (article detail, page, catégories, recherche)
+
+**Fichiers SCSS modifiés (16) :** `variables.scss`, `_variables-custom.scss`, `app.scss`, `main.scss`, `global.scss`, `header.scss`, `home.scss`, `footer.scss`, `article.scss`, `article_list.scss`, `blocks.scss`, `widgets.scss`, `contact.scss`, `page.scss`, `offcanevas-menu.scss`, `forms_log.scss`, `user_info.scss`
+**Fichiers Twig modifiés (2) :** `base.html.twig`, `home/index.html.twig`
 
 ---
 
@@ -496,8 +570,8 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - ~~`CategorieRepository::findByArticle()` → DQL invalide~~ → ✅ corrigé (innerJoin)
 - ~~`Categorie.featured_media` → SMALLINT~~ → ✅ vraie relation ManyToOne Media
 - ~~Aucun index UNIQUE sur les slugs~~ → ✅ UNIQUE sur article/page/categorie/tag
+- ~~Contact form non câblé au mailer~~ → ✅ câblé avec Brevo (Phase 4.7)
 - N+1 menus (base template) — à optimiser (eager loading)
-- Contact form non câblé au mailer — à câbler avec Brevo
 - Vérification email installée mais non activée
 
 ### Mineurs — ✅ corrigés en Phase 1
@@ -505,21 +579,21 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - ~~`mappedBy: 'User'` → `'user'`~~ → ✅ corrigé
 - ~~Import container généré dans `ArticleCrudController`~~ → ✅ supprimé
 - ~~Password min 6 → 12~~ → ✅ 12 chars (RegistrationFormType + PassType)
+- ~~Archives widget hardcodé~~ → ✅ dynamisé (Phase 4.8)
+- ~~Liens sociaux `href="#"`~~ → ✅ câblés dans le footer (Phase 5)
 - Typos : `adress_1/2` — à corriger
-- Archives widget hardcodé — à dynamiser
-- Liens sociaux `href="#"` — à câbler
 
-### En attente — sera traité en Phase 4
+### En attente
 - ~~Migration `Version20260310051607`~~ → ✅ exécutée
-- ⚠️ **Templates reset password** — à créer quand Brevo est configuré (Phase 4.7)
+- ~~Contact form non câblé~~ → ✅ fait (Phase 4.7)
+- ~~Liens sociaux `href="#"`~~ → ✅ câblés (Phase 5)
+- ~~Archives widget hardcodé~~ → ✅ dynamisé (Phase 4.8)
+- ~~Null checks templates front~~ → ✅ corrigés
 - ⚠️ **`docker-compose.prod.yml`** — pas encore créé
-- ✅ **Null checks templates front** — corrigés
-- Contact form non câblé → Phase 4.7
-- Liens sociaux `href="#"` → Phase 4.7
-- Archives widget hardcodé → Phase 4.8
-- N+1 menus → à optimiser
+- N+1 menus → à optimiser (eager loading)
 - Typos `adress_1/2` → à corriger
-- Abonnements `news`/`articles` sur User : stockés mais jamais utilisés → Phase 4.7
+- Abonnements `news`/`articles` sur User : stockés mais jamais utilisés
+- Vérification email installée mais non activée
 
 ---
 

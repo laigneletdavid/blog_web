@@ -1,45 +1,119 @@
-.footer{
-  color: #FFFFFF;
-  background-color: $bw-gray-dark;
+// =============================================================================
+// Footer
+// =============================================================================
 
+.footer {
+  background: var(--text);
+  color: rgba(255, 255, 255, 0.7);
+  position: relative;
+  margin-top: 0;
 
-  .footer_mentions {
+  // Gradient accent line at top
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+  }
 
-    .footer_logo {
-      max-width: 100%;
-      padding: 0 2rem;
-    }
-    .mentions {
-      text-align: center;
+  .footer-logo img {
+    height: 40px;
+    width: auto;
+    opacity: 0.9;
+  }
+
+  .footer-tagline {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .footer-description {
+    font-size: 0.8125rem;
+    opacity: 0.4;
+    margin-top: 0.5rem;
+  }
+
+  .footer-section {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9375rem;
+    padding: 0.25rem 0;
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--secondary);
     }
   }
 
-  .footer_contact {
-    .footer_section {
-      font-family: 'Titillium Web', sans-serif !important;
-      text-transform: uppercase;
+  .social-icon {
+    color: rgba(255, 255, 255, 0.5);
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    transition: color var(--transition-fast), background var(--transition-fast);
+
+    &:hover {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.1);
     }
+  }
 
-    .nav {
-      .nav-link {
-        font-family: 'Titillium Web', sans-serif !important;
-        color: #FFFFFF;
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8125rem;
+    opacity: 0.5;
+    text-align: center;
 
-        &:hover {
-          color: $bw-red;
-        }
+    a {
+      color: rgba(255, 255, 255, 0.7);
+
+      &:hover {
+        color: var(--secondary);
       }
     }
   }
 
-  .footer_search {
-    .social-icon {
-      color: #FFFFFF;
+  // Mobile — single column
+  @media (max-width: 767.98px) {
+    text-align: center;
+
+    .footer-section {
+      margin-top: 1.5rem;
     }
 
-  }
-  .footer_bw {
-    text-align: center;
-    border-top: solid 1px #FFFFFF;
+    .nav-link {
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .social-icon {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .footer-social {
+      justify-content: center;
+    }
   }
 }
