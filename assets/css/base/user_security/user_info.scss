@@ -1,26 +1,35 @@
+// =============================================================================
+// User Profile / Info
+// =============================================================================
+
 .user_infos {
+  max-width: 720px;
+  width: 100%;
+  border: 1px solid var(--border);
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+
   @media (max-width: 991.98px) {
     width: 90%;
     padding: 1rem;
-    margin: auto;
   }
-  width: 75%;
-  border: solid 1px $primary;
-  margin: auto;
-  padding: 2rem;
-  border-radius: 2rem;
 
   .btn-font {
     @include btn-font;
   }
+
   .table {
     @media (max-width: 991.98px) {
       max-width: 100%;
       font-size: 0.8rem;
     }
   }
-  .form-label, .col-form-label {
-    font-family: 'Titillium Web', sans-serif;
+
+  .form-label,
+  .col-form-label {
+    font-family: var(--font-display);
     font-weight: 600;
   }
 }

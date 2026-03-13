@@ -1,70 +1,117 @@
-.article_content {
+// =============================================================================
+// Article Detail Page
+// =============================================================================
 
+.article_content {
   .title_article_groupe {
-    .article_title{
+    margin-bottom: 2rem;
+
+    .article_title {
       .title-one {
-        @include title-one;
+        font-family: var(--font-display);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+        color: var(--text);
       }
+
       .title-two {
-        @include title-two;
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 400;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
         margin-bottom: 0;
+        text-decoration: none;
       }
     }
+
     .article_data {
+      strong {
+        font-family: var(--font-display);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-full);
+        background: var(--surface);
+        text-decoration: none;
+      }
+
       .date {
+        font-size: 0.875rem;
+        color: var(--text-muted);
         margin-bottom: 0;
       }
     }
   }
 
   .img_article {
-    img{
+    margin-bottom: 2rem;
+
+    img {
       width: 100%;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
     }
   }
 
   .content {
-    border-bottom: solid 2px $primary;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
   }
-
 }
 
+// Comments
 .article_comment {
-  .accordion {
-    .title-accordion {
-      font-family: 'Expletus Sans', cursive;
-      color: $bw-orange !important;
-      text-decoration: underline;
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
 
-      .accordion-button {
-        color: $bw-orange;
-        font-size: 1.5rem;
-      }
+  .comment {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    transition: box-shadow var(--transition-fast);
+
+    &:hover {
+      box-shadow: var(--shadow-xs);
+    }
+
+    .comment_author {
+      color: var(--primary);
+      font-family: var(--font-display);
+      font-weight: 600;
+    }
+
+    .comment_date {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .comment_body p {
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 0;
     }
   }
-  .comment-list {
-    .comment {
-      .card {
-        border: none;
 
-        .card-body {
-          .card-title {
-            .author {
-              font-family: 'Expletus Sans', cursive;
-              color: $bw-red !important;
-              text-decoration: underline;
-            }
-          }
-          .card-text {
-            background-color: $bw-blue-light;
-            border-radius: 1rem;
-          }
-        }
-      }
-    }
-
+  .comment_area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
   }
 }
-.breadcrum {
-  margin-top: -2rem;
+
+.reading-time {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
 }

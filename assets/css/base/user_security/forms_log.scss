@@ -1,21 +1,35 @@
+// =============================================================================
+// Authentication Forms (Login / Register)
+// =============================================================================
+
 .security {
+  max-width: 480px;
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  margin: 2rem auto;
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+
   @media (max-width: 991.98px) {
     width: 90%;
+    padding: 1.5rem;
   }
-
-  width: 50%;
-  background-color: $bw_blue-light;
-  border: solid 1px $primary;
-  margin: auto;
-  padding: 2rem;
-  border-radius: 2rem;
-
 
   .btn-font {
     @include btn-font;
+    width: 100%;
+  }
+
+  .form-control {
+    margin-bottom: 0.25rem;
   }
 }
 
 .title_form {
   @include title-one;
+  font-size: 1.75rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }

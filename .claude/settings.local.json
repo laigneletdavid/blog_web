@@ -41,7 +41,20 @@
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:schema:validate 2>&1\")",
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SELECT id, name, parent_id, url, target FROM menu ORDER BY menu_order\"\" 2>&1\")",
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose ps 2>&1\")",
-      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console doctrine:query:sql ''SHOW TABLES'' 2>&1\")"
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console doctrine:query:sql ''SHOW TABLES'' 2>&1\")",
+      "Read(//c/Users/laign/projects/**)",
+      "Read(//c/Users/laign/**)",
+      "Bash(find /c/Users/laign -maxdepth 5 -type f -name *.html.twig)",
+      "WebFetch(domain:github.com)",
+      "Bash(grep -r lintello /c/Users/laign/projects --include=*.html --include=*.twig --include=*.php)",
+      "Read(///wsl.localhost/Ubuntu/home/laign/projects/**)",
+      "Read(///wsl.localhost/Ubuntu/home/laign/**)",
+      "Read(//mnt/c/Users/laign/AppData/Local/lxss/rootfs/home/laign/projects/**)",
+      "Bash(docker compose:*)",
+      "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php php bin/console cache:clear 2>&1 | tail -5\")",
+      "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T node npm run dev 2>&1 | tail -25\")",
+      "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npm run dev 2>&1 | tail -30\")",
+      "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php php bin/console cache:clear 2>&1 | tail -3\")"
     ]
   }
 }
