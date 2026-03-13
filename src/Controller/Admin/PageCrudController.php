@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
@@ -53,6 +54,15 @@ class PageCrudController extends AbstractCrudController
         yield AssociationField::new('featured_media', 'Image mise en avant');
 
         yield BooleanField::new('published', 'Publiée');
+
+        yield ChoiceField::new('template', 'Mise en page')
+            ->setChoices([
+                'Par défaut (sidebar droite)' => 'default',
+                'Pleine largeur' => 'full-width',
+                'Sidebar gauche' => 'sidebar-left',
+            ])
+            ->renderExpanded(false)
+            ->setHelp('Choisissez la disposition de la page');
 
         // --- Panel Avancé (collapsed) ---
         yield FormField::addPanel('Avancé')

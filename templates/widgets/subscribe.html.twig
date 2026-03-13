@@ -3,7 +3,7 @@
     {% if is_granted('ROLE_USER') %}
         <p>Gerez vos preferences de notification depuis votre profil.</p>
         <div class="d-flex justify-content-center p-3">
-            <a class="btn-font btn btn-outline-primary btn-sm shadow-sm" href="{{ path('app_user_info') }}">
+            <a class="btn-font btn btn-outline-primary btn-sm shadow-sm" href="{{ path('app_user_show', { id: app.user.id }) }}">
                 <i class="fas fa-bell"></i> Mes preferences
             </a>
         </div>

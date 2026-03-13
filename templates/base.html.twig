@@ -105,15 +105,16 @@
                                 <li class="nav-item mr-2"><a href="{{ path('app_home') }}" class="nav-link p-3">Accueil</a></li>
 
                                 {% for menu in menus %}
-                                    {% set sub_menus = menu.getSubMenu() %}
-                                    {% if sub_menus.count > 0 %}
+                                    {% if menu.children|length > 0 %}
                                         <div class="dropdown">
-                                            <a class="nav-link dropdown-toggle p-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <a class="nav-link dropdown-toggle p-3" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 {{ menu.name }}
                                             </a>
                                             <ul class="dropdown-menu">
-                                                {% for sub in sub_menus %}
-                                                <li><a class="dropdown-item" href="{{ sub|menuLink }}">{{ sub.name }}</a></li>
+                                                {% for child in menu.children %}
+                                                    {% if child.isVisible %}
+                                                        <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                                    {% endif %}
                                                 {% endfor %}
                                             </ul>
                                         </div>
@@ -163,15 +164,16 @@
                                     <li class="nav-item p-2"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
 
                                     {% for menu in menus %}
-                                        {% set sub_menus = menu.getSubMenu() %}
-                                        {% if sub_menus.count > 0 %}
+                                        {% if menu.children|length > 0 %}
                                             <div class="dropdown p-2">
-                                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                     {{ menu.name }}
                                                 </a>
                                                 <ul class="dropdown-menu">
-                                                    {% for sub in sub_menus %}
-                                                        <li><a class="dropdown-item" href="{{ sub|menuLink }}">{{ sub.name }}</a></li>
+                                                    {% for child in menu.children %}
+                                                        {% if child.isVisible %}
+                                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </ul>
                                             </div>

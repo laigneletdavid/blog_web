@@ -1,0 +1,94 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    <h1 class="title"><i class="fas fa-bars me-2"></i>Navigation</h1>
+{% endblock %}
+
+{% block main %}
+<div class="menu-manager"
+     data-menu-sortable
+     data-reorder-url="{{ path('admin_api_menu_reorder') }}"
+     data-csrf-token="{{ csrf_token('menu_reorder') }}"
+     data-toggle-url="{{ path('admin_api_menu_toggle_visibility', {id: 0}) }}">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="text-muted mb-0">
+            Glissez-déposez pour réorganiser le menu. Imbriquez les éléments pour créer des sous-menus (2 niveaux max).
+        </p>
+        <a href="{{ ea_url()
+            .setController('App\\\\Controller\\\\Admin\\\\MenuCrudController')
+            .setAction('new')
+            .generateUrl() }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Ajouter
+        </a>
+    </div>
+
+    <div class="menu-sortable-list" data-sortable-root>
+        {% for menu in menus %}
+            <div class="menu-sortable-item" data-id="{{ menu.id }}">
+                <div class="menu-sortable-handle d-flex align-items-center justify-content-between p-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-grip-vertical me-3 text-muted drag-handle"></i>
+                        <span class="fw-bold">{{ menu.name }}</span>
+                        <span class="badge bg-secondary ms-2">{{ menu.target }}</span>
+                        {% if menu.target == 'url' and menu.url %}
+                            <span class="text-muted ms-2 small">{{ menu.url }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-sm {{ menu.isVisible ? 'btn-success' : 'btn-outline-secondary' }}"
+                                data-toggle-visibility
+                                data-id="{{ menu.id }}"
+                                title="{{ menu.isVisible ? 'Visible' : 'Masqué' }}">
+                            <i class="fas {{ menu.isVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                        </button>
+                        <a href="{{ ea_url()
+                            .setController('App\\\\Controller\\\\Admin\\\\MenuCrudController')
+                            .setAction('edit')
+                            .setEntityId(menu.id)
+                            .generateUrl() }}" class="btn btn-sm btn-outline-primary" title="Modifier">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="menu-sortable-children" data-sortable-children>
+                    {% for child in menu.children %}
+                        <div class="menu-sortable-item" data-id="{{ child.id }}">
+                            <div class="menu-sortable-handle d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-grip-vertical me-3 text-muted drag-handle"></i>
+                                    <span>{{ child.name }}</span>
+                                    <span class="badge bg-secondary ms-2">{{ child.target }}</span>
+                                    {% if child.target == 'url' and child.url %}
+                                        <span class="text-muted ms-2 small">{{ child.url }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button class="btn btn-sm {{ child.isVisible ? 'btn-success' : 'btn-outline-secondary' }}"
+                                            data-toggle-visibility
+                                            data-id="{{ child.id }}"
+                                            title="{{ child.isVisible ? 'Visible' : 'Masqué' }}">
+                                        <i class="fas {{ child.isVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                    </button>
+                                    <a href="{{ ea_url()
+                                        .setController('App\\\\Controller\\\\Admin\\\\MenuCrudController')
+                                        .setAction('edit')
+                                        .setEntityId(child.id)
+                                        .generateUrl() }}" class="btn btn-sm btn-outline-primary" title="Modifier">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="p-4 text-center text-muted">
+                <i class="fas fa-bars fa-2x mb-2 d-block"></i>
+                Aucun élément de menu. Cliquez sur "Ajouter" pour créer votre premier lien.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

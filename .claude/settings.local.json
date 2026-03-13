@@ -34,7 +34,14 @@
       "Read(//mnt/wslg/home/laign/projects/**)",
       "Read(//root/**)",
       "Bash(docker compose run --rm node npm run dev)",
-      "Bash(cd \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\")"
+      "Bash(cd \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\")",
+      "Bash(wsl -e mkdir -p /home/laign/projects/blog_web/templates/admin/menu)",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SELECT DATABASE\\(\\)\"\" 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SHOW TABLES\"\" 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:schema:validate 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SELECT id, name, parent_id, url, target FROM menu ORDER BY menu_order\"\" 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose ps 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console doctrine:query:sql ''SHOW TABLES'' 2>&1\")"
     ]
   }
 }

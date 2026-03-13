@@ -39,9 +39,14 @@ class MenuCrudController extends AbstractCrudController
                 'Article' => 'article',
                 'Page' => 'page',
                 'Catégorie' => 'categorie',
+                'URL personnalisée' => 'url',
             ])
             ->renderExpanded(false)
             ->setHelp('Sélectionnez le type de contenu vers lequel ce lien pointe');
+
+        yield TextField::new('url', 'URL')
+            ->setHelp('URL personnalisée (ex: /article/ pour le blog, ou https://example.com)')
+            ->hideOnIndex();
 
         yield AssociationField::new('article', 'Article')
             ->setHelp('Sélectionnez l\'article (si type = Article)')
@@ -57,7 +62,8 @@ class MenuCrudController extends AbstractCrudController
 
         yield BooleanField::new('is_visible', 'Visible');
 
-        yield AssociationField::new('sub_menu', 'Sous-éléments')
+        yield AssociationField::new('parent', 'Élément parent')
+            ->setHelp('Laisser vide pour un élément racine')
             ->hideOnIndex();
     }
 }

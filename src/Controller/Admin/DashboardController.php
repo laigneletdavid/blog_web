@@ -6,10 +6,10 @@ use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\Comment;
 use App\Entity\Media;
-use App\Entity\Menu;
 use App\Entity\Page;
 use App\Entity\Site;
 use App\Entity\User;
+use App\Repository\MenuRepository;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -36,6 +37,15 @@ class DashboardController extends AbstractDashboardController
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
+        ]);
+    }
+
+    #[Route('/admin/menu-manager', name: 'admin_menu_manager')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function menuManager(MenuRepository $menuRepository): Response
+    {
+        return $this->render('admin/menu/sortable.html.twig', [
+            'menus' => $menuRepository->findAllOrdered(),
         ]);
     }
 
@@ -77,7 +87,7 @@ class DashboardController extends AbstractDashboardController
                 ->setAction(Crud::PAGE_DETAIL)
                 ->setEntityId($this->siteContext->getCurrentSiteId());
 
-            yield MenuItem::linkToCrud('Navigation', 'fas fa-bars', Menu::class);
+            yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager');
 
             yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
         }
@@ -91,6 +101,7 @@ class DashboardController extends AbstractDashboardController
     {
         return parent::configureAssets()
             ->addCssFile('build/app.css')
-            ->addWebpackEncoreEntry('admin_editor');
+            ->addWebpackEncoreEntry('admin_editor')
+            ->addWebpackEncoreEntry('admin_menu');
     }
 }

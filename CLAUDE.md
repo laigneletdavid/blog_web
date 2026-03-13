@@ -61,6 +61,115 @@ Les SCSS utilisent `var(--primary)` — personnalisation sans rebuild Webpack.
 
 ---
 
+## Rôles & accès
+
+### Hiérarchie des rôles
+
+```
+ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
+```
+
+| Rôle | Qui | Accès |
+|------|-----|-------|
+| `ROLE_USER` | Client final | Lecture, commentaires, profil |
+| `ROLE_AUTHOR` | Rédacteur client | Création/édition articles et pages |
+| `ROLE_ADMIN` | Admin client | Gestion complète du site (users, menus, médias) |
+| `ROLE_FREELANCE` | Freelance revendeur | Idem SUPER_ADMIN sur ses propres sites uniquement |
+| `ROLE_SUPER_ADMIN` | David | Accès total, tous les sites, config infrastructure |
+
+### Modèle de distribution freelance
+
+- David facture le freelance (abonnement mensuel plateforme)
+- Le freelance gère sa relation client en totale autonomie
+- La plateforme est invisible pour le client final (whitelabel implicite)
+- Support disponible : formation optionnelle + ajout de fonctionnalités sur devis
+
+### Implémentation technique ROLE_FREELANCE
+
+- Ajouter `ROLE_FREELANCE` dans `RoleEnum.php`
+- Ajouter dans `role_hierarchy` dans `security.yaml`
+- Champ `owner` (FK `User`, nullable) sur l'entité `Site` → le freelance ne voit que ses sites
+- Filtre Repository selon rôle connecté : `ROLE_FREELANCE` filtre par `site.owner = currentUser`, `ROLE_SUPER_ADMIN` voit tout
+- Les actions réservées SUPER_ADMIN (config Docker, accès serveur) restent hors EasyAdmin
+
+---
+
+## Templates & Design
+
+### Philosophie
+
+3 à 4 templates de base intégrés dans le code. Le choix du template est réservé à `ROLE_SUPER_ADMIN` et `ROLE_FREELANCE`. Le client final ne choisit pas son design — il édite ses contenus et personnalise couleurs/logo uniquement.
+
+Les sites sont montés et configurés visuellement par David ou le freelance via Claude Code. Pas d'interface de customisation visuelle complexe côté client.
+
+### Sélection du template
+
+Champ `template` (string, enum) sur l'entité `Site` :
+
+```php
+// Valeurs possibles
+'default'     // Template standard blog/vitrine
+'corporate'   // Template professionnel sobre
+'portfolio'   // Template visuel orienté galerie
+'landing'     // Template one-page conversion
+```
+
+Switch Twig dans `base.html.twig` :
+
+```twig
+{% set layout = site.template|default('default') %}
+{% extends 'themes/' ~ layout ~ '/base.html.twig' %}
+```
+
+### Structure des templates
+
+```
+templates/
+├── themes/
+│   ├── default/
+│   │   ├── base.html.twig
+│   │   ├── home.html.twig
+│   │   └── _partials/
+│   ├── corporate/
+│   ├── portfolio/
+│   └── landing/
+└── admin/          # Templates EasyAdmin (communs à tous les thèmes)
+```
+
+### Personnalisation par client (surcouche CSS)
+
+Chaque template utilise les CSS custom properties — la personnalisation couleur/typo/logo s'applique à tous les thèmes sans modification de code :
+
+```scss
+// Dans chaque template SCSS
+color: var(--primary);
+font-family: var(--font-family);
+background: var(--secondary);
+```
+
+Variables disponibles sur l'entité `Site` :
+- `primaryColor` — couleur principale
+- `secondaryColor` — couleur secondaire
+- `accentColor` — couleur d'accent (à ajouter)
+- `fontFamily` — police principale
+- `fontFamilySecondary` — police titres (à ajouter)
+- `logo` (FK Media) — logo header
+- `favicon` (FK Media) — favicon
+
+### Admin template (SUPER_ADMIN / FREELANCE uniquement)
+
+Dans `SiteCrudController` :
+```php
+ChoiceField::new('template')
+    ->setChoices(['Défaut' => 'default', 'Corporate' => 'corporate', ...])
+    ->setPermission('ROLE_FREELANCE'),
+ColorField::new('primaryColor')->setPermission('ROLE_FREELANCE'),
+ColorField::new('secondaryColor')->setPermission('ROLE_FREELANCE'),
+// ...
+```
+
+---
+
 ## Plan d'action MVP
 
 > **Temps réel Phase 1 : ~2h30** (estimé initialement ~4 jours)
@@ -188,7 +297,9 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 #### 2.2 Champs SEO + thème sur Site
 
 - [ ] `defaultSeoTitle`, `defaultSeoDescription`, `googleAnalyticsId`, `googleSearchConsole`, `favicon` (FK Media)
-- [ ] `primaryColor`, `secondaryColor`, `fontFamily` (pour personnalisation client)
+- [ ] `primaryColor`, `secondaryColor`, `accentColor`, `fontFamily`, `fontFamilySecondary` (personnalisation client)
+- [ ] `template` (string enum : `default`, `corporate`, `portfolio`, `landing`) — sélection SUPER_ADMIN/FREELANCE uniquement
+- [ ] `owner` (FK User nullable, ROLE_FREELANCE) — rattachement site à un freelance
 
 #### 2.3 Rendu Twig
 
@@ -197,7 +308,8 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - [ ] Twitter Cards : `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
 - [ ] Schema.org JSON-LD : `Article`, `BreadcrumbList`
 - [ ] Fallback : `seoTitle` → `title` → `site.defaultSeoTitle`
-- [ ] Injection CSS custom properties depuis `Site` (couleurs, font)
+- [ ] Injection CSS custom properties depuis `Site` (couleurs, fonts)
+- [ ] `robots.txt` dynamique via `RobotsController` (respect `noIndex` global du site)
 
 #### 2.4 Sitemap XML
 
@@ -210,179 +322,135 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - [ ] Compteurs de caractères (70 pour title, 160 pour description)
 - [ ] Champs SEO + couleurs/fonts dans `SiteCrudController`
 
+#### 2.6 Performance & Lighthouse
+
+- [ ] **Conversion WebP automatique** à l'upload Media : `imagine/imagine` ou `intervention/image` — génère `.webp` + fallback `.jpg`
+- [ ] **Lazy-loading natif** : `loading="lazy"` sur toutes les balises `<img>` hors above-the-fold (déjà partiellement fait en 4.6, à systématiser)
+- [ ] **Cache HTTP Nginx** : headers `Cache-Control` pour assets statiques (1 an) et pages HTML (selon config)
+- [ ] **Objectif Lighthouse** : score 95+ Performance, 100 SEO, 100 Accessibilité — à mesurer avant livraison client
+
 ---
 
 ### Phase 3 — Thème personnalisable (~1 jour)
 
 #### 3.1 CSS custom properties
 
-- [ ] Modifier `assets/css/base/variables.scss` : remplacer `$bw-blue` etc. par `var(--primary)`, `var(--secondary)`
+- [ ] Modifier `assets/css/base/variables.scss` : remplacer `$bw-blue` etc. par `var(--primary)`, `var(--secondary)`, `var(--accent)`
 - [ ] Conserver les valeurs SCSS comme fallback pour le build
 - [ ] Vérifier que tous les composants utilisent les CSS custom properties
 
-#### 3.2 Personnalisation admin
+#### 3.2 Structure multi-templates
 
-- [ ] `SiteCrudController` : `ColorField` pour primaire/secondaire, choix de font, logo
+- [ ] Créer `templates/themes/default/` — déplacer les templates actuels
+- [ ] Créer `templates/themes/corporate/` — template sobre, orienté services B2B
+- [ ] Créer `templates/themes/portfolio/` — template visuel, galerie, créatifs
+- [ ] Créer `templates/themes/landing/` — one-page, orienté conversion
+- [ ] Switch Twig dans `base.html.twig` selon `site.template`
+- [ ] Chaque thème hérite des partials communs (`_partials/`) pour éviter la duplication
+
+#### 3.3 Personnalisation admin
+
+- [ ] `SiteCrudController` : `ColorField` pour primaire/secondaire/accent, choix de fonts, logo, favicon
+- [ ] `ChoiceField` pour `template` — visible uniquement `ROLE_FREELANCE` et `ROLE_SUPER_ADMIN`
 - [ ] Le thème s'applique via les custom properties injectées dans `base.html.twig`
+
+#### 3.4 Rôle FREELANCE
+
+- [ ] Ajouter `ROLE_FREELANCE` dans `RoleEnum.php`
+- [ ] Ajouter dans `role_hierarchy` dans `security.yaml` : `ROLE_FREELANCE: [ROLE_ADMIN]`
+- [ ] Champ `owner` (FK User) sur `Site` + migration
+- [ ] `SiteRepository::findByOwner(User $user)` — filtre par owner pour ROLE_FREELANCE
+- [ ] `DashboardController` : si `ROLE_FREELANCE` sans `ROLE_SUPER_ADMIN`, filtrer les sites affichés
+- [ ] `SiteCrudController` : restreindre les champs sensibles (template, couleurs) à `ROLE_FREELANCE+`
 
 ---
 
-### Phase 4 — Éditeur TipTap + UX + Stats + Notifications
+### Phase 4 — Éditeur TipTap + UX + Stats + Notifications ✅
 
-> Ordre optimisé pour minimiser les allers-retours entre fichiers.
+#### 4.0 Nettoyage & simplification admin ✅
 
-#### 4.0 Nettoyage & simplification admin (avant tout le reste)
+- [x] Supprimer stubs (`LikeCrudController`, `OptionCrudController`)
+- [x] Nettoyer imports morts dans `MenuCrudController`
+- [x] Corriger typos admin (`SiteCrudController`, labels)
+- [x] Réorganiser `DashboardController::configureMenuItems()` (menu simplifié, rôles)
+- [x] `ArticleCrudController` / `PageCrudController` : panels EasyAdmin (Contenu / Paramètres / Avancé)
+- [x] `published_at` auto-rempli quand `published` passe à `true`
 
-**Nettoyage code mort :**
-- [ ] Supprimer `LikeCrudController.php` (stub vide, pas dans le menu)
-- [ ] Supprimer `OptionCrudController.php` (stub vide, pas dans le menu)
-- [ ] Supprimer imports morts dans `MenuCrudController.php` (`use http\Env\Request`, `use phpDocumentor\...\Property`)
-- [ ] Corriger typo `SiteCrudController` : "Goolge map" → "Google Maps"
-- [ ] Corriger labels : "Toutes les médias" → "Tous les médias", "Toutes les utilisateurs" → "Tous les utilisateurs"
+#### 4.1 Entités + Migration ✅
 
-**Simplification menu sidebar :**
-- [ ] Réorganiser `DashboardController::configureMenuItems()` :
-  ```
-  Tableau de bord
-  Aller sur le site
-  ─── Contenu ───
-  Articles                    (sans sous-menu "Ajouter" — le bouton EasyAdmin existe déjà)
-  Pages                       (idem)
-  Médias                      (idem)
-  Commentaires
-  ─── Administration ───      (ROLE_ADMIN)
-  Identité du site
-  Navigation                  (menus — un seul lien)
-  Utilisateurs
-  ─── Aide ───
-  Aide                        (garder — module à créer plus tard)
-  ```
-- [ ] Supprimer les sous-items "Ajouter un article/page/média" (redondants)
-- [ ] Supprimer le lien "Formation" (pointe vers google.com)
-- [ ] Supprimer le lien "Contact support" (pointe vers la home)
-- [ ] Garder le lien "Aide" (module aide à créer ultérieurement)
+- [x] `Article.php` : `blocks` (JSON), `draftBlocks` (JSON), `published_at`, virtual `getBlocksJson()`/`setBlocksJson()`
+- [x] `Page.php` : idem (blocks + virtual properties)
+- [x] `PageView.php` : entité stats de visites (url, ipHash SHA-256, userAgent, referer, createdAt)
+- [x] `PageViewRepository.php` : `countToday()`, `countThisWeek()`, `topArticles()`, `dailyStats()`
+- [x] Migration exécutée
 
-**Simplification gestion des menus :**
-- [ ] Fusionner `MenuArticleCrudController`, `MenuPageCrudController`, `MenuCategoriesCrudController` en un seul `MenuCrudController` avec un champ dropdown `type` (Article / Page / Catégorie / Lien externe)
-- [ ] Supprimer les 3 controllers spécialisés après fusion
+#### 4.2 Services backend ✅
 
-**Formulaire article avec panels :**
-- [ ] `ArticleCrudController` : organiser en panels EasyAdmin
-  - Panel "Contenu" : titre, contenu (TipTap — sera ajouté en 4.5)
-  - Panel "Paramètres" : catégories, image mise en avant, texte mis en avant, publié oui/non
-  - Panel "Avancé" (collapsed) : slug (auto-généré), date de publication
-- [ ] `published_at` auto-rempli quand `published` passe à `true` (dans `persistEntity`/`updateEntity`)
-- [ ] `PageCrudController` : idem (panels adaptés)
+- [x] `BlockRenderer.php` — JSON TipTap → HTML (text, image, video, quote, code, separator)
+- [x] `ContentSanitizeListener.php` — compile blocks via BlockRenderer → cache dans `content`, null-safe
+- [x] `PageViewSubscriber.php` — log requêtes front (exclut /admin, /_wdt, assets), IP hashée SHA-256
+- [x] `ArticleNotificationService.php` — email Brevo aux abonnés quand article publié
 
-**Dashboard utile :**
-- [ ] Remplacer le texte placeholder par des raccourcis rapides : "Nouvel article", "Nouvelle page"
-- [ ] Garder les 3 cards existantes (Réglages, Pages, Blog) mais supprimer les textes trop longs
+#### 4.3 Webpack + dépendances npm ✅
 
-**Fichiers supprimés :** `LikeCrudController.php`, `OptionCrudController.php`, `MenuArticleCrudController.php`, `MenuPageCrudController.php`, `MenuCategoriesCrudController.php`
-**Fichiers modifiés :** `DashboardController.php`, `MenuCrudController.php`, `ArticleCrudController.php`, `PageCrudController.php`, `SiteCrudController.php`, `templates/admin/dashboard.html.twig`
+- [x] `@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extension-image`, `@tiptap/extension-youtube`, `@tiptap/extension-placeholder`, `@tiptap/extension-typography`, `@tiptap/extension-link`
+- [x] Entry Webpack `admin_editor` → `./assets/admin/tiptap-editor.js`
 
-#### 4.1 Entités + Migration (tout le schéma d'un coup)
+#### 4.4 Éditeur TipTap (JS + CSS admin) ✅
 
-- [ ] `Article.php` : ajouter `blocks` (JSON, nullable) + `draftBlocks` (JSON, nullable)
-- [ ] `Page.php` : idem
-- [ ] Créer `src/Entity/PageView.php` : `url`, `ipHash` (string, IP anonymisée SHA-256), `userAgent`, `referer`, `createdAt` — index sur `created_at` + `url`
-- [ ] Créer `src/Repository/PageViewRepository.php` : méthodes `countToday()`, `countThisWeek()`, `countThisMonth()`, `topArticles(limit)`, `dailyStats(days)`
-- [ ] Générer et exécuter la migration Doctrine
+- [x] `assets/admin/tiptap-editor.js` (~520 lignes) — éditeur WYSIWYG complet
+  - StarterKit + Image + YouTube + Placeholder + Typography + Link
+  - Toolbar complète (gras, italique, titres, listes, citation, lien, image, vidéo, code, séparateur)
+  - Modal bibliothèque Media (fetch `/admin/api/media/list`)
+  - Autosave localStorage 30s + indicateur visuel + restauration brouillon
+  - Protection doc vide (ne sauvegarde pas les blocs vides → préserve ancien contenu)
+- [x] `assets/admin/tiptap-editor.scss` — styles admin (toolbar, éditeur, modal, ProseMirror)
 
-**Fichiers créés :** `PageView.php`, `PageViewRepository.php`, migration
-**Fichiers modifiés :** `Article.php`, `Page.php`
+#### 4.5 Intégration EasyAdmin ✅
 
-#### 4.2 Services backend
+- [x] `MediaApiController.php` — `GET /admin/api/media/list` (`#[IsGranted('ROLE_AUTHOR')]`)
+- [x] `ArticleCrudController` / `PageCrudController` — `TextareaField('blocksJson')` avec `data-tiptap-editor`
+- [x] `DashboardController::configureAssets()` — entry `admin_editor`
+- [x] Notifications câblées dans `persistEntity()` / `updateEntity()` via `ArticleNotificationService`
 
-- [ ] Créer `src/Service/BlockRenderer.php` — convertit `blocks` JSON → HTML pour le cache `content`
-  - Gère les types : `text` (HTML brut TipTap), `image` (figure+img+figcaption), `video` (iframe YouTube/Vimeo), `quote` (blockquote+cite), `code` (pre+code), `separator` (hr)
-- [ ] Modifier `src/EventListener/ContentSanitizeListener.php` — si `blocks` non vide, compiler via `BlockRenderer::toHtml()` → `setContent(html)`
-- [ ] Créer `src/EventSubscriber/PageViewSubscriber.php` — log chaque requête front (exclure /admin, /_wdt, assets) dans `PageView`, IP hashée SHA-256
-- [ ] Créer `src/Service/ArticleNotificationService.php` — envoie un email (Brevo) aux users `articles=true` quand un article est publié
+#### 4.6 Rendu front des blocs + CSS ✅
 
-**Fichiers créés :** `BlockRenderer.php`, `PageViewSubscriber.php`, `ArticleNotificationService.php`
-**Fichiers modifiés :** `ContentSanitizeListener.php`
+- [x] `assets/css/base/blocks.scss` — styles front (content, images, vidéo, quote, code, share buttons, related articles)
+- [x] `loading="lazy"` sur toutes les images (article show, page show, article_liste_large)
+- [x] Import dans `main.scss`
 
-#### 4.3 Webpack + dépendances npm
+#### 4.7 Notifications & Contact (Brevo) ✅
 
-- [ ] `package.json` : ajouter `@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extension-image`, `@tiptap/extension-youtube`, `@tiptap/extension-placeholder`, `@tiptap/extension-typography`, `sortablejs`
-- [ ] `webpack.config.js` : ajouter entry `admin_blocks` → `./assets/admin/blocks-editor.js`
-- [ ] npm install dans le container node
+- [x] `ContactType.php` — formulaire Symfony avec validation
+- [x] `HomeController::contact()` — câblé avec `MailerInterface` + `SiteContext` (envoi au `site.email`)
+- [x] `contact.html.twig` — utilise `{{ form_widget(contactForm) }}` au lieu du HTML statique
+- [x] `ArticleCrudController` — appelle `ArticleNotificationService::notifySubscribers()` à la publication
+- [x] `subscribe.html.twig` — auth-aware (profil si connecté, inscription sinon)
+- [x] Brevo SMTP configuré dans `.env.local` (`brevo+smtp://`)
+- [x] `.env` — défaut Mailpit pour dev, `.env.local.example` — template Brevo pour clients
 
-**Fichiers modifiés :** `package.json`, `webpack.config.js`
+#### 4.8 UX Front ✅
 
-#### 4.4 Éditeur TipTap (JS + CSS admin)
-
-- [ ] Créer `assets/admin/blocks-editor.js` — éditeur TipTap full-page intégré dans EasyAdmin
-  - TipTap avec StarterKit + Image + YouTube + Placeholder + Typography
-  - Toolbar : gras, italique, titres (H2/H3), listes, citation, lien, image, vidéo, code, séparateur
-  - Bouton image → ouvre modal bibliothèque Media (fetch `/admin/api/media/list`)
-  - Bouton vidéo → prompt URL YouTube/Vimeo
-  - Slash commands (`/`) : image, vidéo, citation, code, séparateur
-  - Sauvegarde dans hidden input JSON (format TipTap natif)
-  - Autosave localStorage toutes les 30s + indicateur visuel "Brouillon sauvegardé"
-  - Restauration : si localStorage contient un brouillon plus récent, proposer "Restaurer le brouillon ?"
-- [ ] Créer `assets/admin/blocks-editor.scss` — styles de l'éditeur dans l'admin (toolbar, zone d'écriture, modal media)
-
-**Fichiers créés :** `assets/admin/blocks-editor.js`, `assets/admin/blocks-editor.scss`
-
-#### 4.5 Intégration EasyAdmin
-
-- [ ] Créer `src/Controller/Admin/Api/MediaApiController.php` — `GET /admin/api/media/list` (liste des médias avec URL, filtrable)
-- [ ] Créer `templates/admin/field/tiptap_editor.html.twig` — champ custom : `<div id="tiptap-editor">` + hidden input + charge les blocs existants via `window.existingBlocks`
-- [ ] Modifier `ArticleCrudController.php` — remplacer `TextEditorField::new('content')` par champ custom blocks
-- [ ] Modifier `PageCrudController.php` — idem
-- [ ] Modifier `DashboardController.php` → `configureAssets()` : ajouter `build/admin_blocks.js` + `build/admin_blocks.css`
-- [ ] Dashboard : ajouter stats (visites, top articles, graphique 30j Chart.js), raccourcis "Nouvel article" / "Nouvelle page", lien "Voir sur le site" par article
-
-**Fichiers créés :** `MediaApiController.php`, `templates/admin/field/tiptap_editor.html.twig`
-**Fichiers modifiés :** `ArticleCrudController.php`, `PageCrudController.php`, `DashboardController.php`, `templates/admin/dashboard.html.twig`
-
-#### 4.6 Rendu front des blocs + CSS
-
-- [ ] Créer `templates/_partials/tiptap_render.html.twig` — rend le JSON TipTap en HTML (ou utilise le cache `content`)
-- [ ] Modifier `templates/article/show.html.twig` — utiliser `article.content|raw` (compilé depuis blocks par le listener)
-- [ ] Modifier `templates/page/show.html.twig` — idem
-- [ ] Créer `assets/css/base/blocks.scss` — styles des blocs côté front
-  - `.block-image` (full/medium/small), `.block-video` (16:9 responsive), `.block-quote` (bordure primary), `.block-code` (fond sombre)
-- [ ] Ajouter `loading="lazy"` sur toutes les images front (base, articles, widgets)
-
-**Fichiers créés :** `tiptap_render.html.twig`, `blocks.scss`
-**Fichiers modifiés :** `article/show.html.twig`, `page/show.html.twig`
-
-#### 4.7 Notifications & Contact (Brevo)
-
-- [ ] Câbler le formulaire de contact (`HomeController`) avec Brevo (envoi email au `site.email`)
-- [ ] Notification nouvel article : dans `ArticleCrudController::persistEntity()`, si `published=true`, appeler `ArticleNotificationService` (async via Messenger)
-- [ ] Widget subscribe amélioré : si user connecté, afficher toggle on/off abonnement au lieu de "Créer un compte"
-- [ ] Masquer les liens sociaux dans le header/footer si non configurés dans `Site`
-
-**Fichiers modifiés :** `HomeController.php`, `ArticleCrudController.php`, `templates/widgets/subscribe.html.twig`, `base.html.twig`
-
-#### 4.8 UX Front
-
-- [ ] Pagination articles : `ArticleRepository::findPublishedPaginated()` + `KnpPaginatorBundle` ou pagination manuelle
-- [ ] Page résultats de recherche dédiée (remplacer le dropdown) avec highlighting du terme
-- [ ] Breadcrumbs uniformes sur toutes les pages (article, page, catégorie, recherche)
-- [ ] Articles connexes en fin d'article (3 articles de la même catégorie)
-- [ ] Temps de lecture estimé (`ceil(str_word_count(content) / 200)` minutes)
-- [ ] Boutons partage social (Facebook, X, LinkedIn, copier le lien) — liens statiques, pas de SDK
-- [ ] Commentaires visibles directement (supprimer l'accordion)
-- [ ] Archives widget dynamique (groupé par mois/année depuis les articles publiés)
-
-**Fichiers modifiés :** `ArticleController.php`, `SearchController.php`, `ArticleRepository.php`, `article/show.html.twig`, `categorie/show.html.twig`, `widgets/archives.html.twig`, `widgets/subscribe.html.twig`
-**Fichiers créés :** `templates/search/results.html.twig`
+- [x] Pagination articles — `findPublishedPaginated()` avec Doctrine Paginator + template Bootstrap
+- [x] Filtre archives par mois/année — plage de dates DQL dans `findPublishedPaginated(month, year)`
+- [x] `show_all.html.twig` — refonte complète (layout responsive, pagination, filtre archive, breadcrumbs)
+- [x] Articles connexes — `findRelated()` (même catégorie, exclut courant)
+- [x] Temps de lecture — filtre Twig `readingTime` (200 mots/min)
+- [x] Boutons partage social — Facebook, Twitter, LinkedIn, copier le lien (statique, pas de SDK)
+- [x] Commentaires visibles directement (accordion supprimé)
+- [x] Archives widget dynamique — `findArchiveMonths()` (SQL natif GROUP BY mois/année)
+- [x] Flash messages — alerts Bootstrap dismissible (au lieu de toast-body)
+- [x] Breadcrumbs uniformes sur article, page, blog
+- [x] Lien Contact footer câblé
 
 #### 4.9 UX Visuels & Mobile
 
 - [ ] Animations hover cards articles (scale + shadow transition CSS)
 - [ ] Transitions CSS sur les boutons (0.2s ease)
-- [ ] Flash messages en toast Bootstrap auto-dismiss (3s)
 - [ ] Breakpoint tablette 768px (optimiser le layout 2 colonnes)
 - [ ] Tailles tactiles min 44x44px sur les boutons/liens mobiles
 - [ ] Images responsives `srcset` sur les articles (si Media gère plusieurs tailles)
-
-**Fichiers modifiés :** `assets/css/base/global.scss`, `article.scss`, `article_list.scss`, `header.scss`, `responsive/offcanvas-menu.scss`, `base.html.twig`
+- [ ] Page résultats de recherche dédiée (remplacer le dropdown) avec highlighting du terme
 
 ---
 
@@ -398,6 +466,7 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - **Jamais** `findAll()` dans les controllers → méthodes Repository
 - **Toujours** ownership check avant modif d'une ressource utilisateur
 - **Toujours** `HtmlSanitizer` sur contenu rendu avec `|raw`
+- **Toujours** vérifier `site.owner` pour les actions ROLE_FREELANCE
 
 ### Sécurité
 - CSRF activé globalement
@@ -408,6 +477,7 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - SCSS avec CSS custom properties (pas de couleurs hardcodées)
 - Stimulus pour le JS interactif
 - Bootstrap 5 personnalisé via custom properties
+- `loading="lazy"` systématique sur les images
 
 ---
 
@@ -488,7 +558,7 @@ cp .env.local.example .env.local    # Éditer BDD, APP_SECRET, MAILER_DSN (Brevo
 make up && make db && make assets
 docker compose exec php php bin/console app:create-super-admin
 docker compose exec php php bin/console app:init-site
-# Se connecter /admin → personnaliser le site
+# Se connecter /admin → personnaliser le site (template, couleurs, logo)
 ```
 
 ---
@@ -506,7 +576,8 @@ blog_web/
 │   │   ├── blocks-editor.js         # Entry admin (TipTap)
 │   │   └── blocks-editor.scss
 │   └── css/base/
-│       └── blocks.scss              # Styles blocs front
+│       ├── blocks.scss              # Styles blocs front
+│       └── variables.scss           # CSS custom properties
 ├── src/
 │   ├── Entity/
 │   │   ├── PageView.php             # Stats de visites
@@ -514,7 +585,8 @@ blog_web/
 │   ├── Controller/
 │   │   ├── Admin/Api/
 │   │   │   └── MediaApiController.php
-│   │   └── SitemapController.php
+│   │   ├── SitemapController.php
+│   │   └── RobotsController.php     # robots.txt dynamique
 │   ├── EventSubscriber/
 │   │   └── PageViewSubscriber.php   # Log visites front
 │   ├── Service/
@@ -524,10 +596,17 @@ blog_web/
 │   └── Model/
 │       └── TenantAwareInterface.php
 ├── templates/
+│   ├── themes/
+│   │   ├── default/                 # Template standard (blog/vitrine)
+│   │   │   ├── base.html.twig
+│   │   │   └── home.html.twig
+│   │   ├── corporate/               # Template sobre B2B
+│   │   ├── portfolio/               # Template visuel/galerie
+│   │   └── landing/                 # One-page conversion
+│   ├── _partials/                   # Partials communs à tous les thèmes
+│   │   └── tiptap_render.html.twig
 │   ├── admin/field/
 │   │   └── tiptap_editor.html.twig  # Champ custom EasyAdmin
-│   ├── _partials/
-│   │   └── tiptap_render.html.twig
 │   └── search/
 │       └── results.html.twig
 └── ...

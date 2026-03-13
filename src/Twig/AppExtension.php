@@ -39,6 +39,10 @@ class AppExtension extends AbstractExtension
 
     public function menuLink(Menu $menu): string
     {
+        if ($menu->getTarget() === 'url' && $menu->getUrl() !== null) {
+            return $menu->getUrl();
+        }
+
         $article = $menu->getArticle();
         if ($article !== null && $article->getSlug() !== null) {
             return $this->router->generate('app_article_show', ['slug' => $article->getSlug()]);

@@ -22,11 +22,11 @@ class Menu
     #[ORM\Column(nullable: true)]
     private ?int $menu_order = null;
 
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'sub_menu')]
-    private Collection $sub_menu;
-
     #[ORM\Column]
     private ?bool $is_visible = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $target = null;
 
     #[ORM\ManyToOne]
     private ?Article $article = null;
@@ -37,14 +37,21 @@ class Menu
     #[ORM\ManyToOne]
     private ?Page $page = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $target = null;
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?self $parent = null;
 
+    /** @var Collection<int, self> */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[ORM\OrderBy(['menu_order' => 'ASC'])]
+    private Collection $children;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
 
     public function __construct()
     {
-        $this->sub_menu = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,30 +83,6 @@ class Menu
         return $this;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
-    public function getSubMenu(): Collection
-    {
-        return $this->sub_menu;
-    }
-
-    public function addSubMenu(self $subMenu): self
-    {
-        if (!$this->sub_menu->contains($subMenu)) {
-            $this->sub_menu->add($subMenu);
-        }
-
-        return $this;
-    }
-
-    public function removeSubMenu(self $subMenu): self
-    {
-        $this->sub_menu->removeElement($subMenu);
-
-        return $this;
-    }
-
     public function isIsVisible(): ?bool
     {
         return $this->is_visible;
@@ -108,6 +91,18 @@ class Menu
     public function setIsVisible(bool $is_visible): self
     {
         $this->is_visible = $is_visible;
+
+        return $this;
+    }
+
+    public function getTarget(): ?string
+    {
+        return $this->target;
+    }
+
+    public function setTarget(string $target): self
+    {
+        $this->target = $target;
 
         return $this;
     }
@@ -148,23 +143,59 @@ class Menu
         return $this;
     }
 
-
-    public function getTarget(): ?string
+    public function getParent(): ?self
     {
-        return $this->target;
+        return $this->parent;
     }
 
-    public function setTarget(string $target): self
+    public function setParent(?self $parent): self
     {
-        $this->target = $target;
+        $this->parent = $parent;
 
         return $this;
     }
 
+    /** @return Collection<int, self> */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children->add($child);
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        if ($this->children->removeElement($child)) {
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
 
     public function __toString(): string
     {
         return $this->name;
     }
-
 }

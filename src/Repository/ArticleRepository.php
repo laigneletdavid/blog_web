@@ -129,11 +129,10 @@ class ArticleRepository extends ServiceEntityRepository
             WHERE published = 1
             GROUP BY year, month
             ORDER BY year DESC, month DESC
-            LIMIT :limit
+            LIMIT ' . (int) $limit . '
         ';
 
-        return $conn->executeQuery($sql, ['limit' => $limit], ['limit' => \PDO::PARAM_INT])
-            ->fetchAllAssociative();
+        return $conn->executeQuery($sql)->fetchAllAssociative();
     }
 
     /**

@@ -44,6 +44,9 @@ class Page implements TimestampedInterface
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $draftBlocks = null;
 
+    #[ORM\Column(length: 30, options: ['default' => 'default'])]
+    private string $template = 'default';
+
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
     private Collection $tag;
 
@@ -208,6 +211,18 @@ class Page implements TimestampedInterface
     public function setBlocksJson(?string $json): self
     {
         $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
+
+        return $this;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(string $template): self
+    {
+        $this->template = $template;
 
         return $this;
     }
