@@ -38,6 +38,15 @@ class Page implements TimestampedInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updated_at = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $blocks = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $draftBlocks = null;
+
+    #[ORM\Column(length: 30, options: ['default' => 'default'])]
+    private string $template = 'default';
+
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
     private Collection $tag;
 
@@ -164,5 +173,57 @@ class Page implements TimestampedInterface
     public function __toString(): string
     {
         return $this->title;
+    }
+
+    public function getBlocks(): ?array
+    {
+        return $this->blocks;
+    }
+
+    public function setBlocks(?array $blocks): self
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    public function getDraftBlocks(): ?array
+    {
+        return $this->draftBlocks;
+    }
+
+    public function setDraftBlocks(?array $draftBlocks): self
+    {
+        $this->draftBlocks = $draftBlocks;
+
+        return $this;
+    }
+
+    /**
+     * Propriete virtuelle pour le formulaire EasyAdmin.
+     * Serialise/deserialise le JSON TipTap pour le champ textarea.
+     */
+    public function getBlocksJson(): ?string
+    {
+        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+    }
+
+    public function setBlocksJson(?string $json): self
+    {
+        $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
+
+        return $this;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(string $template): self
+    {
+        $this->template = $template;
+
+        return $this;
     }
 }

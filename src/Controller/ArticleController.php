@@ -16,17 +16,36 @@ use Symfony\Component\Routing\Attribute\Route;
 class ArticleController extends AbstractController
 {
     #[Route('/', name: 'show_all')]
-    public function showAll(ArticleRepository $articleRepository): Response
+    public function showAll(Request $request, ArticleRepository $articleRepository): Response
     {
+        $page = max(1, $request->query->getInt('page', 1));
+        $month = $request->query->getInt('month') ?: null;
+        $year = $request->query->getInt('year') ?: null;
+
+        $perPage = 9;
+        $paginator = $articleRepository->findPublishedPaginated($page, $perPage, $month, $year);
+        $totalPages = max(1, (int) ceil(count($paginator) / $perPage));
+
+        // Titre dynamique pour les archives
+        $titlePage = 'Tous les articles';
+        if ($month && $year) {
+            $monthNames = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            $titlePage = sprintf('Articles de %s %d', $monthNames[$month] ?? '', $year);
+        }
+
         return $this->render('article/show_all.html.twig', [
-            'title_page' => 'ShowAll',
-            'text_page' => 'TextPage',
-            'articles' => $articleRepository->findAllPublished(),
+            'title_page' => $titlePage,
+            'text_page' => 'Blog',
+            'articles' => $paginator,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'filterMonth' => $month,
+            'filterYear' => $year,
         ]);
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(?Article $article, Request $request, EntityManagerInterface $em): Response
+    public function show(?Article $article, Request $request, EntityManagerInterface $em, ArticleRepository $articleRepository): Response
     {
         if (!$article) {
             throw $this->createNotFoundException('Article introuvable.');
@@ -46,16 +65,22 @@ class ArticleController extends AbstractController
                 $em->persist($comment);
                 $em->flush();
 
+                $this->addFlash('success', 'Commentaire publie avec succes.');
+
                 return $this->redirectToRoute('app_article_show', [
                     'slug' => $article->getSlug(),
                 ]);
             }
         }
 
+        // Articles connexes (meme categorie)
+        $relatedArticles = $articleRepository->findRelated($article, 3);
+
         return $this->render('article/show.html.twig', [
             'title_page' => 'Article',
             'article' => $article,
             'commentForm' => $commentForm,
+            'relatedArticles' => $relatedArticles,
         ]);
     }
 }

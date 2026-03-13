@@ -58,7 +58,7 @@ class SiteCrudController extends AbstractCrudController
             ->setLabel('Ville');
 
         yield TextField::new('google_maps')
-            ->setLabel('Lien Goolge map de votre adresse');
+            ->setLabel('Lien Google Maps de votre adresse');
     }
 
 }

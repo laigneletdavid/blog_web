@@ -4,7 +4,7 @@
     <div class="d-flex flex-lg-row flex-column">
         <div class="col-lg-4 article_list_large_img" >
             {% if article.featuredMedia %}
-                <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
+                <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}" loading="lazy">
             {% else %}
             {% endif %}
         </div>

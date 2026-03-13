@@ -28,7 +28,20 @@
       "Bash(docker compose exec php composer require symfonycasts/reset-password-bundle --no-interaction)",
       "Bash(docker compose exec php php bin/console make:reset-password --no-interaction)",
       "Bash(grep -i \"reset-password\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/composer.json //wsl.localhost/Ubuntu/home/laign/projects/blog_web/composer.lock)",
-      "Bash(wsl -d Ubuntu bash -c \"rm /home/laign/projects/blog_web/templates/media/index.html.twig && rmdir /home/laign/projects/blog_web/templates/media 2>/dev/null; echo ''Done''\")"
+      "Bash(wsl -d Ubuntu bash -c \"rm /home/laign/projects/blog_web/templates/media/index.html.twig && rmdir /home/laign/projects/blog_web/templates/media 2>/dev/null; echo ''Done''\")",
+      "Bash(ls \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\src\\\\Controller\\\\Admin\\\\LikeCrudController.php\")",
+      "Bash(ls \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\src\\\\Controller\\\\Admin\\\\OptionCrudController.php\")",
+      "Read(//mnt/wslg/home/laign/projects/**)",
+      "Read(//root/**)",
+      "Bash(docker compose run --rm node npm run dev)",
+      "Bash(cd \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\")",
+      "Bash(wsl -e mkdir -p /home/laign/projects/blog_web/templates/admin/menu)",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SELECT DATABASE\\(\\)\"\" 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SHOW TABLES\"\" 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:schema:validate 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker exec php_kayre php bin/console doctrine:query:sql \"\"SELECT id, name, parent_id, url, target FROM menu ORDER BY menu_order\"\" 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose ps 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console doctrine:query:sql ''SHOW TABLES'' 2>&1\")"
     ]
   }
 }

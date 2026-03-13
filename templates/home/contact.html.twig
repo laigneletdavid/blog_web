@@ -9,7 +9,7 @@
     <div class="breadcrum">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
             </ol>
         </nav>
@@ -33,29 +33,10 @@
         <div class="d-flex flex-column-reverse flex-lg-row">
             <div class="col-lg-8 p-5 contact_form">
                 <h2 class="title-one">{{ title_page }}</h2>
-                <form action="#">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nom</label>
-                        <input type="text" class="form-control" id="name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="firstname" class="form-label">Prénom</label>
-                        <input type="text" class="form-control" id="firstname">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Sujet message</label>
-                        <input type="text" class="form-control" id="subject">
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Votre message</label>
-                        <textarea class="form-control" placeholder="Votre message ..." id="message" style="height: 100px"></textarea>
-                    </div>
-                    <button class="btn-font btn btn-primary" type="submit">Envoyer</button>
-                </form>
+                {{ form_start(contactForm) }}
+                    {{ form_widget(contactForm) }}
+                    <button class="btn-font btn btn-primary mt-3" type="submit">Envoyer</button>
+                {{ form_end(contactForm) }}
             </div>
             <div class="col-lg-4 contact_widgets">
                 <div class="logo d-flex flex-column align-items-center">

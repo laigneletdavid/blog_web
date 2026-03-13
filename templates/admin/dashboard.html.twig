@@ -12,70 +12,78 @@
     .setController('App\\Controller\\Admin\\ArticleCrudController')
     .setAction('index') %}
 
+{% set url_new_article = ea_url()
+    .setController('App\\Controller\\Admin\\ArticleCrudController')
+    .setAction('new') %}
+
+{% set url_new_page = ea_url()
+    .setController('App\\Controller\\Admin\\PageCrudController')
+    .setAction('new') %}
 
 {% block content_title %}
     <h1 class="title_admin">{{ title_admin }}</h1>
 {% endblock %}
-{% block page_actions %}
-   {# <a class="btn btn-primary" href="...">Some Action</a> #}
-{% endblock %}
 
 {% block main %}
 
+    {# --- Raccourcis rapides --- #}
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <a href="{{ url_new_article }}" class="btn btn-primary w-100 py-3">
+                <i class="fas fa-plus me-2"></i> Nouvel article
+            </a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a href="{{ url_new_page }}" class="btn btn-outline-primary w-100 py-3">
+                <i class="fas fa-plus me-2"></i> Nouvelle page
+            </a>
+        </div>
+    </div>
 
-    <div class="row g-4 pb-5 pt-3 row-cols-1 row-cols-lg-3">
+    {# --- Cards principales --- #}
+    <div class="row g-4 pb-5 row-cols-1 row-cols-lg-3">
         {% if is_granted('ROLE_ADMIN') %}
             <div class="col-12 col-lg-4">
-                <div class="feature d-flex flex-column justify-content-between">
+                <div class="feature d-flex flex-column justify-content-between h-100">
                     <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
                         <i class="fa-fw fas fa-gear"></i>
-                        <h3 class="fs-2 ps-1 feature-title">Réglage de votre site</h3>
+                        <h3 class="fs-2 ps-1 feature-title">Identité du site</h3>
                     </div>
-
-                    <p>Ce sont les informations de base de votre site web et de votre identité. Remplissez les consciencieusement, ce sont avec ces informations que les visiteurs vous trouveront et vous contacteront.</p>
-                    <a href="{{ url_site }}" class="btn-font-secondary btn btn-secondary" target="_self">Entrer les informations</a>
+                    <p>Nom, coordonnées, logo : les informations essentielles de votre site.</p>
+                    <a href="{{ url_site }}" class="btn-font-secondary btn btn-secondary">Modifier</a>
                 </div>
             </div>
         {% endif %}
         <div class="col-12 col-lg-4">
-            <div class="feature d-flex flex-column justify-content-between">
+            <div class="feature d-flex flex-column justify-content-between h-100">
                 <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
                     <i class="fa-fw fas fa-file"></i>
-                    <h3 class="fs-2 ps-1 feature-title">Vos pages</h3>
+                    <h3 class="fs-2 ps-1 feature-title">Pages</h3>
                 </div>
-
-                <p>Les pages de votre site web sont la base de la navigation et la source principale d'information pour les visiteurs de votre site web. Réfléchissez bien aux messages que vous souhaitez faire passer !</p>
-                <a href="{{ url_page }}" class="btn-font-secondary btn btn-secondary" target="_self">Voir les pages</a>
+                <p>Gérez les pages de votre site web.</p>
+                <a href="{{ url_page }}" class="btn-font-secondary btn btn-secondary">Voir les pages</a>
             </div>
         </div>
         <div class="col-12 col-lg-4">
-            <div class="feature d-flex flex-column justify-content-between">
+            <div class="feature d-flex flex-column justify-content-between h-100">
                 <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                    <i class="menu-icon fa-fw fas fa-newspaper"></i>
-                    <h3 class="fs-2 ps-1 feature-title ">Votre blog</h3>
+                    <i class="fa-fw fas fa-newspaper"></i>
+                    <h3 class="fs-2 ps-1 feature-title">Blog</h3>
                 </div>
-
-                <p>Un blog est une source permanante d'information pour vos visiteurs, mais également pour le référencement de votre site. Un blog bien tenu et régulièrement alimenté, permet d'augmenter les visites et le référencement naturel de votre site.</p>
-                <a href="{{ url_blog }}" class="btn-font-secondary btn btn-secondary" target="_self">Voir les articles</a>
+                <p>Publiez des articles pour vos visiteurs et votre référencement.</p>
+                <a href="{{ url_blog }}" class="btn-font-secondary btn btn-secondary">Voir les articles</a>
             </div>
         </div>
     </div>
 
-    <div class="row content-dashboard d-flex flex-column flex-lg-row">
-
-        <div class="content-content col-12 col-lg-8">
-            <p>Voici ma page d'administration à configurer selon les besoins, sinon je fais ma page d'accueil admin comme prévu</p>
-        </div>
-        <div class="content-help col-12 col-lg-4 d-flex flex-column">
-            <div class="content-color">
-                <h2 class="help-title">Aide et astuces</h2>
-                <p>On retrouvera ici des astuces sur la création du site, et les base d'un référencement réussi.</p>
+    {# --- Zone aide --- #}
+    <div class="row">
+        <div class="col-12 col-lg-4 offset-lg-8">
+            <div class="content-color p-3 rounded">
+                <h2 class="help-title"><i class="fa fa-question-circle me-2"></i>Aide</h2>
+                <p class="mb-0">Retrouvez ici des astuces sur la gestion de votre site et les bases du référencement.</p>
             </div>
         </div>
-
     </div>
-
-
-
 
 {% endblock %}

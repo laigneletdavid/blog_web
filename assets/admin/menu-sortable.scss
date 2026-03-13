@@ -1,0 +1,58 @@
+// ─── Menu Manager (DnD) ─────────────────────────────────────────────────────
+
+.menu-manager {
+    max-width: 800px;
+}
+
+.menu-sortable-list {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.menu-sortable-item {
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.menu-sortable-handle {
+    background: #fff;
+    transition: background 0.15s;
+
+    &:hover {
+        background: #f8f9fa;
+    }
+}
+
+.menu-sortable-children {
+    min-height: 6px;
+    border-left: 3px solid #0455C0;
+    margin-left: 1.5rem;
+    background: #fafbfc;
+
+    .menu-sortable-handle {
+        background: #fafbfc;
+
+        &:hover {
+            background: #f0f4f8;
+        }
+    }
+}
+
+.menu-sortable-ghost {
+    opacity: 0.4;
+    background: #e3f2fd !important;
+}
+
+.menu-sortable-chosen {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.drag-handle {
+    cursor: grab;
+    font-size: 1.1rem;
+}

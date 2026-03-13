@@ -40,7 +40,50 @@ class MenuRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Menu[] Returns an array of Menu objects
+     * Root visible menu items with visible children eager-loaded.
+     *
+     * @return Menu[]
+     */
+    public function findRootMenuVisible(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.children', 'c', 'WITH', 'c.is_visible = true')
+            ->addSelect('c')
+            ->where('m.is_visible = true')
+            ->andWhere('m.parent IS NULL')
+            ->orderBy('m.menu_order', 'ASC')
+            ->addOrderBy('c.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * All root menu items with children, for admin DnD page.
+     *
+     * @return Menu[]
+     */
+    public function findAllOrdered(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.children', 'c')
+            ->addSelect('c')
+            ->where('m.parent IS NULL')
+            ->orderBy('m.menu_order', 'ASC')
+            ->addOrderBy('c.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Menu[]
+     */
+    public function findMenuVisible(): array
+    {
+        return $this->findRootMenuVisible();
+    }
+
+    /**
+     * @return Menu[]
      */
     public function findByVisible($visible): array
     {
@@ -49,30 +92,6 @@ class MenuRepository extends ServiceEntityRepository
             ->setParameter('val', $visible)
             ->orderBy('m.menu_order', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-
-    /**
-     * @return Menu[] Returns an array of Menu objects
-     */
-    public function findMenuVisible(): array
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.is_visible = true')
-            ->orderBy('m.menu_order', 'ASC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-//    public function findOneBySomeField($value): ?Menu
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

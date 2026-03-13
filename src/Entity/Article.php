@@ -58,6 +58,11 @@ class Article implements TimestampedInterface
     #[ORM\ManyToOne]
     private ?Media $featured_media = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $blocks = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $draftBlocks = null;
 
     public function __construct()
     {
@@ -270,4 +275,43 @@ class Article implements TimestampedInterface
         return $this;
     }
 
+    public function getBlocks(): ?array
+    {
+        return $this->blocks;
+    }
+
+    public function setBlocks(?array $blocks): self
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    public function getDraftBlocks(): ?array
+    {
+        return $this->draftBlocks;
+    }
+
+    public function setDraftBlocks(?array $draftBlocks): self
+    {
+        $this->draftBlocks = $draftBlocks;
+
+        return $this;
+    }
+
+    /**
+     * Propriete virtuelle pour le formulaire EasyAdmin.
+     * Serialise/deserialise le JSON TipTap pour le champ textarea.
+     */
+    public function getBlocksJson(): ?string
+    {
+        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+    }
+
+    public function setBlocksJson(?string $json): self
+    {
+        $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
+
+        return $this;
+    }
 }
