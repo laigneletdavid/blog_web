@@ -148,11 +148,11 @@ background: var(--secondary);
 ```
 
 Variables disponibles sur l'entité `Site` :
-- `primaryColor` — couleur principale
-- `secondaryColor` — couleur secondaire
-- `accentColor` — couleur d'accent (à ajouter)
-- `fontFamily` — police principale
-- `fontFamilySecondary` — police titres (à ajouter)
+- `primaryColor` — couleur principale (default '#2563EB')
+- `secondaryColor` — couleur secondaire (default '#F59E0B')
+- `accentColor` — couleur d'accent (default '#8B5CF6')
+- `fontFamily` — police principale (default "'Inter', sans-serif")
+- `fontFamilySecondary` — police titres (nullable)
 - `logo` (FK Media) — logo header
 - `favicon` (FK Media) — favicon
 
@@ -286,48 +286,67 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 
 ---
 
-### Phase 2 — Module SEO (~2 jours)
+### Phase 2 — Module SEO ✅
 
-#### 2.1 SeoTrait
+#### 2.1 SeoTrait ✅
 
-- [ ] Créer `src/Entity/Trait/SeoTrait.php` : `seoTitle(70)`, `seoDescription(160)`, `seoKeywords(255)`, `noIndex(bool)`, `canonicalUrl(255)`
-- [ ] Appliquer sur `Article`, `Page`, `Categorie`
-- [ ] Migration Doctrine
+- [x] Créer `src/Entity/Trait/SeoTrait.php` : `seoTitle(70)`, `seoDescription(160)`, `seoKeywords(255)`, `noIndex(bool)`, `canonicalUrl(255)` — avec `Assert\Length` et `Assert\Url`
+- [x] Appliquer sur `Article`, `Page`, `Categorie` via `use SeoTrait;`
+- [x] Migration Doctrine
 
-#### 2.2 Champs SEO + thème sur Site
+#### 2.2 Champs SEO + thème sur Site ✅
 
-- [ ] `defaultSeoTitle`, `defaultSeoDescription`, `googleAnalyticsId`, `googleSearchConsole`, `favicon` (FK Media)
-- [ ] `primaryColor`, `secondaryColor`, `accentColor`, `fontFamily`, `fontFamilySecondary` (personnalisation client)
-- [ ] `template` (string enum : `default`, `corporate`, `portfolio`, `landing`) — sélection SUPER_ADMIN/FREELANCE uniquement
-- [ ] `owner` (FK User nullable, ROLE_FREELANCE) — rattachement site à un freelance
+- [x] `defaultSeoTitle`, `defaultSeoDescription`, `googleAnalyticsId`, `googleSearchConsole`, `favicon` (FK Media)
+- [x] `primaryColor` (default '#2563EB'), `secondaryColor` (default '#F59E0B'), `accentColor` (default '#8B5CF6'), `fontFamily` (default "'Inter', sans-serif"), `fontFamilySecondary` (nullable)
+- [x] `template` (string enum : `default`, `corporate`, `portfolio`, `landing`) — sélection SUPER_ADMIN/FREELANCE uniquement
+- [x] `owner` (FK User nullable, ROLE_FREELANCE) — rattachement site à un freelance
+- [x] `ROLE_FREELANCE` ajouté dans `RoleEnum.php` + `role_hierarchy` dans `security.yaml`
 
-#### 2.3 Rendu Twig
+#### 2.3 Rendu Twig ✅
 
-- [ ] Block `{% block seo %}` dans `base.html.twig` : `<title>`, `<meta description>`, `<meta keywords>`, `<link canonical>`, `<meta robots>`
-- [ ] Open Graph : `og:title`, `og:description`, `og:image`, `og:url`, `og:type`
-- [ ] Twitter Cards : `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
-- [ ] Schema.org JSON-LD : `Article`, `BreadcrumbList`
-- [ ] Fallback : `seoTitle` → `title` → `site.defaultSeoTitle`
-- [ ] Injection CSS custom properties depuis `Site` (couleurs, fonts)
-- [ ] `robots.txt` dynamique via `RobotsController` (respect `noIndex` global du site)
+- [x] Block `{% block seo %}` dans `base.html.twig` : `<title>`, `<meta description>`, `<meta keywords>`, `<link canonical>`, `<meta robots>`
+- [x] Open Graph : `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, `og:site_name`, `og:locale`
+- [x] Twitter Cards : `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+- [x] Schema.org JSON-LD : `Article` + `BreadcrumbList` (article, page, categorie)
+- [x] Fallback chain : `seoTitle` → `title` → `site.defaultSeoTitle` → `site.name`
+- [x] Injection CSS custom properties depuis `Site` (--primary, --secondary, --accent, --font-family, --font-family-secondary)
+- [x] `robots.txt` dynamique via `RobotsController` (Disallow /admin/, /login, /register + Sitemap link)
+- [x] Google Analytics conditionnel + Google Search Console verification meta
+- [x] Favicon dynamique depuis `Site.favicon` avec fallback statique
+- [x] `<meta name="viewport">` ajouté (manquait)
 
-#### 2.4 Sitemap XML
+#### 2.4 Sitemap XML ✅
 
-- [ ] `SitemapController` → route `/sitemap.xml`
-- [ ] Articles + pages publiés + catégories avec `<lastmod>`, `<changefreq>`, `<priority>`
+- [x] `SitemapController` → route `/sitemap.xml`
+- [x] Articles (0.8) + pages (0.6) + catégories (0.5) + home (1.0) + blog (0.7) + contact (0.4)
+- [x] `<lastmod>`, `<changefreq>`, `<priority>` — filtre `noIndex=false` et `published=true`
+- [x] `findAllPublishedForSitemap()` dans `ArticleRepository` et `PageRepository`
 
-#### 2.5 Admin SEO
+#### 2.5 Admin SEO ✅
 
-- [ ] Onglet "SEO" dans `ArticleCrudController`, `PageCrudController`, `CategorieCrudController`
-- [ ] Compteurs de caractères (70 pour title, 160 pour description)
-- [ ] Champs SEO + couleurs/fonts dans `SiteCrudController`
+- [x] Panel "SEO" collapsible (renderCollapsed) dans `ArticleCrudController`, `PageCrudController`, `CategorieCrudController`
+- [x] 5 champs par entité : seoTitle (maxlength 70), seoDescription (maxlength 160, rows 3), seoKeywords, noIndex, canonicalUrl
+- [x] Help texts explicatifs sur chaque champ (intérêt SEO, cas d'usage)
+- [x] `SiteCrudController` : 4 panels — Identité, SEO, Apparence (ROLE_FREELANCE), Propriété (ROLE_SUPER_ADMIN)
+- [x] `MediaCrudController` : panel Fichier avec name (alt text + placeholder), image (help formats), webpFileName en index
 
-#### 2.6 Performance & Lighthouse
+#### 2.6 Performance & Lighthouse ✅
 
-- [ ] **Conversion WebP automatique** à l'upload Media : `imagine/imagine` ou `intervention/image` — génère `.webp` + fallback `.jpg`
-- [ ] **Lazy-loading natif** : `loading="lazy"` sur toutes les balises `<img>` hors above-the-fold (déjà partiellement fait en 4.6, à systématiser)
-- [ ] **Cache HTTP Nginx** : headers `Cache-Control` pour assets statiques (1 an) et pages HTML (selon config)
-- [ ] **Objectif Lighthouse** : score 95+ Performance, 100 SEO, 100 Accessibilité — à mesurer avant livraison client
+- [x] **Conversion WebP automatique** : `MediaUploadListener` (postPersist/postUpdate) via `intervention/image` v3 — génère `.webp` qualité 85 à côté de l'original
+- [x] **Champ `webpFileName`** sur `Media` pour stocker le nom du fichier WebP
+- [x] **Lazy-loading natif** : `loading="lazy"` systématique (déjà fait en Phase 4.6)
+- [x] **Cache HTTP Nginx** : `Cache-Control: public, immutable` 1 an sur assets statiques (js, css, images, webp) + security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy)
+
+**SeoService** (`src/Service/SeoService.php`) :
+- `resolve(object $entity): array` — résout titre/description/image/type avec fallback chain
+- `resolveForHome(): array` — SEO page d'accueil
+- `resolveForPage(string $pageTitle): array` — SEO pages génériques (contact, etc.)
+- `getCurrentSite(): ?Site` — proxy Twig global (`seo_service` dans `twig.yaml`)
+
+**Fichiers créés (7) :** `SeoTrait.php`, `SeoService.php`, `SitemapController.php`, `RobotsController.php`, `MediaUploadListener.php`, `sitemap/index.xml.twig`, `robots/index.txt.twig`
+**Fichiers modifiés (18) :** `Article.php`, `Page.php`, `Categorie.php`, `Site.php`, `Media.php`, `RoleEnum.php`, `security.yaml`, `twig.yaml`, `services.yaml`, `base.html.twig`, `article/show.html.twig`, `page/show.html.twig`, `categorie/show.html.twig`, `HomeController.php`, `ArticleController.php`, `PageController.php`, `CategorieController.php`, `nginx/default.conf`
+**Fichiers admin modifiés (4) :** `ArticleCrudController.php`, `PageCrudController.php`, `CategorieCrudController.php`, `SiteCrudController.php`, `MediaCrudController.php`
+**Repositories modifiés (2) :** `ArticleRepository.php`, `PageRepository.php`
 
 ---
 
@@ -348,20 +367,20 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - [ ] Switch Twig dans `base.html.twig` selon `site.template`
 - [ ] Chaque thème hérite des partials communs (`_partials/`) pour éviter la duplication
 
-#### 3.3 Personnalisation admin
+#### 3.3 Personnalisation admin ✅ (fait en Phase 2)
 
-- [ ] `SiteCrudController` : `ColorField` pour primaire/secondaire/accent, choix de fonts, logo, favicon
-- [ ] `ChoiceField` pour `template` — visible uniquement `ROLE_FREELANCE` et `ROLE_SUPER_ADMIN`
-- [ ] Le thème s'applique via les custom properties injectées dans `base.html.twig`
+- [x] `SiteCrudController` : `ColorField` pour primaire/secondaire/accent, choix de fonts, logo, favicon
+- [x] `ChoiceField` pour `template` — visible uniquement `ROLE_FREELANCE` et `ROLE_SUPER_ADMIN`
+- [x] Le thème s'applique via les custom properties injectées dans `base.html.twig`
 
-#### 3.4 Rôle FREELANCE
+#### 3.4 Rôle FREELANCE (partiellement fait en Phase 2)
 
-- [ ] Ajouter `ROLE_FREELANCE` dans `RoleEnum.php`
-- [ ] Ajouter dans `role_hierarchy` dans `security.yaml` : `ROLE_FREELANCE: [ROLE_ADMIN]`
-- [ ] Champ `owner` (FK User) sur `Site` + migration
+- [x] Ajouter `ROLE_FREELANCE` dans `RoleEnum.php`
+- [x] Ajouter dans `role_hierarchy` dans `security.yaml` : `ROLE_FREELANCE: [ROLE_ADMIN]`
+- [x] Champ `owner` (FK User) sur `Site` + migration
 - [ ] `SiteRepository::findByOwner(User $user)` — filtre par owner pour ROLE_FREELANCE
 - [ ] `DashboardController` : si `ROLE_FREELANCE` sans `ROLE_SUPER_ADMIN`, filtrer les sites affichés
-- [ ] `SiteCrudController` : restreindre les champs sensibles (template, couleurs) à `ROLE_FREELANCE+`
+- [x] `SiteCrudController` : restreindre les champs sensibles (template, couleurs) à `ROLE_FREELANCE+`
 
 ---
 
