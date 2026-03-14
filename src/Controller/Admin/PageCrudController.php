@@ -34,7 +34,8 @@ class PageCrudController extends AbstractCrudController
     {
         // --- Panel Contenu ---
         yield FormField::addPanel('Contenu')
-            ->setIcon('fa fa-pen');
+            ->setIcon('fa fa-pen')
+            ->collapsible();
 
         yield TextField::new('title', 'Titre de la page');
 
@@ -49,7 +50,8 @@ class PageCrudController extends AbstractCrudController
 
         // --- Panel Paramètres ---
         yield FormField::addPanel('Paramètres')
-            ->setIcon('fa fa-cog');
+            ->setIcon('fa fa-cog')
+            ->collapsible();
 
         yield AssociationField::new('featured_media', 'Image mise en avant');
 
@@ -80,6 +82,34 @@ class PageCrudController extends AbstractCrudController
 
         yield DateTimeField::new('updated_at', 'Modifiée le')
             ->hideOnForm();
+
+        // --- Panel SEO ---
+        yield FormField::addPanel('SEO')
+            ->setIcon('fa fa-search')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield TextField::new('seoTitle', 'Titre SEO')
+            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Un bon titre attire les clics. Max 70 caracteres. Laissez vide = titre de la page.')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
+            ->hideOnIndex();
+
+        yield TextareaField::new('seoDescription', 'Meta description')
+            ->setHelp('Texte affiche sous le titre dans les resultats Google. Un bon resume incite au clic et ameliore le taux de visite. Max 160 caracteres.')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
+            ->hideOnIndex();
+
+        yield TextField::new('seoKeywords', 'Mots-cles')
+            ->setHelp('Mots-cles principaux de la page, separes par des virgules. Aide au referencement thematique.')
+            ->hideOnIndex();
+
+        yield BooleanField::new('noIndex', 'Masquer des moteurs')
+            ->setHelp('Si active, Google n\'indexera pas cette page. Utile pour les pages privees ou en construction.')
+            ->hideOnIndex();
+
+        yield TextField::new('canonicalUrl', 'URL canonique')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
+            ->hideOnIndex();
     }
 
     public function persistEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void

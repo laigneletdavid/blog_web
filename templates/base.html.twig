@@ -2,20 +2,87 @@
 {% set widget_articles = widget_service.findLastArticle %}
 {% set widget_article = widget_articles['0'] | default(null) %}
 {% set categories = widget_service.findCategories %}
+{% set site = seo_service.currentSite %}
 
 
 <!DOCTYPE html>
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>Blog&Web</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {# ====== SEO ====== #}
+        {% block seo %}
+        <title>{{ seo.title|default(site.defaultSeoTitle|default(site.name|default('Blog&Web'))) }}</title>
+        {% if seo.description|default(site.defaultSeoDescription|default('')) is not empty %}
+        <meta name="description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        {% endif %}
+        {% if seo.keywords|default('') is not empty %}
+        <meta name="keywords" content="{{ seo.keywords }}">
+        {% endif %}
+        {% if seo.noIndex|default(false) %}
+        <meta name="robots" content="noindex, nofollow">
+        {% endif %}
+        {% if seo.canonicalUrl|default('') is not empty %}
+        <link rel="canonical" href="{{ seo.canonicalUrl }}">
+        {% endif %}
+
+        {# Open Graph #}
+        <meta property="og:title" content="{{ seo.title|default(site.name|default('Blog&Web')) }}">
+        <meta property="og:description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        <meta property="og:type" content="{{ seo.type|default('website') }}">
+        <meta property="og:url" content="{{ app.request.uri }}">
+        <meta property="og:site_name" content="{{ site.name|default('Blog&Web') }}">
+        <meta property="og:locale" content="fr_FR">
+        {% if seo.image|default('') is not empty %}
+        <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% endif %}
+
+        {# Twitter Cards #}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ seo.title|default(site.name|default('Blog&Web')) }}">
+        <meta name="twitter:description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        {% if seo.image|default('') is not empty %}
+        <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% endif %}
+
+        {# Google Search Console #}
+        {% if site.googleSearchConsole|default('') is not empty %}
+        <meta name="google-site-verification" content="{{ site.googleSearchConsole }}">
+        {% endif %}
+        {% endblock %}
+
+        {# ====== JSON-LD Schema.org ====== #}
+        {% block jsonld %}{% endblock %}
+
+        {# ====== Favicon ====== #}
+        {% if site is not null and site.favicon is not null %}
+        <link rel="icon" type="image/png" href="{{ asset('documents/medias/' ~ site.favicon.fileName) }}">
+        {% else %}
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
         <link rel="manifest" href="{{ asset('images/site.webmanifest') }}">
+        {% endif %}
+
+        {# ====== CSS Custom Properties (theme depuis Site) ====== #}
+        {% if site is not null %}
+        <style>:root {
+            --primary: {{ site.primaryColor|default('#2563EB') }};
+            --secondary: {{ site.secondaryColor|default('#F59E0B') }};
+            --accent: {{ site.accentColor|default('#8B5CF6') }};
+            --font-family: {{ site.fontFamily|default("'Inter', sans-serif") }};
+            {% if site.fontFamilySecondary is not null and site.fontFamilySecondary is not empty %}
+            --font-family-secondary: {{ site.fontFamilySecondary }};
+            {% endif %}
+        }</style>
+        {% endif %}
+
+        {# ====== Fonts & Assets ====== #}
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -23,6 +90,12 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+        {# ====== Google Analytics ====== #}
+        {% if site is not null and site.googleAnalyticsId is not null and site.googleAnalyticsId is not empty %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.googleAnalyticsId }}"></script>
+        <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ site.googleAnalyticsId }}');</script>
+        {% endif %}
     </head>
     <body>
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Categorie;
 use App\Repository\CategorieRepository;
+use App\Service\SeoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -11,6 +12,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/categorie', name: 'app_categorie_')]
 class CategorieController extends AbstractController
 {
+    public function __construct(
+        private readonly SeoService $seoService,
+    ) {
+    }
+
     #[Route('/{slug}', name: 'show')]
     public function show(?Categorie $categorie, CategorieRepository $categorieRepository): Response
     {
@@ -23,6 +29,7 @@ class CategorieController extends AbstractController
             'articles' => $categorie->getArticles()->toArray(),
             'categories' => $categorieRepository->findAll(),
             'title_page' => $categorie->getName(),
+            'seo' => $this->seoService->resolve($categorie),
         ]);
     }
 }

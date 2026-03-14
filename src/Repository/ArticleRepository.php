@@ -161,4 +161,17 @@ class ArticleRepository extends ServiceEntityRepository
 
         return new \Doctrine\ORM\Tools\Pagination\Paginator($qb->getQuery());
     }
+
+    /**
+     * @return Article[]
+     */
+    public function findAllPublishedForSitemap(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.published = true')
+            ->andWhere('a.noIndex = false')
+            ->orderBy('a.updated_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
