@@ -4,6 +4,7 @@ twig:
     globals:
         menu_service: '@App\Service\MenuService'
         widget_service: '@App\Service\WidgetService'
+        seo_service: '@App\Service\SeoService'
 
 when@test:
     twig:

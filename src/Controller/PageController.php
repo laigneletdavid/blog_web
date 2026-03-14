@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Page;
+use App\Service\SeoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,6 +11,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/page', name: 'app_page_')]
 class PageController extends AbstractController
 {
+    public function __construct(
+        private readonly SeoService $seoService,
+    ) {
+    }
+
     #[Route('/{slug}', name: 'show')]
     public function show(?Page $page): Response
     {
@@ -21,6 +27,7 @@ class PageController extends AbstractController
             'page' => $page,
             'title_page' => $page->getTitle() ?? 'Page',
             'text_page' => '',
+            'seo' => $this->seoService->resolve($page),
         ]);
     }
 }

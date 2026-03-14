@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\SiteRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SiteRepository::class)]
 class Site
@@ -25,8 +26,6 @@ class Site
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
-
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $town = null;
 
@@ -45,7 +44,51 @@ class Site
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $phone = null;
 
+    // --- SEO ---
 
+    #[ORM\Column(length: 70, nullable: true)]
+    #[Assert\Length(max: 70)]
+    private ?string $defaultSeoTitle = null;
+
+    #[ORM\Column(length: 160, nullable: true)]
+    #[Assert\Length(max: 160)]
+    private ?string $defaultSeoDescription = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $googleAnalyticsId = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $googleSearchConsole = null;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    private ?Media $favicon = null;
+
+    // --- Apparence ---
+
+    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#2563EB'])]
+    private ?string $primaryColor = '#2563EB';
+
+    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#F59E0B'])]
+    private ?string $secondaryColor = '#F59E0B';
+
+    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#8B5CF6'])]
+    private ?string $accentColor = '#8B5CF6';
+
+    #[ORM\Column(length: 100, nullable: true, options: ['default' => "'Inter', sans-serif"])]
+    private ?string $fontFamily = "'Inter', sans-serif";
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $fontFamilySecondary = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'default'])]
+    private string $template = 'default';
+
+    // --- Proprietaire (Freelance) ---
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $owner = null;
+
+    // --- Getters / Setters ---
 
     public function getId(): ?int
     {
@@ -99,8 +142,6 @@ class Site
 
         return $this;
     }
-
-
 
     public function getTown(): ?string
     {
@@ -174,5 +215,153 @@ class Site
         return $this;
     }
 
+    // --- SEO Getters/Setters ---
 
+    public function getDefaultSeoTitle(): ?string
+    {
+        return $this->defaultSeoTitle;
+    }
+
+    public function setDefaultSeoTitle(?string $defaultSeoTitle): self
+    {
+        $this->defaultSeoTitle = $defaultSeoTitle;
+
+        return $this;
+    }
+
+    public function getDefaultSeoDescription(): ?string
+    {
+        return $this->defaultSeoDescription;
+    }
+
+    public function setDefaultSeoDescription(?string $defaultSeoDescription): self
+    {
+        $this->defaultSeoDescription = $defaultSeoDescription;
+
+        return $this;
+    }
+
+    public function getGoogleAnalyticsId(): ?string
+    {
+        return $this->googleAnalyticsId;
+    }
+
+    public function setGoogleAnalyticsId(?string $googleAnalyticsId): self
+    {
+        $this->googleAnalyticsId = $googleAnalyticsId;
+
+        return $this;
+    }
+
+    public function getGoogleSearchConsole(): ?string
+    {
+        return $this->googleSearchConsole;
+    }
+
+    public function setGoogleSearchConsole(?string $googleSearchConsole): self
+    {
+        $this->googleSearchConsole = $googleSearchConsole;
+
+        return $this;
+    }
+
+    public function getFavicon(): ?Media
+    {
+        return $this->favicon;
+    }
+
+    public function setFavicon(?Media $favicon): self
+    {
+        $this->favicon = $favicon;
+
+        return $this;
+    }
+
+    // --- Apparence Getters/Setters ---
+
+    public function getPrimaryColor(): ?string
+    {
+        return $this->primaryColor;
+    }
+
+    public function setPrimaryColor(?string $primaryColor): self
+    {
+        $this->primaryColor = $primaryColor;
+
+        return $this;
+    }
+
+    public function getSecondaryColor(): ?string
+    {
+        return $this->secondaryColor;
+    }
+
+    public function setSecondaryColor(?string $secondaryColor): self
+    {
+        $this->secondaryColor = $secondaryColor;
+
+        return $this;
+    }
+
+    public function getAccentColor(): ?string
+    {
+        return $this->accentColor;
+    }
+
+    public function setAccentColor(?string $accentColor): self
+    {
+        $this->accentColor = $accentColor;
+
+        return $this;
+    }
+
+    public function getFontFamily(): ?string
+    {
+        return $this->fontFamily;
+    }
+
+    public function setFontFamily(?string $fontFamily): self
+    {
+        $this->fontFamily = $fontFamily;
+
+        return $this;
+    }
+
+    public function getFontFamilySecondary(): ?string
+    {
+        return $this->fontFamilySecondary;
+    }
+
+    public function setFontFamilySecondary(?string $fontFamilySecondary): self
+    {
+        $this->fontFamilySecondary = $fontFamilySecondary;
+
+        return $this;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(string $template): self
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    // --- Owner Getters/Setters ---
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{{ absolute_url(path('app_home')) }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    {% for article in articles %}
+    <url>
+        <loc>{{ absolute_url(path('app_article_show', {slug: article.slug})) }}</loc>
+        {% if article.updatedAt %}
+        <lastmod>{{ article.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif article.createdAt %}
+        <lastmod>{{ article.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    {% endfor %}
+
+    {% for page in pages %}
+    <url>
+        <loc>{{ absolute_url(path('app_page_show', {slug: page.slug})) }}</loc>
+        {% if page.updatedAt %}
+        <lastmod>{{ page.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif page.createdAt %}
+        <lastmod>{{ page.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
+    {% for categorie in categories %}
+    <url>
+        <loc>{{ absolute_url(path('app_categorie_show', {slug: categorie.slug})) }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endfor %}
+
+    <url>
+        <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>{{ absolute_url(path('app_contact')) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+</urlset>

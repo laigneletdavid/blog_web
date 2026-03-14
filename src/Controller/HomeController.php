@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
+use App\Service\SeoService;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
+    public function __construct(
+        private readonly SeoService $seoService,
+    ) {
+    }
+
     #[Route('/', name: 'app_home')]
     public function index(ArticleRepository $articleRepository): Response
     {
@@ -21,6 +27,7 @@ class HomeController extends AbstractController
             'title_page' => 'Blog & Web',
             'text_page' => 'Un CMS proche de vous !',
             'articles' => $articleRepository->homeArticles(),
+            'seo' => $this->seoService->resolveForHome(),
         ]);
     }
 
@@ -62,6 +69,7 @@ class HomeController extends AbstractController
             'title_page' => 'Formulaire de contact',
             'text_page' => 'Envoyez-moi un message',
             'contactForm' => $form,
+            'seo' => $this->seoService->resolveForPage('Contact'),
         ]);
     }
 }

@@ -22,5 +22,9 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\EventListener\MediaUploadListener:
+        arguments:
+            $mediaDirectory: '%medias_directory%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

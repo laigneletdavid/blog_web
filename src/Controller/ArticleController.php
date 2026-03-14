@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
+use App\Service\SeoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/article', name: 'app_article_')]
 class ArticleController extends AbstractController
 {
+    public function __construct(
+        private readonly SeoService $seoService,
+    ) {
+    }
+
     #[Route('/', name: 'show_all')]
     public function showAll(Request $request, ArticleRepository $articleRepository): Response
     {
@@ -41,6 +47,7 @@ class ArticleController extends AbstractController
             'totalPages' => $totalPages,
             'filterMonth' => $month,
             'filterYear' => $year,
+            'seo' => $this->seoService->resolveForPage($titlePage),
         ]);
     }
 
@@ -81,6 +88,7 @@ class ArticleController extends AbstractController
             'article' => $article,
             'commentForm' => $commentForm,
             'relatedArticles' => $relatedArticles,
+            'seo' => $this->seoService->resolve($article),
         ]);
     }
 }
