@@ -526,14 +526,37 @@ Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.
 - [x] Breadcrumbs uniformes sur article, page, blog
 - [x] Lien Contact footer câblé
 
-#### 4.9 UX Visuels & Mobile — partiellement fait (Phase 5)
+#### 4.9 UX Visuels & Mobile ✅
 
 - [x] Animations hover cards articles (scale + shadow transition CSS) → fait en Phase 5
 - [x] Transitions CSS sur les boutons (0.2s ease) → fait en Phase 5
 - [x] Breakpoint tablette 768px (optimiser le layout 2 colonnes) → fait en Phase 5
 - [x] Tailles tactiles min 44x44px sur les boutons/liens mobiles → fait en Phase 5
-- [ ] Images responsives `srcset` sur les articles (si Media gère plusieurs tailles)
-- [ ] Page résultats de recherche dédiée (remplacer le dropdown) avec highlighting du terme
+- [x] **Images responsives `srcset`** sur les articles — génération auto de 3 tailles WebP (480w, 800w, 1200w) à l'upload
+- [x] **Page résultats de recherche dédiée** — route `/recherche`, pagination, highlighting du terme, progressive enhancement
+
+#### 4.10 Images responsives (srcset) ✅
+
+- [x] `MediaUploadListener` : génère 3 variantes WebP (480w, 800w, 1200w) par convention de nommage (`{basename}-{width}w.webp`)
+- [x] `ResponsiveImageExtension` : fonction Twig `responsive_img(media, sizes, class, alt)` → `<img srcset="..." sizes="..." loading="lazy">`
+- [x] `BlockRenderer` : ajout automatique de `srcset`/`sizes` sur les images TipTap locales
+- [x] Templates mis à jour : `article/show.html.twig`, `article/item.html.twig`, `article/article_liste_large.html.twig`
+
+**Fichiers créés :** `ResponsiveImageExtension.php`
+**Fichiers modifiés :** `MediaUploadListener.php`, `BlockRenderer.php`, `services.yaml`, `article/show.html.twig`, `article/item.html.twig`, `article/article_liste_large.html.twig`
+
+#### 4.11 Page de recherche dédiée ✅
+
+- [x] `SearchController::results()` — route `GET /recherche` avec pagination Doctrine, recherche articles/pages/catégories
+- [x] Réponse JSON enrichie avec `seeAllUrl` pour le lien dropdown → page complète
+- [x] Filtre Twig `|highlight(keyword)` — entoure les termes de `<mark>`, XSS-safe (htmlspecialchars avant insertion)
+- [x] `templates/search/results.html.twig` — breadcrumbs, sections catégories/pages/articles, pagination, état "aucun résultat"
+- [x] `assets/css/base/search.scss` — styles cards, badges type, thumbnails, `<mark>` highlighting
+- [x] `search_controller.js` — cleanup (supprimé import mort `easingEffects`, méthode dupliquée `dosSearchdetail`), ajout lien "Voir tous les résultats →"
+- [x] Progressive enhancement : form action → `/recherche` (HTML, fonctionne sans JS), `data-api-url` pour le dropdown AJAX
+
+**Fichiers créés :** `templates/search/results.html.twig`, `assets/css/base/search.scss`
+**Fichiers modifiés :** `SearchController.php`, `AppExtension.php`, `search_controller.js`, `main.scss`, `themes/default/_header.html.twig`
 
 ---
 
@@ -672,11 +695,14 @@ Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.
 - ~~Liens sociaux `href="#"`~~ → ✅ câblés (Phase 5)
 - ~~Archives widget hardcodé~~ → ✅ dynamisé (Phase 4.8)
 - ~~Null checks templates front~~ → ✅ corrigés
+- ~~Images responsives srcset~~ → ✅ fait (Phase 4.10)
+- ~~Page recherche dédiée~~ → ✅ fait (Phase 4.11)
 - ⚠️ **`docker-compose.prod.yml`** — pas encore créé
 - N+1 menus → à optimiser (eager loading)
 - Typos `adress_1/2` → à corriger
 - Abonnements `news`/`articles` sur User : stockés mais jamais utilisés
 - Vérification email installée mais non activée
+- Régénérer les images existantes avec `app:media:regenerate-sizes` (commande à créer si besoin)
 
 ---
 

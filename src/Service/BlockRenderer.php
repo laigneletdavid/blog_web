@@ -12,8 +12,11 @@ use App\Repository\MediaRepository;
  */
 class BlockRenderer
 {
+    private const RESPONSIVE_SIZES = [480, 800, 1200];
+
     public function __construct(
         private readonly MediaRepository $mediaRepository,
+        private readonly string $mediaDirectory,
     ) {
     }
 
@@ -116,9 +119,33 @@ class BlockRenderer
             return '';
         }
 
+        $srcsetAttr = '';
+        $sizesAttr = '';
+
+        if (str_contains($src, '/documents/medias/')) {
+            $fileName = basename($src);
+            $baseName = pathinfo($fileName, PATHINFO_FILENAME);
+            // Si c'est deja un WebP, utiliser le nom de base sans -XXXw
+            $baseName = preg_replace('/-\d+w$/', '', $baseName);
+
+            $parts = [];
+            foreach (self::RESPONSIVE_SIZES as $width) {
+                $sizedFile = $baseName . '-' . $width . 'w.webp';
+                if (file_exists($this->mediaDirectory . '/' . $sizedFile)) {
+                    $parts[] = '/documents/medias/' . $sizedFile . ' ' . $width . 'w';
+                }
+            }
+
+            if (!empty($parts)) {
+                $parts[] = $src . ' 1600w';
+                $srcsetAttr = ' srcset="' . implode(', ', $parts) . '"';
+                $sizesAttr = ' sizes="(max-width: 768px) 100vw, 800px"';
+            }
+        }
+
         $figcaption = $title ? "<figcaption>{$title}</figcaption>" : '';
 
-        return "<figure class=\"block-image\"><img src=\"{$src}\" alt=\"{$alt}\" loading=\"lazy\">{$figcaption}</figure>";
+        return "<figure class=\"block-image\"><img src=\"{$src}\"{$srcsetAttr}{$sizesAttr} alt=\"{$alt}\" loading=\"lazy\">{$figcaption}</figure>";
     }
 
     private function renderYoutube(array $attrs): string

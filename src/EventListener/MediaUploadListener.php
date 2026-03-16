@@ -14,6 +14,7 @@ class MediaUploadListener
 {
     private const SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
     private const WEBP_QUALITY = 85;
+    public const RESPONSIVE_SIZES = [480, 800, 1200];
 
     public function __construct(
         private readonly string $mediaDirectory,
@@ -47,12 +48,14 @@ class MediaUploadListener
             return;
         }
 
-        $webpFileName = pathinfo($fileName, PATHINFO_FILENAME) . '.webp';
+        $baseName = pathinfo($fileName, PATHINFO_FILENAME);
+        $webpFileName = $baseName . '.webp';
         $webpPath = $this->mediaDirectory . '/' . $webpFileName;
 
         // Ne pas reconvertir si le webp existe deja et est plus recent
         if (file_exists($webpPath) && filemtime($webpPath) >= filemtime($sourcePath)) {
             $media->setWebpFileName($webpFileName);
+            $this->generateResponsiveSizes($sourcePath, $baseName);
             return;
         }
 
@@ -63,8 +66,37 @@ class MediaUploadListener
             $encoded->save($webpPath);
 
             $media->setWebpFileName($webpFileName);
+
+            $this->generateResponsiveSizes($sourcePath, $baseName);
         } catch (\Throwable) {
             // Conversion echouee silencieusement — l'original reste disponible
+        }
+    }
+
+    private function generateResponsiveSizes(string $sourcePath, string $baseName): void
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            $originalWidth = $manager->read($sourcePath)->width();
+
+            foreach (self::RESPONSIVE_SIZES as $targetWidth) {
+                if ($originalWidth <= $targetWidth) {
+                    continue;
+                }
+
+                $sizedPath = $this->mediaDirectory . '/' . $baseName . '-' . $targetWidth . 'w.webp';
+
+                if (file_exists($sizedPath) && filemtime($sizedPath) >= filemtime($sourcePath)) {
+                    continue;
+                }
+
+                $resized = $manager->read($sourcePath)
+                    ->scale(width: $targetWidth)
+                    ->toWebp(self::WEBP_QUALITY);
+                $resized->save($sizedPath);
+            }
+        } catch (\Throwable) {
+            // Echec silencieux — les originaux restent disponibles
         }
     }
 }

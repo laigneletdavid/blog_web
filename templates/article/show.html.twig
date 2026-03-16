@@ -77,7 +77,7 @@
                     </div>
                     <div class="img_article">
                         {% if article.featuredMedia %}
-                            <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name }}" loading="lazy">
+                            {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, 800px') }}
                         {% endif %}
                     </div>
                     <div class="content mt-5 pb-5">{{ article.content|raw }}</div>
@@ -134,7 +134,7 @@
                             {% for related in relatedArticles %}
                                 <a href="{{ path('app_article_show', { slug: related.slug }) }}" class="related-card">
                                     {% if related.featuredMedia %}
-                                        <img src="{{ asset('documents/medias/' ~ related.featuredMedia.fileName) }}" alt="{{ related.title }}" loading="lazy">
+                                        {{ responsive_img(related.featuredMedia, '(max-width: 768px) 100vw, 300px', '', related.title) }}
                                     {% endif %}
                                     <div class="related-card-body">
                                         <h4>{{ related.title }}</h4>
