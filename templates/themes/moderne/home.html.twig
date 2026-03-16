@@ -16,9 +16,7 @@
                 </div>
             </div>
             <div class="col-lg-5 d-none d-lg-block">
-                {% if site.heroImage %}
-                <img src="{{ asset('documents/medias/' ~ site.heroImage.fileName) }}" alt="{{ site.name|default('') }}" class="mod-hero__img" loading="lazy"/>
-                {% endif %}
+                <img src="{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="mod-hero__img" loading="lazy"/>
             </div>
         </div>
     </div>

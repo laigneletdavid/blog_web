@@ -350,7 +350,7 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 
 ---
 
-### Phase 3 — Systeme Multi-Themes
+### Phase 3 — Systeme Multi-Themes ✅
 
 > Approche B : un seul `base.html.twig` (SEO, head, scripts) qui inclut dynamiquement header/footer depuis le theme actif. Les pages de contenu restent inchangees.
 
@@ -364,7 +364,7 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - [x] Champ `owner` (FK User) sur `Site`
 - [x] `SiteCrudController` : champs sensibles restreints à `ROLE_FREELANCE+`
 
-#### 3.1 Variables CSS du système (13 variables)
+#### 3.1 Variables CSS du système (13 variables) ✅
 
 **Sur Site (personnalisables par client dans admin) — 5 :** `--primary`, `--secondary`, `--accent`, `--font-family`, `--font-family-secondary`
 
@@ -372,58 +372,78 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 
 **Meta-config YAML (non CSS, influencent le HTML) — 2 :** `buttonStyle` (filled/outline/gradient/pill), `headerStyle` (sticky-white/sticky-transparent/static)
 
-#### 3.2 ThemeService
+#### 3.2 ThemeService ✅
 
-- [ ] Créer `src/Service/ThemeService.php` — scanne `templates/themes/*/theme.yaml`, cache 1h
+- [x] Créer `src/Service/ThemeService.php` — scanne `templates/themes/*/theme.yaml`, cache 1h
   - `getAvailableThemes()`, `getTheme()`, `getDefaults()`, `getThemeVars()`, `getConfig()`, `hasTemplate()`, `clearCache()`
-- [ ] `config/services.yaml` — bind `$projectDir`
-- [ ] `config/packages/twig.yaml` — global `theme_service`
+  - `resolveAppearance()` — résout couleurs/polices avec fallback chain : site → theme → hardcoded
+  - `resolveAppearanceForTheme()` — pure defaults du thème (pour preview)
+- [x] `config/services.yaml` — bind `$projectDir`
+- [x] `config/packages/twig.yaml` — global `theme_service`
 
-#### 3.3 Theme default : extraction
+#### 3.3 Theme default : extraction ✅
 
-- [ ] Créer `templates/themes/default/theme.yaml` — config avec defaults actuels
-- [ ] Extraire header de `base.html.twig` → `templates/themes/default/_header.html.twig`
-- [ ] Extraire footer de `base.html.twig` → `templates/themes/default/_footer.html.twig`
-- [ ] Extraire body de `home/index.html.twig` → `templates/themes/default/home.html.twig`
-- [ ] Extraire body de `article/show_all.html.twig` → `templates/themes/default/blog.html.twig`
+- [x] Créer `templates/themes/default/theme.yaml` — config avec defaults actuels
+- [x] Extraire header de `base.html.twig` → `templates/themes/default/_header.html.twig`
+- [x] Extraire footer de `base.html.twig` → `templates/themes/default/_footer.html.twig`
+- [x] Extraire body de `home/index.html.twig` → `templates/themes/default/home.html.twig`
+- [x] Extraire body de `article/show_all.html.twig` → `templates/themes/default/blog.html.twig`
 
-#### 3.4 Intégration Twig
+#### 3.4 Intégration Twig ✅
 
-- [ ] `base.html.twig` : remplacer header/footer inline par `{% include ['themes/' ~ _theme ~ '/...', 'themes/default/...'] %}`
-- [ ] `base.html.twig` : injecter theme_vars CSS (--bg, --surface, --text, etc.) dans `:root`
-- [ ] `base.html.twig` : Google Fonts dynamique depuis `_theme_config.google_fonts`
-- [ ] `base.html.twig` : charger `theme.css` conditionnel si présent
-- [ ] `home/index.html.twig` : transformer en dispatcher theme
-- [ ] `article/show_all.html.twig` : transformer en dispatcher theme (blog)
+- [x] `base.html.twig` : remplacer header/footer inline par `{% include ['themes/' ~ _theme ~ '/...', 'themes/default/...'] %}`
+- [x] `base.html.twig` : injecter theme_vars CSS (--bg, --surface, --text, etc.) dans `:root`
+- [x] `base.html.twig` : Google Fonts dynamique depuis `_theme_config.google_fonts`
+- [x] `base.html.twig` : charger `theme.css` conditionnel si présent
+- [x] `base.html.twig` : preview mode (`?_preview_theme=slug`) avec réécriture des liens internes
+- [x] `home/index.html.twig` : transformer en dispatcher theme
+- [x] `article/show_all.html.twig` : transformer en dispatcher theme (blog)
 
-#### 3.5 Admin Theme Browser
+#### 3.5 Admin Theme Browser ✅
 
-- [ ] `DashboardController` : route `GET /admin/theme-browser` (ROLE_FREELANCE+) — page navigation themes
-- [ ] `DashboardController` : route `POST /admin/theme-activate/{slug}` — activation + écrasement couleurs/polices
-- [ ] `DashboardController` : route `GET /admin/theme-preview/{slug}` — sert preview.png
-- [ ] `DashboardController` : route `GET /theme-css/{slug}` — sert theme.css (accessible front)
-- [ ] `DashboardController::configureMenuItems()` : ajout menu "Themes" (ROLE_FREELANCE+)
-- [ ] Créer `templates/admin/themes/browser.html.twig` — grille cards avec preview, couleurs, bouton activer
+- [x] `DashboardController` : route `GET /admin/theme-browser` (`ROLE_FREELANCE+`) — page navigation themes
+- [x] `DashboardController` : route `POST /admin/theme-activate/{slug}` (`ROLE_FREELANCE+`) — activation (CSRF protégé)
+- [x] `DashboardController` : route `GET /admin/theme-preview/{slug}` (`ROLE_FREELANCE+`) — sert preview.png
+- [x] `DashboardController` : route `GET /theme-css/{slug}` — sert theme.css (accessible front, cache 1h)
+- [x] `DashboardController::configureMenuItems()` : section "Apparence" (`ROLE_FREELANCE+`) avec Catalogue, Réglages, Images
+- [x] Créer `templates/admin/themes/browser.html.twig` — grille cards avec preview, couleurs, bouton activer, preview fullscreen (iframe responsive desktop/tablette/mobile)
 
-#### 3.6 Créer les 5 themes
+#### 3.6 Créer les 5 themes ✅
 
-- [ ] `corporate` — PME services B2B, sobre et professionnel
-- [ ] `artisan` — Commerce local, chaleureux
-- [ ] `vitrine` — Site vitrine simple et efficace
-- [ ] `starter` — Minimaliste, point de départ
-- [ ] `moderne` — Design contemporain, animations
+- [x] `corporate` — PME services B2B, sobre et professionnel (Montserrat)
+- [x] `artisan` — Commerce local, chaleureux (Lato)
+- [x] `vitrine` — Site vitrine élégant, professions libérales (DM Sans)
+- [x] `starter` — Minimaliste, point de départ (Inter)
+- [x] `moderne` — Design contemporain dark mode, animations (Space Grotesk)
 
-Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.html.twig` + `blog.html.twig` + `theme.css` + `preview.png`
+Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.html.twig` + `blog.html.twig` + `contact.html.twig` + `theme.css` + `preview.png`
 
-#### 3.7 ROLE_FREELANCE (reste à faire)
+#### 3.7 Admin Apparence (ThemeSettings + ThemeImages) ✅
 
-- [ ] `SiteRepository::findByOwner(User $user)` — filtre par owner pour ROLE_FREELANCE
-- [ ] `DashboardController` : si `ROLE_FREELANCE` sans `ROLE_SUPER_ADMIN`, filtrer les sites affichés
+- [x] `ThemeSettingsCrudController` (`ROLE_FREELANCE+`) — couleurs, polices, images hero/about avec overlay null = theme default
+- [x] `ThemeImagesCrudController` (`ROLE_FREELANCE+`) — galerie d'images du thème (`SiteGalleryItem`)
+- [x] `FontService` — 20 Google Fonts avec choix primary/secondary
+- [x] Surcouche CSS : valeur null = default du thème, valeur non-null = override client
 
-**Répartition :** Dev (par thème) = header, footer, home, blog, theme.css, theme.yaml | Commun = SEO, article/show, page/show, contact, formulaires, admin, scripts | Client = contenu TipTap, couleurs/polices via Admin Apparence
+#### 3.8 ROLE_FREELANCE ✅
 
-**Fichiers système à créer (8) :** `ThemeService.php`, `themes/default/theme.yaml`, `themes/default/_header.html.twig`, `themes/default/_footer.html.twig`, `themes/default/home.html.twig`, `themes/default/blog.html.twig`, `themes/default/preview.png`, `admin/themes/browser.html.twig`
-**Fichiers à modifier (5) :** `base.html.twig`, `home/index.html.twig`, `article/show_all.html.twig`, `DashboardController.php`, `twig.yaml`
+- [x] `SiteRepository::findByOwner(User $user)` — filtre par owner pour ROLE_FREELANCE
+- [x] Routes theme : `#[IsGranted('ROLE_FREELANCE')]` sur browser, activate, preview
+- [x] Menu "Apparence" : `$this->isGranted('ROLE_FREELANCE')` — invisible pour ROLE_ADMIN
+- [x] `ThemeSettingsCrudController` + `ThemeImagesCrudController` : `#[IsGranted('ROLE_FREELANCE')]` sur la classe
+- [x] Filtrage multi-site préparé (`findByOwner`) — activable en multi-tenant
+
+#### 3.9 Placeholder images + fixes ✅
+
+- [x] Fallback `asset('images/placeholder.jpg')` sur tous les templates (hero, about, contact) via ternaire Twig
+- [x] Fix `article.categorie` → `article.categories` (Collection) dans tous les blog templates
+- [x] Fix menu offcanvas mobile : fond blanc opaque, pas de scroll (`offcanevas-menu.scss`)
+
+**Répartition :** Dev (par thème) = header, footer, home, blog, contact, theme.css, theme.yaml | Commun = SEO, article/show, page/show, formulaires, admin, scripts | Client = contenu TipTap, couleurs/polices via Admin Apparence
+
+**Fichiers système créés (12) :** `ThemeService.php`, `FontService.php`, `ThemeSettingsCrudController.php`, `ThemeImagesCrudController.php`, `admin/themes/browser.html.twig`, + 6 `theme.yaml` (default, corporate, artisan, vitrine, starter, moderne)
+**Fichiers par thème (6×7=42) :** `_header.html.twig`, `_footer.html.twig`, `home.html.twig`, `blog.html.twig`, `contact.html.twig`, `theme.css`, `preview.png`
+**Fichiers modifiés (7) :** `base.html.twig`, `home/index.html.twig`, `article/show_all.html.twig`, `DashboardController.php`, `twig.yaml`, `services.yaml`, `offcanevas-menu.scss`
 **Aucune migration** — `Site.template` existe déjà, theme_vars restent dans theme.yaml
 
 ---

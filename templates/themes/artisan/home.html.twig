@@ -2,7 +2,7 @@
 {# Layout: Hero image pleine largeur, section "notre histoire" avec photo, galerie masonry, articles, CTA #}
 
 {# ====== HERO ====== #}
-<section class="art-hero" {% if site.heroImage %}style="background-image: url('{{ asset('documents/medias/' ~ site.heroImage.fileName) }}');"{% endif %}>
+<section class="art-hero" style="background-image: url('{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}');">
     <div class="art-hero__overlay"></div>
     <div class="container position-relative text-center">
         <h1 class="art-hero__title">{{ site.name|default('Bienvenue') }}</h1>
@@ -14,12 +14,11 @@
 </section>
 
 {# ====== NOTRE HISTOIRE ====== #}
-{% if site.aboutImage %}
 <section class="art-story">
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
-                <img src="{{ asset('documents/medias/' ~ site.aboutImage.fileName) }}" alt="{{ site.name|default('') }}" class="art-story__img" loading="lazy"/>
+                <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="art-story__img" loading="lazy"/>
             </div>
             <div class="col-lg-6">
                 <span class="art-story__overtitle">Notre histoire</span>
@@ -30,7 +29,6 @@
         </div>
     </div>
 </section>
-{% endif %}
 
 {# ====== GALERIE PHOTOS ====== #}
 {% set gallery = site.getGalleryBySlot('gallery') %}

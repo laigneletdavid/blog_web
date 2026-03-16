@@ -56,7 +56,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[Route('/admin/theme-browser', name: 'admin_theme_browser')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_FREELANCE')]
     public function themeBrowser(): Response
     {
         $site = $this->siteContext->getCurrentSite();
@@ -69,7 +69,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[Route('/admin/theme-activate/{slug}', name: 'admin_theme_activate', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_FREELANCE')]
     public function themeActivate(
         string $slug,
         Request $request,
@@ -108,7 +108,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[Route('/admin/theme-preview/{slug}', name: 'admin_theme_preview')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_FREELANCE')]
     public function themePreview(string $slug): Response
     {
         $path = $this->getParameter('kernel.project_dir') . '/templates/themes/' . $slug . '/preview.png';
@@ -179,8 +179,8 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
         }
 
-        // --- Apparence (ROLE_ADMIN+) ---
-        if ($this->isGranted('ROLE_ADMIN')) {
+        // --- Apparence (ROLE_FREELANCE+) ---
+        if ($this->isGranted('ROLE_FREELANCE')) {
             yield MenuItem::section('Apparence');
 
             yield MenuItem::linkToRoute('Catalogue de themes', 'fas fa-palette', 'admin_theme_browser');

@@ -2,7 +2,7 @@
 {# Layout: Image de fond en hero, formulaire centre, infos contact en cards dessous #}
 
 {# ====== HERO CONTACT ====== #}
-<section class="art-contact-hero" {% if site.heroImage %}style="background-image: url('{{ asset('documents/medias/' ~ site.heroImage.fileName) }}');"{% endif %}>
+<section class="art-contact-hero" style="background-image: url('{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}');">
     <div class="art-contact-hero__overlay"></div>
     <div class="container position-relative text-center">
         <h1 class="art-contact-hero__title">{{ title_page }}</h1>
@@ -26,11 +26,9 @@
 
             {# Infos contact #}
             <div class="col-lg-5">
-                {% if site.aboutImage %}
                 <div class="art-contact-portrait mb-4 text-center">
-                    <img src="{{ asset('documents/medias/' ~ site.aboutImage.fileName) }}" alt="{{ site.name|default('') }}" loading="lazy"/>
+                    <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" loading="lazy"/>
                 </div>
-                {% endif %}
 
                 <div class="art-contact-info">
                     <h3 class="art-contact-info__name">{{ site.name|default('') }}</h3>

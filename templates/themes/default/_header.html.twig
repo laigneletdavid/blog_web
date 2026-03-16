@@ -41,6 +41,7 @@
                         <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
                     {% endif %}
                 {% endfor %}
+                <a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a>
                 <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
             </nav>
 
@@ -128,6 +129,7 @@
                             <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
                         {% endif %}
                     {% endfor %}
+                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
                     <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
                 </ul>
 

@@ -2,14 +2,22 @@
 // Mobile Offcanvas Navigation
 // =============================================================================
 
-.offcanvas {
+// Sélecteur ID pour écraser Bootstrap offcanvas.scss
+#offcanvasNavbar {
+  background-color: #ffffff !important;
+  z-index: 1055;
+
   .offcanvas-header {
+    background-color: #ffffff !important;
     border-bottom: 1px solid var(--border);
     padding: 1.25rem;
   }
 
   .offcanvas-body {
-    padding: 1.5rem;
+    background-color: #ffffff !important;
+    padding: 1.5rem !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
 
     .nav-link {
       font-family: var(--font-display);

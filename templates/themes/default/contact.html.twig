@@ -11,11 +11,10 @@
     </div>
 
     {# About section #}
-    {% if site.aboutImage %}
     <div class="team">
         <div class="d-flex flex-column flex-lg-row row pt-5 mb-5">
             <div class="col-lg-4 team_img d-flex align-items-center mb-4 mb-lg-0 justify-content-center">
-                <img src="{{ asset('documents/medias/' ~ site.aboutImage.fileName) }}" alt="{{ site.name|default('') }}" class="counter_img rounded-circle" loading="lazy">
+                <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="counter_img rounded-circle" loading="lazy">
             </div>
             <div class="col-lg-8 team_text d-flex flex-column justify-content-evenly align-items-center">
                 <h4 class="team_name">{{ site.name|default('') }}</h4>
@@ -25,7 +24,6 @@
             </div>
         </div>
     </div>
-    {% endif %}
 
     <div class="contact">
         <div class="d-flex flex-column-reverse flex-lg-row">

@@ -149,6 +149,23 @@ class ThemeService
     }
 
     /**
+     * Resolve appearance for a specific theme (pure defaults, no site overrides).
+     * Used for preview mode to show the theme as-is.
+     */
+    public function resolveAppearanceForTheme(string $slug): array
+    {
+        $defaults = $this->getDefaults($slug);
+
+        return [
+            'primaryColor' => $defaults['primaryColor'] ?? '#2563EB',
+            'secondaryColor' => $defaults['secondaryColor'] ?? '#F59E0B',
+            'accentColor' => $defaults['accentColor'] ?? '#8B5CF6',
+            'fontFamily' => $defaults['fontFamily'] ?? "'Inter', sans-serif",
+            'fontFamilySecondary' => $defaults['fontFamilySecondary'] ?? null,
+        ];
+    }
+
+    /**
      * Current theme slug from Site entity.
      */
     public function getCurrentThemeSlug(): string

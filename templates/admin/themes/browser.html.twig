@@ -1,73 +1,222 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
 {% block content_title %}
-    <h1>Themes</h1>
+    <h1>Catalogue de themes</h1>
 {% endblock %}
 
 {% block main %}
-<p class="text-muted mb-4">Choisissez un theme pour votre site. Les couleurs et polices seront adaptees automatiquement.</p>
+<p class="text-muted mb-4">Choisissez un theme pour votre site. Les couleurs et polices sont personnalisables independamment du theme choisi.</p>
+
+{# Functional descriptions per theme #}
+{% set theme_features = {
+    'default': {
+        'tagline': 'Polyvalent',
+        'features': ['Hero gradient avec badges de confiance', 'Grille de fonctionnalites 3 colonnes', 'Section metriques cles', 'Blog avec sidebar et pagination']
+    },
+    'corporate': {
+        'tagline': 'Professionnel B2B',
+        'features': ['Hero fullwidth avec image de fond', 'Grille de services dynamique', 'Temoignages clients et logos partenaires', 'Blog avec article mis en avant']
+    },
+    'artisan': {
+        'tagline': 'Commerce local',
+        'features': ['Header et navigation centres', 'Section "Notre histoire" avec photo', 'Galerie photo type masonry', 'Section temoignages avec citations']
+    },
+    'vitrine': {
+        'tagline': 'Site vitrine',
+        'features': ['Hero split texte + image', 'Fonctionnalites en bande horizontale', 'Portrait rond dans la section A propos', 'Blog en grille 2 colonnes sans sidebar']
+    },
+    'starter': {
+        'tagline': 'Minimaliste',
+        'features': ['Hero texte centre sans image', 'Articles en liste simple titre + date', 'Footer ultra-compact une ligne', 'Ideal pour les blogs personnels']
+    },
+    'moderne': {
+        'tagline': 'Dark mode & tech',
+        'features': ['Interface sombre avec effets glow', 'Header glassmorphism (flou)', 'Galerie 2x2 avec overlay au survol', 'Boutons et stats en degrade']
+    }
+} %}
 
 <div class="row g-4">
     {% for slug, theme in themes %}
+    {% set features = theme_features[slug]|default({}) %}
     <div class="col-12 col-md-6 col-xl-4">
-        <div class="card h-100 {{ slug == currentTheme ? 'border-primary' : '' }}">
-            {# Preview image #}
+        <div class="card h-100 {{ slug == currentTheme ? 'border-primary shadow-sm' : '' }}" style="overflow:hidden;">
+            {# Preview image / gradient #}
             {% if theme.hasPreview %}
-            <img src="{{ path('admin_theme_preview', { slug: slug }) }}" class="card-img-top" alt="Apercu {{ theme.name }}" style="height: 200px; object-fit: cover;">
+            <img src="{{ path('admin_theme_preview', { slug: slug }) }}" class="card-img-top" alt="Apercu {{ theme.name }}" style="height: 200px; object-fit: cover; cursor: pointer;" onclick="openThemePreview('{{ slug }}', '{{ theme.name|e('js') }}')">
             {% else %}
-            <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(135deg, {{ theme.defaults.primaryColor|default('#2563EB') }}, {{ theme.defaults.accentColor|default('#8B5CF6') }});">
-                <span class="text-white fs-3 fw-bold">{{ theme.name }}</span>
+            <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(135deg, {{ theme.defaults.primaryColor|default('#2563EB') }}dd, {{ theme.defaults.accentColor|default('#8B5CF6') }}dd); cursor: pointer; position: relative;" onclick="openThemePreview('{{ slug }}', '{{ theme.name|e('js') }}')">
+                <span class="text-white fs-3 fw-bold" style="text-shadow: 0 2px 8px rgba(0,0,0,0.3);">{{ theme.name }}</span>
+                <span style="position:absolute;bottom:0.75rem;right:0.75rem;background:rgba(255,255,255,0.2);backdrop-filter:blur(4px);padding:0.2rem 0.6rem;border-radius:1rem;color:#fff;font-size:0.7rem;">
+                    <i class="fas fa-eye me-1"></i>Cliquer pour previsualiser
+                </span>
             </div>
             {% endif %}
 
             <div class="card-body d-flex flex-column">
-                <div class="d-flex align-items-center justify-content-between mb-2">
+                {# Title + badge #}
+                <div class="d-flex align-items-center justify-content-between mb-1">
                     <h5 class="card-title mb-0">{{ theme.name }}</h5>
-                    {% if slug == currentTheme %}
-                    <span class="badge bg-primary">Actif</span>
-                    {% endif %}
+                    <div class="d-flex align-items-center gap-2">
+                        {% if features.tagline is defined %}
+                        <span class="badge" style="background: {{ theme.defaults.primaryColor|default('#2563EB') }}22; color: {{ theme.defaults.primaryColor|default('#2563EB') }}; font-size: 0.7rem;">{{ features.tagline }}</span>
+                        {% endif %}
+                        {% if slug == currentTheme %}
+                        <span class="badge bg-primary">Actif</span>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <p class="card-text text-muted small flex-grow-1">{{ theme.description|default('') }}</p>
+                {# Description #}
+                <p class="card-text text-muted small mb-2">{{ theme.description|default('') }}</p>
+
+                {# Feature list #}
+                {% if features.features is defined %}
+                <ul class="list-unstyled small mb-3 flex-grow-1" style="padding-left: 0;">
+                    {% for feat in features.features %}
+                    <li class="mb-1 d-flex align-items-start gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="{{ theme.defaults.primaryColor|default('#2563EB') }}" viewBox="0 0 16 16" style="flex-shrink:0;margin-top:2px;"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>
+                        <span class="text-muted">{{ feat }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
 
                 {# Color swatches #}
                 {% set defaults = theme.defaults|default({}) %}
-                <div class="d-flex gap-2 mb-3">
-                    {% if defaults.primaryColor is defined %}
-                    <div title="Primaire" style="width: 24px; height: 24px; border-radius: 50%; background: {{ defaults.primaryColor }}; border: 2px solid rgba(0,0,0,0.1);"></div>
-                    {% endif %}
-                    {% if defaults.secondaryColor is defined %}
-                    <div title="Secondaire" style="width: 24px; height: 24px; border-radius: 50%; background: {{ defaults.secondaryColor }}; border: 2px solid rgba(0,0,0,0.1);"></div>
-                    {% endif %}
-                    {% if defaults.accentColor is defined %}
-                    <div title="Accent" style="width: 24px; height: 24px; border-radius: 50%; background: {{ defaults.accentColor }}; border: 2px solid rgba(0,0,0,0.1);"></div>
-                    {% endif %}
-                </div>
-
-                <div class="d-flex gap-2 align-items-center small text-muted mb-3">
-                    {% if theme.buttonStyle is defined %}
-                    <span class="badge bg-light text-dark">{{ theme.buttonStyle }}</span>
-                    {% endif %}
-                    {% if theme.headerStyle is defined %}
-                    <span class="badge bg-light text-dark">{{ theme.headerStyle }}</span>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="d-flex gap-1">
+                        {% if defaults.primaryColor is defined %}
+                        <div title="Primaire" style="width: 20px; height: 20px; border-radius: 50%; background: {{ defaults.primaryColor }}; border: 2px solid rgba(0,0,0,0.08);"></div>
+                        {% endif %}
+                        {% if defaults.secondaryColor is defined %}
+                        <div title="Secondaire" style="width: 20px; height: 20px; border-radius: 50%; background: {{ defaults.secondaryColor }}; border: 2px solid rgba(0,0,0,0.08);"></div>
+                        {% endif %}
+                        {% if defaults.accentColor is defined %}
+                        <div title="Accent" style="width: 20px; height: 20px; border-radius: 50%; background: {{ defaults.accentColor }}; border: 2px solid rgba(0,0,0,0.08);"></div>
+                        {% endif %}
+                    </div>
+                    {% if defaults.fontFamily is defined %}
+                    <span class="text-muted" style="font-size: 0.7rem;">{{ defaults.fontFamily|split(',')|first|replace({"'": ""}) }}</span>
                     {% endif %}
                 </div>
 
-                {% if slug != currentTheme %}
-                <form method="post" action="{{ path('admin_theme_activate', { slug: slug }) }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('theme_activate_' ~ slug) }}">
-                    <button type="submit" class="btn btn-outline-primary w-100">
-                        <i class="fas fa-palette me-1"></i> Activer ce theme
+                {# Buttons #}
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn flex-fill btn-sm" style="background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;" onclick="openThemePreview('{{ slug }}', '{{ theme.name|e('js') }}')">
+                        <i class="fas fa-eye" style="margin:0 0.5rem;"></i><span style="margin-right:0.5rem;">Previsualiser</span>
                     </button>
-                </form>
-                {% else %}
-                <button class="btn btn-primary w-100" disabled>
-                    <i class="fas fa-check me-1"></i> Theme actif
-                </button>
-                {% endif %}
+                    {% if slug != currentTheme %}
+                    <form method="post" action="{{ path('admin_theme_activate', { slug: slug }) }}" class="flex-fill">
+                        <input type="hidden" name="_token" value="{{ csrf_token('theme_activate_' ~ slug) }}">
+                        <button type="submit" class="btn btn-primary w-100 btn-sm">
+                            <i class="fas fa-palette" style="margin:0 0.5rem;"></i><span style="margin-right:0.5rem;">Activer</span>
+                        </button>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-success flex-fill btn-sm" disabled>
+                        <i class="fas fa-check" style="margin:0 0.5rem;"></i><span style="margin-right:0.5rem;">Actif</span>
+                    </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+{# ====== PREVIEW OVERLAY (fullscreen modal with iframe) ====== #}
+<div id="themePreviewOverlay" style="display:none;position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.85);">
+    {# Control bar #}
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.25rem;background:#1e293b;color:#fff;font-size:0.875rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
+            <strong id="previewThemeName"></strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+            {# Responsive buttons #}
+            <div style="display:flex;gap:2px;background:#334155;border-radius:0.375rem;padding:2px;">
+                <button onclick="resizePreview('100%')" class="preview-size-btn active" data-size="desktop" style="background:#475569;border:none;color:#fff;padding:0.25rem 0.6rem;border-radius:0.25rem;font-size:0.75rem;cursor:pointer;" title="Desktop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M0 4s0-2 2-2h12s2 0 2 2v6s0 2-2 2h-4c0 .667.083 1.167.25 1.5H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.75c.167-.333.25-.833.25-1.5H2s-2 0-2-2V4zm1.398-.855a.758.758 0 0 0-.254.302A1.46 1.46 0 0 0 1 4.01V10c0 .325.078.502.145.602.07.105.17.188.302.254a1.464 1.464 0 0 0 .538.143L2.01 11H14c.325 0 .502-.078.602-.145a.758.758 0 0 0 .254-.302 1.464 1.464 0 0 0 .143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.757.757 0 0 0-.302-.254A1.46 1.46 0 0 0 13.99 3H2c-.325 0-.502.078-.602.145z"/></svg>
+                </button>
+                <button onclick="resizePreview('768px')" class="preview-size-btn" data-size="tablet" style="background:transparent;border:none;color:#94a3b8;padding:0.25rem 0.6rem;border-radius:0.25rem;font-size:0.75rem;cursor:pointer;" title="Tablette">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/><path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
+                </button>
+                <button onclick="resizePreview('375px')" class="preview-size-btn" data-size="mobile" style="background:transparent;border:none;color:#94a3b8;padding:0.25rem 0.6rem;border-radius:0.25rem;font-size:0.75rem;cursor:pointer;" title="Mobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/><path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
+                </button>
+            </div>
+            <div style="width:1px;height:20px;background:#475569;"></div>
+            {# Activate button (injected dynamically) #}
+            <span id="previewActivateBtn"></span>
+            <button onclick="closeThemePreview()" style="background:transparent;border:1px solid #475569;color:#94a3b8;padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.8rem;cursor:pointer;">
+                <i class="fas fa-times me-1"></i> Fermer
+            </button>
+        </div>
+    </div>
+    {# Iframe container #}
+    <div id="previewIframeWrap" style="display:flex;justify-content:center;height:calc(100vh - 44px);background:#0f172a;padding:0;">
+        <iframe id="previewIframe" style="width:100%;height:100%;border:none;background:#fff;transition:width 0.3s ease;"></iframe>
+    </div>
+</div>
+
+<script>
+var currentPreviewSlug = null;
+
+function openThemePreview(slug, name) {
+    currentPreviewSlug = slug;
+    document.getElementById('previewThemeName').textContent = name;
+    document.getElementById('previewIframe').src = '/?_preview_theme=' + slug;
+
+    // Inject activate button if not current theme
+    var activateContainer = document.getElementById('previewActivateBtn');
+    if (slug !== '{{ currentTheme }}') {
+        activateContainer.innerHTML = '<form method="post" action="/admin/theme-activate/' + slug + '" style="display:inline;">' +
+            '<input type="hidden" name="_token" value="' + document.querySelector('[name="_token"][value*="' + slug + '"]')?.value + '">' +
+            '<button type="submit" style="background:#22c55e;color:#fff;border:none;padding:0.3rem 0.85rem;border-radius:0.375rem;font-size:0.8rem;font-weight:600;cursor:pointer;">' +
+            '<i class="fas fa-check me-1"></i>Activer ce theme</button></form>';
+    } else {
+        activateContainer.innerHTML = '<span style="color:#22c55e;font-size:0.8rem;font-weight:600;"><i class="fas fa-check me-1"></i>Theme actif</span>';
+    }
+
+    document.getElementById('themePreviewOverlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    // Reset to desktop
+    resizePreview('100%');
+}
+
+function closeThemePreview() {
+    document.getElementById('themePreviewOverlay').style.display = 'none';
+    document.getElementById('previewIframe').src = '';
+    document.body.style.overflow = '';
+    currentPreviewSlug = null;
+}
+
+function resizePreview(width) {
+    var iframe = document.getElementById('previewIframe');
+    iframe.style.width = width;
+    if (width === '100%') {
+        iframe.style.borderRadius = '0';
+        iframe.style.margin = '0';
+    } else {
+        iframe.style.borderRadius = '12px';
+        iframe.style.margin = '1rem auto';
+        iframe.style.height = 'calc(100% - 2rem)';
+    }
+
+    // Active button state
+    document.querySelectorAll('.preview-size-btn').forEach(function(btn) {
+        var isActive = (btn.dataset.size === 'desktop' && width === '100%') ||
+                       (btn.dataset.size === 'tablet' && width === '768px') ||
+                       (btn.dataset.size === 'mobile' && width === '375px');
+        btn.style.background = isActive ? '#475569' : 'transparent';
+        btn.style.color = isActive ? '#fff' : '#94a3b8';
+    });
+}
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && currentPreviewSlug) closeThemePreview();
+});
+</script>
 {% endblock %}

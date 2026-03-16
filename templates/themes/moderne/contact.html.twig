@@ -27,11 +27,9 @@
                 </div>
             </div>
             <div class="col-lg-5">
-                {% if site.aboutImage %}
                 <div class="mod-contact-portrait mb-4">
-                    <img src="{{ asset('documents/medias/' ~ site.aboutImage.fileName) }}" alt="{{ site.name|default('') }}" loading="lazy"/>
+                    <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" loading="lazy"/>
                 </div>
-                {% endif %}
 
                 <div class="mod-contact-info">
                     <h3>{{ site.name|default('') }}</h3>
