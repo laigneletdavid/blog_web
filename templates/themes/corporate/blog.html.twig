@@ -1,75 +1,126 @@
-{# ====== BLOG LISTING — Theme Default ====== #}
+{# ====== BLOG — Theme Corporate ====== #}
+{# Layout: Featured article en hero, puis grille 3 colonnes, sidebar etroite #}
 
 <div class="container">
-    <div class="breadcrum mb-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
-            </ol>
-        </nav>
-    </div>
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
+        </ol>
+    </nav>
 </div>
 
-<div class="container">
-    <h1 class="title-one mb-4">{{ title_page }}</h1>
-
-    {% if filterMonth is defined and filterMonth %}
-        <p class="text-muted mb-4">
-            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-times"></i> Voir tous les articles
-            </a>
-        </p>
-    {% endif %}
-
-    {# Params de base pour la pagination (conserve les filtres actifs) #}
-    {% set baseParams = {} %}
-    {% if filterMonth is defined and filterMonth %}
-        {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
-    {% endif %}
-
-    <div class="d-flex flex-column-reverse flex-lg-row">
-        <div class="col-lg-4">
-            <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
-                {% include 'widgets/subscribe.html.twig' %}
-                {% include 'widgets/categories.html.twig' %}
-                {% include 'widgets/last_article.html.twig' %}
-                {% include 'widgets/archives.html.twig' %}
+{# ====== FEATURED ARTICLE (premier article en hero) ====== #}
+{% if articles|length > 0 %}
+{% set featured = articles|first %}
+<section class="corp-blog-featured">
+    <div class="container">
+        <div class="corp-blog-featured__card">
+            <div class="row g-0 align-items-stretch">
+                <div class="col-lg-6">
+                    {% if featured.featuredMedia %}
+                    <div class="corp-blog-featured__img" style="background-image: url('{{ asset('documents/medias/' ~ featured.featuredMedia.fileName) }}');"></div>
+                    {% else %}
+                    <div class="corp-blog-featured__img corp-blog-featured__img--placeholder"></div>
+                    {% endif %}
+                </div>
+                <div class="col-lg-6 d-flex align-items-center">
+                    <div class="corp-blog-featured__body">
+                        {% if featured.categories|length > 0 %}
+                        <span class="corp-blog-featured__cat">{{ featured.categories|first.name }}</span>
+                        {% endif %}
+                        <h2 class="corp-blog-featured__title">
+                            <a href="{{ path('app_article_show', {slug: featured.slug}) }}">{{ featured.title }}</a>
+                        </h2>
+                        <p class="corp-blog-featured__excerpt">{{ featured.content|striptags|slice(0, 200) }}...</p>
+                        <div class="corp-blog-featured__meta">
+                            {% if featured.publishedAt %}<span>{{ featured.publishedAt|date('d/m/Y') }}</span>{% endif %}
+                            <span>{{ featured.content|readingTime }} min de lecture</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-lg-8 ps-lg-3">
-            <div class="articles_list d-flex flex-column">
-                {% if articles|length > 0 %}
-                    {% include 'article/article_liste_large.html.twig' with { articles: articles } %}
-                {% else %}
-                    <p class="text-muted">Aucun article pour cette periode.</p>
-                {% endif %}
-            </div>
+    </div>
+</section>
+{% endif %}
 
-            {# --- Pagination --- #}
-            {% if totalPages > 1 %}
-                <nav aria-label="Pagination des articles" class="mt-4 mb-5">
+{% if filterMonth is defined and filterMonth %}
+<div class="container mt-3">
+    <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-secondary btn-sm">&times; Voir tous les articles</a>
+</div>
+{% endif %}
+
+{% set baseParams = {} %}
+{% if filterMonth is defined and filterMonth %}
+    {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
+{% endif %}
+
+{# ====== ARTICLES GRID + SIDEBAR ====== #}
+<section class="corp-blog-grid">
+    <div class="container">
+        <div class="row">
+            {# Main: grille 3 colonnes (ou 2 colonnes si sidebar) #}
+            <div class="col-lg-9">
+                <h1 class="corp-blog-grid__title">{{ title_page }}</h1>
+                {% if articles|length > 1 %}
+                <div class="row g-4">
+                    {% for article in articles|slice(1) %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="corp-blog-card">
+                            {% if article.featuredMedia %}
+                            <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="corp-blog-card__img-link">
+                                <img src="{{ asset('documents/medias/' ~ (article.featuredMedia.webpFileName ?? article.featuredMedia.fileName)) }}" alt="{{ article.title }}" class="corp-blog-card__img" loading="lazy"/>
+                            </a>
+                            {% endif %}
+                            <div class="corp-blog-card__body">
+                                {% if article.categories|length > 0 %}
+                                <span class="corp-blog-card__cat">{{ article.categories|first.name }}</span>
+                                {% endif %}
+                                <h3 class="corp-blog-card__title">
+                                    <a href="{{ path('app_article_show', {slug: article.slug}) }}">{{ article.title }}</a>
+                                </h3>
+                                <p class="corp-blog-card__excerpt">{{ article.content|striptags|slice(0, 120) }}...</p>
+                                <div class="corp-blog-card__meta">
+                                    {% if article.publishedAt %}<span>{{ article.publishedAt|date('d/m/Y') }}</span>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% elseif articles|length == 0 %}
+                <p class="text-muted">Aucun article pour cette periode.</p>
+                {% endif %}
+
+                {# --- Pagination --- #}
+                {% if totalPages > 1 %}
+                <nav aria-label="Pagination" class="mt-5">
                     <ul class="pagination justify-content-center">
                         <li class="page-item {{ currentPage <= 1 ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}" aria-label="Precedent">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
+                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}">&laquo;</a>
                         </li>
-
                         {% for p in 1..totalPages %}
-                            <li class="page-item {{ p == currentPage ? 'active' : '' }}">
-                                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
-                            </li>
+                        <li class="page-item {{ p == currentPage ? 'active' : '' }}">
+                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
+                        </li>
                         {% endfor %}
-
                         <li class="page-item {{ currentPage >= totalPages ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}" aria-label="Suivant">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
+                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}">&raquo;</a>
                         </li>
                     </ul>
                 </nav>
-            {% endif %}
+                {% endif %}
+            </div>
+
+            {# Sidebar etroite #}
+            <div class="col-lg-3">
+                <div class="corp-blog-sidebar">
+                    {% include 'widgets/categories.html.twig' %}
+                    {% include 'widgets/last_article.html.twig' %}
+                    {% include 'widgets/archives.html.twig' %}
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>

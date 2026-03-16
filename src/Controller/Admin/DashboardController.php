@@ -8,6 +8,7 @@ use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Page;
 use App\Entity\Site;
+use App\Entity\SiteGalleryItem;
 use App\Entity\User;
 use App\Repository\MenuRepository;
 use App\Service\SiteContext;
@@ -188,6 +189,9 @@ class DashboardController extends AbstractDashboardController
                 ->setController(ThemeSettingsCrudController::class)
                 ->setAction(Crud::PAGE_EDIT)
                 ->setEntityId($this->siteContext->getCurrentSiteId());
+
+            yield MenuItem::linkToCrud('Images du theme', 'fas fa-images', SiteGalleryItem::class)
+                ->setController(ThemeImagesCrudController::class);
         }
 
         // --- Aide ---

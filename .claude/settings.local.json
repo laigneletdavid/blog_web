@@ -58,7 +58,8 @@
       "Bash(wsl -d Ubuntu -e bash -c \"mkdir -p /home/laign/projects/blog_web/templates/sitemap /home/laign/projects/blog_web/templates/robots\")",
       "Bash(for theme:*)",
       "Bash(do sed:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(wsl ls:*)"
     ]
   }
 }

@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -162,6 +163,18 @@ class ThemeSettingsCrudController extends AbstractCrudController
         yield ChoiceField::new('fontFamilySecondary', 'Police des titres')
             ->setChoices($this->fontService->getSecondaryChoices())
             ->setHelp('Optionnel. Police reservee aux titres. Laissez "Identique" pour utiliser la police principale.');
+
+        // --- Panel Images ---
+        yield FormField::addPanel('Images du theme')
+            ->setIcon('fa fa-image')
+            ->setHelp('Images principales du theme. Pour les galeries, logos et temoignages, utilisez le menu "Images du theme".')
+            ->collapsible();
+
+        yield AssociationField::new('heroImage', 'Image hero (fond)')
+            ->setHelp('Image de fond du hero en page d\'accueil. Format paysage recommande (1920x800 min).');
+
+        yield AssociationField::new('aboutImage', 'Image a propos')
+            ->setHelp('Photo ou illustration pour la section "A propos". Format portrait ou carre recommande.');
     }
 
     /**

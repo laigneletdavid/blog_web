@@ -1,20 +1,22 @@
-name: "Moderne"
-description: "Design contemporain et audacieux, avec animations et effets visuels"
-version: "1.0"
-author: "Blog & Web"
-google_fonts: "Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500"
-buttonStyle: gradient
-headerStyle: sticky-transparent
-variables:
-  --bg: "#0A0A0A"
-  --surface: "#1A1A2E"
-  --border: "#2D2D44"
-  --text: "#E4E4E7"
-  --text-muted: "#A1A1AA"
-  --radius: "1rem"
+name: Moderne
+description: Design contemporain dark mode, startups et tech
+version: '1.0'
+author: Blog & Web
 defaults:
-  primaryColor: "#7C3AED"
-  secondaryColor: "#F59E0B"
-  accentColor: "#06B6D4"
+  primaryColor: '#7C3AED'
+  secondaryColor: '#F59E0B'
+  accentColor: '#06B6D4'
   fontFamily: "'Space Grotesk', sans-serif"
   fontFamilySecondary: null
+variables:
+  bg: '#0A0A0A'
+  surface: '#1A1A2E'
+  border: '#2D2D44'
+  text: '#E4E4E7'
+  text-muted: '#A1A1AA'
+  radius: '1rem'
+config:
+  buttonStyle: gradient
+  headerStyle: sticky-transparent
+  google_fonts:
+    - Space+Grotesk:wght@400;500;600;700

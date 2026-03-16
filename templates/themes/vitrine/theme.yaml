@@ -1,20 +1,22 @@
-name: "Vitrine"
-description: "Site vitrine simple et efficace, ideal pour presenter une activite"
-version: "1.0"
-author: "Blog & Web"
-google_fonts: "DM+Sans:wght@400;500;600;700"
-buttonStyle: filled
-headerStyle: sticky-white
-variables:
-  --bg: "#FFFFFF"
-  --surface: "#F9FAFB"
-  --border: "#E5E7EB"
-  --text: "#1F2937"
-  --text-muted: "#6B7280"
-  --radius: "0.625rem"
+name: Vitrine
+description: Site vitrine elegant pour professions liberales, coachs, consultants
+version: '1.0'
+author: Blog & Web
 defaults:
-  primaryColor: "#4F46E5"
-  secondaryColor: "#EC4899"
-  accentColor: "#06B6D4"
+  primaryColor: '#4F46E5'
+  secondaryColor: '#EC4899'
+  accentColor: '#06B6D4'
   fontFamily: "'DM Sans', sans-serif"
   fontFamilySecondary: null
+variables:
+  bg: '#FFFFFF'
+  surface: '#F9FAFB'
+  border: '#E5E7EB'
+  text: '#1F2937'
+  text-muted: '#6B7280'
+  radius: '0.625rem'
+config:
+  buttonStyle: filled
+  headerStyle: sticky-white
+  google_fonts:
+    - DM+Sans:wght@400;500;600;700
