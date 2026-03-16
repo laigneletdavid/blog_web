@@ -1,0 +1,23 @@
+{# ====== FOOTER — Theme Vitrine ====== #}
+{# Style: Minimaliste, une seule ligne de nav + copyright #}
+<footer class="footer footer--vitrine">
+    <div class="container py-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <a href="{{ path('app_home') }}" class="footer-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                {% else %}
+                    <img src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
+                {% endif %}
+            </a>
+            <nav class="d-flex flex-wrap justify-content-center gap-3">
+                {% for menu in menus %}
+                    <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                {% endfor %}
+                <a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a>
+                <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
+            </nav>
+            <span class="footer-copy">&copy; {{ "now"|date("Y") }} {{ site.name|default('') }}</span>
+        </div>
+    </div>
+</footer>

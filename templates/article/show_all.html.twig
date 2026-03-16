@@ -3,77 +3,8 @@
 {% block title %}{{ title_page }}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="breadcrum mb-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
-    <div class="container">
-        <h1 class="title-one mb-4">{{ title_page }}</h1>
-
-        {% if filterMonth is defined and filterMonth %}
-            <p class="text-muted mb-4">
-                <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-times"></i> Voir tous les articles
-                </a>
-            </p>
-        {% endif %}
-
-        {# Params de base pour la pagination (conserve les filtres actifs) #}
-        {% set baseParams = {} %}
-        {% if filterMonth is defined and filterMonth %}
-            {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
-        {% endif %}
-
-        <div class="d-flex flex-column-reverse flex-lg-row">
-            <div class="col-lg-4">
-                <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
-                    {% include 'widgets/subscribe.html.twig' %}
-                    {% include 'widgets/categories.html.twig' %}
-                    {% include 'widgets/last_article.html.twig' %}
-                    {% include 'widgets/archives.html.twig' %}
-                </div>
-            </div>
-            <div class="col-lg-8 ps-lg-3">
-                <div class="articles_list d-flex flex-column">
-                    {% if articles|length > 0 %}
-                        {% include 'article/article_liste_large.html.twig' with { articles: articles } %}
-                    {% else %}
-                        <p class="text-muted">Aucun article pour cette période.</p>
-                    {% endif %}
-                </div>
-
-                {# --- Pagination --- #}
-                {% if totalPages > 1 %}
-                    <nav aria-label="Pagination des articles" class="mt-4 mb-5">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item {{ currentPage <= 1 ? 'disabled' : '' }}">
-                                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}" aria-label="Précédent">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-
-                            {% for p in 1..totalPages %}
-                                <li class="page-item {{ p == currentPage ? 'active' : '' }}">
-                                    <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
-                                </li>
-                            {% endfor %}
-
-                            <li class="page-item {{ currentPage >= totalPages ? 'disabled' : '' }}">
-                                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}" aria-label="Suivant">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+    {% include [
+        'themes/' ~ _theme ~ '/blog.html.twig',
+        'themes/default/blog.html.twig'
+    ] %}
 {% endblock %}

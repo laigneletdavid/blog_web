@@ -1,0 +1,68 @@
+{# ====== BLOG — Theme Artisan ====== #}
+{# Layout: Titre stylise, articles en liste large (1 colonne), sidebar a droite #}
+
+<section class="art-blog-header">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item active">{{ title_page }}</li>
+            </ol>
+        </nav>
+        <h1 class="art-blog-header__title">{{ title_page }}</h1>
+    </div>
+</section>
+
+{% if filterMonth is defined and filterMonth %}
+<div class="container mt-3">
+    <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-secondary btn-sm">&times; Voir tous les articles</a>
+</div>
+{% endif %}
+
+{% set baseParams = {} %}
+{% if filterMonth is defined and filterMonth %}
+    {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
+{% endif %}
+
+<section class="art-blog-content">
+    <div class="container">
+        <div class="row">
+            {# Articles — pleine largeur liste #}
+            <div class="col-lg-8">
+                {% if articles|length > 0 %}
+                    {% include 'article/article_liste_large.html.twig' with { articles: articles } %}
+                {% else %}
+                    <p class="text-muted">Aucun article pour cette periode.</p>
+                {% endif %}
+
+                {% if totalPages > 1 %}
+                <nav aria-label="Pagination" class="mt-4 mb-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {{ currentPage <= 1 ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}">&laquo;</a>
+                        </li>
+                        {% for p in 1..totalPages %}
+                        <li class="page-item {{ p == currentPage ? 'active' : '' }}">
+                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="page-item {{ currentPage >= totalPages ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+
+            {# Sidebar #}
+            <div class="col-lg-4">
+                <div class="art-blog-sidebar">
+                    {% include 'widgets/subscribe.html.twig' %}
+                    {% include 'widgets/categories.html.twig' %}
+                    {% include 'widgets/last_article.html.twig' %}
+                    {% include 'widgets/archives.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

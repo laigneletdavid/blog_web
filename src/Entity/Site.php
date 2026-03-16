@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SiteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -65,17 +67,17 @@ class Site
 
     // --- Apparence ---
 
-    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#2563EB'])]
-    private ?string $primaryColor = '#2563EB';
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $primaryColor = null;
 
-    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#F59E0B'])]
-    private ?string $secondaryColor = '#F59E0B';
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $secondaryColor = null;
 
-    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#8B5CF6'])]
-    private ?string $accentColor = '#8B5CF6';
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $accentColor = null;
 
-    #[ORM\Column(length: 100, nullable: true, options: ['default' => "'Inter', sans-serif"])]
-    private ?string $fontFamily = "'Inter', sans-serif";
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $fontFamily = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $fontFamilySecondary = null;
@@ -83,10 +85,28 @@ class Site
     #[ORM\Column(length: 20, options: ['default' => 'default'])]
     private string $template = 'default';
 
+    // --- Images du theme ---
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    private ?Media $heroImage = null;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    private ?Media $aboutImage = null;
+
+    /** @var Collection<int, SiteGalleryItem> */
+    #[ORM\OneToMany(targetEntity: SiteGalleryItem::class, mappedBy: 'site', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $galleryItems;
+
     // --- Proprietaire (Freelance) ---
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $owner = null;
+
+    public function __construct()
+    {
+        $this->galleryItems = new ArrayCollection();
+    }
 
     // --- Getters / Setters ---
 
@@ -349,6 +369,71 @@ class Site
         $this->template = $template;
 
         return $this;
+    }
+
+    // --- Theme Images Getters/Setters ---
+
+    public function getHeroImage(): ?Media
+    {
+        return $this->heroImage;
+    }
+
+    public function setHeroImage(?Media $heroImage): self
+    {
+        $this->heroImage = $heroImage;
+
+        return $this;
+    }
+
+    public function getAboutImage(): ?Media
+    {
+        return $this->aboutImage;
+    }
+
+    public function setAboutImage(?Media $aboutImage): self
+    {
+        $this->aboutImage = $aboutImage;
+
+        return $this;
+    }
+
+    /** @return Collection<int, SiteGalleryItem> */
+    public function getGalleryItems(): Collection
+    {
+        return $this->galleryItems;
+    }
+
+    public function addGalleryItem(SiteGalleryItem $item): self
+    {
+        if (!$this->galleryItems->contains($item)) {
+            $this->galleryItems->add($item);
+            $item->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGalleryItem(SiteGalleryItem $item): self
+    {
+        if ($this->galleryItems->removeElement($item)) {
+            if ($item->getSite() === $this) {
+                $item->setSite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Helper: get gallery items filtered by slot.
+     *
+     * @return Collection<int, SiteGalleryItem>
+     */
+    public function getGalleryBySlot(string $slot): Collection
+    {
+        return $this->galleryItems->filter(
+            fn (SiteGalleryItem $item) => $item->getSlot() === $slot
+        );
     }
 
     // --- Owner Getters/Setters ---

@@ -1,0 +1,63 @@
+{# ====== CONTACT — Theme Artisan ====== #}
+{# Layout: Image de fond en hero, formulaire centre, infos contact en cards dessous #}
+
+{# ====== HERO CONTACT ====== #}
+<section class="art-contact-hero" style="background-image: url('{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}');">
+    <div class="art-contact-hero__overlay"></div>
+    <div class="container position-relative text-center">
+        <h1 class="art-contact-hero__title">{{ title_page }}</h1>
+        <p class="art-contact-hero__desc">N'hesitez pas a nous ecrire, nous vous repondrons avec plaisir.</p>
+    </div>
+</section>
+
+<section class="art-contact-body">
+    <div class="container">
+        <div class="row g-5">
+            {# Formulaire #}
+            <div class="col-lg-7">
+                <div class="art-contact-form">
+                    <h2 class="art-contact-form__title">Ecrivez-nous</h2>
+                    {{ form_start(contactForm) }}
+                        {{ form_widget(contactForm) }}
+                        <button class="btn btn-primary btn-lg mt-3" type="submit">Envoyer</button>
+                    {{ form_end(contactForm) }}
+                </div>
+            </div>
+
+            {# Infos contact #}
+            <div class="col-lg-5">
+                <div class="art-contact-portrait mb-4 text-center">
+                    <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" loading="lazy"/>
+                </div>
+
+                <div class="art-contact-info">
+                    <h3 class="art-contact-info__name">{{ site.name|default('') }}</h3>
+                    {% if site.phone %}
+                    <div class="art-contact-info__item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <a href="tel:{{ site.phone }}">{{ site.phone }}</a>
+                    </div>
+                    {% endif %}
+                    {% if site.email %}
+                    <div class="art-contact-info__item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+                    </div>
+                    {% endif %}
+                    {% if site.adress1 %}
+                    <div class="art-contact-info__item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>{{ site.adress1 }}{% if site.adress2 %}, {{ site.adress2 }}{% endif %}<br>{{ site.postCode|default('') }} {{ site.town|default('') }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if site.googleMaps %}
+                <div class="art-contact-map mt-4">
+                    <iframe src="{{ site.googleMaps }}" height="250" style="border:0; width:100%; border-radius: var(--radius);" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>

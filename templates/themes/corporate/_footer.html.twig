@@ -1,0 +1,44 @@
+{# ====== FOOTER — Theme Corporate ====== #}
+<footer class="footer footer--corporate">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-2">
+                    {% if site is not null and site.logo is not null %}
+                        <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                    {% else %}
+                        <img src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
+                    {% endif %}
+                </a>
+                <p class="footer-tagline">{{ site.defaultSeoDescription|default('') }}</p>
+            </div>
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <h6 class="footer-section">Services</h6>
+                <ul class="nav flex-column">
+                    {% for menu in menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <h6 class="footer-section">Navigation</h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3">
+                <h6 class="footer-section">Contact</h6>
+                <ul class="nav flex-column">
+                    {% if site.phone %}<li class="nav-item"><a href="tel:{{ site.phone }}" class="nav-link">{{ site.phone }}</a></li>{% endif %}
+                    {% if site.email %}<li class="nav-item"><a href="mailto:{{ site.email }}" class="nav-link">{{ site.email }}</a></li>{% endif %}
+                    {% if site.adress1 %}<li class="nav-item"><span class="nav-link">{{ site.adress1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</span></li>{% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom pt-4 mt-4">
+            <span>&copy; {{ "now"|date("Y") }} {{ site.name|default('') }} &mdash; Tous droits reserves</span>
+        </div>
+    </div>
+</footer>

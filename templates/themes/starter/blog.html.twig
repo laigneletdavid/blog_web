@@ -1,0 +1,68 @@
+{# ====== BLOG — Theme Starter ====== #}
+{# Layout: Liste simple, pas de sidebar, minimaliste #}
+
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active">{{ title_page }}</li>
+        </ol>
+    </nav>
+
+    <h1 class="start-blog__title">{{ title_page }}</h1>
+
+    {% if filterMonth is defined and filterMonth %}
+    <div class="mb-3">
+        <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-dark btn-sm">&times; Tous les articles</a>
+    </div>
+    {% endif %}
+
+    {% set baseParams = {} %}
+    {% if filterMonth is defined and filterMonth %}
+        {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
+    {% endif %}
+
+    {# Articles en liste simple #}
+    {% if articles|length > 0 %}
+    <div class="start-blog-list mb-5">
+        {% for article in articles %}
+        <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="start-blog-item">
+            {% if article.featuredMedia %}
+            <img src="{{ asset('documents/medias/' ~ (article.featuredMedia.webpFileName ?? article.featuredMedia.fileName)) }}" alt="{{ article.title }}" class="start-blog-item__img" loading="lazy"/>
+            {% endif %}
+            <div class="start-blog-item__body">
+                {% if article.categories|length > 0 %}
+                <span class="start-blog-item__cat">{{ article.categories|first.name }}</span>
+                {% endif %}
+                <h2 class="start-blog-item__title">{{ article.title }}</h2>
+                <p class="start-blog-item__excerpt">{{ article.content|striptags|slice(0, 180) }}...</p>
+                <span class="start-blog-item__meta">
+                    {% if article.publishedAt %}{{ article.publishedAt|date('d M Y') }}{% endif %}
+                    &middot; {{ article.content|readingTime }} min
+                </span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">Aucun article.</p>
+    {% endif %}
+
+    {% if totalPages > 1 %}
+    <nav aria-label="Pagination" class="mb-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {{ currentPage <= 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}">&laquo;</a>
+            </li>
+            {% for p in 1..totalPages %}
+            <li class="page-item {{ p == currentPage ? 'active' : '' }}">
+                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+            <li class="page-item {{ currentPage >= totalPages ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>

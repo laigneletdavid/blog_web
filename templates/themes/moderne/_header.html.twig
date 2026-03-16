@@ -1,0 +1,80 @@
+{# ====== HEADER — Theme Moderne ====== #}
+{# Style: Dark, transparent, glassmorphism #}
+<header class="header header--moderne">
+    {% if is_granted('ROLE_CORRECTOR') %}
+    <div class="admin-bar">
+        <div class="container d-flex align-items-center gap-2 py-1">
+            <img src="{{ asset('images/logo xlight- b&w-50px.png') }}" alt="Admin" style="height: 20px;"/>
+            <a href="{{ path('admin') }}">Administration</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="header-main desk">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="{{ path('app_home') }}" class="header-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                {% else %}
+                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                {% endif %}
+            </a>
+
+            <nav class="header-nav d-flex align-items-center gap-1">
+                {% for menu in menus %}
+                    {% if menu.children|length > 0 %}
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" data-bs-toggle="dropdown">{{ menu.name }}</a>
+                            <ul class="dropdown-menu">
+                                {% for child in menu.children %}
+                                    {% if child.isVisible %}
+                                        <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a>
+            </nav>
+
+            <div class="header-actions d-flex align-items-center gap-2">
+                <a href="{{ path('app_contact') }}" class="btn mod-btn-gradient btn-sm">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-mobile smart">
+        <div class="container d-flex align-items-center justify-content-between py-2">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-label="Menu" style="color: var(--text);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
+            </button>
+            <a href="{{ path('app_home') }}" class="header-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                {% else %}
+                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                {% endif %}
+            </a>
+            <div></div>
+        </div>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" style="background: var(--surface); color: var(--text);">
+            <div class="offcanvas-header">
+                <span class="fw-bold">{{ site.name|default('Menu') }}</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav mb-4">
+                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+                    {% for menu in menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>

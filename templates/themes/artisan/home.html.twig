@@ -1,0 +1,113 @@
+{# ====== HOME — Theme Artisan ====== #}
+{# Layout: Hero image pleine largeur, section "notre histoire" avec photo, galerie masonry, articles, CTA #}
+
+{# ====== HERO ====== #}
+<section class="art-hero" style="background-image: url('{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}');">
+    <div class="art-hero__overlay"></div>
+    <div class="container position-relative text-center">
+        <h1 class="art-hero__title">{{ site.name|default('Bienvenue') }}</h1>
+        <p class="art-hero__subtitle">{{ site.title|default('') }}</p>
+        <div class="art-hero__actions">
+            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous decouvrir</a>
+        </div>
+    </div>
+</section>
+
+{# ====== NOTRE HISTOIRE ====== #}
+<section class="art-story">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="art-story__img" loading="lazy"/>
+            </div>
+            <div class="col-lg-6">
+                <span class="art-story__overtitle">Notre histoire</span>
+                <h2 class="art-story__title">{{ site.name|default('') }}</h2>
+                <p class="art-story__text">{{ site.defaultSeoDescription|default('Un savoir-faire authentique au service de nos clients.') }}</p>
+                <a href="{{ path('app_contact') }}" class="btn btn-primary">En savoir plus</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== GALERIE PHOTOS ====== #}
+{% set gallery = site.getGalleryBySlot('gallery') %}
+{% if gallery|length > 0 %}
+<section class="art-gallery">
+    <div class="container">
+        <h2 class="art-section-title text-center">Notre univers</h2>
+        <div class="art-gallery__grid">
+            {% for item in gallery[:6] %}
+            <div class="art-gallery__item {% if loop.index <= 2 %}art-gallery__item--large{% endif %}">
+                <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}" alt="{{ item.title|default('') }}" loading="lazy"/>
+                {% if item.title %}
+                <div class="art-gallery__caption">{{ item.title }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== SERVICES / MENUS ====== #}
+<section class="art-services">
+    <div class="container">
+        <h2 class="art-section-title text-center">Nos specialites</h2>
+        <div class="row g-4 justify-content-center">
+            {% for menu in menus[:4] %}
+            <div class="col-sm-6 col-lg-3">
+                <div class="art-service-card text-center">
+                    <div class="art-service-card__number">{{ loop.index }}</div>
+                    <h3 class="art-service-card__title">{{ menu.name }}</h3>
+                    <a href="{{ menu|menuLink }}" class="art-service-card__link">Decouvrir &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ====== TEMOIGNAGES ====== #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length > 0 %}
+<section class="art-testimonials">
+    <div class="container text-center">
+        <h2 class="art-section-title">Ce qu'ils en disent</h2>
+        <div class="row justify-content-center g-4">
+            {% for item in testimonials[:3] %}
+            <div class="col-md-4">
+                <div class="art-testimonial">
+                    <p class="art-testimonial__text">&ldquo;{{ item.content }}&rdquo;</p>
+                    <strong class="art-testimonial__author">{{ item.title|default('') }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== DERNIERS ARTICLES ====== #}
+<section class="art-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="art-section-title mb-0">Actualites</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+
+{# ====== CTA ====== #}
+<section class="art-cta">
+    <div class="container text-center">
+        <h2 class="art-cta__title">Venez nous rendre visite</h2>
+        <p class="art-cta__desc">
+            {% if site.adress1 %}{{ site.adress1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}{% endif %}
+        </p>
+        <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter</a>
+    </div>
+</section>

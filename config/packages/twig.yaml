@@ -5,6 +5,8 @@ twig:
         menu_service: '@App\Service\MenuService'
         widget_service: '@App\Service\WidgetService'
         seo_service: '@App\Service\SeoService'
+        theme_service: '@App\Service\ThemeService'
+        font_service: '@App\Service\FontService'
 
 when@test:
     twig:

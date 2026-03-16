@@ -1,0 +1,64 @@
+{# ====== HEADER — Theme Starter ====== #}
+{# Style: Ultra-minimal, nom du site en texte, nav inline #}
+<header class="header header--starter">
+    {% if is_granted('ROLE_CORRECTOR') %}
+    <div class="admin-bar">
+        <div class="container d-flex align-items-center gap-2 py-1">
+            <img src="{{ asset('images/logo xlight- b&w-50px.png') }}" alt="Admin" style="height: 20px;"/>
+            <a href="{{ path('admin') }}">Administration</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="header-main desk">
+        <div class="container d-flex align-items-center justify-content-between py-3">
+            <a href="{{ path('app_home') }}" class="start-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                {% else %}
+                    <strong>{{ site.name|default('Mon site') }}</strong>
+                {% endif %}
+            </a>
+
+            <nav class="d-flex align-items-center gap-3">
+                {% for menu in menus %}
+                    <a href="{{ menu|menuLink }}" class="start-nav-link">{{ menu.name }}</a>
+                {% endfor %}
+                <a href="{{ path('app_article_show_all') }}" class="start-nav-link">Blog</a>
+                <a href="{{ path('app_contact') }}" class="start-nav-link">Contact</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="header-mobile smart">
+        <div class="container d-flex align-items-center justify-content-between py-2">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
+            </button>
+            <a href="{{ path('app_home') }}" class="start-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                {% else %}
+                    <strong>{{ site.name|default('Mon site') }}</strong>
+                {% endif %}
+            </a>
+            <div></div>
+        </div>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
+            <div class="offcanvas-header">
+                <span class="fw-bold">{{ site.name|default('Menu') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav mb-4">
+                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+                    {% for menu in menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>

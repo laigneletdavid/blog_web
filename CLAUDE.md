@@ -350,37 +350,101 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 
 ---
 
-### Phase 3 — Thème personnalisable (~1 jour)
+### Phase 3 — Systeme Multi-Themes ✅
 
-#### 3.1 CSS custom properties ✅ (fait en Phase 5)
+> Approche B : un seul `base.html.twig` (SEO, head, scripts) qui inclut dynamiquement header/footer depuis le theme actif. Les pages de contenu restent inchangees.
 
-- [x] Modifier `assets/css/base/variables.scss` : remplacer `$bw-blue` etc. par `var(--primary)`, `var(--secondary)`, `var(--accent)`
-- [x] Conserver les valeurs SCSS comme fallback pour le build
-- [x] Vérifier que tous les composants utilisent les CSS custom properties
+#### 3.0 Prealables ✅ (faits en Phase 2 et 5)
 
-#### 3.2 Structure multi-templates
-
-- [ ] Créer `templates/themes/default/` — déplacer les templates actuels
-- [ ] Créer `templates/themes/corporate/` — template sobre, orienté services B2B
-- [ ] Créer `templates/themes/portfolio/` — template visuel, galerie, créatifs
-- [ ] Créer `templates/themes/landing/` — one-page, orienté conversion
-- [ ] Switch Twig dans `base.html.twig` selon `site.template`
-- [ ] Chaque thème hérite des partials communs (`_partials/`) pour éviter la duplication
-
-#### 3.3 Personnalisation admin ✅ (fait en Phase 2)
-
+- [x] CSS custom properties dans `variables.scss` : `var(--primary)`, `var(--secondary)`, `var(--accent)`
 - [x] `SiteCrudController` : `ColorField` pour primaire/secondaire/accent, choix de fonts, logo, favicon
 - [x] `ChoiceField` pour `template` — visible uniquement `ROLE_FREELANCE` et `ROLE_SUPER_ADMIN`
-- [x] Le thème s'applique via les custom properties injectées dans `base.html.twig`
+- [x] Custom properties injectées dans `base.html.twig` depuis `Site`
+- [x] `ROLE_FREELANCE` dans `RoleEnum.php` + `security.yaml`
+- [x] Champ `owner` (FK User) sur `Site`
+- [x] `SiteCrudController` : champs sensibles restreints à `ROLE_FREELANCE+`
 
-#### 3.4 Rôle FREELANCE (partiellement fait en Phase 2)
+#### 3.1 Variables CSS du système (13 variables) ✅
 
-- [x] Ajouter `ROLE_FREELANCE` dans `RoleEnum.php`
-- [x] Ajouter dans `role_hierarchy` dans `security.yaml` : `ROLE_FREELANCE: [ROLE_ADMIN]`
-- [x] Champ `owner` (FK User) sur `Site` + migration
-- [ ] `SiteRepository::findByOwner(User $user)` — filtre par owner pour ROLE_FREELANCE
-- [ ] `DashboardController` : si `ROLE_FREELANCE` sans `ROLE_SUPER_ADMIN`, filtrer les sites affichés
-- [x] `SiteCrudController` : restreindre les champs sensibles (template, couleurs) à `ROLE_FREELANCE+`
+**Sur Site (personnalisables par client dans admin) — 5 :** `--primary`, `--secondary`, `--accent`, `--font-family`, `--font-family-secondary`
+
+**Dans theme.yaml uniquement (fixées par thème) — 6 :** `--bg` (fond), `--surface` (cards), `--border` (séparateurs), `--text` (texte principal), `--text-muted` (texte secondaire), `--radius` (border-radius)
+
+**Meta-config YAML (non CSS, influencent le HTML) — 2 :** `buttonStyle` (filled/outline/gradient/pill), `headerStyle` (sticky-white/sticky-transparent/static)
+
+#### 3.2 ThemeService ✅
+
+- [x] Créer `src/Service/ThemeService.php` — scanne `templates/themes/*/theme.yaml`, cache 1h
+  - `getAvailableThemes()`, `getTheme()`, `getDefaults()`, `getThemeVars()`, `getConfig()`, `hasTemplate()`, `clearCache()`
+  - `resolveAppearance()` — résout couleurs/polices avec fallback chain : site → theme → hardcoded
+  - `resolveAppearanceForTheme()` — pure defaults du thème (pour preview)
+- [x] `config/services.yaml` — bind `$projectDir`
+- [x] `config/packages/twig.yaml` — global `theme_service`
+
+#### 3.3 Theme default : extraction ✅
+
+- [x] Créer `templates/themes/default/theme.yaml` — config avec defaults actuels
+- [x] Extraire header de `base.html.twig` → `templates/themes/default/_header.html.twig`
+- [x] Extraire footer de `base.html.twig` → `templates/themes/default/_footer.html.twig`
+- [x] Extraire body de `home/index.html.twig` → `templates/themes/default/home.html.twig`
+- [x] Extraire body de `article/show_all.html.twig` → `templates/themes/default/blog.html.twig`
+
+#### 3.4 Intégration Twig ✅
+
+- [x] `base.html.twig` : remplacer header/footer inline par `{% include ['themes/' ~ _theme ~ '/...', 'themes/default/...'] %}`
+- [x] `base.html.twig` : injecter theme_vars CSS (--bg, --surface, --text, etc.) dans `:root`
+- [x] `base.html.twig` : Google Fonts dynamique depuis `_theme_config.google_fonts`
+- [x] `base.html.twig` : charger `theme.css` conditionnel si présent
+- [x] `base.html.twig` : preview mode (`?_preview_theme=slug`) avec réécriture des liens internes
+- [x] `home/index.html.twig` : transformer en dispatcher theme
+- [x] `article/show_all.html.twig` : transformer en dispatcher theme (blog)
+
+#### 3.5 Admin Theme Browser ✅
+
+- [x] `DashboardController` : route `GET /admin/theme-browser` (`ROLE_FREELANCE+`) — page navigation themes
+- [x] `DashboardController` : route `POST /admin/theme-activate/{slug}` (`ROLE_FREELANCE+`) — activation (CSRF protégé)
+- [x] `DashboardController` : route `GET /admin/theme-preview/{slug}` (`ROLE_FREELANCE+`) — sert preview.png
+- [x] `DashboardController` : route `GET /theme-css/{slug}` — sert theme.css (accessible front, cache 1h)
+- [x] `DashboardController::configureMenuItems()` : section "Apparence" (`ROLE_FREELANCE+`) avec Catalogue, Réglages, Images
+- [x] Créer `templates/admin/themes/browser.html.twig` — grille cards avec preview, couleurs, bouton activer, preview fullscreen (iframe responsive desktop/tablette/mobile)
+
+#### 3.6 Créer les 5 themes ✅
+
+- [x] `corporate` — PME services B2B, sobre et professionnel (Montserrat)
+- [x] `artisan` — Commerce local, chaleureux (Lato)
+- [x] `vitrine` — Site vitrine élégant, professions libérales (DM Sans)
+- [x] `starter` — Minimaliste, point de départ (Inter)
+- [x] `moderne` — Design contemporain dark mode, animations (Space Grotesk)
+
+Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.html.twig` + `blog.html.twig` + `contact.html.twig` + `theme.css` + `preview.png`
+
+#### 3.7 Admin Apparence (ThemeSettings + ThemeImages) ✅
+
+- [x] `ThemeSettingsCrudController` (`ROLE_FREELANCE+`) — couleurs, polices, images hero/about avec overlay null = theme default
+- [x] `ThemeImagesCrudController` (`ROLE_FREELANCE+`) — galerie d'images du thème (`SiteGalleryItem`)
+- [x] `FontService` — 20 Google Fonts avec choix primary/secondary
+- [x] Surcouche CSS : valeur null = default du thème, valeur non-null = override client
+
+#### 3.8 ROLE_FREELANCE ✅
+
+- [x] `SiteRepository::findByOwner(User $user)` — filtre par owner pour ROLE_FREELANCE
+- [x] Routes theme : `#[IsGranted('ROLE_FREELANCE')]` sur browser, activate, preview
+- [x] Menu "Apparence" : `$this->isGranted('ROLE_FREELANCE')` — invisible pour ROLE_ADMIN
+- [x] `ThemeSettingsCrudController` + `ThemeImagesCrudController` : `#[IsGranted('ROLE_FREELANCE')]` sur la classe
+- [x] Filtrage multi-site préparé (`findByOwner`) — activable en multi-tenant
+
+#### 3.9 Placeholder images + fixes ✅
+
+- [x] Fallback `asset('images/placeholder.jpg')` sur tous les templates (hero, about, contact) via ternaire Twig
+- [x] Fix `article.categorie` → `article.categories` (Collection) dans tous les blog templates
+- [x] Fix menu offcanvas mobile : fond blanc opaque, pas de scroll (`offcanevas-menu.scss`)
+
+**Répartition :** Dev (par thème) = header, footer, home, blog, contact, theme.css, theme.yaml | Commun = SEO, article/show, page/show, formulaires, admin, scripts | Client = contenu TipTap, couleurs/polices via Admin Apparence
+
+**Fichiers système créés (12) :** `ThemeService.php`, `FontService.php`, `ThemeSettingsCrudController.php`, `ThemeImagesCrudController.php`, `admin/themes/browser.html.twig`, + 6 `theme.yaml` (default, corporate, artisan, vitrine, starter, moderne)
+**Fichiers par thème (6×7=42) :** `_header.html.twig`, `_footer.html.twig`, `home.html.twig`, `blog.html.twig`, `contact.html.twig`, `theme.css`, `preview.png`
+**Fichiers modifiés (7) :** `base.html.twig`, `home/index.html.twig`, `article/show_all.html.twig`, `DashboardController.php`, `twig.yaml`, `services.yaml`, `offcanevas-menu.scss`
+**Aucune migration** — `Site.template` existe déjà, theme_vars restent dans theme.yaml
 
 ---
 
