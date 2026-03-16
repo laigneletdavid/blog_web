@@ -8,8 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -98,44 +96,6 @@ class SiteCrudController extends AbstractCrudController
 
         yield AssociationField::new('favicon', 'Favicon')
             ->setHelp('Petite icone affichee dans l\'onglet du navigateur. Format carre recommande (32x32 ou 64x64 px).')
-            ->hideOnIndex();
-
-        // --- Panel Apparence (ROLE_FREELANCE+) ---
-        yield FormField::addPanel('Apparence')
-            ->setIcon('fa fa-palette')
-            ->collapsible()
-            ->setPermission('ROLE_FREELANCE');
-
-        yield ChoiceField::new('template', 'Template')
-            ->setChoices([
-                'Defaut' => 'default',
-                'Corporate' => 'corporate',
-                'Portfolio' => 'portfolio',
-                'Landing' => 'landing',
-            ])
-            ->setPermission('ROLE_FREELANCE')
-            ->hideOnIndex();
-
-        yield ColorField::new('primaryColor', 'Couleur principale')
-            ->setPermission('ROLE_FREELANCE')
-            ->hideOnIndex();
-
-        yield ColorField::new('secondaryColor', 'Couleur secondaire')
-            ->setPermission('ROLE_FREELANCE')
-            ->hideOnIndex();
-
-        yield ColorField::new('accentColor', 'Couleur d\'accent')
-            ->setPermission('ROLE_FREELANCE')
-            ->hideOnIndex();
-
-        yield TextField::new('fontFamily', 'Police principale')
-            ->setHelp('Ex: \'Inter\', sans-serif')
-            ->setPermission('ROLE_FREELANCE')
-            ->hideOnIndex();
-
-        yield TextField::new('fontFamilySecondary', 'Police titres')
-            ->setHelp('Ex: \'Playfair Display\', serif')
-            ->setPermission('ROLE_FREELANCE')
             ->hideOnIndex();
 
         // --- Panel Proprietaire (ROLE_SUPER_ADMIN) ---

@@ -65,17 +65,17 @@ class Site
 
     // --- Apparence ---
 
-    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#2563EB'])]
-    private ?string $primaryColor = '#2563EB';
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $primaryColor = null;
 
-    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#F59E0B'])]
-    private ?string $secondaryColor = '#F59E0B';
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $secondaryColor = null;
 
-    #[ORM\Column(length: 7, nullable: true, options: ['default' => '#8B5CF6'])]
-    private ?string $accentColor = '#8B5CF6';
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $accentColor = null;
 
-    #[ORM\Column(length: 100, nullable: true, options: ['default' => "'Inter', sans-serif"])]
-    private ?string $fontFamily = "'Inter', sans-serif";
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $fontFamily = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $fontFamilySecondary = null;

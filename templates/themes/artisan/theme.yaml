@@ -1,0 +1,20 @@
+name: "Artisan"
+description: "Theme chaleureux pour commerces locaux et artisans"
+version: "1.0"
+author: "Blog & Web"
+google_fonts: "Playfair+Display:wght@400;500;600;700&family=Lato:wght@400;700"
+buttonStyle: filled
+headerStyle: sticky-transparent
+variables:
+  --bg: "#FFFBF0"
+  --surface: "#FFF8E7"
+  --border: "#E8DCC8"
+  --text: "#2D1B00"
+  --text-muted: "#7A6B5A"
+  --radius: "1rem"
+defaults:
+  primaryColor: "#8B4513"
+  secondaryColor: "#D4A574"
+  accentColor: "#2E7D32"
+  fontFamily: "'Lato', sans-serif"
+  fontFamilySecondary: "'Playfair Display', serif"

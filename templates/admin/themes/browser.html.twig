@@ -1,0 +1,73 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    <h1>Themes</h1>
+{% endblock %}
+
+{% block main %}
+<p class="text-muted mb-4">Choisissez un theme pour votre site. Les couleurs et polices seront adaptees automatiquement.</p>
+
+<div class="row g-4">
+    {% for slug, theme in themes %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card h-100 {{ slug == currentTheme ? 'border-primary' : '' }}">
+            {# Preview image #}
+            {% if theme.hasPreview %}
+            <img src="{{ path('admin_theme_preview', { slug: slug }) }}" class="card-img-top" alt="Apercu {{ theme.name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(135deg, {{ theme.defaults.primaryColor|default('#2563EB') }}, {{ theme.defaults.accentColor|default('#8B5CF6') }});">
+                <span class="text-white fs-3 fw-bold">{{ theme.name }}</span>
+            </div>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h5 class="card-title mb-0">{{ theme.name }}</h5>
+                    {% if slug == currentTheme %}
+                    <span class="badge bg-primary">Actif</span>
+                    {% endif %}
+                </div>
+
+                <p class="card-text text-muted small flex-grow-1">{{ theme.description|default('') }}</p>
+
+                {# Color swatches #}
+                {% set defaults = theme.defaults|default({}) %}
+                <div class="d-flex gap-2 mb-3">
+                    {% if defaults.primaryColor is defined %}
+                    <div title="Primaire" style="width: 24px; height: 24px; border-radius: 50%; background: {{ defaults.primaryColor }}; border: 2px solid rgba(0,0,0,0.1);"></div>
+                    {% endif %}
+                    {% if defaults.secondaryColor is defined %}
+                    <div title="Secondaire" style="width: 24px; height: 24px; border-radius: 50%; background: {{ defaults.secondaryColor }}; border: 2px solid rgba(0,0,0,0.1);"></div>
+                    {% endif %}
+                    {% if defaults.accentColor is defined %}
+                    <div title="Accent" style="width: 24px; height: 24px; border-radius: 50%; background: {{ defaults.accentColor }}; border: 2px solid rgba(0,0,0,0.1);"></div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-2 align-items-center small text-muted mb-3">
+                    {% if theme.buttonStyle is defined %}
+                    <span class="badge bg-light text-dark">{{ theme.buttonStyle }}</span>
+                    {% endif %}
+                    {% if theme.headerStyle is defined %}
+                    <span class="badge bg-light text-dark">{{ theme.headerStyle }}</span>
+                    {% endif %}
+                </div>
+
+                {% if slug != currentTheme %}
+                <form method="post" action="{{ path('admin_theme_activate', { slug: slug }) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('theme_activate_' ~ slug) }}">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-palette me-1"></i> Activer ce theme
+                    </button>
+                </form>
+                {% else %}
+                <button class="btn btn-primary w-100" disabled>
+                    <i class="fas fa-check me-1"></i> Theme actif
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

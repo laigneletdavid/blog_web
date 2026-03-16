@@ -1,0 +1,83 @@
+{# ====== HOME — Theme Artisan ====== #}
+
+{# ====== HERO ====== #}
+<section class="hero hero-artisan">
+    <div class="container text-center">
+        <h1 class="hero-title">Bienvenue chez {{ site.name|default('nous') }}</h1>
+        <p class="hero-subtitle">{{ text_page }}</p>
+        <p class="hero-description">{{ site.defaultSeoDescription|default('Un savoir-faire authentique, transmis avec passion. Decouvrez notre univers et nos creations.') }}</p>
+        <div class="hero-actions">
+            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous rendre visite</a>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-lg">Notre journal</a>
+        </div>
+    </div>
+</section>
+
+{# ====== ABOUT ====== #}
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="section-title">Notre histoire</h2>
+                <p class="lead">{{ site.defaultSeoDescription|default('Depuis nos debuts, nous mettons notre savoir-faire au service de nos clients avec passion et authenticite.') }}</p>
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary mt-3">En savoir plus</a>
+            </div>
+            <div class="col-lg-6 text-center">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name }}" class="img-fluid rounded" style="max-height: 300px;">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== FEATURES ====== #}
+<section class="features" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="section-title text-center">Ce que nous proposons</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3 class="feature-title">Qualite artisanale</h3>
+                <p class="feature-description">Chaque realisation est unique, faite avec soin et attention aux details.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 class="feature-title">Relation de confiance</h3>
+                <p class="feature-description">Un echange direct et humain, du premier contact au suivi apres-vente.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3 class="feature-title">Presence en ligne</h3>
+                <p class="feature-description">Votre vitrine sur internet, accessible a tous, 24h/24.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== ARTICLES ====== #}
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center">Notre journal</h2>
+        <div class="row mb-0 mb-lg-5">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+
+{# ====== CONTACT/MAP ====== #}
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="cta-title">Venez nous rendre visite</h2>
+        {% if site.adress1 is not null %}
+        <p class="cta-description">{{ site.adress1 }}{% if site.postCode is not null %}, {{ site.postCode }}{% endif %}{% if site.town is not null %} {{ site.town }}{% endif %}</p>
+        {% endif %}
+        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous contacter</a>
+    </div>
+</section>

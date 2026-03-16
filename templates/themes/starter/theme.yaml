@@ -1,0 +1,20 @@
+name: "Starter"
+description: "Theme minimaliste, point de depart ideal pour un projet sur mesure"
+version: "1.0"
+author: "Blog & Web"
+google_fonts: "Inter:wght@400;500;600;700"
+buttonStyle: filled
+headerStyle: static
+variables:
+  --bg: "#FFFFFF"
+  --surface: "#FAFAFA"
+  --border: "#E5E5E5"
+  --text: "#171717"
+  --text-muted: "#737373"
+  --radius: "0.375rem"
+defaults:
+  primaryColor: "#171717"
+  secondaryColor: "#525252"
+  accentColor: "#2563EB"
+  fontFamily: "'Inter', sans-serif"
+  fontFamilySecondary: null

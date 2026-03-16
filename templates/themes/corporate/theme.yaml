@@ -1,0 +1,20 @@
+name: "Corporate"
+description: "Theme professionnel et sobre, ideal pour les PME et services B2B"
+version: "1.0"
+author: "Blog & Web"
+google_fonts: "Poppins:wght@400;500;600;700&family=Source+Sans+3:wght@400;600"
+buttonStyle: outline
+headerStyle: sticky-white
+variables:
+  --bg: "#FFFFFF"
+  --surface: "#F5F7FA"
+  --border: "#D1D5DB"
+  --text: "#111827"
+  --text-muted: "#6B7280"
+  --radius: "0.5rem"
+defaults:
+  primaryColor: "#1E3A5F"
+  secondaryColor: "#D4AF37"
+  accentColor: "#2E7D32"
+  fontFamily: "'Poppins', sans-serif"
+  fontFamilySecondary: "'Source Sans 3', sans-serif"

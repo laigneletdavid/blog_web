@@ -55,7 +55,10 @@
       "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T node npm run dev 2>&1 | tail -25\")",
       "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npm run dev 2>&1 | tail -30\")",
       "Bash(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php php bin/console cache:clear 2>&1 | tail -3\")",
-      "Bash(wsl -d Ubuntu -e bash -c \"mkdir -p /home/laign/projects/blog_web/templates/sitemap /home/laign/projects/blog_web/templates/robots\")"
+      "Bash(wsl -d Ubuntu -e bash -c \"mkdir -p /home/laign/projects/blog_web/templates/sitemap /home/laign/projects/blog_web/templates/robots\")",
+      "Bash(for theme:*)",
+      "Bash(do sed:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

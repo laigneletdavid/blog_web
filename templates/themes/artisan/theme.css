@@ -1,0 +1,94 @@
+/* ====== Artisan Theme ====== */
+
+/* Body */
+.theme-artisan {
+    background-color: var(--bg);
+}
+
+/* Header */
+.theme-artisan .header {
+    background: rgba(255, 251, 240, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Hero */
+.theme-artisan .hero-artisan {
+    background: linear-gradient(135deg, var(--primary) 0%, #A0522D 100%);
+    color: #fff;
+    padding: 5rem 0;
+}
+.theme-artisan .hero-artisan .hero-title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+}
+.theme-artisan .hero-artisan .hero-subtitle,
+.theme-artisan .hero-artisan .hero-description {
+    color: rgba(255,255,255,0.9);
+}
+.theme-artisan .hero-artisan .btn-primary {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--text);
+}
+
+/* Section titles */
+.theme-artisan .section-title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 600;
+}
+
+/* Feature cards */
+.theme-artisan .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.theme-artisan .feature-card:hover {
+    box-shadow: 0 4px 16px rgba(139, 69, 19, 0.1);
+}
+
+/* Metrics */
+.theme-artisan .metrics {
+    background: var(--primary);
+    color: #fff;
+}
+.theme-artisan .metrics .metric-value,
+.theme-artisan .metrics .metric-label {
+    color: #fff;
+}
+
+/* CTA */
+.theme-artisan .cta-section {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+/* Cards & widgets */
+.theme-artisan .card,
+.theme-artisan .widget > * {
+    border-radius: var(--radius);
+}
+
+/* Footer */
+.theme-artisan .footer {
+    background: #2D1B00;
+    color: rgba(255,255,255,0.8);
+}
+.theme-artisan .footer h6 {
+    color: var(--secondary);
+}
+.theme-artisan .footer .nav-link {
+    color: rgba(255,255,255,0.7);
+}
+.theme-artisan .footer .nav-link:hover {
+    color: var(--secondary);
+}
+
+/* Links */
+.theme-artisan a {
+    color: var(--primary);
+}
+.theme-artisan a:hover {
+    color: var(--secondary);
+}

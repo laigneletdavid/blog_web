@@ -1,0 +1,28 @@
+name: "Default"
+description: "Template standard blog/vitrine — design moderne et polyvalent"
+version: "1.0"
+author: "Blog & Web"
+
+# Google Fonts (chargees dans le <head>)
+google_fonts: "Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500"
+
+# Meta-config (influence le HTML, pas le CSS)
+buttonStyle: filled      # filled | outline | gradient | pill
+headerStyle: sticky-white # sticky-white | sticky-transparent | static
+
+# Variables CSS fixees par le theme (non modifiables par le client)
+variables:
+  --bg: "#FFFFFF"
+  --surface: "#F8FAFC"
+  --border: "#E2E8F0"
+  --text: "#0F172A"
+  --text-muted: "#64748B"
+  --radius: "0.75rem"
+
+# Couleurs/polices suggerees quand on active ce theme
+defaults:
+  primaryColor: "#2563EB"
+  secondaryColor: "#F59E0B"
+  accentColor: "#8B5CF6"
+  fontFamily: "'Inter', sans-serif"
+  fontFamilySecondary: null

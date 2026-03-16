@@ -1,0 +1,67 @@
+/* ====== Vitrine Theme ====== */
+
+/* Header */
+.theme-vitrine .header {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* Hero */
+.theme-vitrine .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+/* Section titles */
+.theme-vitrine .section-title {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* Feature cards */
+.theme-vitrine .feature-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.theme-vitrine .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.1);
+}
+
+/* Metrics */
+.theme-vitrine .metrics {
+    background: var(--surface);
+}
+.theme-vitrine .metric-value {
+    color: var(--primary);
+}
+
+/* CTA */
+.theme-vitrine .cta-section {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+/* Buttons */
+.theme-vitrine .btn-primary {
+    border-radius: var(--radius);
+}
+
+/* Article cards */
+.theme-vitrine .article-card:hover {
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
+}
+
+/* Footer */
+.theme-vitrine .footer {
+    background: #1F2937;
+    color: rgba(255,255,255,0.8);
+}
+.theme-vitrine .footer h6 {
+    color: #fff;
+}
+.theme-vitrine .footer .nav-link {
+    color: rgba(255,255,255,0.7);
+}
+.theme-vitrine .footer .nav-link:hover {
+    color: var(--secondary);
+}

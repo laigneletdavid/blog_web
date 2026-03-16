@@ -1,0 +1,117 @@
+/* ====== Starter Theme ====== */
+
+/* Body */
+.theme-starter {
+    font-family: var(--font-family);
+}
+
+/* Header - static, no sticky */
+.theme-starter .header {
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    box-shadow: none;
+    background: #fff;
+}
+
+/* Hero - minimal */
+.theme-starter .hero {
+    background: var(--bg);
+    color: var(--text);
+    padding: 6rem 0;
+}
+.theme-starter .hero .hero-badge {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.theme-starter .hero .hero-title {
+    color: var(--text);
+    font-size: 3rem;
+    font-weight: 700;
+}
+.theme-starter .hero .hero-subtitle,
+.theme-starter .hero .hero-description {
+    color: var(--text-muted);
+}
+.theme-starter .hero .hero-badges {
+    display: none;
+}
+.theme-starter .hero .btn-light {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+}
+.theme-starter .hero .btn-outline-light {
+    color: var(--text);
+    border-color: var(--text);
+}
+.theme-starter .hero .btn-outline-light:hover {
+    background: var(--text);
+    color: #fff;
+}
+
+/* No gradients */
+.theme-starter .cta-section {
+    background: var(--text);
+    color: #fff;
+}
+
+/* Features */
+.theme-starter .feature-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: none;
+}
+
+/* Metrics */
+.theme-starter .metrics {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.theme-starter .metric-value {
+    color: var(--text);
+}
+
+/* Buttons - monochrome */
+.theme-starter .btn-primary {
+    background: var(--text);
+    border-color: var(--text);
+}
+.theme-starter .btn-primary:hover {
+    background: var(--text-muted);
+    border-color: var(--text-muted);
+}
+.theme-starter .btn-outline-primary {
+    color: var(--text);
+    border-color: var(--text);
+}
+.theme-starter .btn-outline-primary:hover {
+    background: var(--text);
+    color: #fff;
+}
+
+/* Footer - minimal */
+.theme-starter .footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.theme-starter .footer h6 {
+    color: var(--text);
+}
+.theme-starter .footer .nav-link {
+    color: var(--text-muted);
+}
+.theme-starter .footer .nav-link:hover {
+    color: var(--text);
+}
+.theme-starter .footer .footer-social .social-icon {
+    background: var(--border);
+    color: var(--text);
+}
+
+/* No decorative elements */
+.theme-starter .team {
+    display: none;
+}

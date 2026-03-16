@@ -1,0 +1,113 @@
+/* ====== Corporate Theme ====== */
+
+/* Top info bar */
+.theme-corporate .corporate-topbar {
+    background: var(--text);
+    color: #fff;
+    font-size: 0.8125rem;
+}
+.theme-corporate .topbar-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    opacity: 0.9;
+}
+.theme-corporate .topbar-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    transition: color 0.2s;
+}
+.theme-corporate .topbar-link:hover {
+    color: #fff;
+}
+
+/* Header */
+.theme-corporate .header {
+    border-bottom: 1px solid var(--border);
+    box-shadow: none;
+}
+.theme-corporate .header-main {
+    padding: 0.75rem 0;
+}
+
+/* Hero */
+.theme-corporate .hero-corporate {
+    background: var(--primary);
+    color: #fff;
+    padding: 5rem 0;
+}
+.theme-corporate .hero-corporate .hero-title {
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+.theme-corporate .hero-corporate .hero-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    color: #fff;
+    max-width: 600px;
+}
+.theme-corporate .hero-corporate-logo {
+    max-height: 200px;
+    opacity: 0.15;
+}
+
+/* Cards */
+.theme-corporate .corporate-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: none;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.theme-corporate .corporate-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+.theme-corporate .corporate-card .feature-icon {
+    color: var(--primary);
+}
+
+/* Section titles */
+.theme-corporate .section-title {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+/* Metrics */
+.theme-corporate .metrics {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+/* CTA */
+.theme-corporate .cta-section {
+    background: var(--primary);
+}
+
+/* Buttons - outline style */
+.theme-corporate .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+.theme-corporate .btn-outline-primary {
+    border-width: 2px;
+}
+
+/* Footer */
+.theme-corporate .footer {
+    background: var(--text);
+    color: rgba(255,255,255,0.8);
+}
+.theme-corporate .footer h6 {
+    color: #fff;
+}
+.theme-corporate .footer .nav-link {
+    color: rgba(255,255,255,0.7);
+}
+.theme-corporate .footer .nav-link:hover {
+    color: #fff;
+}

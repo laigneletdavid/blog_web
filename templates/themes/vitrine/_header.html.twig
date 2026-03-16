@@ -1,0 +1,146 @@
+{# ====== HEADER — Theme Vitrine ====== #}
+<header class="header">
+    {# Admin bar #}
+    {% if is_granted('ROLE_CORRECTOR') %}
+    <div class="admin-bar">
+        <div class="container d-flex align-items-center gap-2 py-1">
+            <img src="{{ asset('images/logo xlight- b&w-50px.png') }}" alt="Admin" style="height: 20px;"/>
+            <a href="{{ path('admin') }}">Administration</a>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Desktop header #}
+    <div class="header-main desk">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="{{ path('app_home') }}" class="header-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
+                {% else %}
+                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                {% endif %}
+            </a>
+
+            <nav class="header-nav d-flex align-items-center gap-1">
+                <a href="{{ path('app_home') }}" class="nav-link">Accueil</a>
+                {% for menu in menus %}
+                    {% if menu.children|length > 0 %}
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ menu.name }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% for child in menu.children %}
+                                    {% if child.isVisible %}
+                                        <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="header-actions d-flex align-items-center gap-2">
+                <div class="header-search dropdown" data-controller="search">
+                    <form class="d-flex align-items-center gap-2" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent">
+                        <input type="search" name="q" class="form-control form-control-sm search-input" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
+                        <button class="btn btn-sm btn-outline-primary" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
+                    <div class="dropdown-menu" data-search-target="results">
+                        <a class="dropdown-item" href="#">Contenu</a>
+                    </div>
+                </div>
+
+                {% if app.user %}
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_user_show', { 'id': app.user.id}) }}">Mon compte</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_logout')}}">Deconnexion</a>
+                {% else %}
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_login')}}">Connexion</a>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register')}}">Inscription</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Mobile header #}
+    <div class="header-mobile smart">
+        <div class="container d-flex align-items-center justify-content-between py-2">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </button>
+            <a href="{{ path('app_home') }}" class="header-logo">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
+                {% else %}
+                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                {% endif %}
+            </a>
+            <div></div>{# spacer for flex balance #}
+        </div>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                {% if site is not null and site.logo is not null %}
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" style="height: 36px; width: auto;">
+                {% else %}
+                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web" style="height: 36px; width: auto;">
+                {% endif %}
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="header-search dropdown mb-4" data-controller="search">
+                    <form class="d-flex gap-2" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent">
+                        <input type="search" name="q" class="form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
+                        <button class="btn btn-outline-primary" type="submit">Chercher</button>
+                    </form>
+                    <div class="dropdown-menu" data-search-target="results">
+                        <a class="dropdown-item" href="#">Contenu</a>
+                    </div>
+                </div>
+
+                <ul class="navbar-nav flex-grow-1 mb-4">
+                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+                    {% for menu in menus %}
+                        {% if menu.children|length > 0 %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ menu.name }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for child in menu.children %}
+                                        {% if child.isVisible %}
+                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
+                </ul>
+
+                <div class="d-grid gap-2">
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="btn btn-primary">Mon profil</a>
+                        <a href="{{ path('app_logout') }}" class="btn btn-outline-secondary">Se deconnecter</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-primary">Creer un compte</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
