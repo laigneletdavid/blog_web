@@ -27,7 +27,7 @@
     left: 0;
     right: 0;
     padding: 3rem 2rem 2rem;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    background: linear-gradient(transparent, var(--overlay-dark));
 
     h1, h2 {
       color: var(--white);

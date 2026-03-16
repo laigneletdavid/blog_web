@@ -73,7 +73,10 @@
       "Bash(done)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/contact)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/article/)",
-      "Bash(grep -A 10 \"findPublishedPaginated\\\\|blocksJson\\\\|admin_editor\" src/Controller/Admin/*.php src/Repository/ArticleRepository.php)"
+      "Bash(grep -A 10 \"findPublishedPaginated\\\\|blocksJson\\\\|admin_editor\" src/Controller/Admin/*.php src/Repository/ArticleRepository.php)",
+      "Bash(chmod +x scripts/backup.sh scripts/deploy.sh)",
+      "Bash(wsl -e chmod +x /home/laign/projects/blog_web/scripts/backup.sh /home/laign/projects/blog_web/scripts/deploy.sh)",
+      "Bash(chmod +x \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\scripts\\\\backup.sh\" \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\scripts\\\\deploy.sh\")"
     ]
   }
 }

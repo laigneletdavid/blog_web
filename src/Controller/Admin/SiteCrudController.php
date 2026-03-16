@@ -56,10 +56,10 @@ class SiteCrudController extends AbstractCrudController
         yield TextField::new('phone')
             ->setLabel('Telephone de contact');
 
-        yield TextField::new('adress_1')
+        yield TextField::new('address_1')
             ->setLabel('Adresse - ligne 1');
 
-        yield TextField::new('adress_2')
+        yield TextField::new('address_2')
             ->setLabel('Adresse - ligne 2');
 
         yield TextField::new('post_code')

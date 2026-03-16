@@ -2,10 +2,11 @@
 # Usage: make <target>
 
 DOCKER = docker compose
+DOCKER_PROD = docker compose -f docker-compose.yml -f docker-compose.prod.yml
 PHP    = $(DOCKER) exec php
 NPM    = $(DOCKER) run --rm -w /var/www/html node npm
 
-.PHONY: help up down restart sh db migrate cc assets assets-build logs test
+.PHONY: help up down restart sh db migrate cc assets assets-build logs test deploy backup restore
 
 ## — Docker ————————————————————————————————————
 help: ## Show this help
@@ -59,3 +60,14 @@ logs: ## Show all container logs
 ## — Tests —————————————————————————————————————
 test: ## Run PHPUnit tests
 	$(PHP) php bin/phpunit
+
+## — Production ————————————————————————————————
+deploy: ## Deploy (pull + install + migrate + cache + assets)
+	./scripts/deploy.sh
+
+backup: ## Backup database (compressed)
+	./scripts/backup.sh
+
+restore: ## Restore database from backup file (usage: make restore FILE=path/to/backup.sql.gz)
+	@test -n "$(FILE)" || (echo "Usage: make restore FILE=path/to/backup.sql.gz" && exit 1)
+	gunzip -c "$(FILE)" | $(DOCKER) exec -T db mysql -uapp -papp blog_web

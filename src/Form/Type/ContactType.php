@@ -54,6 +54,16 @@ class ContactType extends AbstractType
                     new Assert\Length(min: 10, max: 5000, minMessage: 'Le message doit contenir au moins {{ limit }} caractères.'),
                 ],
                 'attr' => ['class' => 'form-control', 'rows' => 6, 'placeholder' => 'Votre message ...'],
+            ])
+            ->add('website', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'mapped' => false,
+                'attr' => [
+                    'style' => 'position:absolute;left:-9999px',
+                    'tabindex' => '-1',
+                    'autocomplete' => 'off',
+                ],
             ]);
     }
 

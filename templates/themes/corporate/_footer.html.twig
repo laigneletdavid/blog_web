@@ -33,7 +33,7 @@
                 <ul class="nav flex-column">
                     {% if site.phone %}<li class="nav-item"><a href="tel:{{ site.phone }}" class="nav-link">{{ site.phone }}</a></li>{% endif %}
                     {% if site.email %}<li class="nav-item"><a href="mailto:{{ site.email }}" class="nav-link">{{ site.email }}</a></li>{% endif %}
-                    {% if site.adress1 %}<li class="nav-item"><span class="nav-link">{{ site.adress1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</span></li>{% endif %}
+                    {% if site.address1 %}<li class="nav-item"><span class="nav-link">{{ site.address1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</span></li>{% endif %}
                 </ul>
             </div>
         </div>

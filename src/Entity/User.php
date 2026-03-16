@@ -41,10 +41,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $first_name = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $news = null;
+    private ?bool $subscribeNews = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $articles = null;
+    private ?bool $subscribeArticles = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isVerified = false;
 
     public function __construct()
     {
@@ -175,26 +178,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isNews(): ?bool
+    public function isSubscribeNews(): ?bool
     {
-        return $this->news;
+        return $this->subscribeNews;
     }
 
-    public function setNews(?bool $news): self
+    public function setSubscribeNews(?bool $subscribeNews): self
     {
-        $this->news = $news;
+        $this->subscribeNews = $subscribeNews;
 
         return $this;
     }
 
-    public function isArticles(): ?bool
+    public function isSubscribeArticles(): ?bool
     {
-        return $this->articles;
+        return $this->subscribeArticles;
     }
 
-    public function setArticles(?bool $articles): self
+    public function setSubscribeArticles(?bool $subscribeArticles): self
     {
-        $this->articles = $articles;
+        $this->subscribeArticles = $subscribeArticles;
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

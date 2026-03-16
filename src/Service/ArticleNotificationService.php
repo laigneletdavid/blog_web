@@ -25,7 +25,7 @@ class ArticleNotificationService
      */
     public function notifySubscribers(Article $article): void
     {
-        $subscribers = $this->userRepository->findBy(['articles' => true]);
+        $subscribers = $this->userRepository->findBy(['subscribeArticles' => true]);
 
         if (empty($subscribers)) {
             return;

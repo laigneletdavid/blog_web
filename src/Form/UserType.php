@@ -23,24 +23,23 @@ class UserType extends AbstractType
             ->add('email', EmailType::class, ['label' => 'Votre adresse email'])
             ->add('name', TextType::class, ['label' => 'Votre nom'])
             ->add('first_name', TextType::class, ['label' => 'Votre prénom'])
-            ->add('news', ChoiceType::class, [
+            ->add('subscribeNews', ChoiceType::class, [
                 'choices' => [
-                    'Oui'=> true ,
+                    'Oui' => true,
                     'Non' => false,
                 ],
                 'expanded' => true,
                 'multiple' => false,
-                'label' => 'Abonnez-vous à la newsletter'
+                'label' => 'Abonnez-vous à la newsletter',
             ])
-            ->add('articles', ChoiceType::class, [
+            ->add('subscribeArticles', ChoiceType::class, [
                 'choices' => [
-                    'Oui'=> true ,
+                    'Oui' => true,
                     'Non' => false,
-                    ],
+                ],
                 'expanded' => true,
                 'multiple' => false,
-                'label' => 'Recevez une notification pour les nouveau articles'
-
+                'label' => 'Recevez une notification pour les nouveaux articles',
             ])
         ;
     }

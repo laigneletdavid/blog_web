@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
@@ -32,12 +33,31 @@ class HomeController extends AbstractController
     }
 
     #[Route('/contact', name: 'app_contact')]
-    public function contact(Request $request, MailerInterface $mailer, SiteContext $siteContext): Response
-    {
+    public function contact(
+        Request $request,
+        MailerInterface $mailer,
+        SiteContext $siteContext,
+        RateLimiterFactory $contactLimiter,
+    ): Response {
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Honeypot check — bots fill the hidden field
+            if ($form->get('website')->getData()) {
+                $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
+
+                return $this->redirectToRoute('app_contact');
+            }
+
+            // Rate limiting
+            $limiter = $contactLimiter->create($request->getClientIp());
+            if (!$limiter->consume()->isAccepted()) {
+                $this->addFlash('error', 'Trop de messages envoyés. Veuillez réessayer dans quelques minutes.');
+
+                return $this->redirectToRoute('app_contact');
+            }
+
             $data = $form->getData();
 
             $site = $siteContext->getCurrentSite();
