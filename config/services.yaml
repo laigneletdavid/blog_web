@@ -26,6 +26,14 @@ services:
         arguments:
             $mediaDirectory: '%medias_directory%'
 
+    App\Twig\ResponsiveImageExtension:
+        arguments:
+            $mediaDirectory: '%medias_directory%'
+
+    App\Service\BlockRenderer:
+        arguments:
+            $mediaDirectory: '%medias_directory%'
+
     App\Service\ThemeService:
         arguments:
             $projectDir: '%kernel.project_dir%'

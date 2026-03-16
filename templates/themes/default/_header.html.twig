@@ -47,7 +47,7 @@
 
             <div class="header-actions d-flex align-items-center gap-2">
                 <div class="header-search dropdown" data-controller="search">
-                    <form class="d-flex align-items-center gap-2" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent">
+                    <form class="d-flex align-items-center gap-2" action="{{ path('app_search_results') }}" method="get" data-search-target="form" data-api-url="{{ path('app_search') }}" data-action="search#doSearch:prevent">
                         <input type="search" name="q" class="form-control form-control-sm search-input" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
                         <button class="btn btn-sm btn-outline-primary" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -100,7 +100,7 @@
             </div>
             <div class="offcanvas-body">
                 <div class="header-search dropdown mb-4" data-controller="search">
-                    <form class="d-flex gap-2" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent">
+                    <form class="d-flex gap-2" action="{{ path('app_search_results') }}" method="get" data-search-target="form" data-api-url="{{ path('app_search') }}" data-action="search#doSearch:prevent">
                         <input type="search" name="q" class="form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
                         <button class="btn btn-outline-primary" type="submit">Chercher</button>
                     </form>

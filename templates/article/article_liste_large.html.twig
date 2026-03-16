@@ -4,8 +4,7 @@
     <div class="d-flex flex-lg-row flex-column">
         <div class="col-lg-4 article_list_large_img" >
             {% if article.featuredMedia %}
-                <img src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}" loading="lazy">
-            {% else %}
+                {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, 33vw') }}
             {% endif %}
         </div>
         <div class="col-lg-8 ps-lg-3 article_block d-flex flex-column justify-content-evenly">

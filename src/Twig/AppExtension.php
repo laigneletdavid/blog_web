@@ -20,6 +20,7 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('menuLink', [$this, 'menuLink']),
             new TwigFilter('readingTime', [$this, 'readingTime']),
+            new TwigFilter('highlight', [$this, 'highlight'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -35,6 +36,26 @@ class AppExtension extends AbstractExtension
         $wordCount = str_word_count(strip_tags($content));
 
         return max(1, (int) ceil($wordCount / 200));
+    }
+
+    /**
+     * Entoure les occurrences du mot-cle avec <mark> dans le texte.
+     * XSS-safe : le texte est echappe avant insertion des balises.
+     */
+    public function highlight(?string $text, ?string $keyword): string
+    {
+        if (!$text || !$keyword || mb_strlen($keyword) < 2) {
+            return htmlspecialchars($text ?? '', ENT_QUOTES, 'UTF-8');
+        }
+
+        $escaped = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        $escapedKeyword = preg_quote(htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8'), '/');
+
+        return preg_replace(
+            '/(' . $escapedKeyword . ')/iu',
+            '<mark>$1</mark>',
+            $escaped
+        );
     }
 
     public function menuLink(Menu $menu): string

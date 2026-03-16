@@ -2,8 +2,7 @@
     <a href="{{ path('app_article_show', { 'slug': article.slug}) }}" class="article_link d-flex flex-column">
         <div class="article_block_img" >
             {% if article.featuredMedia %}
-                <img class="article_img" src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
-            {% else %}
+                {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, 50vw', 'article_img') }}
             {% endif %}
         </div>
 
