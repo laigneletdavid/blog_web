@@ -1,0 +1,14 @@
+{% set tagCloud = widget_service.findTagCloud() %}
+{% if tagCloud|length > 0 %}
+<div class="widget-card mb-4">
+    <h4 class="widget-card__title">Tags</h4>
+    <div class="tag-cloud">
+        {% for row in tagCloud %}
+            <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}" class="tag-pill">
+                {{ row[0].name }}
+                <span class="tag-pill__count">{{ row.articleCount }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

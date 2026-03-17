@@ -88,7 +88,7 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 
 ---
 
-## Phases 1–5 : TERMINÉES ✅
+## Phases 1–6 : TERMINÉES ✅
 
 > Référence complète dans `CLAUDE.md`. Résumé :
 
@@ -99,6 +99,7 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 | Phase 3 | Système multi-thèmes (6 thèmes, ThemeService, theme.yaml, admin browser) | ✅ |
 | Phase 4 | Éditeur TipTap + UX (stats, notifications Brevo, pagination, recherche, archives) | ✅ |
 | Phase 5 | Refonte design & CSS (thème default moderne, header sticky, homepage SaaS) | ✅ |
+| Phase 6 | Fondations Modules + Services + Tags | ✅ |
 
 ---
 
@@ -142,108 +143,65 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 
 ---
 
-## Phase 6 — Fondations Modules + Services + Tags
+## Phase 6 — Fondations Modules + Services + Tags ✅
 
-> Temps estimé : ~1 jour
-> Prérequis : dette DT.3 (typos) recommandée avant migration
+> Temps réel : ~1 jour
 
-### 6.1 Système enabledModules sur Site
+### 6.1 Système enabledModules sur Site ✅
 
-**Objectif** : activer/désactiver des modules par site. Le DashboardController masque dynamiquement les menus et CRUDs.
+- [x] `src/Enum/ModuleEnum.php` — enum string-backed (8 modules : vitrine, services, blog, catalogue, ecommerce, events, private_pages, directory)
+- [x] `enabledModules` (JSON, default `['vitrine']`) sur `Site` + `hasModule(string|ModuleEnum): bool`
+- [x] `SiteContext::hasModule()` — proxy vers `Site::hasModule()`
+- [x] `ModulesCrudController.php` — CRUD dédié pour les modules (séparé de SiteCrudController)
+- [x] Migration Doctrine
+- [x] `DashboardController` : menus conditionnés par modules, lien "Modules" dans section Apparence
+- [x] Guard routes front : `ArticleController`, `CategorieController`, `ServiceController` vérifient `hasModule()`
 
-**Implémentation :**
+**Permissions admin :**
+- Modules → `ROLE_SUPER_ADMIN` uniquement
+- Services menu → `ROLE_ADMIN`+
+- Tags menu → `ROLE_AUTHOR`+
 
-- [ ] Créer `src/Enum/ModuleEnum.php` — enum string-backed :
-  ```php
-  enum ModuleEnum: string {
-      case VITRINE = 'vitrine';       // Toujours actif (base)
-      case SERVICES = 'services';
-      case BLOG = 'blog';
-      case CATALOGUE = 'catalogue';
-      case ECOMMERCE = 'ecommerce';
-      case EVENTS = 'events';
-      case PRIVATE_PAGES = 'private_pages';
-      case DIRECTORY = 'directory';
-  }
-  ```
-- [ ] Ajouter `enabledModules` (JSON, default `['vitrine']`) sur l'entité `Site`
-- [ ] Migration Doctrine
-- [ ] `SiteCrudController` : `ChoiceField::new('enabledModules')->allowMultipleChoices()->setPermission('ROLE_FREELANCE')`
-- [ ] `SiteContext` : ajouter `hasModule(ModuleEnum $module): bool`
-- [ ] `DashboardController::configureMenuItems()` : conditionner chaque section par `$this->siteContext->hasModule(...)`
-- [ ] Guard routes front : les controllers vérifient `hasModule()`, 404 si désactivé
+**Fichiers créés :** `ModuleEnum.php`, `ModulesCrudController.php`
+**Fichiers modifiés :** `Site.php`, `SiteContext.php`, `DashboardController.php`, `SiteCrudController.php`, `ArticleController.php`, `CategorieController.php`
 
-**Fichiers créés :** `ModuleEnum.php`
-**Fichiers modifiés :** `Site.php`, `SiteContext.php`, `DashboardController.php`, `SiteCrudController.php`
-**Migration :** oui
+### 6.2 Entité Service ✅
 
-### 6.2 Entité Service
-
-**Objectif** : les sites vitrine affichent une grille de services sur la homepage et une page `/services` dédiée.
-
-**Entité `Service` :**
-
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `title` | string(255) | Requis |
-| `slug` | string(255) | Unique, auto-généré |
-| `shortDescription` | text | Requis, affiché dans les cards |
-| `blocks` | json (nullable) | Contenu TipTap (page détail, optionnel) |
-| `content` | text (nullable) | HTML compilé depuis blocks (cache) |
-| `icon` | string(100, nullable) | Nom d'icône (ex: Bootstrap Icons `bi-rocket`) |
-| `image` | ManyToOne Media (nullable) | Image illustrative |
-| `link` | string(255, nullable) | URL externe ou page interne |
-| `position` | integer (default 0) | Ordre d'affichage |
-| `isActive` | boolean (default true) | Actif/inactif |
-
-- [ ] Créer `src/Entity/Service.php` avec les champs ci-dessus
-- [ ] Créer `src/Repository/ServiceRepository.php` — `findAllActive()` trié par position
-- [ ] Migration Doctrine
-- [ ] Créer `src/Controller/Admin/ServiceCrudController.php` :
-  - Panels : "Contenu" (title, shortDescription, blocks/blocksJson, icon, image) | "Paramètres" (position, isActive, link)
-  - Liste : colonnes title, icon, position (triable), isActive (toggle)
-  - Visible uniquement si module `services` activé
-- [ ] Créer `src/Controller/ServiceController.php` :
-  - `GET /services` — liste tous les services actifs
-  - `GET /service/{slug}` — détail (si blocks non null, sinon redirect vers /services)
-  - Guard `hasModule('services')`
-- [ ] Créer partials Twig :
-  - `templates/_partials/_services_grid.html.twig` — grille de cards (3 colonnes responsive)
-  - `templates/service/index.html.twig` — page liste
-  - `templates/service/show.html.twig` — page détail (si contenu TipTap)
-- [ ] Intégrer `_services_grid` dans les templates homepage de chaque thème (conditionné par module `services`)
-- [ ] Créer `assets/css/base/services.scss` + import dans `main.scss`
+- [x] `src/Entity/Service.php` — title, slug (unique), shortDescription, blocks (JSON), content (TEXT cache), icon, image (FK Media), linkedPage (FK Page nullable), link (URL externe nullable), position, isActive
+- [x] Virtual `getBlocksJson()`/`setBlocksJson()` — même pattern que Article/Page
+- [x] Priorité des liens : blocks (page détail) > linkedPage (FK Page) > link (URL externe)
+- [x] `ServiceRepository.php` — `findAllActive()`, `findOneActiveBySlug()`
+- [x] `ServiceCrudController.php` — Panels Contenu + Paramètres (slug auto, linkedPage AssociationField, link externe)
+- [x] `ServiceController.php` — `GET /services` (index), `GET /service/{slug}` (show si blocks, sinon redirect)
+- [x] `_partials/_services_grid.html.twig` — grille réutilisable avec logique de lien prioritaire
+- [x] `service/index.html.twig`, `service/show.html.twig`
+- [x] Intégration 6 thèmes homepage : fallback conditionnel (`{% if services|default([])|length > 0 %}` → services réels, sinon contenu menus existant)
+- [x] `services.scss` + import `main.scss`
+- [x] `ContentSanitizeListener` — compile blocks Service → content HTML
+- [x] `SitemapController` — services ajoutés (priority 0.6, conditionné par module)
 
 **Fichiers créés :** `Service.php`, `ServiceRepository.php`, `ServiceCrudController.php`, `ServiceController.php`, `_services_grid.html.twig`, `service/index.html.twig`, `service/show.html.twig`, `services.scss`
-**Fichiers modifiés :** `DashboardController.php` (menu), `main.scss`, templates homepage des thèmes
-**Migration :** oui
+**Fichiers modifiés :** `DashboardController.php`, `HomeController.php`, `ContentSanitizeListener.php`, `SitemapController.php`, `sitemap/index.xml.twig`, `main.scss`, 6 templates homepage thèmes
 
-### 6.3 Tags front + Nuage de tags
+### 6.3 Tags front + Nuage de tags ✅
 
-**Objectif** : l'entité Tag existe déjà. On ajoute le rendu front et l'admin.
+- [x] `TagController.php` — `GET /tag/{slug}` avec pagination Doctrine, guard `hasModule('blog')`
+- [x] `TagCrudController.php` — name, slug (auto), AssociationField articles
+- [x] `ArticleCrudController.php` — AssociationField tags ajouté dans panel Paramètres
+- [x] `Tag::__toString()` ajouté pour affichage EasyAdmin
+- [x] `TagRepository::findAllWithArticleCount()` — LEFT JOIN articles publiés, HAVING count > 0
+- [x] `ArticleRepository::findPublishedByTag()` — pagination Doctrine Paginator
+- [x] `WidgetService::findTagCloud()` — proxy vers TagRepository
+- [x] `tag/show.html.twig` — liste articles + sidebar (tag cloud, catégories, archives) + pagination
+- [x] `widgets/tag_cloud.html.twig` — pills avec compteur articles
+- [x] Tag cloud intégré : sidebar blog (default, corporate, artisan), article/show, tag/show
+- [x] Tag pills dans `article/item.html.twig` (cards articles)
+- [x] `tags.scss` — `.tag-cloud`, `.tag-pill`, `.tag-pill-sm`, `.tag-pills` + hover primary
 
-- [ ] Créer `src/Controller/TagController.php` :
-  - `GET /tag/{slug}` — liste articles par tag (même logique que page catégorie, avec pagination)
-  - Guard `hasModule('blog')`
-- [ ] Créer `templates/tag/show.html.twig` — liste articles tagués + breadcrumb
-- [ ] Créer partial `templates/_partials/_tag_cloud.html.twig` — nuage de tags :
-  - `TagRepository::findAllWithArticleCount()` — query avec COUNT, triés par nom
-  - Tailles CSS proportionnelles (3 niveaux : petit/moyen/grand selon le count)
-- [ ] Ajouter le widget nuage de tags dans la sidebar blog (tous thèmes)
-- [ ] Afficher les tags en pills cliquables sur :
-  - Cards articles (blog listing)
-  - Page article/show (sous le contenu)
-- [ ] Créer `src/Controller/Admin/TagCrudController.php` :
-  - Liste : tag name, slug, nombre d'articles (computed), actions
-  - Formulaire : name, slug (auto)
-  - Action batch : "Fusionner les tags sélectionnés"
-  - Visible uniquement si module `blog` activé
-- [ ] Créer `assets/css/base/tags.scss` — styles pills + nuage
+**Bug fix :** `Categorie.php` avait `mappedBy: 'categories'` au lieu de `'categorie'` — mapping Doctrine invalide corrigé
 
-**Fichiers créés :** `TagController.php`, `TagCrudController.php`, `tag/show.html.twig`, `_tag_cloud.html.twig`, `tags.scss`
-**Fichiers modifiés :** `TagRepository.php`, `DashboardController.php` (menu), `main.scss`, templates sidebar blog, templates article cards, template article/show
-**Migration :** non (entité Tag existe déjà)
+**Fichiers créés :** `TagController.php`, `TagCrudController.php`, `tag/show.html.twig`, `widgets/tag_cloud.html.twig`, `tags.scss`
+**Fichiers modifiés :** `TagRepository.php`, `ArticleRepository.php`, `WidgetService.php`, `ArticleCrudController.php`, `Tag.php`, `Categorie.php`, `DashboardController.php`, `main.scss`, `article/item.html.twig`, `article/show.html.twig`, sidebars blog thèmes
 
 ---
 

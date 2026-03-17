@@ -163,6 +163,27 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Articles publies par tag avec pagination.
+     *
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator<Article>
+     */
+    public function findPublishedByTag(\App\Entity\Tag $tag, int $page = 1, int $perPage = 9): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->innerJoin('a.tag', 't')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
+            ->andWhere('a.published = TRUE')
+            ->andWhere('t = :tag')
+            ->setParameter('tag', $tag)
+            ->orderBy('a.created_at', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        return new \Doctrine\ORM\Tools\Pagination\Paginator($qb->getQuery());
+    }
+
+    /**
      * @return Article[]
      */
     public function findAllPublishedForSitemap(): array

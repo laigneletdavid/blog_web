@@ -22,10 +22,13 @@
     </div>
 </section>
 
-{# ====== FEATURES ====== #}
+{# ====== FEATURES / SERVICES ====== #}
 <section class="mod-features">
     <div class="container">
         <h2 class="mod-section-title text-center">Ce que nous proposons</h2>
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
         <div class="row g-4">
             {% for menu in menus[:6] %}
             <div class="col-md-6 col-lg-4">
@@ -39,6 +42,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </section>
 

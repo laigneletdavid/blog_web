@@ -20,9 +20,12 @@
     </div>
 </section>
 
-{# ====== FEATURES HORIZONTALES ====== #}
+{# ====== FEATURES / SERVICES ====== #}
 <section class="vit-features">
     <div class="container">
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
         <div class="row g-4">
             {% for menu in menus[:4] %}
             <div class="col-sm-6 col-lg-3">
@@ -36,6 +39,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </section>
 

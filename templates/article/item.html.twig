@@ -16,6 +16,13 @@
                 </div>
                 <p class="article_credit">{{ article.createdAt|date('d M Y') }}</p>
             </div>
+            {% if article.tag|length > 0 %}
+            <div class="tag-pills mt-1">
+                {% for tag in article.tag %}
+                    <a href="{{ path('app_tag_show', { slug: tag.slug }) }}" class="tag-pill tag-pill-sm">{{ tag.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
 
             <p class="article_text">{{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}</p>
         </div>

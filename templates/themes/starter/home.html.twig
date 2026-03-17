@@ -13,6 +13,16 @@
     </div>
 </section>
 
+{# ====== SERVICES (si module actif) ====== #}
+{% if services|default([])|length > 0 %}
+<section class="start-services">
+    <div class="container">
+        <h2 class="start-section-title">Nos services</h2>
+        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+    </div>
+</section>
+{% endif %}
+
 {# ====== DERNIERS ARTICLES — liste simple ====== #}
 <section class="start-articles">
     <div class="container">

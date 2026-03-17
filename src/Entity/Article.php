@@ -55,7 +55,7 @@ class Article implements TimestampedInterface
 
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'article')]
-    #[ORM\OrderBy(['tag' => 'ASC'])]
+    #[ORM\OrderBy(['name' => 'ASC'])]
     private Collection $tag;
 
     #[ORM\ManyToOne]

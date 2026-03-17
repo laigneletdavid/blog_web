@@ -70,6 +70,16 @@
     </div>
 </section>
 
+{# ====== SERVICES (si module actif) ====== #}
+{% if services|default([])|length > 0 %}
+<section class="default-services py-5">
+    <div class="container">
+        <h2 class="text-center mb-4" style="font-weight: 700;">Nos services</h2>
+        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+    </div>
+</section>
+{% endif %}
+
 {# ====== METRICS ====== #}
 <section class="metrics">
     <div class="container">

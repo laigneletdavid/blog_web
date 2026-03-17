@@ -50,10 +50,13 @@
 </section>
 {% endif %}
 
-{# ====== SERVICES / MENUS ====== #}
+{# ====== SERVICES / SPECIALITES ====== #}
 <section class="art-services">
     <div class="container">
         <h2 class="art-section-title text-center">Nos specialites</h2>
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
         <div class="row g-4 justify-content-center">
             {% for menu in menus[:4] %}
             <div class="col-sm-6 col-lg-3">
@@ -65,6 +68,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </section>
 

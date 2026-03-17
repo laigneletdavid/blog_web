@@ -15,6 +15,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_FREELANCE')]
@@ -35,7 +38,7 @@ class ThemeSettingsCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->disable(Action::NEW, Action::DELETE, Action::BATCH_DELETE, Action::INDEX, Action::DETAIL);
+            ->disable(Action::NEW, Action::DELETE, Action::BATCH_DELETE, Action::INDEX);
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -182,6 +185,17 @@ class ThemeSettingsCrudController extends AbstractCrudController
     /**
      * @return array<string, string|null>
      */
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $url = $this->container->get(AdminUrlGenerator::class)
+            ->setController(self::class)
+            ->setAction(Action::EDIT)
+            ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+            ->generateUrl();
+
+        return $this->redirect($url);
+    }
+
     private function getThemeDefaults(Site $site): array
     {
         $slug = $site->getTemplate();

@@ -3,11 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Site;
+use App\Enum\ModuleEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -109,5 +114,16 @@ class SiteCrudController extends AbstractCrudController
             ->setHelp('Freelance responsable de ce site')
             ->setPermission('ROLE_SUPER_ADMIN')
             ->hideOnIndex();
+    }
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $url = $this->container->get(AdminUrlGenerator::class)
+            ->setController(self::class)
+            ->setAction(Action::EDIT)
+            ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+            ->generateUrl();
+
+        return $this->redirect($url);
     }
 }

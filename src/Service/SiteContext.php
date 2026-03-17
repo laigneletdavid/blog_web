@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Site;
+use App\Enum\ModuleEnum;
 use App\Repository\SiteRepository;
 
 /**
@@ -37,5 +38,13 @@ class SiteContext
     public function getCurrentSiteId(): ?int
     {
         return $this->getCurrentSite()?->getId();
+    }
+
+    /**
+     * Vérifie si un module est activé sur le site courant.
+     */
+    public function hasModule(string|ModuleEnum $module): bool
+    {
+        return $this->getCurrentSite()?->hasModule($module) ?? false;
     }
 }

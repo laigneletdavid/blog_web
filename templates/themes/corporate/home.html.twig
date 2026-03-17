@@ -26,6 +26,9 @@
             <h2 class="corp-section-title">Nos services</h2>
             <p class="corp-section-subtitle">Un accompagnement complet pour votre presence en ligne</p>
         </div>
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
         <div class="row g-4">
             {% for menu in menus[:6] %}
             <div class="col-md-6 col-lg-4">
@@ -40,6 +43,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </section>
 

@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
 use App\Service\SeoService;
+use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +19,17 @@ class ArticleController extends AbstractController
 {
     public function __construct(
         private readonly SeoService $seoService,
+        private readonly SiteContext $siteContext,
     ) {
     }
 
     #[Route('/', name: 'show_all')]
     public function showAll(Request $request, ArticleRepository $articleRepository): Response
     {
+        if (!$this->siteContext->hasModule('blog')) {
+            throw $this->createNotFoundException();
+        }
+
         $page = max(1, $request->query->getInt('page', 1));
         $month = $request->query->getInt('month') ?: null;
         $year = $request->query->getInt('year') ?: null;
@@ -54,6 +60,10 @@ class ArticleController extends AbstractController
     #[Route('/{slug}', name: 'show')]
     public function show(?Article $article, Request $request, EntityManagerInterface $em, ArticleRepository $articleRepository): Response
     {
+        if (!$this->siteContext->hasModule('blog')) {
+            throw $this->createNotFoundException();
+        }
+
         if (!$article) {
             throw $this->createNotFoundException('Article introuvable.');
         }

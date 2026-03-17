@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\SiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Enum\ModuleEnum;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -97,6 +99,11 @@ class Site
     #[ORM\OneToMany(targetEntity: SiteGalleryItem::class, mappedBy: 'site', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $galleryItems;
+
+    // --- Modules ---
+
+    #[ORM\Column(type: Types::JSON, options: ['default' => '["vitrine"]'])]
+    private array $enabledModules = ['vitrine'];
 
     // --- Proprietaire (Freelance) ---
 
@@ -434,6 +441,29 @@ class Site
         return $this->galleryItems->filter(
             fn (SiteGalleryItem $item) => $item->getSlot() === $slot
         );
+    }
+
+    // --- Modules Getters/Setters ---
+
+    /** @return string[] */
+    public function getEnabledModules(): array
+    {
+        return $this->enabledModules;
+    }
+
+    /** @param string[] $enabledModules */
+    public function setEnabledModules(array $enabledModules): self
+    {
+        $this->enabledModules = $enabledModules;
+
+        return $this;
+    }
+
+    public function hasModule(string|ModuleEnum $module): bool
+    {
+        $value = $module instanceof ModuleEnum ? $module->value : $module;
+
+        return in_array($value, $this->enabledModules, true);
     }
 
     // --- Owner Getters/Setters ---
