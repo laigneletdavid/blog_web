@@ -22,7 +22,7 @@
                 <div class="start-contact__info mt-5">
                     {% if site.email %}<p><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>{% endif %}
                     {% if site.phone %}<p><a href="tel:{{ site.phone }}">{{ site.phone }}</a></p>{% endif %}
-                    {% if site.adress1 %}<p>{{ site.adress1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</p>{% endif %}
+                    {% if site.address1 %}<p>{{ site.address1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</p>{% endif %}
                 </div>
             </div>
         </div>

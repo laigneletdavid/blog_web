@@ -1,14 +1,6 @@
 {# ====== HEADER — Theme Default ====== #}
 <header class="header">
-    {# Admin bar #}
-    {% if is_granted('ROLE_CORRECTOR') %}
-    <div class="admin-bar">
-        <div class="container d-flex align-items-center gap-2 py-1">
-            <img src="{{ asset('images/logo xlight- b&w-50px.png') }}" alt="Admin" style="height: 20px;"/>
-            <a href="{{ path('admin') }}">Administration</a>
-        </div>
-    </div>
-    {% endif %}
+    {% include '_partials/_admin_bar.html.twig' %}
 
     {# Desktop header #}
     <div class="header-main desk">

@@ -42,10 +42,10 @@
                             <a href="mailto:{{ site.email }}">{{ site.email }}</a>
                         </li>
                         {% endif %}
-                        {% if site.adress1 %}
+                        {% if site.address1 %}
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                            <span>{{ site.adress1 }}{% if site.adress2 %}<br>{{ site.adress2 }}{% endif %}<br>{{ site.postCode|default('') }} {{ site.town|default('') }}</span>
+                            <span>{{ site.address1 }}{% if site.address2 %}<br>{{ site.address2 }}{% endif %}<br>{{ site.postCode|default('') }} {{ site.town|default('') }}</span>
                         </li>
                         {% endif %}
                     </ul>

@@ -22,7 +22,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\EventListener\MediaUploadListener:
+    App\Service\MediaProcessorService:
         arguments:
             $mediaDirectory: '%medias_directory%'
 

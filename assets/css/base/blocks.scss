@@ -66,8 +66,8 @@
 // ─── Code block (pre > code) ─────────────────────────────────────────────────
 
 .block-code {
-    background: #1e1e1e;
-    color: #d4d4d4;
+    background: var(--code-bg);
+    color: var(--code-color);
     border-radius: var(--radius-md);
     padding: 1.25rem;
     margin: 1.5rem 0;
@@ -154,7 +154,7 @@
         border-radius: 3px;
         font-size: 0.9em;
         font-family: var(--font-mono);
-        color: #e83e8c;
+        color: var(--accent);
     }
 
     // Code inside pre (already styled by .block-code)

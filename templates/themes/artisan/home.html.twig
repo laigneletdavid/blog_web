@@ -106,7 +106,7 @@
     <div class="container text-center">
         <h2 class="art-cta__title">Venez nous rendre visite</h2>
         <p class="art-cta__desc">
-            {% if site.adress1 %}{{ site.adress1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}{% endif %}
+            {% if site.address1 %}{{ site.address1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}{% endif %}
         </p>
         <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter</a>
     </div>

@@ -3,6 +3,7 @@ services:
     build:
       context: ./docker/php
       dockerfile: Dockerfile
+      target: dev
     volumes:
       - .:/var/www/html:cached
     depends_on:

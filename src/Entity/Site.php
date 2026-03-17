@@ -35,10 +35,10 @@ class Site
     private ?string $post_code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $adress_1 = null;
+    private ?string $address_1 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $adress_2 = null;
+    private ?string $address_2 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $google_maps = null;
@@ -187,26 +187,26 @@ class Site
         return $this;
     }
 
-    public function getAdress1(): ?string
+    public function getAddress1(): ?string
     {
-        return $this->adress_1;
+        return $this->address_1;
     }
 
-    public function setAdress1(?string $adress_1): self
+    public function setAddress1(?string $address_1): self
     {
-        $this->adress_1 = $adress_1;
+        $this->address_1 = $address_1;
 
         return $this;
     }
 
-    public function getAdress2(): ?string
+    public function getAddress2(): ?string
     {
-        return $this->adress_2;
+        return $this->address_2;
     }
 
-    public function setAdress2(?string $adress_2): self
+    public function setAddress2(?string $address_2): self
     {
-        $this->adress_2 = $adress_2;
+        $this->address_2 = $address_2;
 
         return $this;
     }
