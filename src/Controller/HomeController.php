@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
+use App\Repository\ServiceRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,12 +23,13 @@ class HomeController extends AbstractController
     }
 
     #[Route('/', name: 'app_home')]
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(ArticleRepository $articleRepository, ServiceRepository $serviceRepository, SiteContext $siteContext): Response
     {
         return $this->render('home/index.html.twig', [
             'title_page' => 'Blog & Web',
             'text_page' => 'Un CMS proche de vous !',
             'articles' => $articleRepository->homeArticles(),
+            'services' => $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [],
             'seo' => $this->seoService->resolveForHome(),
         ]);
     }

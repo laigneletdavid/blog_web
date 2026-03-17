@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{{ service.title }} — {{ site.name|default('') }}</title>
+    <meta name="description" content="{{ service.shortDescription|default(seo.description|default('')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_service_index') }}">Services</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
+        </ol>
+    </nav>
+
+    <article class="service-detail">
+        <h1 class="title-one mb-4">{{ service.title }}</h1>
+
+        {% if service.image %}
+        <div class="service-detail__image mb-4">
+            <img src="{{ asset('uploads/medias/' ~ service.image.fileName) }}"
+                 alt="{{ service.title }}"
+                 class="img-fluid rounded"
+                 loading="lazy">
+        </div>
+        {% endif %}
+
+        {% if service.shortDescription %}
+        <p class="lead text-muted mb-4">{{ service.shortDescription }}</p>
+        {% endif %}
+
+        <div class="content">
+            {{ service.content|raw }}
+        </div>
+    </article>
+</div>
+{% endblock %}

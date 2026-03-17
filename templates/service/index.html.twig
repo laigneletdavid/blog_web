@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{{ seo.title|default('Nos services') }} — {{ site.name|default('') }}</title>
+    <meta name="description" content="{{ seo.description|default('Découvrez nos services') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Services</li>
+        </ol>
+    </nav>
+
+    <h1 class="title-one mb-4">{{ title_page }}</h1>
+
+    {% include '_partials/_services_grid.html.twig' with { services: services } %}
+
+    {% if services|length == 0 %}
+    <p class="text-muted text-center py-5">Aucun service disponible pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

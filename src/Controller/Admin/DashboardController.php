@@ -7,8 +7,10 @@ use App\Entity\Categorie;
 use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Page;
+use App\Entity\Service;
 use App\Entity\Site;
 use App\Entity\SiteGalleryItem;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Repository\MenuRepository;
 use App\Service\SiteContext;
@@ -158,6 +160,10 @@ class DashboardController extends AbstractDashboardController
             if ($this->siteContext->hasModule('blog')) {
                 yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
                 yield MenuItem::linkToCrud('Categories', 'fas fa-list', Categorie::class);
+                yield MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class);
+            }
+            if ($this->siteContext->hasModule('services')) {
+                yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Service::class);
             }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
