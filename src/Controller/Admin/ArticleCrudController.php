@@ -59,6 +59,10 @@ class ArticleCrudController extends AbstractCrudController
 
         yield AssociationField::new('categories', 'Catégories');
 
+        yield AssociationField::new('tag', 'Tags')
+            ->setHelp('Associez des tags pour organiser vos articles par thématique')
+            ->hideOnIndex();
+
         yield AssociationField::new('featured_media', 'Image mise en avant');
 
         yield TextField::new('featured_text', 'Texte mis en avant')

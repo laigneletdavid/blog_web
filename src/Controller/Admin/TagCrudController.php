@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -29,5 +30,8 @@ class TagCrudController extends AbstractCrudController
         yield IdField::new('id')->hideOnForm();
         yield TextField::new('name', 'Nom');
         yield SlugField::new('slug')->setTargetFieldName('name');
+        yield AssociationField::new('article', 'Articles')
+            ->setHelp('Articles associés à ce tag')
+            ->hideOnIndex();
     }
 }
