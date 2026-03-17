@@ -1,14 +1,7 @@
 {# ====== HEADER — Theme Moderne ====== #}
 {# Style: Dark, transparent, glassmorphism #}
 <header class="header header--moderne">
-    {% if is_granted('ROLE_CORRECTOR') %}
-    <div class="admin-bar">
-        <div class="container d-flex align-items-center gap-2 py-1">
-            <img src="{{ asset('images/logo xlight- b&w-50px.png') }}" alt="Admin" style="height: 20px;"/>
-            <a href="{{ path('admin') }}">Administration</a>
-        </div>
-    </div>
-    {% endif %}
+    {% include '_partials/_admin_bar.html.twig' %}
 
     <div class="header-main desk">
         <div class="container d-flex align-items-center justify-content-between">

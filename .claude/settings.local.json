@@ -76,7 +76,11 @@
       "Bash(grep -A 10 \"findPublishedPaginated\\\\|blocksJson\\\\|admin_editor\" src/Controller/Admin/*.php src/Repository/ArticleRepository.php)",
       "Bash(chmod +x scripts/backup.sh scripts/deploy.sh)",
       "Bash(wsl -e chmod +x /home/laign/projects/blog_web/scripts/backup.sh /home/laign/projects/blog_web/scripts/deploy.sh)",
-      "Bash(chmod +x \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\scripts\\\\backup.sh\" \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\scripts\\\\deploy.sh\")"
+      "Bash(chmod +x \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\scripts\\\\backup.sh\" \"\\\\\\\\wsl.localhost\\\\Ubuntu\\\\home\\\\laign\\\\projects\\\\blog_web\\\\scripts\\\\deploy.sh\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && git stash pop && git log --oneline -5\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && git show develop:CLAUDE2.md\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npm run dev 2>&1 | tail -10\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console cache:clear 2>&1 | tail -3\")"
     ]
   }
 }
