@@ -8,6 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -73,20 +76,6 @@ class SiteCrudController extends AbstractCrudController
         yield TextField::new('google_maps')
             ->setLabel('Lien Google Maps');
 
-        // --- Panel Modules ---
-        yield FormField::addPanel('Modules')
-            ->setIcon('fa fa-puzzle-piece')
-            ->collapsible()
-            ->setPermission('ROLE_FREELANCE');
-
-        yield ChoiceField::new('enabledModules', 'Modules actifs')
-            ->setChoices(ModuleEnum::choices())
-            ->allowMultipleChoices()
-            ->renderExpanded()
-            ->setPermission('ROLE_FREELANCE')
-            ->setHelp('Sélectionnez les fonctionnalités à activer sur ce site.')
-            ->hideOnIndex();
-
         // --- Panel SEO ---
         yield FormField::addPanel('SEO')
             ->setIcon('fa fa-search')
@@ -125,5 +114,16 @@ class SiteCrudController extends AbstractCrudController
             ->setHelp('Freelance responsable de ce site')
             ->setPermission('ROLE_SUPER_ADMIN')
             ->hideOnIndex();
+    }
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $url = $this->container->get(AdminUrlGenerator::class)
+            ->setController(self::class)
+            ->setAction(Action::EDIT)
+            ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+            ->generateUrl();
+
+        return $this->redirect($url);
     }
 }

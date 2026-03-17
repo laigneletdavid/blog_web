@@ -15,6 +15,8 @@ use App\Entity\User;
 use App\Repository\MenuRepository;
 use App\Service\SiteContext;
 use App\Service\ThemeService;
+use App\Controller\Admin\ModulesCrudController;
+use App\Controller\Admin\SiteCrudController;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -162,9 +164,6 @@ class DashboardController extends AbstractDashboardController
                 yield MenuItem::linkToCrud('Categories', 'fas fa-list', Categorie::class);
                 yield MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class);
             }
-            if ($this->siteContext->hasModule('services')) {
-                yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Service::class);
-            }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
         } elseif ($this->isGranted('ROLE_CORRECTOR')) {
@@ -172,6 +171,10 @@ class DashboardController extends AbstractDashboardController
                 yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
             }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
+        }
+
+        if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('services')) {
+            yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Service::class);
         }
 
         if ($this->siteContext->hasModule('blog')) {
@@ -183,7 +186,8 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::section('Administration');
 
             yield MenuItem::linkToCrud('Identite du site', 'fas fa-gear', Site::class)
-                ->setAction(Crud::PAGE_DETAIL)
+                ->setController(SiteCrudController::class)
+                ->setAction(Crud::PAGE_EDIT)
                 ->setEntityId($this->siteContext->getCurrentSiteId());
 
             yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager');
@@ -204,6 +208,13 @@ class DashboardController extends AbstractDashboardController
 
             yield MenuItem::linkToCrud('Images du theme', 'fas fa-images', SiteGalleryItem::class)
                 ->setController(ThemeImagesCrudController::class);
+
+            if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+                yield MenuItem::linkToCrud('Modules', 'fas fa-puzzle-piece', Site::class)
+                    ->setController(ModulesCrudController::class)
+                    ->setAction(Crud::PAGE_EDIT)
+                    ->setEntityId($this->siteContext->getCurrentSiteId());
+            }
         }
 
         // --- Aide ---

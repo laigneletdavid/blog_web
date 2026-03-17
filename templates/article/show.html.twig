@@ -50,6 +50,7 @@
             <div class="col-lg-4">
                 <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
                     {% include 'widgets/subscribe.html.twig' %}
+                    {% include 'widgets/tag_cloud.html.twig' %}
                     {% include 'widgets/categories.html.twig' %}
                     {% include 'widgets/last_article.html.twig' %}
                     {% include 'widgets/archives.html.twig' %}
@@ -81,6 +82,14 @@
                         {% endif %}
                     </div>
                     <div class="content mt-5 pb-5">{{ article.content|raw }}</div>
+
+                    {% if article.tag|length > 0 %}
+                    <div class="tag-pills mb-4">
+                        {% for tag in article.tag %}
+                            <a href="{{ path('app_tag_show', { slug: tag.slug }) }}" class="tag-pill">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
 
                     {# --- Boutons de partage --- #}
                     <div class="share-buttons">

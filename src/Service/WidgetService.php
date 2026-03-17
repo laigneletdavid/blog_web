@@ -6,12 +6,14 @@ use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
+use App\Repository\TagRepository;
 
 class WidgetService
 {
     public function __construct(
         private CategorieRepository $categorieRepository,
         private ArticleRepository $articleRepository,
+        private TagRepository $tagRepository,
     )
     {
     }
@@ -40,5 +42,13 @@ class WidgetService
     public function findArchives(): array
     {
         return $this->articleRepository->findArchiveMonths();
+    }
+
+    /**
+     * @return array<array{0: \App\Entity\Tag, articleCount: int}>
+     */
+    public function findTagCloud(): array
+    {
+        return $this->tagRepository->findAllWithArticleCount();
     }
 }
