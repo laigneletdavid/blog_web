@@ -80,7 +80,9 @@
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && git stash pop && git log --oneline -5\")",
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && git show develop:CLAUDE2.md\")",
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npm run dev 2>&1 | tail -10\")",
-      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console cache:clear 2>&1 | tail -3\")"
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && docker compose exec php php bin/console cache:clear 2>&1 | tail -3\")",
+      "Bash(wsl -d Ubuntu bash -c \"ls /home/laign/projects/blog_web/assets/controllers/\")",
+      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php php bin/console cache:clear --no-warmup 2>&1 | tail -2 && docker compose run --rm node npm run dev 2>&1 | tail -10\")"
     ]
   }
 }

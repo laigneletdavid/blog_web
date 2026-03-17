@@ -95,8 +95,8 @@
                     <p class="article-detail__lead">{{ article.featuredText }}</p>
                 {% endif %}
 
-                {# --- Contenu --- #}
-                <div class="article-detail__content">{{ article.content|raw }}</div>
+                {# --- Contenu (with TOC anchor ids) --- #}
+                <div class="article-detail__content">{{ article.content|toc_anchors|raw }}</div>
 
                 {# --- Tags --- #}
                 {% if article.tag|length > 0 %}
@@ -192,6 +192,7 @@
         {# ====== Sidebar ====== #}
         <div class="col-lg-4">
             <aside class="blog-sidebar">
+                {% include 'widgets/toc.html.twig' %}
                 {% include 'widgets/subscribe.html.twig' %}
                 {% include 'widgets/tag_cloud.html.twig' %}
                 {% include 'widgets/categories.html.twig' %}

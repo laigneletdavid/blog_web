@@ -1,0 +1,23 @@
+{# Table of Contents — only displayed if 3+ headings #}
+{% set toc_items = toc_extract(article.content) %}
+
+{% if toc_items|length > 0 %}
+<div class="widget-toc" data-controller="toc">
+    <h4 class="widget-toc__title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+        Sommaire
+    </h4>
+    <nav class="widget-toc__nav">
+        <ul class="widget-toc__list">
+            {% for item in toc_items %}
+                <li class="widget-toc__item widget-toc__item--h{{ item.level }}">
+                    <a href="#{{ item.id }}"
+                       class="widget-toc__link"
+                       data-toc-target="link"
+                       data-section-id="{{ item.id }}">{{ item.text }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
