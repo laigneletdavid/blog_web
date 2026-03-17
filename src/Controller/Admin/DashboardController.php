@@ -155,16 +155,22 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Contenu');
 
         if ($this->isGranted('ROLE_AUTHOR')) {
-            yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
-            yield MenuItem::linkToCrud('Categories', 'fas fa-list', Categorie::class);
+            if ($this->siteContext->hasModule('blog')) {
+                yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
+                yield MenuItem::linkToCrud('Categories', 'fas fa-list', Categorie::class);
+            }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
         } elseif ($this->isGranted('ROLE_CORRECTOR')) {
-            yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
+            if ($this->siteContext->hasModule('blog')) {
+                yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
+            }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
         }
 
-        yield MenuItem::linkToCrud('Commentaires', 'fas fa-comment', Comment::class);
+        if ($this->siteContext->hasModule('blog')) {
+            yield MenuItem::linkToCrud('Commentaires', 'fas fa-comment', Comment::class);
+        }
 
         // --- Administration (ROLE_ADMIN) ---
         if ($this->isGranted('ROLE_ADMIN')) {

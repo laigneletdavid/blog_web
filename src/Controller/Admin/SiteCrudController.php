@@ -3,11 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Site;
+use App\Enum\ModuleEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -70,6 +72,20 @@ class SiteCrudController extends AbstractCrudController
 
         yield TextField::new('google_maps')
             ->setLabel('Lien Google Maps');
+
+        // --- Panel Modules ---
+        yield FormField::addPanel('Modules')
+            ->setIcon('fa fa-puzzle-piece')
+            ->collapsible()
+            ->setPermission('ROLE_FREELANCE');
+
+        yield ChoiceField::new('enabledModules', 'Modules actifs')
+            ->setChoices(ModuleEnum::choices())
+            ->allowMultipleChoices()
+            ->renderExpanded()
+            ->setPermission('ROLE_FREELANCE')
+            ->setHelp('Sélectionnez les fonctionnalités à activer sur ce site.')
+            ->hideOnIndex();
 
         // --- Panel SEO ---
         yield FormField::addPanel('SEO')
