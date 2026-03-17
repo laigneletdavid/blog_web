@@ -136,11 +136,45 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Dernier article featured publie, ou le plus recent si aucun featured.
+     */
+    public function findFeatured(): ?Article
+    {
+        $article = $this->createQueryBuilder('a')
+            ->andWhere('a.published = TRUE')
+            ->andWhere('a.isFeatured = TRUE')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
+            ->leftJoin('a.categories', 'c')
+            ->addSelect('c')
+            ->orderBy('a.created_at', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($article !== null) {
+            return $article;
+        }
+
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.published = TRUE')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
+            ->leftJoin('a.categories', 'c')
+            ->addSelect('c')
+            ->orderBy('a.created_at', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Articles publies avec pagination (Doctrine Paginator).
+     * Filtrable par mois/annee et par categorie.
      *
      * @return \Doctrine\ORM\Tools\Pagination\Paginator<Article>
      */
-    public function findPublishedPaginated(int $page = 1, int $perPage = 9, ?int $month = null, ?int $year = null): \Doctrine\ORM\Tools\Pagination\Paginator
+    public function findPublishedPaginated(int $page = 1, int $perPage = 9, ?int $month = null, ?int $year = null, ?string $categorieSlug = null, ?int $excludeId = null): \Doctrine\ORM\Tools\Pagination\Paginator
     {
         $qb = $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
@@ -157,6 +191,17 @@ class ArticleRepository extends ServiceEntityRepository
                 ->andWhere('a.created_at < :endDate')
                 ->setParameter('startDate', $startDate)
                 ->setParameter('endDate', $endDate);
+        }
+
+        if ($categorieSlug !== null) {
+            $qb->innerJoin('a.categories', 'cat')
+                ->andWhere('cat.slug = :catSlug')
+                ->setParameter('catSlug', $categorieSlug);
+        }
+
+        if ($excludeId !== null) {
+            $qb->andWhere('a.id != :excludeId')
+                ->setParameter('excludeId', $excludeId);
         }
 
         return new \Doctrine\ORM\Tools\Pagination\Paginator($qb->getQuery());

@@ -1,5 +1,5 @@
 {# ====== BLOG — Theme Vitrine ====== #}
-{# Layout: Grille 2 colonnes pleine largeur sans sidebar, clean #}
+{# Layout: Grille 2 colonnes pleine largeur, pas de sidebar, elegant #}
 
 <div class="container">
     <nav aria-label="breadcrumb" class="my-3">
@@ -9,52 +9,66 @@
         </ol>
     </nav>
 
-    <h1 class="vit-blog__title">{{ title_page }}</h1>
-
-    {% if filterMonth is defined and filterMonth %}
-    <div class="mb-4">
-        <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-secondary btn-sm">&times; Tous les articles</a>
+    <div class="blog-header mb-4">
+        <h1 class="blog-header__title">{{ title_page }}</h1>
+        {% if totalArticles is defined and totalArticles > 0 %}
+            <p class="blog-header__count">{{ totalArticles }} article{{ totalArticles > 1 ? 's' : '' }}</p>
+        {% endif %}
     </div>
+
+    {# --- Filtre actif --- #}
+    {% if filterMonth is defined and filterMonth %}
+        <div class="mb-4">
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-secondary btn-sm">&times; Tous les articles</a>
+        </div>
+    {% endif %}
+
+    {# --- Pills categories --- #}
+    {% if blogCategories is defined and blogCategories|length > 0 %}
+        <div class="blog-filters mb-4">
+            <a href="{{ path('app_article_show_all') }}"
+               class="blog-filters__pill {{ filterCategorie is not defined or not filterCategorie ? 'blog-filters__pill--active' : '' }}">
+                Tous
+            </a>
+            {% for row in blogCategories %}
+                {% set cat = row[0] is defined ? row[0] : row %}
+                <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}"
+                   class="blog-filters__pill {{ filterCategorie is defined and filterCategorie == cat.slug ? 'blog-filters__pill--active' : '' }}">
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
     {% endif %}
 
     {% set baseParams = {} %}
     {% if filterMonth is defined and filterMonth %}
         {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
     {% endif %}
+    {% if filterCategorie is defined and filterCategorie %}
+        {% set baseParams = baseParams|merge({ categorie: filterCategorie }) %}
+    {% endif %}
+</div>
 
-    {# Grille 2 colonnes #}
-    {% if articles|length > 0 %}
-    <div class="row g-4 mb-5">
-        {% for article in articles %}
-        <div class="col-md-6">
-            <div class="vit-blog-card">
-                {% if article.featuredMedia %}
-                <a href="{{ path('app_article_show', {slug: article.slug}) }}">
-                    <img src="{{ asset('documents/medias/' ~ (article.featuredMedia.webpFileName ?? article.featuredMedia.fileName)) }}" alt="{{ article.title }}" class="vit-blog-card__img" loading="lazy"/>
-                </a>
-                {% endif %}
-                <div class="vit-blog-card__body">
-                    {% if article.categories|length > 0 %}
-                    <span class="vit-blog-card__cat">{{ article.categories|first.name }}</span>
-                    {% endif %}
-                    <h2 class="vit-blog-card__title">
-                        <a href="{{ path('app_article_show', {slug: article.slug}) }}">{{ article.title }}</a>
-                    </h2>
-                    <p class="vit-blog-card__excerpt">{{ article.content|striptags|slice(0, 150) }}...</p>
-                    <div class="vit-blog-card__meta">
-                        {% if article.publishedAt %}<span>{{ article.publishedAt|date('d M Y') }}</span>{% endif %}
-                        <span>{{ article.content|readingTime }} min</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+{# --- Article featured --- #}
+{% if featuredArticle is defined and featuredArticle %}
+    <div class="container mb-5">
+        {% include 'article/article_liste_large.html.twig' with { article: featuredArticle } %}
     </div>
+{% endif %}
+
+<div class="container">
+    {% if articles|length > 0 %}
+        <div class="blog-grid mb-5">
+            {% for article in articles %}
+                {% include 'article/item.html.twig' %}
+            {% endfor %}
+        </div>
     {% else %}
-    <p class="text-muted">Aucun article pour cette periode.</p>
+        <div class="blog-empty">
+            <p>Aucun article pour cette p&eacute;riode.</p>
+        </div>
     {% endif %}
 
-    {# Pagination #}
     {% if totalPages > 1 %}
     <nav aria-label="Pagination" class="mb-5">
         <ul class="pagination justify-content-center">

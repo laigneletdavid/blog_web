@@ -35,6 +35,24 @@ class CategorieRepository extends ServiceEntityRepository
     }
 
     /**
+     * Categories ayant au moins un article publie, avec compteur.
+     *
+     * @return array<array{categorie: Categorie, articleCount: int}>
+     */
+    public function findAllWithPublishedArticleCount(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.articles', 'a')
+            ->addSelect('COUNT(a.id) AS articleCount')
+            ->andWhere('a.published = TRUE')
+            ->groupBy('c.id')
+            ->having('COUNT(a.id) > 0')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Categorie[]
      */
     public function findByArticle(int $articleId): array
