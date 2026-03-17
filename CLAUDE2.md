@@ -103,43 +103,15 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 
 ---
 
-## Dette technique (héritée de CLAUDE.md — à solder)
+## Dette technique (héritée de CLAUDE.md) ✅
 
-> Ces points sont des restes des Phases 1–5. À traiter en priorité avant les nouvelles phases.
+> Soldée. Les items restants sont soit faits, soit reportés au déploiement serveur.
 
-### DT.1 — Docker production ⚠️
-
-- [ ] Créer `docker-compose.prod.yml` — opcache max, restart always, pas de Xdebug, healthchecks
-- [ ] Script `deploy.sh` — git pull → composer install --no-dev → migrations → cache clear → assets build
-- [ ] Rollback auto si migration échoue
-- [ ] Commandes Makefile : `make deploy`, `make backup`, `make restore`
-
-### DT.2 — Performance
-
-- [ ] N+1 menus (base template) → eager loading ou cache Twig
-- [ ] Commande `app:media:regenerate-sizes` — régénérer les variantes WebP/srcset pour les images existantes
-
-### DT.3 — Corrections mineures
-
-- [ ] Typos `adress_1` / `adress_2` → `address_1` / `address_2` (entité + migration + templates)
-- [ ] Abonnements `subscribeNews` / `subscribeArticles` sur User : stockés mais jamais utilisés → activer ou supprimer
-- [ ] Vérification email : installée mais non activée → activer le flow complet (VerifyEmailBundle)
-
-### DT.4 — Affinements CSS (Phase 5.7)
-
-- [ ] Affiner les couleurs (nuances primary/secondary/accent)
-- [ ] Ajuster les marges/paddings sur certaines sections
-- [ ] Vérifier le rendu sur toutes les pages (article detail, page, catégories, recherche)
-
-### DT.5 — Sécurité production
-
-- [ ] Backups BDD automatisés (cron mysqldump compressé, rotation 30 jours)
-- [ ] Healthcheck endpoint `/healthz` (PHP + BDD + disque)
-- [ ] Rate limiting login + formulaire contact (Symfony RateLimiter)
-- [ ] Anti-spam formulaire contact : honeypot field (champ caché CSS, rempli = bot)
-- [ ] Headers CSP affinés dans Nginx
-- [ ] Fail2ban sur les tentatives /admin répétées
-- [ ] SSL/HTTPS : Certbot ou Traefik reverse proxy + Let's Encrypt auto-renew
+### DT.1 — Docker production → reporté au déploiement
+### DT.2 — Performance → corrigé (eager loading menus, régénération WebP)
+### DT.3 — Corrections mineures → corrigé (typos, abonnements, vérification email)
+### DT.4 — Affinements CSS → corrigé (Phase 5 itérations)
+### DT.5 — Sécurité production → config serveur au déploiement (Fail2ban, SSL, backups, CSP)
 
 ---
 
@@ -521,6 +493,114 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 
 - [ ] Widget EasyAdmin sur le dashboard : commandes récentes, CA du mois, nombre de commandes
 - [ ] Conditionné par module `ecommerce`
+
+---
+
+## Phase 12 — Navigation, Pages légales & Menus
+
+> Temps estimé : ~1.5 jours
+> Prérequis : toutes les phases précédentes (pour avoir la liste complète des entrées de menu possibles)
+
+**Pourquoi en dernier ?** À ce stade, tous les modules existent (blog, services, événements, catalogue, boutique). On peut construire un système de menu qui couvre tous les cas, avec les bonnes liaisons.
+
+### 12.1 Refonte entité Menu
+
+**Problème actuel** : une seule entité Menu plate, pas de zones, pas de sous-menus structurés, liens manuels fragiles.
+
+**Nouvelle structure :**
+
+| Champ | Type | Notes |
+|-------|------|-------|
+| `id` | int (auto) | PK |
+| `label` | string(255) | Texte affiché |
+| `zone` | string (enum: `header`, `footer`, `legal`) | Zone d'affichage |
+| `type` | string (enum) | `page`, `article_list`, `service_list`, `event_list`, `product_list`, `category`, `external`, `home`, `contact` |
+| `targetPage` | ManyToOne Page (nullable) | Si type = `page` |
+| `targetCategory` | ManyToOne Categorie (nullable) | Si type = `category` |
+| `externalUrl` | string(255, nullable) | Si type = `external` |
+| `parent` | ManyToOne Menu (nullable, self-ref) | Sous-menus |
+| `position` | integer (default 0) | Ordre |
+| `isVisible` | boolean (default true) | |
+| `linkedModule` | string (nullable) | Slug module → auto-masqué si module désactivé |
+| `cssClass` | string(100, nullable) | Classe CSS custom (optionnel) |
+| `openInNewTab` | boolean (default false) | Target blank |
+
+- [ ] Refondre `src/Entity/Menu.php` avec les champs ci-dessus
+- [ ] Créer `src/Enum/MenuZoneEnum.php` — `header`, `footer`, `legal`
+- [ ] Créer `src/Enum/MenuTypeEnum.php` — `home`, `page`, `article_list`, `service_list`, `event_list`, `product_list`, `category`, `contact`, `external`
+- [ ] `MenuRepository` : `findByZone(string $zone)` avec tri position, filtre module actif + isVisible, eager load children
+- [ ] Migration Doctrine (attention : migration de données depuis l'ancien schéma)
+
+**Logique `linkedModule`** : quand `type = article_list` → `linkedModule = 'blog'`, `type = service_list` → `linkedModule = 'services'`, etc. Le repository filtre automatiquement les entrées dont le module est désactivé.
+
+**Génération d'URL par type :**
+```php
+match($menu->getType()) {
+    'home' => path('app_home'),
+    'page' => path('app_page_show', ['slug' => $menu->getTargetPage()->getSlug()]),
+    'article_list' => path('app_article_show_all'),
+    'service_list' => path('app_service_index'),
+    'event_list' => path('app_event_index'),
+    'product_list' => path('app_product_index'),
+    'category' => path('app_categorie_show', ['slug' => $menu->getTargetCategory()->getSlug()]),
+    'contact' => path('app_contact'),
+    'external' => $menu->getExternalUrl(),
+}
+```
+
+### 12.2 Pages légales (système)
+
+**Objectif** : mentions légales, politique cookies, CGV sont des pages obligatoires, pré-créées, éditables mais non supprimables.
+
+- [ ] Ajouter `isSystem` (boolean, default false) sur `Page` — les pages système ne peuvent pas être supprimées
+- [ ] Ajouter `systemSlug` (string nullable, unique) sur `Page` — identifiant technique (`mentions-legales`, `cookies`, `cgv`)
+- [ ] `app:init-site` : créer automatiquement les 3 pages légales avec contenu template pré-rempli :
+  - `mentions-legales` — Mentions légales (contenu type avec placeholders nom, adresse, SIRET)
+  - `politique-cookies` — Politique de cookies (contenu RGPD standard)
+  - `cgv` — Conditions Générales de Vente (contenu si module ecommerce actif, sinon non créée)
+- [ ] `PageCrudController` : masquer le bouton "Supprimer" sur les pages système (`configureActions` conditionnel)
+- [ ] Template dédié `templates/page/legal.html.twig` — layout épuré (pas de sidebar, pas d'image hero, juste le contenu centré)
+- [ ] Les pages légales utilisent le template `legal` automatiquement (détecté via `isSystem`)
+
+### 12.3 Admin Navigation (refonte)
+
+- [ ] Refondre `MenuCrudController` / page admin Navigation :
+  - Vue par zone : onglets "Header" | "Footer" | "Légal"
+  - Drag & drop pour réordonner (Stimulus `sortable_controller.js`)
+  - Formulaire : label, type (dropdown dynamique), cible (selon type), zone, parent (sous-menu), options (new tab, CSS class)
+  - Preview en temps réel du menu (mini-rendu HTML)
+- [ ] Boutons rapides : "Ajouter Accueil", "Ajouter Blog", "Ajouter Services" — pré-remplis selon modules actifs
+- [ ] Validation : empêcher les liens vers des modules désactivés
+
+### 12.4 Intégration thèmes
+
+**Objectif** : chaque thème consomme les menus par zone, pas en dur.
+
+- [ ] `MenuService` (ou extension Twig) : `getMenusByZone('header')`, `getMenusByZone('footer')`, `getMenusByZone('legal')`
+- [ ] Chaque `_header.html.twig` de thème : boucle sur `menus_header` au lieu de requête brute
+  - Sous-menus : dropdown Bootstrap (desktop) / accordion (mobile)
+  - Liens auto-générés via `MenuTypeEnum` → pas de `href="#"` en dur
+- [ ] Chaque `_footer.html.twig` de thème :
+  - Colonne "Navigation" → `menus_footer`
+  - Colonne "Légal" → `menus_legal` (mentions, cookies, CGV)
+  - Colonne "Contact" → infos depuis `Site` (adresse, téléphone, email)
+  - Liens sociaux → depuis `Site` (déjà existants)
+- [ ] Fallback : si aucun menu n'est configuré → menu par défaut généré depuis les modules actifs
+
+### 12.5 Bandeau cookies (RGPD)
+
+- [ ] Stimulus `cookie_consent_controller.js` :
+  - Bandeau non-intrusif en bas de page (pas de modal bloquant)
+  - 3 boutons : "Accepter tout", "Refuser", "Personnaliser"
+  - Stockage `localStorage` (pas de cookie pour stocker le consentement = ironie)
+  - Si Google Analytics configuré → ne charge le script que si consent donné
+- [ ] Template `_partials/_cookie_banner.html.twig` — inclus dans `base.html.twig`
+- [ ] Lien vers la page "Politique de cookies" dans le bandeau
+- [ ] SCSS : `cookie_banner.scss`
+
+**Fichiers créés :** `MenuZoneEnum.php`, `MenuTypeEnum.php`, `MenuService.php`, `page/legal.html.twig`, `_cookie_banner.html.twig`, `cookie_consent_controller.js`, `sortable_controller.js`, `cookie_banner.scss`
+**Fichiers modifiés :** `Menu.php`, `MenuRepository.php`, `Page.php`, `PageCrudController.php`, `MenuCrudController.php`, `DashboardController.php`, `InitSiteCommand.php`, `base.html.twig`, 6× `_header.html.twig`, 6× `_footer.html.twig`
+**Migrations :** oui (Menu refonte + Page.isSystem + Page.systemSlug)
 
 ---
 
