@@ -511,9 +511,18 @@ class TiptapEditor {
 }
 
 // ─── Auto-init ───────────────────────────────────────────────────────────────
+// EasyAdmin 4 uses Turbo — DOMContentLoaded only fires once.
+// We need turbo:load for subsequent navigations + DOMContentLoaded for first load.
 
-document.addEventListener('DOMContentLoaded', () => {
+function initTiptapEditors() {
     document.querySelectorAll('[data-tiptap-editor]').forEach(textarea => {
+        // Avoid double-init
+        if (textarea.dataset.tiptapInitialized) return;
+        textarea.dataset.tiptapInitialized = 'true';
         new TiptapEditor(textarea);
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initTiptapEditors);
+document.addEventListener('turbo:load', initTiptapEditors);
+document.addEventListener('turbo:render', initTiptapEditors);
