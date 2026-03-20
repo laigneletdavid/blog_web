@@ -77,13 +77,13 @@
             --primary: {{ _appearance.primaryColor }};
             --secondary: {{ _appearance.secondaryColor }};
             --accent: {{ _appearance.accentColor }};
-            --font-family: {{ _appearance.fontFamily }};
+            --font-family: {{ _appearance.fontFamily|raw }};
             {% if _appearance.fontFamilySecondary is not null %}
-            --font-family-secondary: {{ _appearance.fontFamilySecondary }};
+            --font-family-secondary: {{ _appearance.fontFamilySecondary|raw }};
             {% endif %}
             {# Theme variables (fixed per theme, from theme.yaml) #}
             {% for varName, varValue in _theme_vars %}
-            {{ varName }}: {{ varValue }};
+            {% if varName starts with '--' %}{{ varName }}{% else %}--{{ varName }}{% endif %}: {{ varValue }};
             {% endfor %}
         }</style>
 

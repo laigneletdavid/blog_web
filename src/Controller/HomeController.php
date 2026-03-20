@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -39,7 +40,7 @@ class HomeController extends AbstractController
         Request $request,
         MailerInterface $mailer,
         SiteContext $siteContext,
-        RateLimiterFactory $contactLimiter,
+        #[Autowire(service: 'limiter.contact_limiter')] RateLimiterFactory $contactLimiter,
     ): Response {
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);

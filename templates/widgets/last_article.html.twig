@@ -11,7 +11,7 @@
                 <h5 class="mb-0">{{ widget_article.title }}</h5>
                 <div class="categories d-flex flex-row">
                     {% for cat in widget_article.categories %}
-                        <strong class="d-inline-block mb-2 me-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
+                        <strong class="d-inline-block mb-2 me-3" style="color: var(--primary);">{{ cat.name }}</strong>
                     {% endfor %}
                 </div>
                 <div class="mb-1 text-body-secondary">{{ widget_article.createdAt|date('d/m/Y') }}</div>

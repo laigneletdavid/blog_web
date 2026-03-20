@@ -91,7 +91,13 @@
       "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php curl -s http://localhost/article/article-test 2>&1 | grep -c ''article-detail__content''\")",
       "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php curl -s -o /dev/null -w ''%{http_code}'' http://localhost/article/article-test 2>&1\")",
       "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npm run dev 2>&1 | tail -8\")",
-      "Bash(wsl -d Ubuntu bash -c 'for theme in /home/laign/projects/blog_web/templates/themes/*/; do echo \"\"=== $\\(basename $theme\\) ===\"\"; ls $theme; echo; done')"
+      "Bash(wsl -d Ubuntu bash -c 'for theme in /home/laign/projects/blog_web/templates/themes/*/; do echo \"\"=== $\\(basename $theme\\) ===\"\"; ls $theme; echo; done')",
+      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T php php bin/console cache:clear --no-warmup 2>&1 | tail -2 && docker compose run --rm node npm run dev 2>&1 | tail -8\")",
+      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T db mariadb -uapp -papp blog_web -e ''SELECT id, name, color FROM categorie'' 2>&1\")",
+      "Bash(wsl -d Ubuntu bash -c 'grep -rn \"\"color|default\\\\|cat\\\\.color\\\\|firstCat\\\\.color\\\\|\\\\.color|default\"\" /home/laign/projects/blog_web/templates/ --include=\"\"*.twig\"\" 2>/dev/null | grep -v \"\"primaryColor\\\\|secondaryColor\\\\|accentColor\\\\|ColorField\"\"')",
+      "Bash(wsl -d Ubuntu bash -c 'grep -rn \"\"cat\\\\.color\\\\|\\\\.color}}\"\" /home/laign/projects/blog_web/templates/ --include=\"\"*.twig\"\" 2>/dev/null | grep -v \"\"primaryColor\\\\|secondaryColor\\\\|accentColor\\\\|var\\(--\"\"')",
+      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T node npx encore dev 2>&1 | tail -15\")",
+      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npx encore dev 2>&1 | tail -20\")"
     ]
   }
 }

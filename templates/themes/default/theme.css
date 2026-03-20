@@ -1,0 +1,48 @@
+/* ====== Default Theme — Base personnalisable ====== */
+/* Ce fichier sert de point de départ pour les projets clients. */
+/* Modifier les sections ci-dessous pour personnaliser le design. */
+
+/* --- HEADER --- */
+/* .theme-default .header { } */
+
+/* --- HERO (Home) --- */
+/* .theme-default .hero { } */
+
+/* --- SECTIONS HOME --- */
+/* .theme-default .features { } */
+
+/* --- BLOG LISTING --- */
+/* .theme-default .blog-card { } */
+/* .theme-default .blog-card__badge { } */
+/* .theme-default .blog-card__title { } */
+/* .theme-default .blog-featured { } */
+
+/* --- ARTICLE SHOW --- */
+/* .theme-default .article-hero { } */
+/* .theme-default .article-detail__title { } */
+/* .theme-default .article-detail__lead { } */
+/* .theme-default .article-detail__content { } */
+/* .theme-default .article-detail__content blockquote { } */
+/* .theme-default .tag-pill { } */
+/* .theme-default .share-sticky__btn { } */
+/* .theme-default .author-card { } */
+/* .theme-default .article-comments { } */
+/* .theme-default .comment-card { } */
+/* .theme-default .article-related { } */
+
+/* --- PAGE SHOW --- */
+/* .theme-default .page-hero { } */
+/* .theme-default .page-hero__title { } */
+/* .theme-default .page-detail__title { } */
+/* .theme-default .page-detail__content blockquote { } */
+
+/* --- WIDGETS --- */
+/* .theme-default .widget-toc { } */
+/* .theme-default .widget-card { } */
+/* .theme-default .widget .widget_register { } */
+
+/* --- CONTACT --- */
+/* .theme-default .contact-form { } */
+
+/* --- FOOTER --- */
+/* .theme-default .footer { } */

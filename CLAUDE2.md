@@ -100,6 +100,7 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 | Phase 4 | Éditeur TipTap + UX (stats, notifications Brevo, pagination, recherche, archives) | ✅ |
 | Phase 5 | Refonte design & CSS (thème default moderne, header sticky, homepage SaaS) | ✅ |
 | Phase 6 | Fondations Modules + Services + Tags | ✅ |
+| Phase 7 | Refonte UX Blog + Design Themes (overrides CSS, documentation, bug fixes) | ✅ |
 
 ---
 
@@ -177,79 +178,65 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 
 ---
 
-## Phase 7 — Refonte UX Blog (listing + article show)
+## Phase 7 — Refonte UX Blog + Design Themes ✅
 
-> Temps estimé : ~1 jour
-> Prérequis : Phase 6.3 (tags front) pour affichage dans les cards
+> Temps réel : ~2 jours (réparti sur Phases 4-5 + session design)
 
-### 7.1 Page /articles (blog listing)
+### 7.1 Page /articles (blog listing) ✅
 
-**Problèmes actuels** : layout générique, pas de hiérarchie visuelle, pas de filtrage interactif.
+- [x] Header de page : titre "Blog", compteur total articles (`blog-header`)
+- [x] Article featured : `isFeatured` (boolean) sur `Article` + `ArticleRepository::findFeatured()` + card large pleine largeur (`blog-featured`)
+- [x] Grille articles : `blog-grid` 2 colonnes desktop / 1 mobile
+- [x] Card article complète (`blog-card`) : image 16:9, badge catégorie, titre clamp 2 lignes, extrait clamp 3, meta date + lecture + tags, hover translateY + shadow
+- [x] Filtrage par catégorie : pills horizontales scrollables (`blog-filters__pill`), filtre serveur `?categorie=slug`
+- [x] Filtrage par tag : nuage de tags en sidebar
+- [x] Pagination Doctrine + style Bootstrap customisé
+- [x] `article_list.scss` complet (~357 lignes)
+- [x] `blog.html.twig` custom dans chaque thème (6 thèmes)
 
-**Refonte :**
+### 7.2 Page /article/{slug} (article show) ✅
 
-- [ ] Header de page : titre "Blog" (ou custom via Site), description, compteur total articles
-- [ ] Article featured (sticky) : le plus récent (ou `isFeatured=true`) affiché en large card pleine largeur en haut
-  - Ajouter `isFeatured` (boolean, default false) sur `Article` + migration
-  - `ArticleRepository::findFeatured()` — dernier article featured publié
-- [ ] Grille articles : cards en 2 colonnes desktop / 1 colonne mobile
-- [ ] Card article repensée :
-  - Image (aspect ratio fixe 16:9, object-fit cover)
-  - Catégorie en badge coloré (coin supérieur)
-  - Titre (clamp 2 lignes)
-  - Extrait (clamp 3 lignes)
-  - Ligne meta : date + temps de lecture + tags en mini-pills
-  - Hover : légère élévation (translateY + shadow)
-- [ ] Filtrage par catégorie : pills horizontales scrollables en haut (Stimulus controller)
-  - "Tous" + une pill par catégorie ayant des articles publiés
-  - Filtre côté serveur (query param `?categorie=slug`) avec Turbo Frame ou rechargement classique
-- [ ] Filtrage par tag : intégré dans le nuage de tags sidebar (ou sous les pills catégories sur mobile)
-- [ ] Pagination : garder la pagination Doctrine existante, améliorer le style (Bootstrap pagination customisée)
-- [ ] Refactoring SCSS : réécrire `article_list.scss` complètement
+- [x] Layout lecture optimisé : colonne contenu (`col-lg-7`) + sidebar sticky (`col-lg-4`) + share sticky (`col-lg-1`)
+- [x] Image featured hero : `responsive_img` avec srcset
+- [x] Meta header : badges catégorie + date + temps de lecture (`readingTime` filter)
+- [x] Sommaire auto (TOC) : `toc_extract()` + `toc_anchors` filter, widget sidebar sticky, Stimulus `toc` controller avec scroll spy
+- [x] Tags cliquables sous le contenu → `/tag/{slug}`
+- [x] Bloc auteur : card avec avatar et bio
+- [x] Articles connexes : `findRelated()` → grille 3 colonnes
+- [x] Boutons partage : barre sticky gauche (desktop) + barre fixe bas (mobile) — Facebook, Twitter, LinkedIn, copier lien
+- [x] Commentaires : cards avec auteur + date, formulaire conditionnel (connecté)
+- [x] `article.scss` complet
 
-**Fichiers modifiés :** `Article.php` (isFeatured), `ArticleRepository.php`, `ArticleController.php` ou controller blog, `article/show_all.html.twig`, `article/item.html.twig`, `article_list.scss`
-**Fichiers thème :** mettre à jour `blog.html.twig` de chaque thème
-**Migration :** oui (isFeatured)
+### 7.3 Design Themes — Overrides par thème ✅
 
-### 7.2 Page /article/{slug} (article show)
+Chaque `theme.css` contient des overrides complets pour toutes les pages globales :
 
-**Problèmes actuels** : typographie et mise en page à revoir, pas de sommaire, sidebar pas optimale.
+- [x] **Article show** : titres (serif/sans), blockquote, badges, tags, share buttons, comments, author card, TOC
+- [x] **Blog listing** : cards (radius, hover, layout), featured, filters, header, pagination
+- [x] **Page show** : hero, titre, blockquote
+- [x] **Widgets** : sidebar cards, register, tag pills
+- [x] **Home articles** : cards dans les sections derniers articles de chaque thème
+- [x] **Starter** : layout radical (pas de sidebar, pas de share, liste linéaire, 640px max)
+- [x] **Moderne** : dark mode complet (inputs, forms, pagination, breadcrumbs, empty state)
 
-**Refonte :**
+### 7.4 Documentation design ✅
 
-- [ ] Layout lecture optimisé :
-  - Contenu texte : max-width 720px, centré, line-height 1.8, font-size 1.1rem
-  - Images dans le contenu : breakout possible (max-width 100vw ou 900px)
-- [ ] Image featured : pleine largeur en haut (ou hero avec overlay selon thème)
-- [ ] Meta header : catégorie badge + date + temps de lecture + auteur
-- [ ] Sommaire auto (Table of Contents) :
-  - Extraire les H2/H3 du contenu HTML compilé (côté Twig ou JS)
-  - Afficher en sidebar sticky (desktop) ou accordion en haut (mobile)
-  - Scroll spy Stimulus : highlight la section active
-  - Optionnel dans `theme.yaml` : `toc: true|false`
-- [ ] Tags cliquables sous le contenu (pills → lien `/tag/{slug}`)
-- [ ] Bloc auteur : avatar (User.avatar FK Media, nullable), nom, bio courte (User.bio text nullable)
-  - Ajouter champs `avatar` et `bio` sur User si absents + migration
-- [ ] Articles connexes : refonte cards (3 en grille, même style que blog listing)
-- [ ] Boutons partage : repositionnés — barre sticky gauche (desktop) ou barre fixe bas (mobile)
-- [ ] Commentaires : style cards amélioré, formulaire simplifié
-- [ ] Refactoring SCSS : réécrire `article.scss` complètement
+- [x] `DESIGN_THEME.md` : document d'architecture global (variables, règles, patterns)
+- [x] 6 fichiers `templates/themes/{slug}/DESIGN.md` : specs visuelles détaillées par thème
 
-**Fichiers modifiés :** `User.php` (avatar, bio), `article/show.html.twig`, `article.scss`, `comment/index.html.twig`
-**Fichiers créés :** `_partials/_toc.html.twig`, `_partials/_author_card.html.twig`, `_partials/_share_bar.html.twig`
-**Stimulus :** `toc_controller.js` (scroll spy), `share_controller.js` (copy link)
-**Migration :** oui (User avatar + bio)
+### 7.5 Bug fixes session design ✅
 
-### 7.3 Design System — Composants partagés
+- [x] Comment date format : `\u00e0` cassait `date()` → split en deux appels séparés
+- [x] Contact rate limiter : `#[Autowire(service: 'limiter.contact_limiter')]` pour autowiring
+- [x] Theme fonts : `|raw` sur les variables font-family dans `base.html.twig` (empêchait l'autoescaping des quotes)
+- [x] Theme variables prefix : ajout conditionnel `--` dans la boucle Twig theme_vars
+- [x] SCSS vs inline priority : suppression des variables thème dans `variables.scss` pour éviter l'écrasement des inline styles
 
-**Objectif** : unifier les composants visuels pour que tous les thèmes soient cohérents.
+### 7.6 À faire (prochaine itération)
 
-- [ ] `_components/_card.html.twig` — macro Twig card réutilisable (image, badge, titre, texte, meta, tags)
-- [ ] `_components/_badge.html.twig` — badge catégorie/tag avec couleur dynamique
-- [ ] `_components/_pagination.html.twig` — pagination Bootstrap customisée
-- [ ] `_components/_empty_state.html.twig` — état "aucun résultat" avec illustration
-- [ ] `assets/css/base/components.scss` — styles composants partagés (cards, badges, pills, buttons)
-- [ ] Refactoring : les thèmes utilisent les composants via `{% include %}` au lieu de dupliquer le HTML
+- [ ] `_components/_card.html.twig` — macro Twig card réutilisable (factoriser les cards dupliquées entre thèmes)
+- [ ] Affiner les couleurs/nuances par thème
+- [ ] Vérifier le rendu responsive sur toutes les pages (tablette)
 
 ---
 

@@ -19,21 +19,18 @@ $bw-border: #E2E8F0;
 $bw-white: #FFFFFF;
 
 // CSS Custom Properties
+// NOTE: --primary, --secondary, --accent, --font-family, --font-family-secondary,
+// --bg, --surface, --border, --text, --text-muted, --radius are injected
+// dynamically in base.html.twig from Site entity + theme.yaml.
+// Only declare SCSS-only variables here (not overridden by themes).
 :root {
-  // Colors
-  --primary: #{$bw-primary};
+  // Derived colors (not theme-managed)
   --primary-light: #{$bw-primary-light};
   --primary-dark: #{$bw-primary-dark};
-  --secondary: #{$bw-secondary};
   --secondary-light: #{$bw-secondary-light};
-  --accent: #{$bw-accent};
   --success: #{$bw-success};
   --danger: #{$bw-danger};
-  --surface: #{$bw-surface};
   --surface-alt: #{$bw-surface-alt};
-  --text: #{$bw-text};
-  --text-muted: #{$bw-text-muted};
-  --border: #{$bw-border};
   --white: #{$bw-white};
 
   // Gradients

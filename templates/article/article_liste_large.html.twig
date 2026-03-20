@@ -12,7 +12,7 @@
             <div class="blog-featured__overlay">
                 {% set firstCat = article.categories|first %}
                 {% if firstCat %}
-                    <span class="blog-card__badge" style="background-color: {{ firstCat.color|default('var(--primary)') }}">{{ firstCat.name }}</span>
+                    <span class="blog-card__badge">{{ firstCat.name }}</span>
                 {% endif %}
                 <h2 class="blog-featured__title">{{ article.title }}</h2>
                 <p class="blog-featured__excerpt">{{ article.featuredText ?: article.content|striptags|slice(0, 200) ~ '...' }}</p>

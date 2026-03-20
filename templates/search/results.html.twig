@@ -79,7 +79,7 @@
                             <span class="search-result-type">Article</span>
                             <span class="search-result-date">{{ article.createdAt|date('d/m/Y') }}</span>
                             {% for cat in article.categories %}
-                                <span class="badge" style="background: {{ cat.color }}; color: #fff;">{{ cat.name }}</span>
+                                <span class="badge" style="background: var(--primary); color: #fff;">{{ cat.name }}</span>
                             {% endfor %}
                         </div>
                         <h3><a href="{{ path('app_article_show', { slug: article.slug }) }}">{{ article.title|highlight(keyword) }}</a></h3>

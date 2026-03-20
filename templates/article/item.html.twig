@@ -11,7 +11,7 @@
             {% endif %}
             {% set firstCat = article.categories|first %}
             {% if firstCat %}
-                <span class="blog-card__badge" style="background-color: {{ firstCat.color|default('var(--primary)') }}">{{ firstCat.name }}</span>
+                <span class="blog-card__badge">{{ firstCat.name }}</span>
             {% endif %}
         </div>
         <div class="blog-card__body">

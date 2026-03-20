@@ -81,7 +81,7 @@
                 {# --- Meta header --- #}
                 <div class="article-detail__meta">
                     {% for cat in article.categories %}
-                        <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}" class="article-detail__badge" style="background-color: {{ cat.color|default('var(--primary)') }}">{{ cat.name }}</a>
+                        <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}" class="article-detail__badge">{{ cat.name }}</a>
                     {% endfor %}
                     <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|date('d M Y') }}</time>
                     <span class="article-detail__dot"></span>
@@ -168,7 +168,7 @@
                         <div class="comment-card">
                             <div class="comment-card__header">
                                 <strong class="comment-card__author">{{ comment.user.displayName }}</strong>
-                                <time class="comment-card__date">{{ comment.createdAt|date('d/m/Y \u00e0 H:i') }}</time>
+                                <time class="comment-card__date">{{ comment.createdAt|date('d/m/Y') }} à {{ comment.createdAt|date('H:i') }}</time>
                             </div>
                             <p class="comment-card__body">{{ comment.content }}</p>
                         </div>
