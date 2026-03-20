@@ -61,6 +61,9 @@ class Article implements TimestampedInterface
     #[ORM\ManyToOne]
     private ?Media $featured_media = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isFeatured = false;
+
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $blocks = null;
 
@@ -274,6 +277,18 @@ class Article implements TimestampedInterface
     public function setFeaturedMedia(?Media $featured_media): self
     {
         $this->featured_media = $featured_media;
+
+        return $this;
+    }
+
+    public function isFeatured(): bool
+    {
+        return $this->isFeatured;
+    }
+
+    public function setIsFeatured(bool $isFeatured): self
+    {
+        $this->isFeatured = $isFeatured;
 
         return $this;
     }

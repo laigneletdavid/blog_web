@@ -1,5 +1,5 @@
 {# ====== BLOG — Theme Starter ====== #}
-{# Layout: Liste simple, pas de sidebar, minimaliste #}
+{# Layout: Liste minimaliste, pas de sidebar #}
 
 <div class="container">
     <nav aria-label="breadcrumb" class="my-3">
@@ -9,43 +9,64 @@
         </ol>
     </nav>
 
-    <h1 class="start-blog__title">{{ title_page }}</h1>
-
-    {% if filterMonth is defined and filterMonth %}
-    <div class="mb-3">
-        <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-dark btn-sm">&times; Tous les articles</a>
+    <div class="blog-header mb-4">
+        <h1 class="blog-header__title">{{ title_page }}</h1>
+        {% if totalArticles is defined and totalArticles > 0 %}
+            <p class="blog-header__count">{{ totalArticles }} article{{ totalArticles > 1 ? 's' : '' }}</p>
+        {% endif %}
     </div>
+
+    {# --- Filtre actif --- #}
+    {% if filterMonth is defined and filterMonth %}
+        <div class="mb-3">
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-dark btn-sm">&times; Tous les articles</a>
+        </div>
+    {% endif %}
+
+    {# --- Pills categories --- #}
+    {% if blogCategories is defined and blogCategories|length > 0 %}
+        <div class="blog-filters mb-4">
+            <a href="{{ path('app_article_show_all') }}"
+               class="blog-filters__pill {{ filterCategorie is not defined or not filterCategorie ? 'blog-filters__pill--active' : '' }}">
+                Tous
+            </a>
+            {% for row in blogCategories %}
+                {% set cat = row[0] is defined ? row[0] : row %}
+                <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}"
+                   class="blog-filters__pill {{ filterCategorie is defined and filterCategorie == cat.slug ? 'blog-filters__pill--active' : '' }}">
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
     {% endif %}
 
     {% set baseParams = {} %}
     {% if filterMonth is defined and filterMonth %}
         {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
     {% endif %}
+    {% if filterCategorie is defined and filterCategorie %}
+        {% set baseParams = baseParams|merge({ categorie: filterCategorie }) %}
+    {% endif %}
+</div>
 
-    {# Articles en liste simple #}
-    {% if articles|length > 0 %}
-    <div class="start-blog-list mb-5">
-        {% for article in articles %}
-        <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="start-blog-item">
-            {% if article.featuredMedia %}
-            <img src="{{ asset('documents/medias/' ~ (article.featuredMedia.webpFileName ?? article.featuredMedia.fileName)) }}" alt="{{ article.title }}" class="start-blog-item__img" loading="lazy"/>
-            {% endif %}
-            <div class="start-blog-item__body">
-                {% if article.categories|length > 0 %}
-                <span class="start-blog-item__cat">{{ article.categories|first.name }}</span>
-                {% endif %}
-                <h2 class="start-blog-item__title">{{ article.title }}</h2>
-                <p class="start-blog-item__excerpt">{{ article.content|striptags|slice(0, 180) }}...</p>
-                <span class="start-blog-item__meta">
-                    {% if article.publishedAt %}{{ article.publishedAt|date('d M Y') }}{% endif %}
-                    &middot; {{ article.content|readingTime }} min
-                </span>
-            </div>
-        </a>
-        {% endfor %}
+{# --- Article featured --- #}
+{% if featuredArticle is defined and featuredArticle %}
+    <div class="container mb-4">
+        {% include 'article/article_liste_large.html.twig' with { article: featuredArticle } %}
     </div>
+{% endif %}
+
+<div class="container">
+    {% if articles|length > 0 %}
+        <div class="blog-grid blog-grid--1col mb-5">
+            {% for article in articles %}
+                {% include 'article/item.html.twig' %}
+            {% endfor %}
+        </div>
     {% else %}
-    <p class="text-muted">Aucun article.</p>
+        <div class="blog-empty">
+            <p>Aucun article.</p>
+        </div>
     {% endif %}
 
     {% if totalPages > 1 %}

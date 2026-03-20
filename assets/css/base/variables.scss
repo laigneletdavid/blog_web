@@ -19,26 +19,24 @@ $bw-border: #E2E8F0;
 $bw-white: #FFFFFF;
 
 // CSS Custom Properties
+// NOTE: --primary, --secondary, --accent, --font-family, --font-family-secondary,
+// --bg, --surface, --border, --text, --text-muted, --radius are injected
+// dynamically in base.html.twig from Site entity + theme.yaml.
+// Only declare SCSS-only variables here (not overridden by themes).
 :root {
-  // Colors
-  --primary: #{$bw-primary};
-  --primary-light: #{$bw-primary-light};
-  --primary-dark: #{$bw-primary-dark};
-  --secondary: #{$bw-secondary};
-  --secondary-light: #{$bw-secondary-light};
-  --accent: #{$bw-accent};
+  // Derived colors — auto-adapt to theme via color-mix()
+  --primary-light: color-mix(in srgb, var(--primary) 12%, white);
+  --primary-dark: color-mix(in srgb, var(--primary), black 20%);
+  --secondary-light: color-mix(in srgb, var(--secondary) 15%, white);
+  --accent-light: color-mix(in srgb, var(--accent) 12%, white);
   --success: #{$bw-success};
   --danger: #{$bw-danger};
-  --surface: #{$bw-surface};
-  --surface-alt: #{$bw-surface-alt};
-  --text: #{$bw-text};
-  --text-muted: #{$bw-text-muted};
-  --border: #{$bw-border};
+  --surface-alt: color-mix(in srgb, var(--surface), var(--border) 30%);
   --white: #{$bw-white};
 
   // Gradients
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--accent));
-  --gradient-warm: linear-gradient(135deg, var(--secondary), #F97316);
+  --gradient-warm: linear-gradient(135deg, var(--secondary), color-mix(in srgb, var(--secondary), #F97316 50%));
   --gradient-hero: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
 
   // Shadows (4-level elevation)
@@ -60,9 +58,9 @@ $bw-white: #FFFFFF;
   --transition-base: 0.25s ease;
   --transition-slow: 0.4s ease;
 
-  // Typography
-  --font-display: 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  // Typography — font-display/body inherit from theme via --font-family
+  --font-display: var(--font-family-secondary, var(--font-family, 'Inter', sans-serif));
+  --font-body: var(--font-family, 'Inter', sans-serif);
   --font-mono: 'JetBrains Mono', monospace;
 
   // Code blocks

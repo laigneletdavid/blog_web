@@ -258,6 +258,186 @@
 .theme-artisan .art-contact-info__item a { color: var(--text); text-decoration: none; }
 .theme-artisan .art-contact-info__item a:hover { color: var(--primary); }
 
+/* ====== ARTICLE SHOW OVERRIDES ====== */
+
+/* Fond creme sur tout le site (deja via --bg) */
+
+/* Titres Playfair Display serif */
+.theme-artisan .article-detail__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    letter-spacing: -0.01em;
+}
+.theme-artisan .article-detail__content h2,
+.theme-artisan .article-detail__content h3 {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Lead text plus grand, aere */
+.theme-artisan .article-detail__lead {
+    font-size: 1.1875rem;
+    line-height: 1.8;
+}
+
+/* Contenu plus aere */
+.theme-artisan .article-detail__content {
+    line-height: 1.85;
+}
+
+/* Blockquote brun chaleureux */
+.theme-artisan .article-detail__content blockquote {
+    border-left-color: var(--primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* Images radius genereux */
+.theme-artisan .article-hero {
+    border-radius: var(--radius);
+}
+.theme-artisan .article-detail__content img {
+    border-radius: var(--radius);
+}
+
+/* Tags sable */
+.theme-artisan .tag-pill {
+    background: var(--secondary);
+    color: var(--text);
+    border-color: var(--secondary);
+}
+
+/* Cards commentaires ivoire, radius genereux */
+.theme-artisan .article-comments__form {
+    border-radius: var(--radius);
+}
+.theme-artisan .comment-card {
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+/* Share buttons tons terre */
+.theme-artisan .share-sticky__btn {
+    border-radius: var(--radius);
+}
+.theme-artisan .share-sticky__btn--facebook:hover,
+.theme-artisan .share-sticky__btn--twitter:hover,
+.theme-artisan .share-sticky__btn--linkedin:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Author card chaleureux */
+.theme-artisan .author-card {
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+.theme-artisan .author-card__name {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* TOC */
+.theme-artisan .widget-toc {
+    border-radius: var(--radius);
+}
+.theme-artisan .widget-toc__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    text-transform: none;
+    font-size: 0.9375rem;
+    letter-spacing: 0;
+}
+
+/* Related & comments titles */
+.theme-artisan .article-related__title,
+.theme-artisan .article-comments__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* ====== BLOG LISTING OVERRIDES ====== */
+
+/* Cards radius genereux */
+.theme-artisan .blog-card {
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+.theme-artisan .blog-card__badge {
+    border-radius: var(--radius);
+    left: auto;
+    right: 0.75rem;
+}
+.theme-artisan .blog-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 700;
+}
+
+/* Featured card */
+.theme-artisan .blog-featured {
+    border-radius: var(--radius);
+}
+.theme-artisan .blog-featured__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Blog header artisan */
+.theme-artisan .blog-header__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Filter pills */
+.theme-artisan .blog-filters__pill {
+    border-radius: var(--radius);
+}
+
+/* ====== HOME ARTICLES OVERRIDES ====== */
+
+.theme-artisan .art-articles .blog-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+}
+.theme-artisan .art-articles .blog-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 700;
+}
+.theme-artisan .art-articles .blog-card__badge {
+    border-radius: var(--radius);
+    left: auto;
+    right: 0.75rem;
+}
+
+/* ====== PAGE SHOW OVERRIDES ====== */
+
+.theme-artisan .page-hero {
+    border-radius: var(--radius);
+}
+.theme-artisan .page-hero__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .page-detail__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .page-detail__content blockquote {
+    border-left-color: var(--secondary);
+    background: rgba(139, 115, 85, 0.06);
+}
+
+/* ====== WIDGETS OVERRIDES ====== */
+
+.theme-artisan .widget > div,
+.theme-artisan .widget-card {
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+.theme-artisan .widget h4,
+.theme-artisan .widget-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    border-bottom-color: var(--secondary);
+}
+.theme-artisan .widget .widget_register {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+.theme-artisan .tag-pill {
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
 /* --- FOOTER --- */
 .theme-artisan .footer--artisan { background: var(--text); color: rgba(255,255,255,0.8); }
 .theme-artisan .footer--artisan .footer-heading {

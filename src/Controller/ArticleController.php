@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
+use App\Repository\CategorieRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/', name: 'show_all')]
-    public function showAll(Request $request, ArticleRepository $articleRepository): Response
+    public function showAll(Request $request, ArticleRepository $articleRepository, CategorieRepository $categorieRepository): Response
     {
         if (!$this->siteContext->hasModule('blog')) {
             throw $this->createNotFoundException();
@@ -33,12 +34,24 @@ class ArticleController extends AbstractController
         $page = max(1, $request->query->getInt('page', 1));
         $month = $request->query->getInt('month') ?: null;
         $year = $request->query->getInt('year') ?: null;
+        $categorieSlug = $request->query->get('categorie');
+
+        // Article featured (uniquement page 1 sans filtre)
+        $featuredArticle = null;
+        $excludeId = null;
+        if ($page === 1 && !$month && !$year && !$categorieSlug) {
+            $featuredArticle = $articleRepository->findFeatured();
+            $excludeId = $featuredArticle?->getId();
+        }
 
         $perPage = 9;
-        $paginator = $articleRepository->findPublishedPaginated($page, $perPage, $month, $year);
+        $paginator = $articleRepository->findPublishedPaginated($page, $perPage, $month, $year, $categorieSlug, $excludeId);
         $totalPages = max(1, (int) ceil(count($paginator) / $perPage));
 
-        // Titre dynamique pour les archives
+        // Categories pour les pills de filtrage
+        $blogCategories = $categorieRepository->findAllWithPublishedArticleCount();
+
+        // Titre dynamique
         $titlePage = 'Tous les articles';
         if ($month && $year) {
             $monthNames = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -53,6 +66,10 @@ class ArticleController extends AbstractController
             'totalPages' => $totalPages,
             'filterMonth' => $month,
             'filterYear' => $year,
+            'filterCategorie' => $categorieSlug,
+            'featuredArticle' => $featuredArticle,
+            'blogCategories' => $blogCategories,
+            'totalArticles' => count($paginator),
             'seo' => $this->seoService->resolveForPage($titlePage),
         ]);
     }

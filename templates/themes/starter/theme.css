@@ -169,6 +169,239 @@
 .theme-starter .start-contact__info a:hover { color: var(--accent); }
 .theme-starter .start-contact__info p { margin-bottom: 0.5rem; color: var(--text-muted); }
 
+/* ====== ARTICLE SHOW OVERRIDES ====== */
+
+/* Layout ultra-etroit, focus lecture */
+.theme-starter .article-detail {
+    max-width: 640px;
+}
+
+/* Titre tres grand, letter-spacing serre */
+.theme-starter .article-detail__title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+/* Pas de badge categorie — juste date + temps */
+.theme-starter .article-detail__badge {
+    display: none;
+}
+
+/* Contenu tres aere */
+.theme-starter .article-detail__content {
+    font-size: 1.0625rem;
+    line-height: 1.9;
+}
+
+/* Blockquote noir, fond blanc */
+.theme-starter .article-detail__content blockquote {
+    border-left-color: var(--text);
+    background: transparent;
+    font-style: italic;
+}
+
+/* Images sans arrondi, pleine largeur */
+.theme-starter .article-hero {
+    border-radius: var(--radius);
+}
+.theme-starter .article-detail__content img {
+    border-radius: var(--radius);
+}
+
+/* Tags en texte bleu accent, pas de pill */
+.theme-starter .tag-pill {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    padding: 0;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+.theme-starter .tag-pill:hover {
+    text-decoration: underline;
+}
+
+/* PAS de boutons de partage */
+.theme-starter .share-sticky,
+.theme-starter .share-mobile {
+    display: none;
+}
+
+/* Sidebar cachee — pleine largeur */
+.theme-starter .blog-sidebar {
+    display: none;
+}
+
+/* La colonne principale prend toute la largeur */
+.theme-starter .col-lg-7 {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+.theme-starter .col-lg-1 {
+    display: none;
+}
+.theme-starter .col-lg-4 {
+    display: none;
+}
+
+/* Author card minimal */
+.theme-starter .author-card {
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+    padding: 1.5rem 0;
+}
+
+/* Commentaires minimaux */
+.theme-starter .comment-card {
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: 1rem 0;
+}
+.theme-starter .article-comments__form {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Related articles */
+.theme-starter .article-related__title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+/* ====== BLOG LISTING OVERRIDES ====== */
+
+/* Liste lineaire (pas de grille cards) */
+.theme-starter .blog-card {
+    border-radius: var(--radius);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    box-shadow: none;
+}
+.theme-starter .blog-card:hover {
+    box-shadow: none;
+    transform: none;
+    opacity: 0.75;
+}
+.theme-starter .blog-card__link {
+    flex-direction: row;
+    gap: 1.5rem;
+}
+.theme-starter .blog-card__img {
+    width: 160px;
+    min-width: 160px;
+    aspect-ratio: 3/2;
+    border-radius: var(--radius);
+    flex-shrink: 0;
+}
+.theme-starter .blog-card__badge {
+    display: none;
+}
+.theme-starter .blog-card__body {
+    padding: 0.5rem 0;
+}
+.theme-starter .blog-card__tags {
+    display: none;
+}
+@media (max-width: 575.98px) {
+    .theme-starter .blog-card__link { flex-direction: column; gap: 0.75rem; }
+    .theme-starter .blog-card__img { width: 100%; min-width: auto; aspect-ratio: 16/9; }
+}
+
+/* Blog header */
+.theme-starter .blog-header__title {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+/* Featured card */
+.theme-starter .blog-featured {
+    border-radius: var(--radius);
+}
+
+/* Filters minimal */
+.theme-starter .blog-filters__pill {
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* ====== HOME ARTICLES OVERRIDES ====== */
+
+/* Home utilise deja start-article-item (liste lineaire) */
+
+/* ====== PAGE SHOW OVERRIDES ====== */
+
+/* Pas de hero overlay — image simple */
+.theme-starter .page-hero {
+    border-radius: var(--radius);
+}
+.theme-starter .page-hero__overlay {
+    background: transparent;
+    position: relative;
+    padding: 1rem 0;
+}
+.theme-starter .page-hero__title {
+    color: var(--text);
+    text-shadow: none;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+/* Layout pleine largeur, pas de sidebar */
+.theme-starter .page-detail {
+    max-width: 640px;
+}
+.theme-starter .page-detail__title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    letter-spacing: -0.04em;
+}
+.theme-starter .page-detail__content blockquote {
+    border-left-color: var(--text);
+    background: transparent;
+    font-style: italic;
+}
+
+/* ====== WIDGETS OVERRIDES ====== */
+
+.theme-starter .widget > div,
+.theme-starter .widget-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+}
+.theme-starter .widget h4,
+.theme-starter .widget-card__title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.theme-starter .widget .widget_register {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.theme-starter .widget .widget_register h4 {
+    color: var(--text);
+}
+.theme-starter .widget .widget_register .btn {
+    background: var(--text);
+    color: var(--bg);
+}
+
 /* --- FOOTER --- */
 .theme-starter .footer--starter {
     border-top: 1px solid var(--border);

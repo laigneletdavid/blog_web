@@ -71,6 +71,10 @@ class ArticleCrudController extends AbstractCrudController
 
         yield BooleanField::new('published', 'Publié');
 
+        yield BooleanField::new('isFeatured', 'Article vedette')
+            ->setHelp('L\'article vedette est mis en avant en haut de la page blog')
+            ->hideOnIndex();
+
         // --- Panel Avancé (collapsed) ---
         yield FormField::addPanel('Avancé')
             ->setIcon('fa fa-sliders-h')

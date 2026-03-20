@@ -449,3 +449,159 @@
     max-height: 40px;
     filter: brightness(0) invert(1);
 }
+
+/* ====== ARTICLE SHOW OVERRIDES ====== */
+
+/* Titres serif (Playfair Display) */
+.theme-corporate .article-detail__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    letter-spacing: -0.02em;
+}
+.theme-corporate .article-detail__content h2,
+.theme-corporate .article-detail__content h3 {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Blockquote bronze */
+.theme-corporate .article-detail__content blockquote {
+    border-left-color: var(--secondary);
+}
+
+/* Badge categorie rectangle */
+.theme-corporate .article-detail__badge {
+    border-radius: 0.25rem;
+}
+
+/* Cards commentaires formelles */
+.theme-corporate .comment-card {
+    border-radius: var(--radius);
+}
+.theme-corporate .comment-card__author {
+    font-family: var(--font-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+}
+
+/* Share buttons discrets */
+.theme-corporate .share-sticky__btn {
+    border-radius: var(--radius);
+}
+
+/* Author card */
+.theme-corporate .author-card {
+    border-radius: var(--radius);
+}
+
+/* TOC */
+.theme-corporate .widget-toc {
+    border-radius: var(--radius);
+}
+.theme-corporate .widget-toc__title {
+    font-family: var(--font-family);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+}
+
+/* Related articles title serif */
+.theme-corporate .article-related__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Comments title */
+.theme-corporate .article-comments__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* ====== BLOG LISTING OVERRIDES ====== */
+
+/* Cards radius petit */
+.theme-corporate .blog-card {
+    border-radius: var(--radius);
+}
+.theme-corporate .blog-card__badge {
+    border-radius: 0.25rem;
+    left: auto;
+    right: 0.75rem;
+}
+.theme-corporate .blog-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 700;
+}
+
+/* Featured card */
+.theme-corporate .blog-featured {
+    border-radius: var(--radius);
+}
+.theme-corporate .blog-featured__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Blog header */
+.theme-corporate .blog-header__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* Filter pills corporate */
+.theme-corporate .blog-filters__pill {
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+/* ====== HOME ARTICLES OVERRIDES ====== */
+
+.theme-corporate .corp-articles .blog-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 700;
+}
+.theme-corporate .corp-articles .blog-card {
+    border-radius: var(--radius);
+}
+.theme-corporate .corp-articles .blog-card__badge {
+    border-radius: 0.25rem;
+    left: auto;
+    right: 0.75rem;
+}
+
+/* ====== PAGE SHOW OVERRIDES ====== */
+
+.theme-corporate .page-hero {
+    border-radius: var(--radius);
+}
+.theme-corporate .page-hero__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-corporate .page-detail__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    letter-spacing: -0.02em;
+}
+.theme-corporate .page-detail__content blockquote {
+    border-left-color: var(--secondary);
+    background: rgba(180, 140, 90, 0.05);
+}
+
+/* ====== WIDGETS OVERRIDES ====== */
+
+.theme-corporate .widget > div,
+.theme-corporate .widget-card {
+    border-radius: var(--radius);
+}
+.theme-corporate .widget h4,
+.theme-corporate .widget-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    border-bottom-color: var(--secondary);
+}
+.theme-corporate .widget .widget_register {
+    background: var(--primary);
+}
+.theme-corporate .tag-pill {
+    border-radius: 0.25rem;
+}

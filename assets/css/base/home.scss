@@ -129,6 +129,10 @@
     }
   }
 
+  @media (max-width: 991.98px) {
+    padding: 4rem 0 3rem;
+  }
+
   @media (max-width: 767.98px) {
     padding: 3rem 0 2.5rem;
 
@@ -142,6 +146,10 @@
 .features {
   padding: 5rem 0;
   background: var(--surface);
+
+  @media (max-width: 991.98px) {
+    padding: 3.5rem 0;
+  }
 
   .features-grid {
     display: grid;
@@ -388,6 +396,10 @@
   color: var(--white);
   padding: 5rem 0;
   text-align: center;
+
+  @media (max-width: 991.98px) {
+    padding: 3.5rem 0;
+  }
   position: relative;
   overflow: hidden;
 
