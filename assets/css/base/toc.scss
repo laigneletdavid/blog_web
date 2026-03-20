@@ -65,4 +65,9 @@
       background: rgba(var(--primary-rgb, 37, 99, 235), 0.06);
     }
   }
+
+  // Tablet: keep widget but remove sticky
+  @media (max-width: 991.98px) {
+    position: static;
+  }
 }

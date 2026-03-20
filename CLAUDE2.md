@@ -232,11 +232,20 @@ Chaque `theme.css` contient des overrides complets pour toutes les pages globale
 - [x] Theme variables prefix : ajout conditionnel `--` dans la boucle Twig theme_vars
 - [x] SCSS vs inline priority : suppression des variables thème dans `variables.scss` pour éviter l'écrasement des inline styles
 
-### 7.6 À faire (prochaine itération)
+### 7.6 Couleurs dynamiques + Responsive tablette ✅
 
-- [ ] `_components/_card.html.twig` — macro Twig card réutilisable (factoriser les cards dupliquées entre thèmes)
-- [ ] Affiner les couleurs/nuances par thème
-- [ ] Vérifier le rendu responsive sur toutes les pages (tablette)
+- [x] **Couleurs dérivées dynamiques** : `--primary-light`, `--primary-dark`, `--secondary-light`, `--accent-light`, `--surface-alt` passées de valeurs SCSS hardcodées à `color-mix()` CSS natif → s'adaptent automatiquement à chaque thème
+- [x] **Gradient warm dynamique** : `--gradient-warm` utilise `color-mix()` au lieu d'un orange hardcodé
+- [x] **Fonts héritées du thème** : `--font-display` hérite de `--font-family-secondary` (puis `--font-family`), `--font-body` hérite de `--font-family` — plus de 'Inter' hardcodé
+- [x] **TOC widget** : `position: static` en dessous de 992px (évite chevauchement tablette/mobile)
+- [x] **Blog grid** : gap réduit à 1rem en tablette ; grid 3-col → 2-col dès 992px
+- [x] **Featured article** : aspect-ratio 21:9 → 16:9 dès 992px (au lieu de 768px)
+- [x] **Hero section** : padding réduit 5rem → 4rem en tablette
+- [x] **Features section** : padding réduit 5rem → 3.5rem en tablette
+- [x] **CTA section** : padding réduit 5rem → 3.5rem en tablette
+- [ ] `_components/_card.html.twig` — macro Twig card réutilisable (reporté, cards déjà factorisées via `article/item.html.twig`)
+
+**Fichiers modifiés (4) :** `variables.scss`, `toc.scss`, `article_list.scss`, `home.scss`
 
 ---
 

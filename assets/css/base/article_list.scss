@@ -77,6 +77,10 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 
+  @media (max-width: 991.98px) {
+    gap: 1rem;
+  }
+
   @media (max-width: 767.98px) {
     grid-template-columns: 1fr;
   }
@@ -86,6 +90,7 @@
 
     @media (max-width: 991.98px) {
       grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
     }
 
     @media (max-width: 575.98px) {
@@ -248,7 +253,7 @@
     background: var(--surface);
     overflow: hidden;
 
-    @media (max-width: 767.98px) {
+    @media (max-width: 991.98px) {
       aspect-ratio: 16 / 9;
     }
   }
