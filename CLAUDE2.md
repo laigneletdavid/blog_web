@@ -101,6 +101,7 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 | Phase 5 | Refonte design & CSS (thème default moderne, header sticky, homepage SaaS) | ✅ |
 | Phase 6 | Fondations Modules + Services + Tags | ✅ |
 | Phase 7 | Refonte UX Blog + Design Themes (overrides CSS, documentation, bug fixes) | ✅ |
+| Phase 8 | Module Événements (entité Event, CRUD admin, front, sidebar, notifications, CSS) | ✅ |
 
 ---
 
@@ -249,75 +250,93 @@ Chaque `theme.css` contient des overrides complets pour toutes les pages globale
 
 ---
 
-## Phase 8 — Module Événements / Calendrier
+## Phase 8 — Module Événements / Calendrier ✅
 
-> Temps estimé : ~1.5 jours
+> Temps réel : ~1 jour
 > Prérequis : Phase 6.1 (enabledModules)
 
-### 8.1 Entité Event
+### 8.1 Entité Event + Repository + Migration ✅
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `title` | string(255) | Requis |
-| `slug` | string(255) | Unique, auto-généré |
-| `shortDescription` | text | Résumé pour les cards/listes |
-| `blocks` | json (nullable) | Contenu TipTap |
-| `content` | text (nullable) | HTML compilé (cache) |
-| `dateStart` | datetime | Requis |
-| `dateEnd` | datetime (nullable) | Null = événement ponctuel |
-| `location` | string(255, nullable) | Lieu texte libre |
-| `image` | ManyToOne Media (nullable) | Image illustrative |
-| `isActive` | boolean (default true) | Publié/brouillon |
-| `isFeatured` | boolean (default false) | Mis en avant |
-
-+ `use SeoTrait;` pour le référencement
-
-- [ ] Créer `src/Entity/Event.php`
-- [ ] Créer `src/Repository/EventRepository.php` :
+- [x] `src/Entity/Event.php` — title, slug (unique), shortDescription, blocks (JSON), content (TEXT cache), dateStart, dateEnd (nullable), location, image (FK Media nullable), isActive, isFeatured, `use SeoTrait;`
+- [x] Virtual `getBlocksJson()`/`setBlocksJson()` — même pattern que Service/Article
+- [x] Helpers : `isUpcoming()`, `isPast()`, `isMultiDay()`
+- [x] Index sur `is_active`, `date_start`, `is_featured`
+- [x] `src/Repository/EventRepository.php` :
   - `findUpcoming(int $limit)` — événements futurs, triés dateStart ASC
-  - `findPast(int $limit, int $offset)` — événements passés, paginés
-  - `findByMonth(int $year, int $month)` — pour le widget calendrier
-  - `findAllActiveForSitemap()`
-- [ ] Migration Doctrine
+  - `findPast(int $limit, int $offset)` — événements passés, paginés DESC
+  - `countPast()` — pour pagination
+  - `findByMonth(int $year, int $month)` — pour widget
+  - `findOneActiveBySlug(string $slug)`
+  - `findAllActiveForSitemap()` — filtre noIndex=false
+  - `findFeatured()` — upcoming + featured
+- [x] Migration `Version20260320173148.php` — table Event
 
-### 8.2 CRUD Admin
+### 8.2 CRUD Admin ✅
 
-- [ ] Créer `src/Controller/Admin/EventCrudController.php` :
-  - Panels : "Contenu" (title, shortDescription, blocks/blocksJson, image) | "Date & Lieu" (dateStart, dateEnd, location) | "SEO" (SeoTrait) | "Paramètres" (isActive, isFeatured)
-  - Liste : colonnes title, dateStart, location, isActive (toggle), isFeatured
-  - Filtres : à venir / passés / tous (filtre dateStart)
-  - Tri : dateStart DESC par défaut
-  - Visible uniquement si module `events` activé
-- [ ] Ajouter dans `DashboardController::configureMenuItems()` conditionné par module
+- [x] `src/Controller/Admin/EventCrudController.php` (`#[IsGranted('ROLE_ADMIN')]`) :
+  - 4 panels : "Contenu" (title, shortDescription, blocksJson TipTap, image) | "Date & Lieu" (dateStart, dateEnd, location) | "SEO" (5 champs SeoTrait) | "Paramètres" (slug, isActive, isFeatured)
+  - Index : title, dateStart, location, isActive (toggle), isFeatured
+  - Tri default : dateStart DESC
+- [x] `DashboardController` : menu "Événements" conditionné par `hasModule('events')` + `ROLE_ADMIN`
+- [x] `EventNotificationService` injecté : notification aux abonnés quand event publié (persistEntity/updateEntity)
 
-### 8.3 Front
+### 8.3 Front ✅
 
-- [ ] Créer `src/Controller/EventController.php` :
-  - `GET /evenements` — liste (prochains d'abord, puis passés, paginé)
-  - `GET /evenement/{slug}` — détail
-  - Guard `hasModule('events')`
-- [ ] Créer templates :
-  - `templates/event/index.html.twig` — liste avec séparation "À venir" / "Passés"
-  - `templates/event/show.html.twig` — détail (date, lieu, map embed optionnel, contenu)
-  - `templates/_partials/_event_card.html.twig` — card événement (date stylisée, titre, lieu)
-  - `templates/_partials/_calendar_widget.html.twig` — mini calendrier mensuel HTML
-- [ ] Stimulus : `calendar_controller.js` — navigation mois (fetch JSON des événements du mois)
-- [ ] Widget "Prochains événements" pour sidebar/homepage (conditionné par module)
-- [ ] Ajouter les événements au `SitemapController` (conditionné par module)
-- [ ] Créer `assets/css/base/events.scss`
+- [x] `src/Controller/EventController.php` :
+  - `GET /evenements` — index avec upcoming (tous) + past (paginés, 10 par page)
+  - `GET /evenement/{slug}` — détail avec sidebar
+  - Guard `hasModule('events')` → 404 si désactivé
+  - SEO via `SeoService`
+- [x] `templates/event/index.html.twig` — sections "À venir" / "Événements passés", pagination, état vide (SVG calendrier)
+- [x] `templates/event/show.html.twig` — layout col-lg-8 (contenu) + col-lg-4 (sidebar) :
+  - Header : date badge, titre h1, meta (date/lieu/badge statut), image, lead, contenu TipTap, bouton retour
+  - Sidebar : widget infos pratiques (date, horaires, lieu), widget s'abonner (3 états : non connecté, connecté non abonné, connecté abonné), widget prochains événements
+- [x] `templates/_partials/_event_card.html.twig` — card réutilisable (image, date badge jour/mois, titre, lieu, extrait tronqué, horaires, badge "Terminé")
+- [x] `templates/_partials/_upcoming_events_widget.html.twig` — widget sidebar liste compacte (date + titre + lieu, lien "Voir tous →")
+- [x] Widget "Prochains événements" dans `WidgetService::findUpcomingEvents()`
+- [x] Section événements sur homepage default (`themes/default/home.html.twig`) : grille 3 colonnes, conditionnée par `upcomingEvents|length > 0`
 
-### 8.4 Abonnements / Alertes événements
+### 8.4 Abonnements / Alertes événements ✅
 
-- [ ] Activer `subscribeNews` / `subscribeArticles` existants sur User
-- [ ] Ajouter `subscribeEvents` (boolean, default false) sur User + migration
-- [ ] Page profil utilisateur : checkboxes pour gérer ses abonnements
-- [ ] `EventNotificationService.php` — envoie email Brevo aux abonnés events quand un événement est publié
-- [ ] Câbler dans `EventCrudController::persistEntity()` / `updateEntity()`
+- [x] `subscribeEvents` (boolean, default false) ajouté sur `User` + migration `Version20260321055237.php`
+- [x] `src/Service/EventNotificationService.php` — email Brevo aux users avec `subscribeEvents = true` (pattern ArticleNotificationService)
+- [x] Câblé dans `EventCrudController::persistEntity()` / `updateEntity()`
+- [ ] Page profil utilisateur : checkbox `subscribeEvents` (à ajouter au formulaire profil)
 
-**Fichiers créés :** `Event.php`, `EventRepository.php`, `EventCrudController.php`, `EventController.php`, `EventNotificationService.php`, `event/index.html.twig`, `event/show.html.twig`, `_event_card.html.twig`, `_calendar_widget.html.twig`, `calendar_controller.js`, `events.scss`
-**Fichiers modifiés :** `User.php`, `DashboardController.php`, `SitemapController.php`, `main.scss`, templates sidebar/homepage
-**Migrations :** oui (Event + User.subscribeEvents)
+### 8.5 Sitemap + ContentSanitizeListener ✅
+
+- [x] `SitemapController` : events ajoutés (priority 0.6, weekly, conditionné par module)
+- [x] `sitemap/index.xml.twig` : boucle events
+- [x] `ContentSanitizeListener` : Event ajouté (compile blocks → content HTML)
+- [x] `HomeController` : passe `upcomingEvents` si module events actif
+
+### 8.6 CSS ✅
+
+- [x] `assets/css/base/events.scss` (~614 lignes) — 100% CSS custom properties, compatible 6 thèmes :
+  - `.events-section` — titre page index
+  - `.events-grid` — grille responsive (2 cols → 1 col mobile, 3 cols home)
+  - `.event-card` — card complète (hover translateY + shadow, image zoom, date badge `color-mix()`, badge "Terminé")
+  - `.events-empty` — état vide (SVG + message)
+  - `.event-detail` — page détail (header flex, date badge large, meta items, image, lead, content, back, responsive mobile)
+  - `.home-events` — section homepage
+  - `.widget-events` — widget sidebar "Prochains événements"
+  - `.widget-event-info` — widget sidebar "Infos pratiques"
+  - `.widget-event-subscribe` — widget sidebar "S'abonner aux événements"
+- [x] Import dans `main.scss`
+
+### Décision de design
+
+- **Widget calendrier** : choix "Liste simple" (pas de calendrier interactif) — plus simple, suffisant pour le cas d'usage
+- **Intégration thèmes** : Option A retenue — terminer tous les modules d'abord, puis construire un système de sections configurables (voir Phase 13)
+
+**Fichiers créés (9) :** `Event.php`, `EventRepository.php`, `EventCrudController.php`, `EventController.php`, `EventNotificationService.php`, `event/index.html.twig`, `event/show.html.twig`, `_event_card.html.twig`, `_upcoming_events_widget.html.twig`, `events.scss`
+**Fichiers modifiés (9) :** `User.php`, `DashboardController.php`, `HomeController.php`, `SitemapController.php`, `sitemap/index.xml.twig`, `ContentSanitizeListener.php`, `WidgetService.php`, `themes/default/home.html.twig`, `main.scss`
+**Migrations (2) :** `Version20260320173148.php` (Event), `Version20260321055237.php` (User.subscribeEvents)
+
+### Reste à faire (Phase 8)
+
+- [ ] Ajouter checkbox `subscribeEvents` dans le formulaire profil utilisateur
+- [ ] Intégrer section événements dans les 5 autres thèmes (corporate, artisan, vitrine, starter, moderne) — reporté à Phase 13
 
 ---
 
@@ -597,6 +616,153 @@ match($menu->getType()) {
 **Fichiers créés :** `MenuZoneEnum.php`, `MenuTypeEnum.php`, `MenuService.php`, `page/legal.html.twig`, `_cookie_banner.html.twig`, `cookie_consent_controller.js`, `sortable_controller.js`, `cookie_banner.scss`
 **Fichiers modifiés :** `Menu.php`, `MenuRepository.php`, `Page.php`, `PageCrudController.php`, `MenuCrudController.php`, `DashboardController.php`, `InitSiteCommand.php`, `base.html.twig`, 6× `_header.html.twig`, 6× `_footer.html.twig`
 **Migrations :** oui (Menu refonte + Page.isSystem + Page.systemSlug)
+
+---
+
+## Phase 13 — Sections Configurables Home & Sidebar
+
+> Temps estimé : ~2 jours
+> Prérequis : Phases 8-12 terminées (tous les modules existent)
+> Décision : Option A — construire le système configurable après avoir terminé tous les modules
+
+### Contexte
+
+Actuellement, chaque thème a sa propre `home.html.twig` avec les sections en dur (hero, services, articles, événements, etc.). La sidebar est aussi fixe dans chaque template. Cela pose deux problèmes :
+1. Ajouter un module nécessite de modifier les 6 fichiers `home.html.twig` de chaque thème
+2. Le client/freelance ne peut pas réorganiser les sections de la homepage ni de la sidebar
+
+### 13.1 Modèle de données
+
+**Ajouter sur l'entité `Site` :**
+
+| Champ | Type | Notes |
+|-------|------|-------|
+| `homeSections` | json | Liste ordonnée des sections homepage |
+| `sidebarSections` | json | Liste ordonnée des widgets sidebar |
+
+**Format JSON `homeSections` :**
+```json
+[
+  { "type": "hero", "enabled": true },
+  { "type": "services", "enabled": true, "limit": 6 },
+  { "type": "articles", "enabled": true, "limit": 3 },
+  { "type": "events", "enabled": true, "limit": 3 },
+  { "type": "products_featured", "enabled": false, "limit": 4 },
+  { "type": "metrics", "enabled": true },
+  { "type": "cta", "enabled": true }
+]
+```
+
+**Format JSON `sidebarSections` :**
+```json
+[
+  { "type": "search", "enabled": true },
+  { "type": "categories", "enabled": true },
+  { "type": "tag_cloud", "enabled": true },
+  { "type": "upcoming_events", "enabled": true, "limit": 3 },
+  { "type": "subscribe", "enabled": true },
+  { "type": "archives", "enabled": true }
+]
+```
+
+- Chaque section a un `type` (identifiant unique) et `enabled` (toggle)
+- Les sections liées à un module sont auto-masquées si le module est désactivé
+- Les sections peuvent avoir des options (`limit`, etc.)
+- L'ordre du tableau JSON = l'ordre d'affichage
+
+### 13.2 SectionService
+
+- [ ] Créer `src/Service/SectionService.php` :
+  - `getHomeSections(): array` — résout les sections homepage (filtre modules désactivés, merge avec defaults)
+  - `getSidebarSections(): array` — idem pour sidebar
+  - `getDefaultHomeSections(): array` — sections par défaut selon modules activés
+  - `getDefaultSidebarSections(): array` — idem sidebar
+  - `getAvailableSectionTypes(string $zone): array` — liste tous les types possibles avec label/description/module requis
+
+**Mapping section → module :**
+```php
+'services' => 'services',
+'articles' => 'blog',
+'events' => 'events',
+'products_featured' => 'catalogue',
+'categories' => 'blog',
+'tag_cloud' => 'blog',
+'upcoming_events' => 'events',
+'archives' => 'blog',
+```
+
+Sections sans module (toujours disponibles) : `hero`, `metrics`, `cta`, `search`, `subscribe`
+
+### 13.3 Partials Twig
+
+**Découper chaque section en partial réutilisable :**
+
+```
+templates/_sections/
+├── home/
+│   ├── _hero.html.twig
+│   ├── _services.html.twig
+│   ├── _articles.html.twig
+│   ├── _events.html.twig
+│   ├── _products_featured.html.twig
+│   ├── _metrics.html.twig
+│   └── _cta.html.twig
+└── sidebar/
+    ├── _search.html.twig
+    ├── _categories.html.twig
+    ├── _tag_cloud.html.twig
+    ├── _upcoming_events.html.twig
+    ├── _subscribe.html.twig
+    └── _archives.html.twig
+```
+
+**Chaque partial reçoit ses données via le controller** (pas de requête Twig) et est autonome.
+
+### 13.4 Intégration thèmes
+
+**Transformer `home.html.twig` de chaque thème :**
+
+```twig
+{# Avant (sections hardcodées) #}
+{% include 'themes/default/_hero.html.twig' %}
+{% include '_partials/_services_grid.html.twig' %}
+...
+
+{# Après (sections dynamiques) #}
+{% for section in homeSections %}
+  {% if section.enabled %}
+    {% include ['themes/' ~ _theme ~ '/_sections/' ~ section.type ~ '.html.twig',
+                '_sections/home/_' ~ section.type ~ '.html.twig']
+       with { config: section } %}
+  {% endif %}
+{% endfor %}
+```
+
+**Avantages :**
+- Chaque thème peut override une section spécifique (fallback vers le partial commun)
+- Ajouter un nouveau module = ajouter un partial, sans toucher aux thèmes
+- Le FREELANCE/SUPER_ADMIN réordonne les sections dans l'admin
+
+### 13.5 Admin Sections
+
+- [ ] Créer page admin "Sections" (`ROLE_FREELANCE+`) :
+  - 2 onglets : "Homepage" | "Sidebar"
+  - Liste drag & drop (Stimulus `sortable_controller.js`) des sections
+  - Toggle enabled/disabled par section
+  - Options par section (limit, etc.) via formulaire inline
+  - Bouton "Réinitialiser" (remet les defaults du thème)
+- [ ] Preview en temps réel via iframe
+- [ ] Menu admin : ajout dans section "Apparence"
+
+### 13.6 Controller updates
+
+- [ ] `HomeController` : passe les données de toutes les sections activées
+- [ ] Créer `SidebarDataProvider` ou enrichir `WidgetService` pour fournir les données sidebar selon les sections activées
+- [ ] Migration Doctrine (Site.homeSections, Site.sidebarSections)
+
+**Fichiers créés :** `SectionService.php`, `_sections/home/*.html.twig` (7), `_sections/sidebar/*.html.twig` (6), admin template sections
+**Fichiers modifiés :** `Site.php`, `HomeController.php`, `WidgetService.php`, 6× `home.html.twig` thèmes, `DashboardController.php`
+**Migration :** oui (Site.homeSections + Site.sidebarSections)
 
 ---
 

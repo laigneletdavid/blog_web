@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\Comment;
+use App\Entity\Event;
 use App\Entity\Media;
 use App\Entity\Page;
 use App\Entity\Service;
@@ -175,6 +176,10 @@ class DashboardController extends AbstractDashboardController
 
         if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('services')) {
             yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Service::class);
+        }
+
+        if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('events')) {
+            yield MenuItem::linkToCrud('Événements', 'fas fa-calendar-days', Event::class);
         }
 
         if ($this->siteContext->hasModule('blog')) {

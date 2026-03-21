@@ -48,6 +48,15 @@
     </url>
     {% endfor %}
 
+    {% for event in events|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_event_show', {slug: event.slug})) }}</loc>
+        <lastmod>{{ event.dateStart|date('Y-m-d') }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
     <url>
         <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
         <changefreq>daily</changefreq>

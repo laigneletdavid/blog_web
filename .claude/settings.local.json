@@ -97,7 +97,8 @@
       "Bash(wsl -d Ubuntu bash -c 'grep -rn \"\"color|default\\\\|cat\\\\.color\\\\|firstCat\\\\.color\\\\|\\\\.color|default\"\" /home/laign/projects/blog_web/templates/ --include=\"\"*.twig\"\" 2>/dev/null | grep -v \"\"primaryColor\\\\|secondaryColor\\\\|accentColor\\\\|ColorField\"\"')",
       "Bash(wsl -d Ubuntu bash -c 'grep -rn \"\"cat\\\\.color\\\\|\\\\.color}}\"\" /home/laign/projects/blog_web/templates/ --include=\"\"*.twig\"\" 2>/dev/null | grep -v \"\"primaryColor\\\\|secondaryColor\\\\|accentColor\\\\|var\\(--\"\"')",
       "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose exec -T node npx encore dev 2>&1 | tail -15\")",
-      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npx encore dev 2>&1 | tail -20\")"
+      "Bash(wsl -d Ubuntu bash -c \"cd /home/laign/projects/blog_web && docker compose run --rm node npx encore dev 2>&1 | tail -20\")",
+      "Bash(find ~ -name Service.php -path */Entity/*)"
     ]
   }
 }

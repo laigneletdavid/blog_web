@@ -1,0 +1,614 @@
+// ============================================================
+// Events — Module Événements
+// Utilise uniquement des CSS custom properties pour s'adapter
+// à tous les thèmes (default, corporate, artisan, vitrine,
+// starter, moderne).
+// ============================================================
+
+// --- Page index ---
+
+.events-section {
+  &__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+
+    svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    &--past {
+      color: var(--text-muted);
+
+      svg {
+        color: var(--text-muted);
+      }
+    }
+  }
+}
+
+// --- Grille ---
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  &--home {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 991.98px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    &--home {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    grid-template-columns: 1fr;
+
+    &--home {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// --- Card événement ---
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 12%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  &--past {
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // Image
+  &__img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &:hover &__img img {
+    transform: scale(1.03);
+  }
+
+  // Body
+  &__body {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem;
+    flex: 1;
+  }
+
+  // Date block
+  &__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 3rem;
+    padding: 0.5rem;
+    background: color-mix(in srgb, var(--primary) 10%, var(--bg));
+    border-radius: calc(var(--radius) * 0.6);
+    line-height: 1.2;
+  }
+
+  &__date-day {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--primary);
+  }
+
+  &__date-month {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  &__date-range {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  // Content
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0; // flex truncation
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+    margin: 0;
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+
+    svg {
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+  }
+
+  &__excerpt {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-top: auto;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  // Badge "Terminé"
+  &__badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.625rem;
+    border-radius: calc(var(--radius) * 0.5);
+    background: var(--text-muted);
+    color: var(--bg);
+  }
+}
+
+// --- État vide ---
+
+.events-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+  text-align: center;
+
+  svg {
+    opacity: 0.4;
+  }
+
+  p {
+    font-size: 1.125rem;
+    margin: 0;
+  }
+}
+
+// --- Detail événement ---
+
+.event-detail {
+  max-width: 800px;
+
+  &__header {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+
+  &__date-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    background: color-mix(in srgb, var(--primary) 10%, var(--bg));
+    border-radius: var(--radius);
+    min-width: 4rem;
+  }
+
+  &__date-day {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  &__date-month {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+
+    svg {
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+  }
+
+  &__badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border-radius: calc(var(--radius) * 0.5);
+
+    &--upcoming {
+      background: color-mix(in srgb, var(--primary) 15%, var(--bg));
+      color: var(--primary);
+    }
+
+    &--past {
+      background: color-mix(in srgb, var(--text-muted) 15%, var(--bg));
+      color: var(--text-muted);
+    }
+  }
+
+  // Image
+  &__image {
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 2rem;
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  }
+
+  // Lead
+  &__lead {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  // Content — réutilise les styles article
+  &__content {
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 2rem;
+  }
+
+  // Retour
+  &__back {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  // Responsive header
+  @media (max-width: 575.98px) {
+    &__header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    &__date-badge {
+      flex-direction: row;
+      gap: 0.5rem;
+      min-width: auto;
+      padding: 0.5rem 1rem;
+    }
+
+    &__meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+}
+
+// --- Home section ---
+
+.home-events {
+  background: var(--bg);
+}
+
+// --- Widget "Prochains événements" ---
+
+.widget-events {
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+
+    svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+  }
+
+  &__link {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    color: var(--text);
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  }
+
+  &__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 2.5rem;
+    line-height: 1.2;
+  }
+
+  &__day {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--primary);
+  }
+
+  &__month {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+
+  &__event-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  &__location {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__all {
+    display: block;
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// --- Widget Infos pratiques (sidebar event show) ---
+
+.widget-event-info {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+
+    svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.625rem 0;
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.5;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--border);
+      }
+
+      svg {
+        flex-shrink: 0;
+        color: var(--primary);
+        margin-top: 0.125rem;
+      }
+
+      strong {
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-muted);
+      }
+    }
+  }
+}
+
+// --- Widget S'abonner aux événements (sidebar event show) ---
+
+.widget-event-subscribe {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+
+    svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+
+    &--active {
+      color: #16a34a;
+
+      svg {
+        color: #16a34a;
+      }
+    }
+  }
+}

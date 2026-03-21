@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $subscribeArticles = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $subscribeEvents = false;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isVerified = false;
 
     #[ORM\ManyToOne]
@@ -204,6 +207,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSubscribeArticles(?bool $subscribeArticles): self
     {
         $this->subscribeArticles = $subscribeArticles;
+
+        return $this;
+    }
+
+    public function isSubscribeEvents(): bool
+    {
+        return $this->subscribeEvents;
+    }
+
+    public function setSubscribeEvents(bool $subscribeEvents): self
+    {
+        $this->subscribeEvents = $subscribeEvents;
 
         return $this;
     }
