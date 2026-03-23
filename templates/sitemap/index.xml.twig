@@ -48,6 +48,14 @@
     </url>
     {% endfor %}
 
+    {% for product in products|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_product_show', {slug: product.slug})) }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    {% endfor %}
+
     {% for event in events|default([]) %}
     <url>
         <loc>{{ absolute_url(path('app_event_show', {slug: event.slug})) }}</loc>

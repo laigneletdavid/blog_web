@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Page;
+use App\Enum\VisibilityEnum;
+use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -16,6 +18,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PageCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly SiteContext $siteContext,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Page::class;
@@ -56,6 +63,13 @@ class PageCrudController extends AbstractCrudController
         yield AssociationField::new('featured_media', 'Image mise en avant');
 
         yield BooleanField::new('published', 'Publiée');
+
+        if ($this->siteContext->hasModule('private_pages')) {
+            yield ChoiceField::new('visibility', 'Visibilite')
+                ->setChoices(VisibilityEnum::choices())
+                ->renderExpanded(false)
+                ->setHelp('Public = visible par tous. Membres = connectes uniquement. Admin = administrateurs uniquement.');
+        }
 
         yield ChoiceField::new('template', 'Mise en page')
             ->setChoices([

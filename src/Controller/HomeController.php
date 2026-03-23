@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
 use App\Repository\EventRepository;
+use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
@@ -25,7 +26,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/', name: 'app_home')]
-    public function index(ArticleRepository $articleRepository, ServiceRepository $serviceRepository, EventRepository $eventRepository, SiteContext $siteContext): Response
+    public function index(ArticleRepository $articleRepository, ServiceRepository $serviceRepository, EventRepository $eventRepository, ProductRepository $productRepository, SiteContext $siteContext): Response
     {
         return $this->render('home/index.html.twig', [
             'title_page' => 'Blog & Web',
@@ -33,6 +34,7 @@ class HomeController extends AbstractController
             'articles' => $articleRepository->homeArticles(),
             'services' => $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [],
             'upcomingEvents' => $siteContext->hasModule('events') ? $eventRepository->findUpcoming(3) : [],
+            'featuredProducts' => $siteContext->hasModule('catalogue') ? $productRepository->findFeatured(4) : [],
             'seo' => $this->seoService->resolveForHome(),
         ]);
     }

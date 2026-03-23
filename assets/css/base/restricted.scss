@@ -1,0 +1,73 @@
+// ============================================================
+// Restricted Access Page
+// Uses CSS custom properties for theme compatibility
+// ============================================================
+
+.restricted-access {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+.restricted-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+}
+
+.restricted-icon {
+  color: var(--primary);
+  opacity: 0.6;
+  margin-bottom: 1.5rem;
+
+  svg {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.restricted-title {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.restricted-message {
+  color: var(--text-muted);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}
+
+.restricted-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  .btn {
+    min-width: 180px;
+  }
+}
+
+.restricted-info {
+  font-size: 0.9375rem;
+}
+
+.restricted-back {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--primary);
+  }
+}

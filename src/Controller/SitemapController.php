@@ -6,6 +6,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
 use App\Repository\EventRepository;
 use App\Repository\PageRepository;
+use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class SitemapController extends AbstractController
         CategorieRepository $categorieRepository,
         ServiceRepository $serviceRepository,
         EventRepository $eventRepository,
+        ProductRepository $productRepository,
         SiteContext $siteContext,
     ): Response {
         $articles = $articleRepository->findAllPublishedForSitemap();
@@ -28,6 +30,7 @@ class SitemapController extends AbstractController
         $categories = $categorieRepository->findAll();
         $services = $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [];
         $events = $siteContext->hasModule('events') ? $eventRepository->findAllActiveForSitemap() : [];
+        $products = $siteContext->hasModule('catalogue') ? $productRepository->findForSitemap() : [];
 
         $response = $this->render('sitemap/index.xml.twig', [
             'articles' => $articles,
@@ -35,6 +38,7 @@ class SitemapController extends AbstractController
             'categories' => $categories,
             'services' => $services,
             'events' => $events,
+            'products' => $products,
         ]);
 
         $response->headers->set('Content-Type', 'application/xml');

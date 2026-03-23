@@ -100,6 +100,11 @@ class Site
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $galleryItems;
 
+    // --- Catalogue ---
+
+    #[ORM\Column(length: 3, options: ['default' => 'ttc'])]
+    private string $catalogPriceDisplay = 'ttc';
+
     // --- Modules ---
 
     #[ORM\Column(type: Types::JSON, options: ['default' => '["vitrine"]'])]
@@ -441,6 +446,25 @@ class Site
         return $this->galleryItems->filter(
             fn (SiteGalleryItem $item) => $item->getSlot() === $slot
         );
+    }
+
+    // --- Catalogue Getters/Setters ---
+
+    public function getCatalogPriceDisplay(): string
+    {
+        return $this->catalogPriceDisplay;
+    }
+
+    public function setCatalogPriceDisplay(string $catalogPriceDisplay): self
+    {
+        $this->catalogPriceDisplay = $catalogPriceDisplay;
+
+        return $this;
+    }
+
+    public function isCatalogDisplayHT(): bool
+    {
+        return $this->catalogPriceDisplay === 'ht';
     }
 
     // --- Modules Getters/Setters ---

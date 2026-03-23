@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Site;
 use App\Enum\ModuleEnum;
+use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -19,6 +20,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class SiteCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly SiteContext $siteContext,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Site::class;
@@ -102,6 +108,22 @@ class SiteCrudController extends AbstractCrudController
         yield AssociationField::new('favicon', 'Favicon')
             ->setHelp('Petite icone affichee dans l\'onglet du navigateur. Format carre recommande (32x32 ou 64x64 px).')
             ->hideOnIndex();
+
+        // --- Panel Catalogue (si module actif) ---
+        if ($this->siteContext->hasModule('catalogue')) {
+            yield FormField::addPanel('Catalogue')
+                ->setIcon('fa fa-store')
+                ->collapsible()
+                ->renderCollapsed();
+
+            yield ChoiceField::new('catalogPriceDisplay', 'Affichage des prix')
+                ->setChoices([
+                    'TTC (clients particuliers)' => 'ttc',
+                    'HT (clients professionnels)' => 'ht',
+                ])
+                ->setHelp('Definit si les prix sont affiches TTC ou HT sur le site. Les deux valeurs restent calculees.')
+                ->hideOnIndex();
+        }
 
         // --- Panel Proprietaire (ROLE_SUPER_ADMIN) ---
         yield FormField::addPanel('Propriete')

@@ -1,0 +1,147 @@
+// ============================================================
+// Directory / Annuaire des membres
+// Uses CSS custom properties for theme compatibility
+// ============================================================
+
+.directory-section {
+  min-height: 60vh;
+}
+
+.directory-title {
+  font-family: var(--font-display, var(--font-family));
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.directory-subtitle {
+  color: var(--text-muted);
+  font-size: 1.0625rem;
+  margin-top: 0.5rem;
+}
+
+// Search
+.directory-search {
+  .form-control {
+    border-color: var(--border);
+    border-radius: var(--radius) 0 0 var(--radius);
+
+    &:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--primary) 20%, transparent);
+    }
+  }
+
+  .btn {
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+}
+
+// Grid
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 991.98px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 575.98px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Member card
+.member-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--text) 8%, transparent);
+  }
+}
+
+.member-avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.member-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.125rem;
+  font-family: var(--font-display, var(--font-family));
+}
+
+.member-info {
+  min-width: 0;
+}
+
+.member-name {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 0.25rem;
+}
+
+.member-job {
+  font-size: 0.875rem;
+  color: var(--primary);
+  font-weight: 500;
+  margin: 0 0 0.25rem;
+}
+
+.member-company {
+  display: flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+}
+
+.member-bio {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+// Empty state
+.directory-empty {
+  svg {
+    color: var(--text-muted);
+  }
+}
+
+.directory-count {
+  font-size: 0.875rem;
+}

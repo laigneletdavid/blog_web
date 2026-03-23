@@ -47,7 +47,36 @@ class PageRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.published = true')
             ->andWhere('p.noIndex = false')
+            ->andWhere('p.visibility = :public')
+            ->setParameter('public', 'public')
             ->orderBy('p.updated_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Page[]
+     */
+    public function findAllPublished(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param string[] $allowedVisibilities
+     * @return Page[]
+     */
+    public function findPublishedByVisibility(array $allowedVisibilities): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->andWhere('p.visibility IN (:visibilities)')
+            ->setParameter('visibilities', $allowedVisibilities)
+            ->orderBy('p.title', 'ASC')
             ->getQuery()
             ->getResult();
     }

@@ -20,6 +20,9 @@ class Page implements TimestampedInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 20, options: ['default' => 'public'])]
+    private string $visibility = 'public';
+
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -226,6 +229,18 @@ class Page implements TimestampedInterface
     public function setTemplate(string $template): self
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }

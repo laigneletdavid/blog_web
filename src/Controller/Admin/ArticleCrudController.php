@@ -3,11 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Enum\VisibilityEnum;
 use App\Service\ArticleNotificationService;
+use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
@@ -18,6 +21,7 @@ class ArticleCrudController extends AbstractCrudController
 {
     public function __construct(
         private readonly ArticleNotificationService $notificationService,
+        private readonly SiteContext $siteContext,
     ) {
     }
     public static function getEntityFqcn(): string
@@ -74,6 +78,14 @@ class ArticleCrudController extends AbstractCrudController
         yield BooleanField::new('isFeatured', 'Article vedette')
             ->setHelp('L\'article vedette est mis en avant en haut de la page blog')
             ->hideOnIndex();
+
+        if ($this->siteContext->hasModule('private_pages')) {
+            yield ChoiceField::new('visibility', 'Visibilite')
+                ->setChoices(VisibilityEnum::choices())
+                ->renderExpanded(false)
+                ->setHelp('Public = visible par tous. Membres = connectes uniquement. Admin = administrateurs uniquement.')
+                ->hideOnIndex();
+        }
 
         // --- Panel Avancé (collapsed) ---
         yield FormField::addPanel('Avancé')

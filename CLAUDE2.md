@@ -102,6 +102,7 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 | Phase 6 | Fondations Modules + Services + Tags | ✅ |
 | Phase 7 | Refonte UX Blog + Design Themes (overrides CSS, documentation, bug fixes) | ✅ |
 | Phase 8 | Module Événements (entité Event, CRUD admin, front, sidebar, notifications, CSS) | ✅ |
+| Phase 9 | Pages Privées / Contenu Restreint (VisibilityEnum 4 niveaux, ContentVoter, Annuaire membres) | ✅ |
 
 ---
 
@@ -340,174 +341,321 @@ Chaque `theme.css` contient des overrides complets pour toutes les pages globale
 
 ---
 
-## Phase 9 — Pages Privées / Contenu Restreint
+## Phase 9 — Pages Privées / Contenu Restreint ✅
 
-> Temps estimé : ~0.5 jour
+> Temps réel : ~0.5 jour
 > Prérequis : Phase 6.1 (enabledModules)
 
-### 9.1 Visibilité sur les contenus
+### 9.1 Visibilité sur les contenus ✅
 
-- [ ] Créer `src/Enum/VisibilityEnum.php` :
-  ```php
-  enum VisibilityEnum: string {
-      case PUBLIC = 'public';
-      case MEMBERS = 'members';    // ROLE_USER minimum
-      case ADMIN = 'admin';        // ROLE_ADMIN minimum
-  }
-  ```
-- [ ] Ajouter `visibility` (string, default 'public') sur `Page` + migration
-- [ ] Optionnel : ajouter `visibility` sur `Article` aussi
-- [ ] Créer `src/Security/Voter/ContentVoter.php` — vérifie le rôle vs la visibilité
-- [ ] Modifier les repositories : `findAllPublished()` filtre par visibilité selon le user courant
-- [ ] Modifier les menus : masquer les liens vers les pages restreintes pour les non-connectés
-- [ ] Admin : `ChoiceField::new('visibility')` dans `PageCrudController` — visible uniquement si module `private_pages` activé
+- [x] `src/Enum/VisibilityEnum.php` — enum string-backed 4 niveaux (public, user, author, admin) avec `label()`, `requiredRole()`, `choices()`
+- [x] Champ `visibility` (string, default 'public') ajouté sur `Page` et `Article` + migration `Version20260321064455.php`
+- [x] `src/Security/Voter/ContentVoter.php` — vérifie le rôle vs la visibilité via `RoleHierarchyInterface` (respecte la hiérarchie configurée dans `security.yaml`)
+- [x] `PageRepository` : `findAllPublishedForSitemap()` filtre `visibility = 'public'` (sitemap n'expose pas les pages privées)
+- [x] `MenuService` : filtre automatique des menus liés à du contenu restreint (vérifie `page.visibility` et `article.visibility`, masque les entrées si le user n'a pas le rôle requis)
+- [x] `AppExtension` : filtre Twig `menuVisible` ajouté (utilisable dans les templates si besoin)
+- [x] Admin `PageCrudController` : `ChoiceField::new('visibility')` — visible uniquement si module `private_pages` activé, avec help text explicatif
+- [x] Admin `ArticleCrudController` : idem, `ChoiceField` conditionné par module `private_pages`
 
-### 9.2 UX page restreinte
+### 9.2 UX page restreinte ✅
 
-- [ ] Créer `templates/_partials/_restricted_access.html.twig` :
-  - Message "Contenu réservé aux membres"
-  - Boutons "Se connecter" / "S'inscrire"
-  - Conserve header/footer du site (pas de 403 brut)
-- [ ] `PageController::show()` : si accès refusé, render le template restricted au lieu de throw 403
+- [x] `templates/_partials/_restricted_access.html.twig` :
+  - Icône cadenas SVG, titre "Contenu restreint"
+  - Message adapté selon visibilité (user → "réservée aux membres", author → "réservée aux auteurs", admin → "réservée aux administrateurs")
+  - Boutons "Se connecter" / "Créer un compte" si non connecté
+  - Message "droits insuffisants" si connecté mais pas autorisé
+  - Lien "Retour à l'accueil"
+  - Conserve header/footer du site (extends `base.html.twig`, pas de 403 brut)
+- [x] `PageController::show()` : réécrit — si accès refusé par ContentVoter, render restricted_access avec Response 403
+- [x] `ArticleController::show()` : même logique voter + restricted_access
+- [x] `assets/css/base/restricted.scss` — styles adaptatifs via CSS custom properties (compatible 6 thèmes)
 
-### 9.3 Annuaire membres (sous-module directory, optionnel)
+### 9.3 Annuaire membres (sous-module directory) ✅
 
-- [ ] Ajouter champs optionnels sur `User` : `company` (string nullable), `jobTitle` (string nullable), `companyLogo` (FK Media nullable)
-- [ ] Créer `src/Controller/DirectoryController.php` :
-  - `GET /annuaire` — liste des users ROLE_USER+ avec company renseignée
-  - Guard `hasModule('directory')` + `isGranted('ROLE_USER')`
-- [ ] Template `templates/directory/index.html.twig` — grille cards membres
-- [ ] SCSS : `directory.scss`
+- [x] Champs ajoutés sur `User` : `company` (string nullable), `jobTitle` (string nullable), `phone` (string nullable), `isDirectoryVisible` (boolean, default false) + migration
+- [x] `src/Controller/DirectoryController.php` :
+  - `GET /annuaire` — liste des users avec `isDirectoryVisible = true`
+  - Recherche par nom, prénom, entreprise, poste (paramètre `?q=`)
+  - Guard `hasModule('directory')` + `#[IsGranted('ROLE_USER')]`
+  - SEO via `SeoService`
+- [x] `src/Repository/UserRepository.php` :
+  - `findDirectoryMembers(string $search)` — filtre `isDirectoryVisible`, recherche LIKE multi-champs
+  - `findSubscribersForEvents()` — pour les notifications événements
+- [x] `templates/directory/index.html.twig` :
+  - Header titre + sous-titre
+  - Barre de recherche centrée
+  - Grille 3 colonnes (responsive 2→1) de cards membres
+  - Card : avatar (image ou placeholder initiales), nom, poste, entreprise (icône), bio tronquée
+  - État vide avec SVG et message adapté (recherche vs aucun membre)
+  - Compteur de résultats
+- [x] `assets/css/base/directory.scss` — 100% CSS custom properties (compatible 6 thèmes) :
+  - `.directory-grid` responsive, `.member-card` avec hover, `.member-avatar-placeholder` avec `color-mix()`
+- [x] Admin `UserCrudController` : champs `isDirectoryVisible`, `company`, `jobTitle`, `phone` — conditionnés par module `directory`
 
-**Fichiers créés :** `VisibilityEnum.php`, `ContentVoter.php`, `_restricted_access.html.twig`, `DirectoryController.php`, `directory/index.html.twig`, `directory.scss`
-**Fichiers modifiés :** `Page.php`, `PageRepository.php`, `PageController.php`, `PageCrudController.php`, `User.php`, `DashboardController.php`, `AppExtension.php` (menus), `main.scss`
-**Migrations :** oui (Page.visibility, User company/jobTitle/companyLogo)
+**Fichiers créés (6) :** `VisibilityEnum.php`, `ContentVoter.php`, `_restricted_access.html.twig`, `DirectoryController.php`, `directory/index.html.twig`, `restricted.scss`, `directory.scss`
+**Fichiers modifiés (10) :** `Page.php`, `Article.php`, `User.php`, `PageRepository.php`, `UserRepository.php`, `PageController.php`, `ArticleController.php`, `PageCrudController.php`, `ArticleCrudController.php`, `UserCrudController.php`, `MenuService.php`, `AppExtension.php`, `main.scss`
+**Migration :** `Version20260321064455.php` (Page.visibility, Article.visibility, User.company/jobTitle/phone/isDirectoryVisible)
 
 ---
 
-## Phase 10 — Catalogue Produits
+## Phase 10 — Catalogue Produits ✅
 
-> Temps estimé : ~1.5 jours
+> Réalisé en ~1 jour
 > Prérequis : Phase 6.1 (enabledModules), Phase 7.3 (composants partagés)
 
-### 10.1 Entités
+### Vision
 
-**`ProductCategory`** :
+Catalogue vitrine pour petits pros : artisan qui montre ses créations, gîte qui présente ses chambres, guide de pêche qui affiche ses formules, formateur ses sessions. Pas un site e-commerce — une vitrine produits/prestations avec prix. Le module `ecommerce` (Phase 11) ajoute le paiement par-dessus si besoin.
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `name` | string(255) | Requis |
-| `slug` | string(255) | Unique |
-| `description` | text (nullable) | |
-| `image` | ManyToOne Media (nullable) | |
-| `position` | integer (default 0) | |
-| `isActive` | boolean (default true) | |
+### 10.1 Entités ✅
 
-**`Product`** :
+**`ProductCategory`** : name, slug (unique), description, image (FK Media), position, isActive
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `title` | string(255) | Requis |
-| `slug` | string(255) | Unique |
-| `shortDescription` | text | Pour les cards |
-| `blocks` | json (nullable) | Contenu TipTap |
-| `content` | text (nullable) | HTML compilé |
-| `price` | decimal(10,2) | Prix TTC |
-| `oldPrice` | decimal(10,2, nullable) | Prix barré (promo) |
-| `category` | ManyToOne ProductCategory | |
-| `tags` | ManyToMany Tag | Réutilisation des tags existants |
-| `image` | ManyToOne Media | Image principale |
-| `gallery` | ManyToMany Media | Images galerie |
-| `isActive` | boolean (default true) | |
-| `isFeatured` | boolean (default false) | |
-| `position` | integer (default 0) | |
+**`Product`** : title, slug (unique), shortDescription, blocks (JSON TipTap), content (HTML cache), priceHT (decimal nullable), oldPriceHT (decimal nullable), vatRate (decimal default 20.00), availability (enum), category (FK ProductCategory), tags (M2M Tag), image (FK Media), relatedProducts (M2M self-ref), bookingUrl, bookingLabel, isActive, isFeatured, position + `use SeoTrait;`
 
-+ `use SeoTrait;`
+**Getters calculés :** `getPriceTTC()`, `getOldPriceTTC()`, `getVatAmount()`, `isOnSale()`, `isOnRequest()`
 
-- [ ] Créer `src/Entity/ProductCategory.php`
-- [ ] Créer `src/Entity/Product.php`
-- [ ] Créer repositories avec méthodes : `findAllActive()`, `findByCategory()`, `findFeatured()`, `findForSitemap()`
-- [ ] Migrations Doctrine
+**`ProductImage`** (table pivot ordonnée) : product (FK), media (FK), position
 
-### 10.2 Admin
+**`ProductVariant`** : product (FK), label, priceHT (nullable = hérite du produit), oldPriceHT, position, isActive
 
-- [ ] Créer `ProductCategoryCrudController.php` — liste triable, formulaire simple
-- [ ] Créer `ProductCrudController.php` :
-  - Panels : "Contenu" (title, shortDescription, blocks, image, gallery) | "Prix" (price, oldPrice) | "Classification" (category, tags) | "SEO" (SeoTrait) | "Paramètres" (isActive, isFeatured, position)
-  - Liste : image thumb, title, price, category, isActive, isFeatured
-  - Filtres : par catégorie, par statut
-- [ ] Menu admin conditionné par module `catalogue`
+**`AvailabilityEnum`** : `AVAILABLE` ("Disponible"), `UNAVAILABLE` ("Indisponible"), `ON_REQUEST` ("Sur devis")
 
-### 10.3 Front
+**Réglage Site :** `catalogDisplayHT` (boolean, default false) — `isCatalogDisplayHT()` contrôle l'affichage front (B2B = HT, B2C = TTC)
 
-- [ ] `ProductController.php` :
-  - `GET /produits` — grille filtrable (par catégorie, par tag)
-  - `GET /produit/{slug}` — page détail (galerie, description, prix, CTA)
-  - `GET /produits/categorie/{slug}` — filtre par catégorie
-  - Guard `hasModule('catalogue')`
-- [ ] Templates :
-  - `product/index.html.twig` — grille avec sidebar filtres
-  - `product/show.html.twig` — page détail (galerie lightbox, prix, description, produits similaires)
-  - `_partials/_product_card.html.twig` — card produit (image, titre, prix, badge promo)
-  - `_partials/_product_featured.html.twig` — widget homepage "Produits phares"
-- [ ] Stimulus : `gallery_controller.js` (lightbox images), `product_filter_controller.js` (filtrage)
-- [ ] Ajouter au sitemap (conditionné par module)
-- [ ] SCSS : `products.scss`
+- [x] Créer `src/Entity/Product.php`
+- [x] Créer `src/Entity/ProductCategory.php`
+- [x] Créer `src/Entity/ProductImage.php`
+- [x] Créer `src/Entity/ProductVariant.php`
+- [x] Créer `src/Enum/AvailabilityEnum.php`
+- [x] Ajouter `catalogDisplayHT` sur `Site.php`
+- [x] Créer repositories : `ProductRepository` (`findAllActive()`, `findByCategory()`, `findFeatured()`, `findForSitemap()`, `findRelated()`), `ProductCategoryRepository`, `ProductImageRepository`, `ProductVariantRepository`
+- [x] `ContentSanitizeListener` : ajouter Product (compile blocks → content)
+- [x] Migrations Doctrine (`Version20260321154700.php`)
 
-**Fichiers créés :** ~15 fichiers (entités, repos, CRUDs, controllers, templates, Stimulus, SCSS)
-**Migrations :** oui
+### 10.2 Admin ✅
+
+- [x] `ProductCategoryCrudController.php` — liste triable par position, formulaire (name, slug auto, description, image, isActive)
+- [x] `ProductCrudController.php` :
+  - 7 panels : Contenu | Galerie photos (CollectionField inline) | Tarifs (priceHT, oldPriceHT, vatRate dropdown, availability) | Variantes (CollectionField inline) | Réservation/RDV (bookingUrl, bookingLabel) | Classification (tags, relatedProducts) | SEO (5 champs) | Paramètres (slug, isActive, isFeatured, position)
+  - Liste : title, category, priceHT, availability (formatValue label), priceTTC (NumberField calculé), isActive toggle, isFeatured toggle
+  - Filtres : EntityFilter category, ChoiceFilter availability, BooleanFilter isActive/isFeatured
+- [x] `ProductImageCrudController.php` — formulaire inline pour CollectionField galerie
+- [x] `ProductVariantCrudController.php` — formulaire inline pour CollectionField variantes
+- [x] `SiteCrudController` : `catalogDisplayHT` conditionné par module `catalogue`
+- [x] Menu admin conditionné par module `catalogue` : "Produits" + "Categories produits"
+- [x] Affichage prix TTC calculé en index (lecture seule, `NumberField::formatValue`)
+
+**Bugs corrigés en admin :**
+- AvailabilityEnum : ChoiceField avec enum cases directement (pas `::choices()` string) + `formatValue()` pour labels FR
+- priceTTC : `NumberField` au lieu de `TextField` (évite erreur conversion float→string)
+- `renderAsBadges()` retiré (crash avec enum keys)
+- Position nullable (`?int`) sur Product et ProductVariant — évite crash EasyAdmin PropertyAccessor
+- Upload galerie : `ImageField` remplacé par `FileType` Symfony standard (l'`ImageField` ne fonctionne pas dans `CollectionField::useEntryCrudForm()`)
+- `ProductCrudController::processGalleryUploads()` — déplace le fichier, crée le `Media`, génère WebP via `MediaProcessorService`
+- Auto-affectation image principale : si aucune image principale et galerie non vide, la 1re image galerie est affectée automatiquement à la sauvegarde
+- `ProductImage.uploadFile` : propriété non persistée (`UploadedFile`), plus de colonne DB
+
+### 10.3 Front ✅
+
+- [x] `ProductController.php` — 3 routes :
+  - `GET /catalogue` — grille avec sidebar (catégories + tri position/prix)
+  - `GET /catalogue/categorie/{slug}` — filtre par catégorie
+  - `GET /catalogue/{slug}` — fiche produit détail
+  - Guard `hasModule('catalogue')` → 404 si désactivé
+  - SEO via `SeoService`
+- [x] Templates :
+  - `product/index.html.twig` — grille responsive + sidebar catégories/tri + empty state SVG
+  - `product/show.html.twig` — fiche détail complète :
+    - Galerie images avec lightbox (Stimulus `product_gallery_controller.js`)
+    - Prix HT/TTC avec prix secondaire et taux TVA
+    - Sélecteur variantes (Stimulus `product_variant_controller.js`)
+    - Badge disponibilité (vert/rouge/orange)
+    - CTA dynamique : bookingUrl → on_request contact → available contact → disabled
+    - Description TipTap (`product.content|raw`)
+    - Produits associés en grille
+  - `_partials/_product_card.html.twig` — card réutilisable (image/placeholder, badges promo/indispo, catégorie, prix)
+  - `_partials/_product_featured.html.twig` — widget homepage "Nos produits" + lien "Voir tout le catalogue"
+- [x] Stimulus controllers :
+  - `product_gallery_controller.js` — lightbox, navigation clavier (Escape, flèches), thumbnails
+  - `product_variant_controller.js` — sélection variante, mise à jour prix dynamique HT/TTC
+- [x] Intégration recherche : `SearchController` enrichi (dropdown JSON + page HTML) pour produits si module `catalogue` actif
+- [x] Sitemap : produits ajoutés avec priorité 0.7, changefreq weekly
+- [x] Homepage : widget produits featured ajouté sur les 6 thèmes (default, corporate, artisan, vitrine, starter, moderne)
+- [x] SCSS : `products.scss` — styles complets avec CSS custom properties uniquement (grille, cards, galerie, lightbox, variantes, badges, responsive 991px/575px)
+- [x] Fallback image : fiche produit et cards catalogue utilisent la 1re image galerie si pas d'image principale
+- [x] Catégories dynamiques : variable Twig renommée `productCategories` pour éviter conflit avec `categories` de `base.html.twig`
+- [x] Thumbnails galerie : affichées uniquement si >1 image, première thumb active automatiquement
+
+**Vérifié sur les 6 thèmes via Chrome :** catalogue index, fiche produit détail, widget homepage — les CSS custom properties s'adaptent automatiquement à chaque thème (dark mode moderne inclus).
+
+**Fichiers créés (20) :** `Product.php`, `ProductCategory.php`, `ProductImage.php`, `ProductVariant.php`, `AvailabilityEnum.php`, `VisibilityEnum.php`, `ProductRepository.php`, `ProductCategoryRepository.php`, `ProductImageRepository.php`, `ProductVariantRepository.php`, `ProductCrudController.php`, `ProductCategoryCrudController.php`, `ProductImageCrudController.php`, `ProductVariantCrudController.php`, `ProductController.php`, `product/index.html.twig`, `product/show.html.twig`, `_product_card.html.twig`, `_product_featured.html.twig`, `product_gallery_controller.js`, `product_variant_controller.js`, `products.scss`
+**Fichiers modifiés (12) :** `Site.php`, `ContentSanitizeListener.php`, `SitemapController.php`, `sitemap/index.xml.twig`, `SearchController.php`, `search/results.html.twig`, `HomeController.php`, `DashboardController.php`, `SiteCrudController.php`, `main.scss`, + 6 `home.html.twig` (tous les thèmes)
+**Migrations :** `Version20260321154700.php` (Product, ProductCategory, ProductImage, ProductVariant, Site.catalogDisplayHT), `Version20260322055518.php` (ProductImage.media nullable), `Version20260322061559.php` (drop ProductImage.upload_file)
 
 ---
 
-## Phase 11 — E-commerce Light
+## Phase 11 — Paiement / Réservation Light
 
 > Temps estimé : ~2 jours
-> Prérequis : Phase 10 (catalogue), compte Stripe configuré
+> Prérequis : Phase 10 (catalogue), compte Stripe configuré par client
+> Module : `ecommerce` (activable indépendamment du catalogue pur)
+
+### Vision
+
+Pas un site e-commerce. Un service de paiement/réservation pour petits pros : le gîte encaisse un acompte, le guide de pêche prend une réservation, le traiteur reçoit une commande click & collect, le formateur vend une session. Panier multi-items (le gîte : chambre + petit-déj + location vélo) mais sans stock, sans expédition, sans frais de port, sans gestion de retours.
+
+Stripe Checkout (redirect) = le client ne gère jamais les cartes bancaires. Zéro PCI-DSS côté serveur.
 
 ### 11.1 Panier
 
-- [ ] `CartService.php` — panier en session Symfony (pas de BDD) :
-  - `add(Product, qty)`, `remove(Product)`, `update(Product, qty)`, `clear()`, `getTotal()`, `getItems()`
-- [ ] Stimulus `cart_controller.js` — ajout au panier sans rechargement, badge compteur header
-- [ ] Page `/panier` — récapitulatif, modifier quantités, supprimer, total, bouton "Commander"
+- [ ] `CartService.php` — panier en session Symfony (pas de BDD, pas de persistence) :
+  - `add(Product, ?ProductVariant, qty)` — ajoute un item (produit + variante optionnelle)
+  - `remove(int $lineIndex)` — supprime une ligne
+  - `update(int $lineIndex, int $qty)` — modifie la quantité
+  - `clear()` — vide le panier
+  - `getItems(): array` — retourne les lignes [{product, variant, qty, unitPriceHT, vatRate}]
+  - `getTotalHT(): float`, `getTotalTTC(): float`, `getTotalVAT(): float`
+  - `getCount(): int` — nombre total d'items (pour badge header)
+  - `isEmpty(): bool`
+  - Validation : produit `available` uniquement (pas `unavailable`, pas `on_request`)
+  - Si variante sélectionnée : prix variante, sinon prix produit
+- [ ] Stimulus `cart_controller.js` :
+  - Bouton "Ajouter" sur la fiche produit → POST AJAX `/panier/ajouter` → mise à jour badge compteur header sans rechargement
+  - Sélection variante avant ajout (si variantes disponibles)
+  - Animation feedback visuel (badge bounce, toast "Ajouté")
+- [ ] Page `/panier` (`CartController`) :
+  - Récapitulatif : lignes (image thumb, titre, variante, prix unitaire, quantité modifiable, sous-total)
+  - Modifier quantités (+ / - / input), supprimer une ligne
+  - Total HT + TVA + Total TTC (ou juste TTC selon `catalogPriceDisplay`)
+  - Bouton "Commander" → redirige vers checkout
+  - État vide : message + lien retour catalogue
+  - Responsive mobile (tableau → cards empilées)
 
 ### 11.2 Checkout Stripe
 
 - [ ] `CheckoutController.php` :
-  - `GET /commander` — page récapitulatif + formulaire (nom, email, adresse, téléphone)
-  - `POST /commander` — crée la Stripe Checkout Session, redirige vers Stripe
-  - `GET /commande/confirmation/{id}` — page merci
-  - `GET /commande/annulation` — page annulation
-- [ ] `StripeService.php` — crée la Checkout Session depuis le panier
-- [ ] Webhook Stripe `/webhook/stripe` — écoute `checkout.session.completed`, crée la commande en BDD
+  - `GET /commander` — page récapitulatif panier + formulaire client (nom, email, téléphone, message optionnel)
+  - `POST /commander` — valide le formulaire, crée la Stripe Checkout Session via `StripeService`, redirige vers Stripe
+  - `GET /paiement/confirmation/{reference}` — page "Merci" avec récapitulatif de la réservation
+  - `GET /paiement/annulation` — page "Paiement annulé" avec lien retour panier
+  - Guard `hasModule('ecommerce')`
+- [ ] `StripeService.php` :
+  - `createCheckoutSession(array $cartItems, array $customerData, string $reference): Session`
+  - Construit les `line_items` Stripe depuis le panier (nom produit + variante, prix TTC en centimes, quantité)
+  - `success_url` → `/paiement/confirmation/{reference}`
+  - `cancel_url` → `/paiement/annulation`
+  - `customer_email` pré-rempli
+  - `metadata` : reference, site_id
+- [ ] Webhook Stripe `POST /webhook/stripe` :
+  - Écoute `checkout.session.completed`
+  - Vérifie la signature Stripe (`stripe-signature` header + `STRIPE_WEBHOOK_SECRET`)
+  - Met à jour le statut de la réservation → `paid` + `paidAt`
+  - Déclenche les emails (confirmation client + notification admin)
+  - Retourne 200 OK (idempotent — vérifie que la réservation n'est pas déjà payée)
+  - Route exclue du CSRF (firewall Symfony)
 
-### 11.3 Entité Order
+**Config `.env.local` par client :**
+```
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PUBLIC_KEY=pk_live_...
+```
+
+### 11.3 Entité Booking (réservation)
+
+> Nom `Booking` plutôt que `Order` — vocabulaire neutre adapté à la cible (réservation gîte, commande traiteur, inscription formation).
 
 | Champ | Type | Notes |
 |-------|------|-------|
 | `id` | int (auto) | PK |
-| `reference` | string(20) | Unique, auto-généré (ex: BW-20260316-001) |
-| `customerName` | string | |
-| `customerEmail` | string | |
-| `customerAddress` | text | |
-| `customerPhone` | string (nullable) | |
-| `items` | json | Snapshot des produits au moment de la commande |
-| `totalAmount` | decimal(10,2) | |
-| `stripeSessionId` | string | |
-| `status` | string (enum: pending/paid/shipped/cancelled) | |
-| `createdAt` | datetime | |
-| `paidAt` | datetime (nullable) | |
+| `reference` | string(20) | Unique, auto-généré (ex: BW-20260321-001) |
+| `customerName` | string(255) | |
+| `customerEmail` | string(255) | |
+| `customerPhone` | string(50, nullable) | |
+| `customerMessage` | text (nullable) | Message libre du client |
+| `items` | json | Snapshot [{title, variant, qty, unitPriceHT, vatRate, totalTTC}] |
+| `totalHT` | decimal(10,2) | |
+| `totalVAT` | decimal(10,2) | |
+| `totalTTC` | decimal(10,2) | |
+| `stripeSessionId` | string(255, nullable) | ID session Stripe |
+| `status` | string (enum) | `pending`, `paid`, `cancelled`, `refunded` |
+| `createdAt` | datetime_immutable | |
+| `paidAt` | datetime_immutable (nullable) | Rempli par le webhook |
 
-- [ ] Créer `Order.php` + `OrderRepository.php`
-- [ ] `OrderCrudController.php` — lecture seule pour l'admin client (pas d'édition), export CSV
-- [ ] Email confirmation commande au client + notification à l'admin
+**`BookingStatusEnum`** :
+```php
+enum BookingStatusEnum: string {
+    case PENDING = 'pending';       // En attente de paiement
+    case PAID = 'paid';             // Payé
+    case CANCELLED = 'cancelled';   // Annulé
+    case REFUNDED = 'refunded';     // Remboursé (via dashboard Stripe, pas géré côté app)
+}
+```
 
-### 11.4 Dashboard commandes
+**`items` JSON snapshot** (figé au moment de la commande — les prix peuvent changer après) :
+```json
+[
+  {
+    "productId": 12,
+    "title": "Sortie pêche en mer",
+    "variant": "Journée complète",
+    "qty": 2,
+    "unitPriceHT": 120.00,
+    "vatRate": 10.00,
+    "lineTotalTTC": 264.00
+  }
+]
+```
 
-- [ ] Widget EasyAdmin sur le dashboard : commandes récentes, CA du mois, nombre de commandes
-- [ ] Conditionné par module `ecommerce`
+- [ ] Créer `src/Entity/Booking.php`
+- [ ] Créer `src/Enum/BookingStatusEnum.php`
+- [ ] Créer `src/Repository/BookingRepository.php` : `findRecent(int $limit)`, `countByStatus()`, `revenueThisMonth()`, `revenueByMonth(int $months)`
+- [ ] Migration Doctrine
+
+### 11.4 Admin réservations
+
+- [ ] `BookingCrudController.php` (`#[IsGranted('ROLE_ADMIN')]`) :
+  - **Lecture seule** — pas de création/édition/suppression depuis l'admin (les bookings viennent du front)
+  - Liste : reference, customerName, customerEmail, totalTTC (formaté €), status (badge couleur), createdAt, paidAt
+  - Filtres : par statut, par date
+  - Tri default : createdAt DESC
+  - Detail : récapitulatif complet (infos client, lignes items, totaux HT/TVA/TTC, statut, dates, lien Stripe dashboard)
+  - Export CSV : référence, client, email, téléphone, total TTC, statut, date
+- [ ] Menu admin conditionné par module `ecommerce`
+
+### 11.5 Notifications email
+
+- [ ] **Email confirmation client** (envoyé après webhook `paid`) :
+  - Référence, récapitulatif items, totaux, infos du site (nom, adresse, téléphone)
+  - Template Twig `emails/booking_confirmation.html.twig`
+- [ ] **Email notification admin** (envoyé en parallèle) :
+  - Nouvelle réservation payée, lien vers l'admin
+  - Template Twig `emails/booking_admin_notification.html.twig`
+- [ ] `BookingNotificationService.php` — envoie les deux emails via Brevo (même pattern que `ArticleNotificationService`)
+
+### 11.6 Dashboard widget
+
+- [ ] Widget EasyAdmin sur le dashboard (conditionné par module `ecommerce`) :
+  - Réservations récentes (5 dernières)
+  - CA du mois en cours
+  - Nombre de réservations payées ce mois
+- [ ] `DashboardController` : passe les données via `BookingRepository`
+
+### 11.7 Front templates
+
+- [ ] `templates/cart/index.html.twig` — page panier
+- [ ] `templates/checkout/index.html.twig` — page checkout (récap + formulaire)
+- [ ] `templates/checkout/confirmation.html.twig` — page merci
+- [ ] `templates/checkout/cancellation.html.twig` — page annulation
+- [ ] `templates/emails/booking_confirmation.html.twig`
+- [ ] `templates/emails/booking_admin_notification.html.twig`
+- [ ] SCSS : `cart.scss`, `checkout.scss`
+
+**Fichiers créés (~18) :** `Booking.php`, `BookingStatusEnum.php`, `BookingRepository.php`, `CartService.php`, `StripeService.php`, `BookingNotificationService.php`, `CartController.php`, `CheckoutController.php`, `BookingCrudController.php`, `cart_controller.js`, `cart/index.html.twig`, `checkout/index.html.twig`, `checkout/confirmation.html.twig`, `checkout/cancellation.html.twig`, `emails/booking_confirmation.html.twig`, `emails/booking_admin_notification.html.twig`, `cart.scss`, `checkout.scss`
+**Fichiers modifiés (~6) :** `DashboardController.php`, `product/show.html.twig` (bouton CTA panier), `base.html.twig` (badge panier header), `main.scss`, `.env`, `.env.local.example`
+**Dépendances :** `stripe/stripe-php` (composer)
+**Migrations :** oui (Booking)
 
 ---
 

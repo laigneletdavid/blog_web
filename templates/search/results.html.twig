@@ -63,6 +63,38 @@
         </section>
         {% endif %}
 
+        {# --- Produits --- #}
+        {% if products|default([])|length > 0 %}
+        <section class="search-section mb-4">
+            <h2 class="search-section-title">Produits ({{ products|length }})</h2>
+            {% for product in products %}
+                <div class="search-result-card d-flex">
+                    {% if product.image %}
+                        <div class="search-result-thumb-wrapper flex-shrink-0">
+                            <img src="{{ asset('documents/medias/' ~ product.image.fileName) }}"
+                                 alt="{{ product.title }}" class="search-result-thumb" loading="lazy">
+                        </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="search-result-meta mb-1">
+                            <span class="search-result-type">Produit</span>
+                            {% if product.category %}
+                                <span class="badge" style="background: var(--secondary); color: #fff;">{{ product.category.name }}</span>
+                            {% endif %}
+                            {% if product.priceHT is not null %}
+                                <span class="fw-bold" style="color: var(--primary);">{{ product.priceTTC|number_format(2, ',', ' ') }} €</span>
+                            {% endif %}
+                        </div>
+                        <h3><a href="{{ path('app_product_show', { slug: product.slug }) }}">{{ product.title|highlight(keyword) }}</a></h3>
+                        {% if product.shortDescription %}
+                            <p class="text-muted mb-0">{{ product.shortDescription|highlight(keyword) }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
         {# --- Articles --- #}
         <section class="search-section mb-4">
             <h2 class="search-section-title">Articles ({{ totalArticles }})</h2>
@@ -90,7 +122,7 @@
                 </div>
             {% endfor %}
 
-            {% if totalArticles == 0 and pages|length == 0 and categories|length == 0 %}
+            {% if totalArticles == 0 and pages|length == 0 and categories|length == 0 and products|default([])|length == 0 %}
                 <div class="search-no-results text-center py-5">
                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
                     <p class="fs-5">Aucun resultat pour &laquo; {{ keyword }} &raquo;</p>

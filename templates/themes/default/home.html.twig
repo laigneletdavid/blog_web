@@ -80,6 +80,11 @@
 </section>
 {% endif %}
 
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
 {# ====== ÉVÉNEMENTS (si module actif) ====== #}
 {% if upcomingEvents|default([])|length > 0 %}
 <section class="home-events py-5">

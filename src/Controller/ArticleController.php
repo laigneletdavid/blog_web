@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
+use App\Security\Voter\ContentVoter;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -83,6 +84,14 @@ class ArticleController extends AbstractController
 
         if (!$article) {
             throw $this->createNotFoundException('Article introuvable.');
+        }
+
+        if (!$this->isGranted(ContentVoter::VIEW, $article)) {
+            return $this->render('_partials/_restricted_access.html.twig', [
+                'title' => $article->getTitle(),
+                'visibility' => $article->getVisibility(),
+                'seo' => $this->seoService->resolveForPage($article->getTitle()),
+            ], new Response('', 403));
         }
 
         $commentForm = null;

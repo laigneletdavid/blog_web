@@ -8,6 +8,8 @@ use App\Entity\Comment;
 use App\Entity\Event;
 use App\Entity\Media;
 use App\Entity\Page;
+use App\Entity\Product;
+use App\Entity\ProductCategory;
 use App\Entity\Service;
 use App\Entity\Site;
 use App\Entity\SiteGalleryItem;
@@ -180,6 +182,11 @@ class DashboardController extends AbstractDashboardController
 
         if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('events')) {
             yield MenuItem::linkToCrud('Événements', 'fas fa-calendar-days', Event::class);
+        }
+
+        if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('catalogue')) {
+            yield MenuItem::linkToCrud('Produits', 'fas fa-store', Product::class);
+            yield MenuItem::linkToCrud('Categories produits', 'fas fa-folder-tree', ProductCategory::class);
         }
 
         if ($this->siteContext->hasModule('blog')) {
