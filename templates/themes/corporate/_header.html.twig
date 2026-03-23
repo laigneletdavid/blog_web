@@ -43,6 +43,7 @@
                     </form>
                     <div class="dropdown-menu" data-search-target="results"></div>
                 </div>
+                {% include '_partials/_cart_badge.html.twig' %}
                 <a href="{{ path('app_contact') }}" class="btn btn-primary btn-sm">Demander un devis</a>
                 {% if app.user %}
                     <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_user_show', { 'id': app.user.id}) }}">Mon compte</a>
@@ -65,7 +66,7 @@
                     <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
                 {% endif %}
             </a>
-            <div></div>
+            {% include '_partials/_cart_badge.html.twig' %}
         </div>
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
             <div class="offcanvas-header">
@@ -88,6 +89,7 @@
                     <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
                     <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
                 </ul>
+                {% include '_partials/_cart_badge.html.twig' %}
                 <div class="d-grid gap-2">
                     <a href="{{ path('app_contact') }}" class="btn btn-primary">Demander un devis</a>
                     {% if app.user %}

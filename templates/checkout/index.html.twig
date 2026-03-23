@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section class="checkout-page py-5">
+    <div class="container">
+
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_cart') }}">Panier</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Commander</li>
+            </ol>
+        </nav>
+
+        <h1 class="checkout-title mb-4">Finaliser la commande</h1>
+
+        <div class="row">
+            {# Formulaire #}
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="checkout-form-card">
+                    <h2 class="checkout-section-title">Vos coordonnees</h2>
+
+                    {{ form_start(form, { attr: { class: 'checkout-form', novalidate: 'novalidate' } }) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.firstName) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.lastName) }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.email) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.phone) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.message) }}
+                    </div>
+
+                    <h2 class="checkout-section-title mt-4">Mode de paiement</h2>
+                    <div class="checkout-payment-methods mb-4">
+                        {{ form_widget(form.paymentMethod) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 checkout-submit-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Confirmer la commande
+                    </button>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            {# Recapitulatif #}
+            <div class="col-lg-5">
+                <div class="checkout-summary-card">
+                    <h2 class="checkout-section-title">Recapitulatif</h2>
+
+                    {% for item in items %}
+                    <div class="checkout-item d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="checkout-item__title">{{ item.product.title }}</span>
+                            {% if item.variant %}
+                                <span class="checkout-item__variant d-block text-muted">{{ item.variant.label }}</span>
+                            {% endif %}
+                            <span class="checkout-item__qty text-muted">x{{ item.qty }}</span>
+                        </div>
+                        <span class="checkout-item__price fw-semibold">
+                            {% if displayHT %}
+                                {{ item.lineTotalHT|number_format(2, ',', ' ') }} &euro; HT
+                            {% else %}
+                                {{ item.lineTotalTTC|number_format(2, ',', ' ') }} &euro;
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+
+                    <hr>
+
+                    {% if displayHT %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Total HT</span>
+                            <span>{{ totalHT|number_format(2, ',', ' ') }} &euro;</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">TVA</span>
+                            <span>{{ totalVAT|number_format(2, ',', ' ') }} &euro;</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between checkout-total">
+                        <span class="fw-bold">Total TTC</span>
+                        <span class="checkout-total__price">{{ totalTTC|number_format(2, ',', ' ') }} &euro;</span>
+                    </div>
+                </div>
+
+                <a href="{{ path('app_cart') }}" class="btn btn-outline-secondary w-100 mt-3">
+                    Modifier le panier
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

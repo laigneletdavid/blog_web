@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+    <h1 style="color: #2563EB; font-size: 24px;">Nouvelle commande {{ order.reference }}</h1>
+
+    <p><strong>Client :</strong> {{ order.customerFullName }}</p>
+    <p><strong>Email :</strong> {{ order.customerEmail }}</p>
+    {% if order.customerPhone %}
+        <p><strong>Telephone :</strong> {{ order.customerPhone }}</p>
+    {% endif %}
+    {% if order.customerMessage %}
+        <p><strong>Message :</strong> {{ order.customerMessage }}</p>
+    {% endif %}
+
+    <p><strong>Paiement :</strong> {{ order.paymentMethod.label }}</p>
+    <p><strong>Statut :</strong> {{ order.status.label }}</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr style="background: #f8f9fa;">
+            <th style="text-align: left; padding: 8px;">Produit</th>
+            <th style="text-align: center; padding: 8px;">Qte</th>
+            <th style="text-align: right; padding: 8px;">Montant</th>
+        </tr>
+        {% for item in order.items %}
+        <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+                {{ item.title }}{% if item.variant %} ({{ item.variant }}){% endif %}
+            </td>
+            <td style="text-align: center; padding: 8px; border-bottom: 1px solid #dee2e6;">{{ item.qty }}</td>
+            <td style="text-align: right; padding: 8px; border-bottom: 1px solid #dee2e6;">{{ item.lineTotalTTC|number_format(2, ',', ' ') }} &euro;</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p style="font-size: 18px; font-weight: bold; text-align: right;">
+        Total : {{ order.totalTTC|number_format(2, ',', ' ') }} &euro; TTC
+    </p>
+
+    <hr style="margin: 20px 0;">
+    <p style="color: #6c757d; font-size: 12px;">Commande passee le {{ order.createdAt|date('d/m/Y a H:i') }} sur {{ siteName }}.</p>
+</body>
+</html>

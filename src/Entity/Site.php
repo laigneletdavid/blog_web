@@ -110,6 +110,17 @@ class Site
     #[ORM\Column(type: Types::JSON, options: ['default' => '["vitrine"]'])]
     private array $enabledModules = ['vitrine'];
 
+    // --- Paiement Stripe ---
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripePublicKey = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeSecretKey = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeWebhookSecret = null;
+
     // --- Proprietaire (Freelance) ---
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -488,6 +499,44 @@ class Site
         $value = $module instanceof ModuleEnum ? $module->value : $module;
 
         return in_array($value, $this->enabledModules, true);
+    }
+
+    // --- Stripe Getters/Setters ---
+
+    public function getStripePublicKey(): ?string
+    {
+        return $this->stripePublicKey;
+    }
+
+    public function setStripePublicKey(?string $stripePublicKey): self
+    {
+        $this->stripePublicKey = $stripePublicKey;
+
+        return $this;
+    }
+
+    public function getStripeSecretKey(): ?string
+    {
+        return $this->stripeSecretKey;
+    }
+
+    public function setStripeSecretKey(?string $stripeSecretKey): self
+    {
+        $this->stripeSecretKey = $stripeSecretKey;
+
+        return $this;
+    }
+
+    public function getStripeWebhookSecret(): ?string
+    {
+        return $this->stripeWebhookSecret;
+    }
+
+    public function setStripeWebhookSecret(?string $stripeWebhookSecret): self
+    {
+        $this->stripeWebhookSecret = $stripeWebhookSecret;
+
+        return $this;
     }
 
     // --- Owner Getters/Setters ---

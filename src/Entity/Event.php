@@ -56,6 +56,10 @@ class Event
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isFeatured = false;
 
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Product $linkedProduct = null;
+
     // --- Getters / Setters ---
 
     public function getId(): ?int
@@ -191,6 +195,18 @@ class Event
     public function setIsFeatured(bool $isFeatured): self
     {
         $this->isFeatured = $isFeatured;
+
+        return $this;
+    }
+
+    public function getLinkedProduct(): ?Product
+    {
+        return $this->linkedProduct;
+    }
+
+    public function setLinkedProduct(?Product $linkedProduct): self
+    {
+        $this->linkedProduct = $linkedProduct;
 
         return $this;
     }

@@ -125,6 +125,31 @@ class SiteCrudController extends AbstractCrudController
                 ->hideOnIndex();
         }
 
+        // --- Panel Paiement Stripe (ROLE_FREELANCE+) ---
+        if ($this->siteContext->hasModule('ecommerce')) {
+            yield FormField::addPanel('Paiement Stripe')
+                ->setIcon('fa fa-credit-card')
+                ->collapsible()
+                ->renderCollapsed()
+                ->setPermission('ROLE_FREELANCE');
+
+            yield TextField::new('stripePublicKey', 'Cle publique Stripe')
+                ->setHelp('Commence par pk_test_ (test) ou pk_live_ (production). Disponible dans votre dashboard Stripe > Developers > API keys.')
+                ->setPermission('ROLE_FREELANCE')
+                ->hideOnIndex();
+
+            yield TextField::new('stripeSecretKey', 'Cle secrete Stripe')
+                ->setHelp('Commence par sk_test_ (test) ou sk_live_ (production). Ne la partagez jamais.')
+                ->setPermission('ROLE_FREELANCE')
+                ->setFormTypeOptions(['attr' => ['autocomplete' => 'off']])
+                ->hideOnIndex();
+
+            yield TextField::new('stripeWebhookSecret', 'Secret Webhook Stripe')
+                ->setHelp('Commence par whsec_. Configure dans Stripe > Developers > Webhooks. URL du webhook : /webhook/stripe')
+                ->setPermission('ROLE_FREELANCE')
+                ->hideOnIndex();
+        }
+
         // --- Panel Proprietaire (ROLE_SUPER_ADMIN) ---
         yield FormField::addPanel('Propriete')
             ->setIcon('fa fa-user-shield')

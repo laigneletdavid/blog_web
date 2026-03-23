@@ -495,167 +495,102 @@ Catalogue vitrine pour petits pros : artisan qui montre ses créations, gîte qu
 
 ---
 
-## Phase 11 — Paiement / Réservation Light
+## Phase 11 — Boutique / Paiement ✅
 
-> Temps estimé : ~2 jours
-> Prérequis : Phase 10 (catalogue), compte Stripe configuré par client
+> Prérequis : Phase 10 (catalogue), Phase 8 (événements)
 > Module : `ecommerce` (activable indépendamment du catalogue pur)
 
 ### Vision
 
-Pas un site e-commerce. Un service de paiement/réservation pour petits pros : le gîte encaisse un acompte, le guide de pêche prend une réservation, le traiteur reçoit une commande click & collect, le formateur vend une session. Panier multi-items (le gîte : chambre + petit-déj + location vélo) mais sans stock, sans expédition, sans frais de port, sans gestion de retours.
+E-commerce light pour tous les profils : asso qui vend des cotisations/places, artisan qui vend ses créations, guide qui vend ses sorties, formateur ses sessions, commerce sa vitrine. Panier multi-items, pas de gestion de stock, pas d'expédition, pas de retours.
 
-Stripe Checkout (redirect) = le client ne gère jamais les cartes bancaires. Zéro PCI-DSS côté serveur.
+**Checkout sans compte :** pas de création de compte, pas de login. Le client remplit un formulaire simple (prénom, nom, email, téléphone, message optionnel) et commande directement. L'admin récupère les coordonnées dans chaque commande.
 
-### 11.1 Panier
+**2 moyens de paiement :**
+- **Stripe Checkout** (redirect) — carte bancaire, zéro PCI-DSS côté serveur
+- **Paiement manuel** — commande enregistrée, l'admin valide à réception (virement, chèque, espèces)
 
-- [ ] `CartService.php` — panier en session Symfony (pas de BDD, pas de persistence) :
-  - `add(Product, ?ProductVariant, qty)` — ajoute un item (produit + variante optionnelle)
-  - `remove(int $lineIndex)` — supprime une ligne
-  - `update(int $lineIndex, int $qty)` — modifie la quantité
-  - `clear()` — vide le panier
-  - `getItems(): array` — retourne les lignes [{product, variant, qty, unitPriceHT, vatRate}]
-  - `getTotalHT(): float`, `getTotalTTC(): float`, `getTotalVAT(): float`
-  - `getCount(): int` — nombre total d'items (pour badge header)
-  - `isEmpty(): bool`
-  - Validation : produit `available` uniquement (pas `unavailable`, pas `on_request`)
-  - Si variante sélectionnée : prix variante, sinon prix produit
-- [ ] Stimulus `cart_controller.js` :
-  - Bouton "Ajouter" sur la fiche produit → POST AJAX `/panier/ajouter` → mise à jour badge compteur header sans rechargement
-  - Sélection variante avant ajout (si variantes disponibles)
-  - Animation feedback visuel (badge bounce, toast "Ajouté")
-- [ ] Page `/panier` (`CartController`) :
-  - Récapitulatif : lignes (image thumb, titre, variante, prix unitaire, quantité modifiable, sous-total)
-  - Modifier quantités (+ / - / input), supprimer une ligne
-  - Total HT + TVA + Total TTC (ou juste TTC selon `catalogPriceDisplay`)
-  - Bouton "Commander" → redirige vers checkout
-  - État vide : message + lien retour catalogue
-  - Responsive mobile (tableau → cards empilées)
+> Si les clés Stripe ne sont pas configurées, seul le paiement manuel est proposé.
 
-### 11.2 Checkout Stripe
+**Liaison Event ↔ Product :** un événement peut être lié à un produit du catalogue. L'inscription/paiement passe par le panier existant — pas de duplication de logique.
 
-- [ ] `CheckoutController.php` :
-  - `GET /commander` — page récapitulatif panier + formulaire client (nom, email, téléphone, message optionnel)
-  - `POST /commander` — valide le formulaire, crée la Stripe Checkout Session via `StripeService`, redirige vers Stripe
-  - `GET /paiement/confirmation/{reference}` — page "Merci" avec récapitulatif de la réservation
-  - `GET /paiement/annulation` — page "Paiement annulé" avec lien retour panier
+**Config Stripe dans l'admin :** les clés Stripe (publique, secrète, webhook secret) sont configurables depuis l'admin (panel "Paiement Stripe" dans Identité du site, visible `ROLE_FREELANCE+`). Fallback sur `.env` si vide dans l'admin.
+
+### 11.1 Panier ✅
+
+- [x] `CartService.php` — panier en session Symfony : add, remove, update, clear, getItems, getTotalHT/TTC/VAT, getCount, isEmpty, buildOrderItems (snapshot JSON)
+- [x] Stimulus `cart_badge_controller.js` — badge compteur header, refresh via event `cart:updated`
+- [x] Stimulus `cart_add_controller.js` — ajout AJAX avec feedback visuel ("Ajouté !"), fallback form submit
+- [x] `CartController.php` — 5 routes : `/panier` (index), `/panier/ajouter` (POST + AJAX), `/panier/modifier`, `/panier/supprimer`, `/panier/count` (JSON)
+- [x] `_partials/_cart_badge.html.twig` — partial réutilisable, conditionné par module `ecommerce`
+- [x] Badge panier intégré dans les 6 headers de thèmes (desktop + mobile top bar + mobile offcanvas)
+- [x] `templates/cart/index.html.twig` — tableau desktop + cards mobile, état vide, totaux, boutons "Continuer" + "Commander"
+- [x] `cart.scss` — styles avec CSS custom properties (adapté à tous les thèmes)
+
+### 11.2 Checkout & Paiement ✅
+
+- [x] `CheckoutType.php` — formulaire : prénom, nom, email, téléphone, message, choix paiement (Stripe masqué si non configuré)
+- [x] `CheckoutController.php` :
+  - `GET/POST /commander` — récap panier + formulaire + création commande
+  - Stripe : crée Checkout Session, redirect vers Stripe, fallback manuel si erreur
+  - Manuel : commande `pending`, emails, page confirmation
+  - `GET /commande/confirmation/{reference}` — page merci
+  - `GET /commande/annulation/{reference}` — page annulation Stripe
   - Guard `hasModule('ecommerce')`
-- [ ] `StripeService.php` :
-  - `createCheckoutSession(array $cartItems, array $customerData, string $reference): Session`
-  - Construit les `line_items` Stripe depuis le panier (nom produit + variante, prix TTC en centimes, quantité)
-  - `success_url` → `/paiement/confirmation/{reference}`
-  - `cancel_url` → `/paiement/annulation`
-  - `customer_email` pré-rempli
-  - `metadata` : reference, site_id
-- [ ] Webhook Stripe `POST /webhook/stripe` :
-  - Écoute `checkout.session.completed`
-  - Vérifie la signature Stripe (`stripe-signature` header + `STRIPE_WEBHOOK_SECRET`)
-  - Met à jour le statut de la réservation → `paid` + `paidAt`
-  - Déclenche les emails (confirmation client + notification admin)
-  - Retourne 200 OK (idempotent — vérifie que la réservation n'est pas déjà payée)
-  - Route exclue du CSRF (firewall Symfony)
+- [x] `StripeService.php` — crée Checkout Session, vérifie webhook, résout clés depuis Site (admin) > `.env` (fallback)
+- [x] Webhook `POST /webhook/stripe` — écoute `checkout.session.completed`, valide paiement, envoie emails
+- [x] Config Stripe dans admin : 3 champs sur `Site` (stripePublicKey, stripeSecretKey, stripeWebhookSecret) — panel "Paiement Stripe" visible `ROLE_FREELANCE+`
+- [x] Config `.env` : `STRIPE_SECRET_KEY`, `STRIPE_PUBLIC_KEY`, `STRIPE_WEBHOOK_SECRET` (fallback)
+- [x] `stripe/stripe-php` v19 installé
 
-**Config `.env.local` par client :**
-```
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_PUBLIC_KEY=pk_live_...
-```
+### 11.3 Entité Order ✅
 
-### 11.3 Entité Booking (réservation)
+- [x] `Order.php` — reference auto BW-YYYYMMDD-XXXXX, customerFirst/LastName, email, phone, message, items JSON, totalHT/VAT/TTC, paymentMethod (enum), stripeSessionId, status (enum), createdAt, paidAt
+- [x] `OrderStatusEnum.php` — pending, paid, cancelled, refunded (avec label/cssClass)
+- [x] `PaymentMethodEnum.php` — stripe, manual (avec label/icon)
+- [x] `OrderRepository.php` — findRecent, countByStatus, revenueThisMonth, countPaidThisMonth, revenueByMonth
+- [x] Migrations exécutées
 
-> Nom `Booking` plutôt que `Order` — vocabulaire neutre adapté à la cible (réservation gîte, commande traiteur, inscription formation).
+### 11.4 Admin commandes ✅
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `reference` | string(20) | Unique, auto-généré (ex: BW-20260321-001) |
-| `customerName` | string(255) | |
-| `customerEmail` | string(255) | |
-| `customerPhone` | string(50, nullable) | |
-| `customerMessage` | text (nullable) | Message libre du client |
-| `items` | json | Snapshot [{title, variant, qty, unitPriceHT, vatRate, totalTTC}] |
-| `totalHT` | decimal(10,2) | |
-| `totalVAT` | decimal(10,2) | |
-| `totalTTC` | decimal(10,2) | |
-| `stripeSessionId` | string(255, nullable) | ID session Stripe |
-| `status` | string (enum) | `pending`, `paid`, `cancelled`, `refunded` |
-| `createdAt` | datetime_immutable | |
-| `paidAt` | datetime_immutable (nullable) | Rempli par le webhook |
+- [x] `OrderCrudController.php` (`ROLE_ADMIN`) — liste (reference, client, statut badge couleur, total €, date) + détail complet + filtres (statut, paiement, date)
+- [x] Pas de création/suppression — lecture + modification statut uniquement
+- [x] Menu "Commandes" conditionné par module `ecommerce`
 
-**`BookingStatusEnum`** :
-```php
-enum BookingStatusEnum: string {
-    case PENDING = 'pending';       // En attente de paiement
-    case PAID = 'paid';             // Payé
-    case CANCELLED = 'cancelled';   // Annulé
-    case REFUNDED = 'refunded';     // Remboursé (via dashboard Stripe, pas géré côté app)
-}
-```
+### 11.5 Notifications email ✅
 
-**`items` JSON snapshot** (figé au moment de la commande — les prix peuvent changer après) :
-```json
-[
-  {
-    "productId": 12,
-    "title": "Sortie pêche en mer",
-    "variant": "Journée complète",
-    "qty": 2,
-    "unitPriceHT": 120.00,
-    "vatRate": 10.00,
-    "lineTotalTTC": 264.00
-  }
-]
-```
-
-- [ ] Créer `src/Entity/Booking.php`
-- [ ] Créer `src/Enum/BookingStatusEnum.php`
-- [ ] Créer `src/Repository/BookingRepository.php` : `findRecent(int $limit)`, `countByStatus()`, `revenueThisMonth()`, `revenueByMonth(int $months)`
-- [ ] Migration Doctrine
-
-### 11.4 Admin réservations
-
-- [ ] `BookingCrudController.php` (`#[IsGranted('ROLE_ADMIN')]`) :
-  - **Lecture seule** — pas de création/édition/suppression depuis l'admin (les bookings viennent du front)
-  - Liste : reference, customerName, customerEmail, totalTTC (formaté €), status (badge couleur), createdAt, paidAt
-  - Filtres : par statut, par date
-  - Tri default : createdAt DESC
-  - Detail : récapitulatif complet (infos client, lignes items, totaux HT/TVA/TTC, statut, dates, lien Stripe dashboard)
-  - Export CSV : référence, client, email, téléphone, total TTC, statut, date
-- [ ] Menu admin conditionné par module `ecommerce`
-
-### 11.5 Notifications email
-
-- [ ] **Email confirmation client** (envoyé après webhook `paid`) :
-  - Référence, récapitulatif items, totaux, infos du site (nom, adresse, téléphone)
-  - Template Twig `emails/booking_confirmation.html.twig`
-- [ ] **Email notification admin** (envoyé en parallèle) :
-  - Nouvelle réservation payée, lien vers l'admin
-  - Template Twig `emails/booking_admin_notification.html.twig`
-- [ ] `BookingNotificationService.php` — envoie les deux emails via Brevo (même pattern que `ArticleNotificationService`)
+- [x] Email confirmation client — référence, récap items, totaux, instructions paiement si manuel
+- [x] Email notification admin — nouvelle commande, infos client, montant, méthode
+- [x] Templates : `emails/order_confirmation.html.twig`, `emails/order_admin_notification.html.twig`
+- [x] Envoi intégré dans CheckoutController (manuel) et webhook (Stripe)
 
 ### 11.6 Dashboard widget
 
-- [ ] Widget EasyAdmin sur le dashboard (conditionné par module `ecommerce`) :
-  - Réservations récentes (5 dernières)
-  - CA du mois en cours
-  - Nombre de réservations payées ce mois
-- [ ] `DashboardController` : passe les données via `BookingRepository`
+- [ ] Widget EasyAdmin sur le dashboard (conditionné par module `ecommerce`) : 5 dernières ventes, CA du mois, nombre commandes payées
+- [ ] `OrderRepository` : méthodes prêtes (findRecent, revenueThisMonth, countPaidThisMonth) — à câbler dans DashboardController
 
-### 11.7 Front templates
+### 11.7 Front templates ✅
 
-- [ ] `templates/cart/index.html.twig` — page panier
-- [ ] `templates/checkout/index.html.twig` — page checkout (récap + formulaire)
-- [ ] `templates/checkout/confirmation.html.twig` — page merci
-- [ ] `templates/checkout/cancellation.html.twig` — page annulation
-- [ ] `templates/emails/booking_confirmation.html.twig`
-- [ ] `templates/emails/booking_admin_notification.html.twig`
-- [ ] SCSS : `cart.scss`, `checkout.scss`
+- [x] `templates/cart/index.html.twig` — tableau desktop + cards mobile, état vide, totaux
+- [x] `templates/checkout/index.html.twig` — formulaire client + récap + choix paiement (radio)
+- [x] `templates/checkout/confirmation.html.twig` — page merci avec récap items
+- [x] `templates/checkout/cancel.html.twig` — page annulation Stripe
+- [x] `templates/emails/order_confirmation.html.twig` + `order_admin_notification.html.twig`
+- [x] `cart.scss` — styles CSS custom properties (adapté aux 6 thèmes)
+- [x] Bouton "Ajouter au panier" sur `product/show.html.twig` (si ecommerce + prix + disponible)
+- [x] Vérifié visuellement sur les 6 thèmes (default, corporate, artisan, vitrine, starter, moderne)
 
-**Fichiers créés (~18) :** `Booking.php`, `BookingStatusEnum.php`, `BookingRepository.php`, `CartService.php`, `StripeService.php`, `BookingNotificationService.php`, `CartController.php`, `CheckoutController.php`, `BookingCrudController.php`, `cart_controller.js`, `cart/index.html.twig`, `checkout/index.html.twig`, `checkout/confirmation.html.twig`, `checkout/cancellation.html.twig`, `emails/booking_confirmation.html.twig`, `emails/booking_admin_notification.html.twig`, `cart.scss`, `checkout.scss`
-**Fichiers modifiés (~6) :** `DashboardController.php`, `product/show.html.twig` (bouton CTA panier), `base.html.twig` (badge panier header), `main.scss`, `.env`, `.env.local.example`
-**Dépendances :** `stripe/stripe-php` (composer)
-**Migrations :** oui (Booking)
+### 11.8 Liaison Event ↔ Product ✅
+
+- [x] `linkedProduct` (FK Product, nullable, SET NULL) sur `Event`
+- [x] Migration exécutée
+- [x] Admin `EventCrudController` : AssociationField `linkedProduct` dans panel Paramètres
+- [x] Front `event/show.html.twig` : bloc "Inscription / Tarif" dans la sidebar — prix + bouton "Ajouter au panier" si ecommerce + prix + disponible, sinon "Nous contacter"
+
+**Fichiers créés (~18) :** `CartService.php`, `StripeService.php`, `CartController.php`, `CheckoutController.php`, `CheckoutType.php`, `OrderCrudController.php`, `cart_badge_controller.js`, `cart_add_controller.js`, `_cart_badge.html.twig`, `cart/index.html.twig`, `checkout/index.html.twig`, `checkout/confirmation.html.twig`, `checkout/cancel.html.twig`, `emails/order_confirmation.html.twig`, `emails/order_admin_notification.html.twig`, `cart.scss`
+**Fichiers modifiés (~15) :** `Event.php`, `Site.php` (3 champs Stripe), `EventCrudController.php`, `SiteCrudController.php` (panel Paiement), `DashboardController.php` (menu Commandes), `product/show.html.twig` (bouton CTA panier), `event/show.html.twig` (bloc produit lié), 6 `_header.html.twig` (badge panier), `main.scss`, `services.yaml`, `.env`
+**Dépendances :** `stripe/stripe-php` v19
+**Migrations :** 2 (Event.linkedProduct + Site.stripe*)
 
 ---
 

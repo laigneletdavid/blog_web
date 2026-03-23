@@ -136,5 +136,10 @@ class EventCrudController extends AbstractCrudController
 
         yield BooleanField::new('isActive', 'Actif');
         yield BooleanField::new('isFeatured', 'Mis en avant');
+
+        yield AssociationField::new('linkedProduct', 'Produit lie')
+            ->setHelp('Associer un produit du catalogue pour permettre l\'achat/inscription directe depuis l\'evenement.')
+            ->setRequired(false)
+            ->hideOnIndex();
     }
 }
