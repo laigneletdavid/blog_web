@@ -17,7 +17,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class UserCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
@@ -94,9 +96,10 @@ class UserCrudController extends AbstractCrudController
             ->setLabel('Rôle de l\'utilisateur')
             ->renderAsBadges([
                 'ROLE_USER' => 'success',
-                'ROLE_CORRECTOR' => 'primary',
                 'ROLE_AUTHOR' => 'warning',
                 'ROLE_ADMIN' => 'danger',
+                'ROLE_FREELANCE' => 'info',
+                'ROLE_SUPER_ADMIN' => 'dark',
             ])
             ->setChoices(RoleEnum::choices());
         yield BooleanField::new('news');

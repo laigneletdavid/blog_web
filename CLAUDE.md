@@ -677,8 +677,8 @@ Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.
 - ~~`Categorie.featured_media` → SMALLINT~~ → ✅ vraie relation ManyToOne Media
 - ~~Aucun index UNIQUE sur les slugs~~ → ✅ UNIQUE sur article/page/categorie/tag
 - ~~Contact form non câblé au mailer~~ → ✅ câblé avec Brevo (Phase 4.7)
-- N+1 menus (base template) — à optimiser (eager loading)
-- Vérification email installée mais non activée
+- ~~N+1 menus (base template)~~ → ✅ optimisé (eager loading)
+- ~~Vérification email installée mais non activée~~ → ✅ activée (CheckVerifiedUserSubscriber bloque le login si non vérifié, ROLE_ADMIN+ exempt)
 
 ### Mineurs — ✅ corrigés en Phase 1
 - ~~Typos : `caterogires.html.twig`~~ → ✅ renommé `categories.html.twig`
@@ -687,7 +687,7 @@ Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.
 - ~~Password min 6 → 12~~ → ✅ 12 chars (RegistrationFormType + PassType)
 - ~~Archives widget hardcodé~~ → ✅ dynamisé (Phase 4.8)
 - ~~Liens sociaux `href="#"`~~ → ✅ câblés dans le footer (Phase 5)
-- Typos : `adress_1/2` — à corriger
+- ~~Typos : `adress_1/2`~~ → ✅ corrigé
 
 ### En attente
 - ~~Migration `Version20260310051607`~~ → ✅ exécutée
@@ -697,12 +697,15 @@ Chaque theme : `theme.yaml` + `_header.html.twig` + `_footer.html.twig` + `home.
 - ~~Null checks templates front~~ → ✅ corrigés
 - ~~Images responsives srcset~~ → ✅ fait (Phase 4.10)
 - ~~Page recherche dédiée~~ → ✅ fait (Phase 4.11)
-- ⚠️ **`docker-compose.prod.yml`** — pas encore créé
-- N+1 menus → à optimiser (eager loading)
-- Typos `adress_1/2` → à corriger
-- Abonnements `news`/`articles` sur User : stockés mais jamais utilisés
-- Vérification email installée mais non activée
-- Régénérer les images existantes avec `app:media:regenerate-sizes` (commande à créer si besoin)
+- ~~`docker-compose.prod.yml`~~ → ✅ cree
+- ~~N+1 menus~~ → ✅ optimise (eager loading)
+- ~~Typos `adress_1/2`~~ → ✅ corrige
+- ~~Verification email~~ → ✅ activee (CheckVerifiedUserSubscriber)
+- ~~Securite formulaire contact~~ → ✅ CSRF + honeypot + rate limiting + reCAPTCHA v3 (optionnel)
+- ~~ROLE_CORRECTOR inutile~~ → ✅ supprime, hierarchy simplifiee
+- ~~CrudControllers sans #[IsGranted]~~ → ✅ tous securises (ROLE_AUTHOR ou ROLE_ADMIN)
+- Abonnements `news`/`articles` sur User : stockes mais jamais utilises
+- Regenerer les images existantes avec `app:media:regenerate-sizes` (commande a creer si besoin)
 
 ---
 

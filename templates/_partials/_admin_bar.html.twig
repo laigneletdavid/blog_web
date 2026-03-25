@@ -1,6 +1,6 @@
 {# ====== ADMIN BAR — Commun à tous les thèmes ====== #}
 {# Affiché uniquement pour les utilisateurs avec ROLE_AUTHOR+ #}
-{% if is_granted('ROLE_CORRECTOR') %}
+{% if is_granted('ROLE_AUTHOR') %}
 <div class="admin-bar">
     <div class="container d-flex align-items-center justify-content-between py-1">
         <div class="d-flex align-items-center gap-2">

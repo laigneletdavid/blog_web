@@ -7,6 +7,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\EventRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
+use App\Service\RecaptchaValidator;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +45,7 @@ class HomeController extends AbstractController
         Request $request,
         MailerInterface $mailer,
         SiteContext $siteContext,
+        RecaptchaValidator $recaptchaValidator,
         #[Autowire(service: 'limiter.contact_limiter')] RateLimiterFactory $contactLimiter,
     ): Response {
         $form = $this->createForm(ContactType::class);
@@ -53,6 +55,14 @@ class HomeController extends AbstractController
             // Honeypot check — bots fill the hidden field
             if ($form->get('website')->getData()) {
                 $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
+
+                return $this->redirectToRoute('app_contact');
+            }
+
+            // reCAPTCHA v3 validation
+            $recaptchaToken = $request->request->get('g-recaptcha-response');
+            if (!$recaptchaValidator->validate($recaptchaToken, 'contact')) {
+                $this->addFlash('error', 'La verification anti-spam a echoue. Veuillez reessayer.');
 
                 return $this->redirectToRoute('app_contact');
             }
@@ -97,6 +107,7 @@ class HomeController extends AbstractController
             'text_page' => 'Envoyez-moi un message',
             'contactForm' => $form,
             'seo' => $this->seoService->resolveForPage('Contact'),
+            'recaptcha_site_key' => $recaptchaValidator->isEnabled() ? $recaptchaValidator->getSiteKey() : null,
         ]);
     }
 }

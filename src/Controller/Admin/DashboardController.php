@@ -243,7 +243,7 @@ class DashboardController extends AbstractDashboardController
             }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
-        } elseif ($this->isGranted('ROLE_CORRECTOR')) {
+        } elseif ($this->isGranted('ROLE_AUTHOR')) {
             if ($this->siteContext->hasModule('blog')) {
                 yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
             }

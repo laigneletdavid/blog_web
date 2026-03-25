@@ -9,3 +9,30 @@
         'themes/default/contact.html.twig'
     ] %}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if recaptcha_site_key is defined and recaptcha_site_key %}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var forms = document.querySelectorAll('form[name="contact"]');
+        forms.forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                grecaptcha.ready(function() {
+                    grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'contact'}).then(function(token) {
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'g-recaptcha-response';
+                        input.value = token;
+                        form.appendChild(input);
+                        form.submit();
+                    });
+                });
+            });
+        });
+    });
+    </script>
+    {% endif %}
+{% endblock %}
