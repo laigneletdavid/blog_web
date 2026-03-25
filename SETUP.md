@@ -81,6 +81,7 @@ Cette commande unique fait tout :
 2. **Cree le super admin** — email, mot de passe (min 12 car.), nom, prenom
 3. **Cree les pages legales** — mentions legales, politique de confidentialite
 4. **Synchronise les menus** — header, footer navigation, footer legal
+5. **Nettoie les fichiers dev** — supprime CLAUDE*.md, PLAN.md, DESIGN_THEME.md, audit, .claude/docs/
 
 La commande est **idempotente** : si le site ou l'admin existent deja, ces etapes sont ignorees.
 
@@ -188,6 +189,103 @@ docker compose exec php php bin/console app:menu:sync
 | `app:menu:sync` | Navigation | Resynchronise les menus systeme depuis le theme |
 | `app:create-super-admin` | Legacy | Cree un super admin (utiliser `app:client:setup` a la place) |
 | `app:init-site` | Legacy | Initialise le site (utiliser `app:client:setup` a la place) |
+
+---
+
+## Mises a jour
+
+### Principe
+
+Le code du CMS est partage via git. Chaque site client est un clone du meme repo. Les mises a jour se font par `git pull` — les donnees client (BDD, uploads, .env.local) ne sont jamais touchees.
+
+```
+blog_web/ (GitHub)              ← Repo source
+    │
+    ├── clone → site-david/     ← Ton site test
+    ├── clone → client-x/       ← Client
+    └── clone → client-y/       ← Client
+```
+
+| Element | Stockage | Touche par git pull ? |
+|---------|----------|---------------------|
+| Code PHP, templates, JS, CSS | Fichiers (git) | **Oui** — c'est le but |
+| Contenu (articles, pages) | BDD MariaDB | **Non** |
+| Images uploadees | `public/uploads/` | **Non** |
+| Config client (.env.local) | Fichier local | **Non** |
+| Theme, couleurs, polices | BDD (entite Site) | **Non** |
+| Menus personnalises | BDD (entite Menu) | **Non** |
+
+### Workflow : corriger un bug ou ajouter une feature
+
+```bash
+# 1. Corriger dans le repo source
+cd ~/projects/blog_web
+# ... corriger le bug / ajouter la feature ...
+git add ... && git commit -m "fix: description du bug" && git push
+
+# 2. Mettre a jour un site client
+cd /var/www/clients/client-x
+make update
+```
+
+`make update` fait tout automatiquement :
+1. `git pull` — recupere le nouveau code
+2. `composer install` — met a jour les dependances PHP si besoin
+3. `doctrine:migrations:migrate` — applique les nouvelles migrations BDD
+4. `npm install + npm run dev` — rebuild les assets CSS/JS
+5. `cache:clear` — vide le cache Symfony
+
+### Mettre a jour tous les clients d'un coup
+
+```bash
+for client in /var/www/clients/*/; do
+    echo "=== Mise a jour: $client ==="
+    cd "$client" && make update
+done
+```
+
+### Mise a jour en production
+
+```bash
+cd /var/www/clients/client-x
+make deploy    # = scripts/deploy.sh (assets build en mode prod, --no-dev, restart services)
+```
+
+### Regles importantes
+
+- **Toujours travailler dans `blog_web`** pour les modifications du CMS, jamais directement dans un clone client
+- **Ne jamais modifier le code manuellement** dans un clone client (sinon git pull echouera en conflit)
+- **Toute personnalisation client** passe par la BDD (admin EasyAdmin) ou `.env.local`, jamais par le code
+- **Tester d'abord** sur `site-david` avant de deployer chez les vrais clients
+- **Si une migration echoue** : `deploy.sh` rollback automatiquement la derniere migration
+
+### Cas particuliers
+
+**Ajout d'un nouveau module :** apres `make update`, activer le module si besoin :
+```bash
+docker compose exec php php bin/console app:module:enable <module>
+```
+
+**Changement de theme :** apres `make update`, resync les menus si le theme a change :
+```bash
+docker compose exec php php bin/console app:menu:sync
+```
+
+---
+
+## Fichiers de developpement
+
+Le repo contient des fichiers de documentation technique (specs, audit, roadmap) dans `.claude/docs/`. Ces fichiers sont **utiles pour le developpement** mais ne doivent **jamais** se retrouver chez un client.
+
+**Nettoyage automatique :** `app:client:setup` (etape 5) supprime automatiquement :
+- `CLAUDE.md`, `CLAUDE2.md`, `CLAUDE_FULL.md` (specs techniques)
+- `PLAN.md`, `DESIGN_THEME.md` (plans de dev)
+- `audit_cms_claude_code.md` (audit securite)
+- `.claude/docs/` (documentation detaillee)
+
+**Securite supplementaire :** `scripts/deploy.sh` nettoie aussi ces fichiers a chaque deploiement.
+
+> **Migration initiale (une seule fois sur le repo de dev) :** pour deplacer les docs vers `.claude/docs/`, lancer `./scripts/migrate-docs.sh` puis remplacer CLAUDE.md par CLAUDE.md.new.
 
 ---
 

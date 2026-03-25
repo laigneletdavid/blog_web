@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
@@ -23,12 +24,23 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 )]
 class ClientSetupCommand extends Command
 {
+    private const DEV_FILES = [
+        'CLAUDE.md',
+        'CLAUDE2.md',
+        'CLAUDE_FULL.md',
+        'PLAN.md',
+        'DESIGN_THEME.md',
+        'audit_cms_claude_code.md',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UserPasswordHasherInterface $hasher,
         private readonly SiteContext $siteContext,
         private readonly LegalPageContentService $legalPageService,
         private readonly MenuSyncService $menuSyncService,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
     ) {
         parent::__construct();
     }
@@ -57,26 +69,30 @@ class ClientSetupCommand extends Command
         $io->title('BlogWeb — Installation client');
 
         // ── Step 1: Site ──
-        $io->section('1/4 — Site');
+        $io->section('1/5 — Site');
         $site = $this->setupSite($io, $input);
         if (!$site) {
             return Command::FAILURE;
         }
 
         // ── Step 2: Super Admin ──
-        $io->section('2/4 — Super admin');
+        $io->section('2/5 — Super admin');
         $admin = $this->setupAdmin($io, $input);
         if (!$admin) {
             return Command::FAILURE;
         }
 
         // ── Step 3: Legal pages ──
-        $io->section('3/4 — Pages legales');
+        $io->section('3/5 — Pages legales');
         $this->setupLegalPages($io, $site);
 
         // ── Step 4: Menus ──
-        $io->section('4/4 — Navigation');
+        $io->section('4/5 — Navigation');
         $this->setupMenus($io, $site);
+
+        // ── Step 5: Cleanup dev files ──
+        $io->section('5/5 — Nettoyage');
+        $this->cleanupDevFiles($io);
 
         // ── Summary ──
         $io->newLine();
@@ -214,5 +230,40 @@ class ClientSetupCommand extends Command
     {
         $stats = $this->menuSyncService->syncAllZones($site);
         $io->text("<info>{$stats['created']}</info> element(s) de menu cree(s).");
+    }
+
+    private function cleanupDevFiles(SymfonyStyle $io): void
+    {
+        $removed = 0;
+
+        foreach (self::DEV_FILES as $file) {
+            $path = $this->projectDir . '/' . $file;
+            if (file_exists($path)) {
+                unlink($path);
+                $io->text("  - Supprime : <comment>$file</comment>");
+                $removed++;
+            }
+        }
+
+        // Remove .claude/docs/ directory if present
+        $docsDir = $this->projectDir . '/.claude/docs';
+        if (is_dir($docsDir)) {
+            $files = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($docsDir, \FilesystemIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::CHILD_FIRST,
+            );
+            foreach ($files as $fileInfo) {
+                $fileInfo->isDir() ? rmdir($fileInfo->getPathname()) : unlink($fileInfo->getPathname());
+            }
+            rmdir($docsDir);
+            $io->text('  - Supprime : <comment>.claude/docs/</comment>');
+            $removed++;
+        }
+
+        if ($removed === 0) {
+            $io->text('Aucun fichier de developpement a supprimer.');
+        } else {
+            $io->text("<info>$removed</info> element(s) de developpement supprime(s).");
+        }
     }
 }

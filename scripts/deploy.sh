@@ -9,6 +9,13 @@ PHP="$DOCKER exec -T php"
 
 echo "=== Blog Web — Deployment ==="
 
+# 0. Remove dev documentation files if present
+DEV_FILES="CLAUDE.md CLAUDE2.md CLAUDE_FULL.md PLAN.md DESIGN_THEME.md audit_cms_claude_code.md"
+for f in $DEV_FILES; do
+    [ -f "$f" ] && rm -f "$f" && echo "Cleaned: $f"
+done
+[ -d ".claude/docs" ] && rm -rf ".claude/docs" && echo "Cleaned: .claude/docs/"
+
 # 1. Pull latest code
 echo "[1/6] Pulling latest code..."
 git pull --ff-only
