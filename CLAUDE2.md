@@ -864,9 +864,9 @@ Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
 
 | Source | Item | Priorité |
 |--------|------|----------|
-| Phase 8 | Checkbox `subscribeEvents` dans formulaire profil utilisateur | Basse |
+| Phase 8 | ~~Checkbox `subscribeEvents` dans formulaire profil utilisateur~~ | ✅ Done — `UserType.php` enrichi avec `CheckboxType` conditionné par module `events` |
 | Phase 8 | Intégrer événements dans les 5 autres thèmes homepage | Basse |
-| Phase 11 | Widget dashboard e-commerce (5 dernières ventes, CA mois, commandes payées) | Moyenne |
+| Phase 11 | ~~Widget dashboard e-commerce (5 dernières ventes, CA mois, commandes payées)~~ | ✅ Done — Dashboard enrichi avec CA mois, commandes payées, tableau 5 dernières commandes |
 
 ### Dette technique
 
@@ -874,7 +874,7 @@ Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
 |------|----------|-------|
 | `docker-compose.prod.yml` | Haute (déploiement) | opcache max, restart always, pas de Xdebug |
 | Sécurité prod (SSL, Fail2ban, backups, CSP) | Haute (déploiement) | Config serveur |
-| Typos `adress_1/2` → `address_1/2` | Basse | Renommage champs Site + migration |
+| ~~Typos `adress_1/2` → `address_1/2`~~ | ✅ | Déjà corrigé, schema en sync |
 | Vérification email installée mais non activée | Basse | VerifyEmailBundle câblé mais pas en production |
 | Abonnements `news`/`articles` sur User : stockés mais jamais utilisés | Basse | Soit câbler soit supprimer |
 

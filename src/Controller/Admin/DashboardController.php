@@ -40,6 +40,7 @@ class DashboardController extends AbstractDashboardController
         private AdminUrlGenerator $adminUrlGenerator,
         private SiteContext $siteContext,
         private ThemeService $themeService,
+        private \App\Repository\OrderRepository $orderRepository,
     ) {
     }
 
@@ -48,9 +49,19 @@ class DashboardController extends AbstractDashboardController
     {
         $site = $this->siteContext->getCurrentSite();
 
+        $ecommerceStats = null;
+        if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('ecommerce')) {
+            $ecommerceStats = [
+                'recentOrders' => $this->orderRepository->findRecent(5),
+                'revenueThisMonth' => $this->orderRepository->revenueThisMonth(),
+                'countPaidThisMonth' => $this->orderRepository->countPaidThisMonth(),
+            ];
+        }
+
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
+            'ecommerceStats' => $ecommerceStats,
         ]);
     }
 
