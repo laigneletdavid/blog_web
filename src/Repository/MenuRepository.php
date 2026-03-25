@@ -65,6 +65,37 @@ class MenuRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Load ALL visible root menu items across all locations in a single query.
+     *
+     * @return array<string, Menu[]> Indexed by location
+     */
+    public function findAllLocationsCached(): array
+    {
+        $menus = $this->createQueryBuilder('m')
+            ->leftJoin('m.children', 'c', 'WITH', 'c.is_visible = true')
+            ->addSelect('c')
+            ->leftJoin('m.article', 'ma')->addSelect('ma')
+            ->leftJoin('m.categorie', 'mc')->addSelect('mc')
+            ->leftJoin('m.page', 'mp')->addSelect('mp')
+            ->leftJoin('c.article', 'ca')->addSelect('ca')
+            ->leftJoin('c.categorie', 'cc')->addSelect('cc')
+            ->leftJoin('c.page', 'cp')->addSelect('cp')
+            ->where('m.is_visible = true')
+            ->andWhere('m.parent IS NULL')
+            ->orderBy('m.menu_order', 'ASC')
+            ->addOrderBy('c.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $grouped = [];
+        foreach ($menus as $menu) {
+            $grouped[$menu->getLocation()][] = $menu;
+        }
+
+        return $grouped;
+    }
+
     public function findSystemByLocationAndKey(string $location, string $systemKey): ?Menu
     {
         return $this->findOneBy([
