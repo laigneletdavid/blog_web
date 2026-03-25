@@ -5,7 +5,8 @@
       "name": "dev",
       "runtimeExecutable": "docker",
       "runtimeArgs": ["compose", "logs", "-f", "nginx"],
-      "port": 8080
+      "port": 8080,
+      "autoPort": false
     }
   ]
 }

@@ -32,12 +32,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/admin, roles: ROLE_CORRECTOR }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/admin, roles: ROLE_AUTHOR }
 
     role_hierarchy:
-        ROLE_CORRECTOR: ROLE_USER
-        ROLE_AUTHOR: ROLE_CORRECTOR
+        ROLE_AUTHOR: ROLE_USER
         ROLE_ADMIN: ROLE_AUTHOR
         ROLE_FREELANCE: ROLE_ADMIN
         ROLE_SUPER_ADMIN: ROLE_FREELANCE

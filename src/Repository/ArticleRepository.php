@@ -228,6 +228,39 @@ class ArticleRepository extends ServiceEntityRepository
         return new \Doctrine\ORM\Tools\Pagination\Paginator($qb->getQuery());
     }
 
+    public function countPublished(): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.published = TRUE')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return Article[]
+     */
+    public function findRecentPublished(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.published = TRUE')
+            ->leftJoin('a.featured_media', 'm')
+            ->addSelect('m')
+            ->orderBy('a.created_at', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countDrafts(): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.published = FALSE')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * @return Article[]
      */

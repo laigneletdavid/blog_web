@@ -1,4 +1,12 @@
-# Prod overrides — use: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# Production override
+# Usage : docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Prérequis :
+#   - .env.local configuré (APP_ENV=prod, APP_SECRET, DATABASE_URL, MAILER_DSN Brevo)
+#   - Assets compilés : npm run build
+#   - Après deploy : docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+#   - Après deploy : docker compose exec php php bin/console cache:clear --env=prod
+
 services:
   php:
     build:
@@ -27,12 +35,9 @@ services:
         max-file: "3"
 
   nginx:
+    ports:
+      - "80:80"
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
     logging:
       driver: json-file
       options:
@@ -42,11 +47,22 @@ services:
   db:
     restart: always
     ports: []
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-changeme}
+      MYSQL_DATABASE: ${DB_NAME:-blog_web}
+      MYSQL_USER: ${DB_USER:-app}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-changeme}
     deploy:
       resources:
         limits:
           memory: 512M
           cpus: '1.0'
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+      --innodb-log-file-size=64M
+      --max-connections=100
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 30s
@@ -58,3 +74,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  # Pas de Mailpit en prod — MAILER_DSN Brevo dans .env.local
+  mailer:
+    profiles:
+      - disabled

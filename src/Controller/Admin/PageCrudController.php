@@ -17,9 +17,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_AUTHOR')]
 class PageCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly SiteContext $siteContext,
     ) {
@@ -28,6 +32,36 @@ class PageCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Page::class;
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Pages',
+            'sections' => [
+                [
+                    'title' => 'Pages systeme vs personnalisees',
+                    'content' => '<p>Les <strong>pages systeme</strong> (mentions legales, politique de confidentialite) ne peuvent pas etre supprimees, mais leur contenu est modifiable.</p>
+                    <p>Vous pouvez creer autant de <strong>pages personnalisees</strong> que necessaire (A propos, Nos services, etc.).</p>',
+                ],
+                [
+                    'title' => 'Mise en page',
+                    'content' => '<ul>
+                        <li><strong>Par defaut</strong> — Contenu avec sidebar droite (widgets, categories, archives)</li>
+                        <li><strong>Pleine largeur</strong> — Contenu sur toute la largeur, ideal pour les presentations</li>
+                        <li><strong>Sidebar gauche</strong> — Widgets a gauche, contenu a droite</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'L\'editeur',
+                    'content' => '<p>Meme editeur visuel que pour les articles. Votre brouillon est sauvegarde automatiquement.</p>',
+                ],
+            ],
+            'tips' => [
+                'N\'oubliez pas d\'ajouter vos nouvelles pages dans la navigation (Reglages > Navigation).',
+                'Les pages systeme sont essentielles pour la conformite RGPD. Mettez-les a jour regulierement.',
+            ],
+        ];
     }
 
     public function configureCrud(Crud $crud): Crud

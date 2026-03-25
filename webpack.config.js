@@ -24,6 +24,7 @@ Encore
     .addEntry('admin_editor', './assets/admin/tiptap-editor.js')
     .addEntry('admin_menu', './assets/admin/menu-sortable.js')
     .addEntry('admin_fonts', './assets/admin/font-picker.js')
+    .addEntry('admin_dashboard', './assets/admin/admin-dashboard.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')

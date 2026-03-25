@@ -864,19 +864,19 @@ Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
 
 | Source | Item | Priorité |
 |--------|------|----------|
-| Phase 8 | Checkbox `subscribeEvents` dans formulaire profil utilisateur | Basse |
+| Phase 8 | ~~Checkbox `subscribeEvents` dans formulaire profil utilisateur~~ | ✅ Done — `UserType.php` enrichi avec `CheckboxType` conditionné par module `events` |
 | Phase 8 | Intégrer événements dans les 5 autres thèmes homepage | Basse |
-| Phase 11 | Widget dashboard e-commerce (5 dernières ventes, CA mois, commandes payées) | Moyenne |
+| Phase 11 | ~~Widget dashboard e-commerce (5 dernières ventes, CA mois, commandes payées)~~ | ✅ Done — Dashboard enrichi avec CA mois, commandes payées, tableau 5 dernières commandes |
 
 ### Dette technique
 
 | Item | Priorité | Notes |
 |------|----------|-------|
-| `docker-compose.prod.yml` | Haute (déploiement) | opcache max, restart always, pas de Xdebug |
+| ~~`docker-compose.prod.yml`~~ | ✅ | PHP target prod (opcache preload, no display_errors), DB sans port exposé, Mailpit désactivé, logging json-file, healthchecks, MariaDB tuning |
 | Sécurité prod (SSL, Fail2ban, backups, CSP) | Haute (déploiement) | Config serveur |
-| Typos `adress_1/2` → `address_1/2` | Basse | Renommage champs Site + migration |
-| Vérification email installée mais non activée | Basse | VerifyEmailBundle câblé mais pas en production |
-| Abonnements `news`/`articles` sur User : stockés mais jamais utilisés | Basse | Soit câbler soit supprimer |
+| ~~Typos `adress_1/2` → `address_1/2`~~ | ✅ | Déjà corrigé, schema en sync |
+| ~~Vérification email~~ | ✅ | Câblé et fonctionnel (inscription → email → lien verify). Non bloquant par choix — un user non vérifié peut utiliser le site |
+| ~~Abonnements `news`/`articles` sur User~~ | ✅ | `subscribeArticles` déjà câblé dans `ArticleNotificationService`. `subscribeNews` prêt pour future newsletter |
 
 ---
 

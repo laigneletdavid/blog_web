@@ -9,6 +9,9 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class MenuService
 {
+    /** @var array<string, Menu[]>|null */
+    private ?array $allMenus = null;
+
     public function __construct(
         private MenuRepository $menuRepository,
         private Security $security,
@@ -28,9 +31,24 @@ class MenuService
      */
     public function findByLocation(string $location): array
     {
-        $menus = $this->menuRepository->findByLocation($location);
+        $all = $this->loadAll();
+        $menus = $all[$location] ?? [];
 
-        return array_filter($menus, fn (Menu $menu) => $this->isMenuAccessible($menu));
+        return array_values(array_filter($menus, fn (Menu $menu) => $this->isMenuAccessible($menu)));
+    }
+
+    /**
+     * Load all locations in a single query, cached for the request.
+     *
+     * @return array<string, Menu[]>
+     */
+    private function loadAll(): array
+    {
+        if ($this->allMenus === null) {
+            $this->allMenus = $this->menuRepository->findAllLocationsCached();
+        }
+
+        return $this->allMenus;
     }
 
     private function isMenuAccessible(Menu $menu): bool

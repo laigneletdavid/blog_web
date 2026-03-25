@@ -16,17 +16,57 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_AUTHOR')]
 class ArticleCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly ArticleNotificationService $notificationService,
         private readonly SiteContext $siteContext,
     ) {
     }
+
     public static function getEntityFqcn(): string
     {
         return Article::class;
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Articles',
+            'sections' => [
+                [
+                    'title' => 'L\'editeur de contenu',
+                    'content' => '<p>L\'editeur visuel vous permet de mettre en forme vos articles : <strong>gras</strong>, <em>italique</em>, titres, listes, images, videos YouTube, citations et blocs de code.</p>
+                    <p>Votre brouillon est <strong>sauvegarde automatiquement</strong> toutes les 30 secondes dans votre navigateur.</p>',
+                ],
+                [
+                    'title' => 'Publication',
+                    'content' => '<ul>
+                        <li>Par defaut, un article est en <strong>brouillon</strong> (non visible)</li>
+                        <li>Cochez <em>Publie</em> pour le rendre visible</li>
+                        <li>La date de publication est remplie automatiquement</li>
+                        <li>Les abonnes sont notifies par email a la publication</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Article vedette',
+                    'content' => '<p>Un article marque <em>vedette</em> est affiche en evidence en haut de la page Blog. Un seul article peut etre vedette a la fois.</p>',
+                ],
+                [
+                    'title' => 'SEO',
+                    'content' => '<p>Le panneau <em>SEO</em> (en bas du formulaire) vous permet de personnaliser le titre et la description qui apparaissent dans Google. Si vous les laissez vides, le titre et l\'accroche de l\'article sont utilises.</p>',
+                ],
+            ],
+            'tips' => [
+                'Ajoutez toujours une image mise en avant et un texte d\'accroche pour rendre vos articles plus attractifs.',
+                'Un bon titre SEO fait entre 50 et 70 caracteres, et la meta-description entre 120 et 160.',
+            ],
+        ];
     }
 
     public function configureCrud(Crud $crud): Crud

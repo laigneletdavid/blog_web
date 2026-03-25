@@ -99,6 +99,15 @@ class PageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countPublished(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.published = true')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * @param string[] $allowedVisibilities
      * @return Page[]

@@ -6,6 +6,9 @@
 parameters:
         medias_directory: '%kernel.project_dir%/public/documents/medias'
         uploads-directory : 'uploads/'
+        recaptcha_secret_key: '%env(default:empty_string:RECAPTCHA_SECRET_KEY)%'
+        recaptcha_site_key: '%env(default:empty_string:RECAPTCHA_SITE_KEY)%'
+        empty_string: ''
 
 services:
     # default configuration for services in *this* file
@@ -42,6 +45,15 @@ services:
         arguments:
             $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
             $stripeWebhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
+
+    App\Command\RecaptchaSetupCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Service\RecaptchaValidator:
+        arguments:
+            $recaptchaSecretKey: '%recaptcha_secret_key%'
+            $recaptchaSiteKey: '%recaptcha_site_key%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

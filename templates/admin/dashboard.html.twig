@@ -1,17 +1,5 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% set url_site = ea_url()
-    .setController('App\\Controller\\Admin\\SiteCrudController')
-    .setAction('index') %}
-
-{% set url_page = ea_url()
-    .setController('App\\Controller\\Admin\\PageCrudController')
-    .setAction('index') %}
-
-{% set url_blog = ea_url()
-    .setController('App\\Controller\\Admin\\ArticleCrudController')
-    .setAction('index') %}
-
 {% set url_new_article = ea_url()
     .setController('App\\Controller\\Admin\\ArticleCrudController')
     .setAction('new') %}
@@ -20,70 +8,298 @@
     .setController('App\\Controller\\Admin\\PageCrudController')
     .setAction('new') %}
 
+{% set url_articles = ea_url()
+    .setController('App\\Controller\\Admin\\ArticleCrudController')
+    .setAction('index') %}
+
+{% set url_pages = ea_url()
+    .setController('App\\Controller\\Admin\\PageCrudController')
+    .setAction('index') %}
+
+{% set url_media = ea_url()
+    .setController('App\\Controller\\Admin\\MediaCrudController')
+    .setAction('new') %}
+
+{% set url_site = ea_url()
+    .setController('App\\Controller\\Admin\\SiteCrudController')
+    .setAction('edit')
+    .setEntityId(site.id) %}
+
+{% set url_comments = ea_url()
+    .setController('App\\Controller\\Admin\\CommentCrudController')
+    .setAction('index') %}
+
 {% block content_title %}
-    <h1 class="title_admin">{{ title_admin }}</h1>
+    <span style="font-size: 1.1rem; font-weight: 600;">Bonjour{{ app.user.firstName ? ', ' ~ app.user.firstName : '' }}</span>
 {% endblock %}
 
 {% block main %}
+<div class="bw-dashboard">
 
-    {# --- Raccourcis rapides --- #}
+    {# --- Tip contextuel rotatif --- #}
+    <div class="bw-tip" id="dashboardTip" style="display:none;">
+        <div class="bw-tip__inner">
+            <i class="fas fa-lightbulb bw-tip__icon"></i>
+            <span class="bw-tip__text" id="tipText"></span>
+            <button type="button" class="bw-tip__next" id="tipNext" title="Astuce suivante">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="bw-tip__close" id="tipClose" title="Masquer les astuces">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    {# --- KPI Cards --- #}
     <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-            <a href="{{ url_new_article }}" class="btn btn-primary w-100 py-3">
-                <i class="fas fa-plus me-2"></i> Nouvel article
-            </a>
+        <div class="col-6 col-lg">
+            <div class="bw-kpi">
+                <div class="bw-kpi__icon" style="background: #dbeafe; color: #2563eb;">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="bw-kpi__data">
+                    <div class="bw-kpi__value">{{ stats.viewsToday }}</div>
+                    <div class="bw-kpi__label">Visites aujourd'hui</div>
+                </div>
+            </div>
         </div>
-        <div class="col-6 col-lg-3">
-            <a href="{{ url_new_page }}" class="btn btn-outline-primary w-100 py-3">
-                <i class="fas fa-plus me-2"></i> Nouvelle page
-            </a>
+        <div class="col-6 col-lg">
+            <div class="bw-kpi">
+                <div class="bw-kpi__icon" style="background: #fef3c7; color: #d97706;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="bw-kpi__data">
+                    <div class="bw-kpi__value">{{ stats.viewsMonth }}</div>
+                    <div class="bw-kpi__label">Visites ce mois</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="bw-kpi">
+                <div class="bw-kpi__icon" style="background: #dcfce7; color: #16a34a;">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="bw-kpi__data">
+                    <div class="bw-kpi__value">{{ stats.articlesPublished }}</div>
+                    <div class="bw-kpi__label">Articles publi&eacute;s</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="bw-kpi">
+                <div class="bw-kpi__icon" style="background: #f3e8ff; color: #7c3aed;">
+                    <i class="fas fa-file-lines"></i>
+                </div>
+                <div class="bw-kpi__data">
+                    <div class="bw-kpi__value">{{ stats.pagesPublished }}</div>
+                    <div class="bw-kpi__label">Pages publi&eacute;es</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="bw-kpi">
+                <div class="bw-kpi__icon" style="background: #fce7f3; color: #db2777;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="bw-kpi__data">
+                    <div class="bw-kpi__value">{{ stats.commentsCount }}</div>
+                    <div class="bw-kpi__label">Commentaires</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    {# --- Cards principales --- #}
-    <div class="row g-4 pb-5 row-cols-1 row-cols-lg-3">
-        {% if is_granted('ROLE_ADMIN') %}
-            <div class="col-12 col-lg-4">
-                <div class="feature d-flex flex-column justify-content-between h-100">
-                    <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                        <i class="fa-fw fas fa-gear"></i>
-                        <h3 class="fs-2 ps-1 feature-title">Identité du site</h3>
+    {# --- Graphe visites 30j --- #}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="bw-card">
+                <div class="bw-card__header">
+                    <h3 class="bw-card__title"><i class="fas fa-chart-area me-2"></i>Visites des 30 derniers jours</h3>
+                </div>
+                <div class="bw-card__body">
+                    <canvas id="visitsChart" height="260"
+                        data-stats='{{ stats.dailyStats|json_encode }}'
+                    ></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- Activite recente + Actions rapides --- #}
+    <div class="row g-3 mb-4">
+        {# Derniers articles #}
+        <div class="col-12 col-lg-4">
+            <div class="bw-card bw-card--full">
+                <div class="bw-card__header">
+                    <h3 class="bw-card__title"><i class="fas fa-pen-to-square me-2"></i>Derniers articles</h3>
+                    <a href="{{ url_articles }}" class="bw-card__link">Tout voir</a>
+                </div>
+                <div class="bw-card__body bw-card__body--list">
+                    {% if stats.recentArticles|length > 0 %}
+                        {% for article in stats.recentArticles %}
+                        <div class="bw-activity-item">
+                            <div class="bw-activity-item__content">
+                                <div class="bw-activity-item__title">{{ article.title|u.truncate(45, '...') }}</div>
+                                <div class="bw-activity-item__meta">
+                                    {{ article.createdAt|date('d/m/Y') }}
+                                    {% if not article.published %}
+                                        <span class="badge bg-warning text-dark ms-1">Brouillon</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted p-3 mb-0">Aucun article pour le moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Derniers commentaires #}
+        <div class="col-12 col-lg-4">
+            <div class="bw-card bw-card--full">
+                <div class="bw-card__header">
+                    <h3 class="bw-card__title"><i class="fas fa-comments me-2"></i>Derniers commentaires</h3>
+                    <a href="{{ url_comments }}" class="bw-card__link">Tout voir</a>
+                </div>
+                <div class="bw-card__body bw-card__body--list">
+                    {% if stats.recentComments|length > 0 %}
+                        {% for comment in stats.recentComments %}
+                        <div class="bw-activity-item">
+                            <div class="bw-activity-item__content">
+                                <div class="bw-activity-item__title">{{ comment.content|u.truncate(50, '...') }}</div>
+                                <div class="bw-activity-item__meta">
+                                    {{ comment.user.firstName ?? 'Anonyme' }} &mdash; {{ comment.createdAt|date('d/m/Y') }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted p-3 mb-0">Aucun commentaire pour le moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Actions rapides #}
+        <div class="col-12 col-lg-4">
+            <div class="bw-card bw-card--full">
+                <div class="bw-card__header">
+                    <h3 class="bw-card__title"><i class="fas fa-bolt me-2"></i>Actions rapides</h3>
+                </div>
+                <div class="bw-card__body bw-quick-actions">
+                    <a href="{{ url_new_article }}" class="bw-quick-action">
+                        <span class="bw-quick-action__icon" style="background: #dbeafe; color: #2563eb;">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        Nouvel article
+                    </a>
+                    <a href="{{ url_new_page }}" class="bw-quick-action">
+                        <span class="bw-quick-action__icon" style="background: #f3e8ff; color: #7c3aed;">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        Nouvelle page
+                    </a>
+                    <a href="{{ url_media }}" class="bw-quick-action">
+                        <span class="bw-quick-action__icon" style="background: #fef3c7; color: #d97706;">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        Ajouter un m&eacute;dia
+                    </a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ url_site }}" class="bw-quick-action">
+                        <span class="bw-quick-action__icon" style="background: #dcfce7; color: #16a34a;">
+                            <i class="fas fa-building"></i>
+                        </span>
+                        Identit&eacute; du site
+                    </a>
+                    <a href="{{ path('admin_menu_manager') }}" class="bw-quick-action">
+                        <span class="bw-quick-action__icon" style="background: #fce7f3; color: #db2777;">
+                            <i class="fas fa-bars"></i>
+                        </span>
+                        G&eacute;rer la navigation
+                    </a>
+                    {% endif %}
+                    <a href="{{ path('admin_guide') }}" class="bw-quick-action">
+                        <span class="bw-quick-action__icon" style="background: #e0f2fe; color: #0284c7;">
+                            <i class="fas fa-book-open"></i>
+                        </span>
+                        Consulter le guide
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- Widget e-commerce --- #}
+    {% if ecommerceStats is not null %}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="bw-card">
+                <div class="bw-card__header">
+                    <h3 class="bw-card__title"><i class="fas fa-shopping-bag me-2"></i>Ventes du mois</h3>
+                </div>
+                <div class="bw-card__body">
+                    <div class="row g-3 mb-3">
+                        <div class="col-6 col-lg-3">
+                            <div class="bw-kpi bw-kpi--compact">
+                                <div class="bw-kpi__value text-primary">{{ ecommerceStats.revenueThisMonth|number_format(2, ',', ' ') }} &euro;</div>
+                                <div class="bw-kpi__label">Chiffre d'affaires</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="bw-kpi bw-kpi--compact">
+                                <div class="bw-kpi__value" style="color: #16a34a;">{{ ecommerceStats.countPaidThisMonth }}</div>
+                                <div class="bw-kpi__label">Commandes pay&eacute;es</div>
+                            </div>
+                        </div>
                     </div>
-                    <p>Nom, coordonnées, logo : les informations essentielles de votre site.</p>
-                    <a href="{{ url_site }}" class="btn-font-secondary btn btn-secondary">Modifier</a>
+
+                    {% if ecommerceStats.recentOrders|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>R&eacute;f.</th>
+                                    <th>Client</th>
+                                    <th>Total</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in ecommerceStats.recentOrders %}
+                                <tr>
+                                    <td><code>{{ order.reference }}</code></td>
+                                    <td>{{ order.customerFirstName }} {{ order.customerLastName }}</td>
+                                    <td>{{ order.totalTTC|number_format(2, ',', ' ') }} &euro;</td>
+                                    <td><span class="badge {{ order.status.cssClass }}">{{ order.status.label }}</span></td>
+                                    <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
                 </div>
-            </div>
-        {% endif %}
-        <div class="col-12 col-lg-4">
-            <div class="feature d-flex flex-column justify-content-between h-100">
-                <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                    <i class="fa-fw fas fa-file"></i>
-                    <h3 class="fs-2 ps-1 feature-title">Pages</h3>
-                </div>
-                <p>Gérez les pages de votre site web.</p>
-                <a href="{{ url_page }}" class="btn-font-secondary btn btn-secondary">Voir les pages</a>
-            </div>
-        </div>
-        <div class="col-12 col-lg-4">
-            <div class="feature d-flex flex-column justify-content-between h-100">
-                <div class="feature-icon d-inline-flex align-items-baseline justify-content-center fs-2 mb-3">
-                    <i class="fa-fw fas fa-newspaper"></i>
-                    <h3 class="fs-2 ps-1 feature-title">Blog</h3>
-                </div>
-                <p>Publiez des articles pour vos visiteurs et votre référencement.</p>
-                <a href="{{ url_blog }}" class="btn-font-secondary btn btn-secondary">Voir les articles</a>
             </div>
         </div>
     </div>
+    {% endif %}
 
-    {# --- Zone aide --- #}
-    <div class="row">
-        <div class="col-12 col-lg-4 offset-lg-8">
-            <div class="content-color p-3 rounded">
-                <h2 class="help-title"><i class="fa fa-question-circle me-2"></i>Aide</h2>
-                <p class="mb-0">Retrouvez ici des astuces sur la gestion de votre site et les bases du référencement.</p>
+    {# --- Stats brouillons (info utile) --- #}
+    {% if stats.articlesDrafts > 0 %}
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="bw-info-bar">
+                <i class="fas fa-info-circle me-2"></i>
+                Vous avez <strong>{{ stats.articlesDrafts }}</strong> article{{ stats.articlesDrafts > 1 ? 's' : '' }} en brouillon.
+                <a href="{{ url_articles }}">Voir les brouillons</a>
             </div>
         </div>
     </div>
+    {% endif %}
 
+</div>
 {% endblock %}

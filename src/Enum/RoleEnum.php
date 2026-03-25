@@ -5,7 +5,6 @@ namespace App\Enum;
 enum RoleEnum:string
 {
     case ROLE_USER = 'ROLE_USER';
-    case ROLE_CORRECTOR = 'ROLE_CORRECTOR';
     case ROLE_AUTHOR = 'ROLE_AUTHOR';
     case ROLE_ADMIN = 'ROLE_ADMIN';
     case ROLE_FREELANCE = 'ROLE_FREELANCE';
@@ -14,8 +13,7 @@ enum RoleEnum:string
     public function label()
     {
         return match($this) {
-            self::ROLE_USER => 'User',
-            self::ROLE_CORRECTOR => 'Correcteur',
+            self::ROLE_USER => 'Utilisateur',
             self::ROLE_AUTHOR => 'Auteur',
             self::ROLE_ADMIN => 'Admin',
             self::ROLE_FREELANCE => 'Freelance',

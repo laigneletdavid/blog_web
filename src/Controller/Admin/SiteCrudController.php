@@ -17,9 +17,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class SiteCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly SiteContext $siteContext,
     ) {
@@ -28,6 +32,38 @@ class SiteCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Site::class;
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Identite du site',
+            'sections' => [
+                [
+                    'title' => 'Informations essentielles',
+                    'content' => '<p>Cette page contient les informations de base de votre site :</p>
+                    <ul>
+                        <li><strong>Nom du site</strong> — Affiche dans le header, le footer et les onglets du navigateur</li>
+                        <li><strong>Description</strong> — Texte de presentation utilise par defaut pour le SEO</li>
+                        <li><strong>Coordonnees</strong> — Email de contact, telephone, adresse</li>
+                        <li><strong>Logo</strong> — Affiche dans le header du site</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'SEO global',
+                    'content' => '<p>Les champs <em>Titre SEO par defaut</em> et <em>Description SEO par defaut</em> sont utilises comme valeurs de repli quand un article ou une page n\'a pas ses propres champs SEO remplis.</p>',
+                ],
+                [
+                    'title' => 'Google Analytics & Search Console',
+                    'content' => '<p>Collez votre <strong>ID Google Analytics</strong> (format GA-XXXXXXX) pour activer le suivi de visites Google.</p>
+                    <p>Le champ <strong>Google Search Console</strong> sert a la verification de propriete du site.</p>',
+                ],
+            ],
+            'tips' => [
+                'Commencez par remplir le nom, la description et l\'email de contact. Ce sont les 3 champs les plus importants.',
+                'Le logo est affiche en petit dans le header. Privilegiez un format horizontal ou carre, en PNG transparent.',
+            ],
+        ];
     }
 
     public function configureActions(Actions $actions): Actions
