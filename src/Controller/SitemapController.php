@@ -32,6 +32,8 @@ class SitemapController extends AbstractController
         $events = $siteContext->hasModule('events') ? $eventRepository->findAllActiveForSitemap() : [];
         $products = $siteContext->hasModule('catalogue') ? $productRepository->findForSitemap() : [];
 
+        $legalPages = $pageRepository->findAllSystemPages();
+
         $response = $this->render('sitemap/index.xml.twig', [
             'articles' => $articles,
             'pages' => $pages,
@@ -39,6 +41,7 @@ class SitemapController extends AbstractController
             'services' => $services,
             'events' => $events,
             'products' => $products,
+            'legalPages' => $legalPages,
         ]);
 
         $response->headers->set('Content-Type', 'application/xml');

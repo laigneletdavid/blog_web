@@ -66,6 +66,39 @@ class PageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findSystemPage(string $systemKey): ?Page
+    {
+        return $this->findOneBy(['system_key' => $systemKey]);
+    }
+
+    /**
+     * @return Page[]
+     */
+    public function findAllSystemPages(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.is_system = true')
+            ->andWhere('p.published = true')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Published non-system pages (for menu sources panel).
+     *
+     * @return Page[]
+     */
+    public function findCustomPages(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->andWhere('p.is_system = false')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param string[] $allowedVisibilities
      * @return Page[]

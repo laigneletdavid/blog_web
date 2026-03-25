@@ -76,4 +76,17 @@
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
+
+    {% for legalPage in legalPages|default([]) %}
+    <url>
+        <loc>{{ absolute_url('/' ~ legalPage.slug) }}</loc>
+        {% if legalPage.updatedAt %}
+        <lastmod>{{ legalPage.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif legalPage.createdAt %}
+        <lastmod>{{ legalPage.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    {% endfor %}
 </urlset>

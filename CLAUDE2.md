@@ -594,111 +594,261 @@ E-commerce light pour tous les profils : asso qui vend des cotisations/places, a
 
 ---
 
-## Phase 12 — Navigation, Pages légales & Menus
+## Phase 12 — Navigation, Pages Légales & Cookie Consent ✅
 
-> Temps estimé : ~1.5 jours
-> Prérequis : toutes les phases précédentes (pour avoir la liste complète des entrées de menu possibles)
+> **Approche** : theme.yaml déclare les zones de menu + items système → matérialisés en BDD par les commandes init/sync → admin peut éditer/réordonner/masquer mais pas supprimer les items système.
 
-**Pourquoi en dernier ?** À ce stade, tous les modules existent (blog, services, événements, catalogue, boutique). On peut construire un système de menu qui couvre tous les cas, avec les bonnes liaisons.
+### 12.1 Entités & Migration ✅
 
-### 12.1 Refonte entité Menu
+#### Menu entity — 5 nouveaux champs
 
-**Problème actuel** : une seule entité Menu plate, pas de zones, pas de sous-menus structurés, liens manuels fragiles.
+| Champ | Type | Default | Notes |
+|-------|------|---------|-------|
+| `location` | string(20) | `'header'` | Zone : `header`, `footer_nav`, `footer_legal` (indexé) |
+| `is_system` | bool | false | Items créés par init/sync, non-supprimables |
+| `system_key` | string(50) | null | ID unique par zone (`home`, `blog`, `contact`, `mentions-legales`...) |
+| `route` | string(100) | null | Route Symfony (prioritaire sur target/article/page) |
+| `route_params` | JSON | null | Params de route (ex: `{"type": "mentions-legales"}`) |
 
-**Nouvelle structure :**
+- [x] Modifier `src/Entity/Menu.php` avec les 5 champs
+- [x] Index UNIQUE `(location, system_key)` — MariaDB autorise NULL multiples
+- [x] Index sur `location`
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `label` | string(255) | Texte affiché |
-| `zone` | string (enum: `header`, `footer`, `legal`) | Zone d'affichage |
-| `type` | string (enum) | `page`, `article_list`, `service_list`, `event_list`, `product_list`, `category`, `external`, `home`, `contact` |
-| `targetPage` | ManyToOne Page (nullable) | Si type = `page` |
-| `targetCategory` | ManyToOne Categorie (nullable) | Si type = `category` |
-| `externalUrl` | string(255, nullable) | Si type = `external` |
-| `parent` | ManyToOne Menu (nullable, self-ref) | Sous-menus |
-| `position` | integer (default 0) | Ordre |
-| `isVisible` | boolean (default true) | |
-| `linkedModule` | string (nullable) | Slug module → auto-masqué si module désactivé |
-| `cssClass` | string(100, nullable) | Classe CSS custom (optionnel) |
-| `openInNewTab` | boolean (default false) | Target blank |
+#### Page entity — 2 nouveaux champs
 
-- [ ] Refondre `src/Entity/Menu.php` avec les champs ci-dessus
-- [ ] Créer `src/Enum/MenuZoneEnum.php` — `header`, `footer`, `legal`
-- [ ] Créer `src/Enum/MenuTypeEnum.php` — `home`, `page`, `article_list`, `service_list`, `event_list`, `product_list`, `category`, `contact`, `external`
-- [ ] `MenuRepository` : `findByZone(string $zone)` avec tri position, filtre module actif + isVisible, eager load children
-- [ ] Migration Doctrine (attention : migration de données depuis l'ancien schéma)
+| Champ | Type | Default | Notes |
+|-------|------|---------|-------|
+| `is_system` | bool | false | Pages légales non-supprimables |
+| `system_key` | string(50) | null | Unique : `mentions-legales`, `politique-confidentialite`, `cgv`, `cgu` |
 
-**Logique `linkedModule`** : quand `type = article_list` → `linkedModule = 'blog'`, `type = service_list` → `linkedModule = 'services'`, etc. Le repository filtre automatiquement les entrées dont le module est désactivé.
+- [x] Modifier `src/Entity/Page.php`
 
-**Génération d'URL par type :**
-```php
-match($menu->getType()) {
-    'home' => path('app_home'),
-    'page' => path('app_page_show', ['slug' => $menu->getTargetPage()->getSlug()]),
-    'article_list' => path('app_article_show_all'),
-    'service_list' => path('app_service_index'),
-    'event_list' => path('app_event_index'),
-    'product_list' => path('app_product_index'),
-    'category' => path('app_categorie_show', ['slug' => $menu->getTargetCategory()->getSlug()]),
-    'contact' => path('app_contact'),
-    'external' => $menu->getExternalUrl(),
-}
+#### Nouveaux Enums
+
+- [x] `src/Enum/SystemPageEnum.php` — `MENTIONS_LEGALES`, `POLITIQUE_CONFIDENTIALITE`, `CGV`, `CGU`
+  - `requiredModule()` → null (toujours) / `ecommerce` / `services`
+  - `title()`, `slug()`, `defaultContent()` (TipTap avec sections `[À COMPLÉTER]`)
+  - `alwaysRequired()` → mentions + confidentialité
+- [x] `src/Enum/MenuLocationEnum.php` — `HEADER`, `FOOTER_NAV`, `FOOTER_LEGAL`
+
+#### Migration
+- [x] ALTER menu : +5 colonnes, index location, unique (location, system_key)
+- [x] ALTER page : +2 colonnes, unique system_key
+- Données existantes préservées : tous les Menu → `location='header'`, `is_system=false`
+
+### 12.2 theme.yaml : zones de menu ✅
+
+Le `theme.yaml` déclare les zones et items système. Les autres thèmes héritent de `default` si pas de section `menus`.
+
+```yaml
+# templates/themes/default/theme.yaml
+menus:
+  header:
+    label: "Navigation principale"
+    items:
+      - { system_key: "home", name: "Accueil", route: "app_home" }
+      - { system_key: "blog", name: "Blog", route: "app_article_show_all", module: "blog" }
+      - { system_key: "services", name: "Services", route: "app_service_index", module: "services" }
+      - { system_key: "catalogue", name: "Catalogue", route: "app_product_index", module: "catalogue" }
+      - { system_key: "events", name: "Événements", route: "app_event_index", module: "events" }
+      - { system_key: "annuaire", name: "Annuaire", route: "app_directory", module: "directory" }
+      - { system_key: "contact", name: "Contact", route: "app_contact" }
+  footer_nav:
+    label: "Navigation footer"
+    items:
+      - { system_key: "home", name: "Accueil", route: "app_home" }
+      - { system_key: "blog", name: "Blog", route: "app_article_show_all", module: "blog" }
+      - { system_key: "contact", name: "Contact", route: "app_contact" }
+  footer_legal:
+    label: "Liens légaux"
+    items:
+      - { system_key: "mentions-legales", name: "Mentions légales", route: "app_legal_page", route_params: { type: "mentions-legales" } }
+      - { system_key: "politique-confidentialite", name: "Politique de confidentialité", route: "app_legal_page", route_params: { type: "politique-confidentialite" } }
+      - { system_key: "cgv", name: "CGV", route: "app_legal_page", route_params: { type: "cgv" }, module: "ecommerce" }
+      - { system_key: "cgu", name: "CGU", route: "app_legal_page", route_params: { type: "cgu" }, module: "services" }
 ```
 
-### 12.2 Pages légales (système)
+- [x] Ajouter section `menus` dans `templates/themes/default/theme.yaml`
+- [x] `ThemeService` : `getMenuZones()`, `getMenuItemsForZone()` avec fallback default
 
-**Objectif** : mentions légales, politique cookies, CGV sont des pages obligatoires, pré-créées, éditables mais non supprimables.
+### 12.3 Services ✅
 
-- [ ] Ajouter `isSystem` (boolean, default false) sur `Page` — les pages système ne peuvent pas être supprimées
-- [ ] Ajouter `systemSlug` (string nullable, unique) sur `Page` — identifiant technique (`mentions-legales`, `cookies`, `cgv`)
-- [ ] `app:init-site` : créer automatiquement les 3 pages légales avec contenu template pré-rempli :
-  - `mentions-legales` — Mentions légales (contenu type avec placeholders nom, adresse, SIRET)
-  - `politique-cookies` — Politique de cookies (contenu RGPD standard)
-  - `cgv` — Conditions Générales de Vente (contenu si module ecommerce actif, sinon non créée)
-- [ ] `PageCrudController` : masquer le bouton "Supprimer" sur les pages système (`configureActions` conditionnel)
-- [ ] Template dédié `templates/page/legal.html.twig` — layout épuré (pas de sidebar, pas d'image hero, juste le contenu centré)
-- [ ] Les pages légales utilisent le template `legal` automatiquement (détecté via `isSystem`)
+#### MenuSyncService (nouveau)
+**Fichier** : `src/Service/MenuSyncService.php`
 
-### 12.3 Admin Navigation (refonte)
+- [x] `syncAllZones(Site $site)` — lit theme.yaml, sync chaque zone
+- [x] `syncZone()` — upsert par system_key, masque si module inactif, préserve customisations admin (name, order)
+- [x] Gestion des orphelins après changement de thème
 
-- [ ] Refondre `MenuCrudController` / page admin Navigation :
-  - Vue par zone : onglets "Header" | "Footer" | "Légal"
-  - Drag & drop pour réordonner (Stimulus `sortable_controller.js`)
-  - Formulaire : label, type (dropdown dynamique), cible (selon type), zone, parent (sous-menu), options (new tab, CSS class)
-  - Preview en temps réel du menu (mini-rendu HTML)
-- [ ] Boutons rapides : "Ajouter Accueil", "Ajouter Blog", "Ajouter Services" — pré-remplis selon modules actifs
-- [ ] Validation : empêcher les liens vers des modules désactivés
+#### LegalPageContentService (nouveau)
+**Fichier** : `src/Service/LegalPageContentService.php`
 
-### 12.4 Intégration thèmes
+- [x] `createIfNotExists(SystemPageEnum $type): Page` — crée page système avec contenu HTML riche pré-rempli
+- [x] Contenu riche avec tableaux, listes structurées et placeholders `{{À_COMPLÉTER}}` :
+  - **mentions-legales** : Éditeur (tableau), Hébergeur (tableau), Propriété intellectuelle, Protection des données, Cookies (tableau), Limitation responsabilité, Droit applicable, Contact
+  - **politique-confidentialite** : Responsable traitement, Données collectées (3 sous-sections avec tableaux), Finalités, Base légale (tableau), Ce qu'on ne fait pas, Cookies (2 tableaux), Sous-traitants (tableau), Droits RGPD (tableau), Sécurité, Contact
+  - **cgv** : Objet, Vendeur, Prix, Commande (liste numérotée), Paiement, Livraison (tableau), Rétractation, Garanties, Responsabilité, Réclamations, Contact
+  - **cgu** : Objet, Éditeur, Accès, Inscription, Services, Propriété intellectuelle, Comportement utilisateur, Responsabilité, Liens hypertextes, Données perso, Modification CGU, Droit applicable, Contact
+- [x] SEO description auto-remplie, `noIndex: true` par défaut
 
-**Objectif** : chaque thème consomme les menus par zone, pas en dur.
+#### MenuService — mise à jour
+- [x] `findByLocation(string $location): array` — méthode principale, filtre zone + visibilité
+- [x] `findMenuTwig()` → délègue à `findByLocation('header')` (rétrocompat)
 
-- [ ] `MenuService` (ou extension Twig) : `getMenusByZone('header')`, `getMenusByZone('footer')`, `getMenusByZone('legal')`
-- [ ] Chaque `_header.html.twig` de thème : boucle sur `menus_header` au lieu de requête brute
-  - Sous-menus : dropdown Bootstrap (desktop) / accordion (mobile)
-  - Liens auto-générés via `MenuTypeEnum` → pas de `href="#"` en dur
-- [ ] Chaque `_footer.html.twig` de thème :
-  - Colonne "Navigation" → `menus_footer`
-  - Colonne "Légal" → `menus_legal` (mentions, cookies, CGV)
-  - Colonne "Contact" → infos depuis `Site` (adresse, téléphone, email)
-  - Liens sociaux → depuis `Site` (déjà existants)
-- [ ] Fallback : si aucun menu n'est configuré → menu par défaut généré depuis les modules actifs
+#### MenuRepository
+- [x] `findByLocation(string $location)` — eager-load, filtre visible, tri menu_order
+- [x] `findSystemByLocationAndKey(string $location, string $key): ?Menu`
 
-### 12.5 Bandeau cookies (RGPD)
+#### AppExtension — update menuLink
+- [x] Si `$menu->getRoute()` → `$router->generate(route, params)` (prioritaire sur target/article/page)
 
-- [ ] Stimulus `cookie_consent_controller.js` :
-  - Bandeau non-intrusif en bas de page (pas de modal bloquant)
-  - 3 boutons : "Accepter tout", "Refuser", "Personnaliser"
-  - Stockage `localStorage` (pas de cookie pour stocker le consentement = ironie)
-  - Si Google Analytics configuré → ne charge le script que si consent donné
-- [ ] Template `_partials/_cookie_banner.html.twig` — inclus dans `base.html.twig`
-- [ ] Lien vers la page "Politique de cookies" dans le bandeau
-- [ ] SCSS : `cookie_banner.scss`
+### 12.4 Pages légales ✅
 
-**Fichiers créés :** `MenuZoneEnum.php`, `MenuTypeEnum.php`, `MenuService.php`, `page/legal.html.twig`, `_cookie_banner.html.twig`, `cookie_consent_controller.js`, `sortable_controller.js`, `cookie_banner.scss`
-**Fichiers modifiés :** `Menu.php`, `MenuRepository.php`, `Page.php`, `PageCrudController.php`, `MenuCrudController.php`, `DashboardController.php`, `InitSiteCommand.php`, `base.html.twig`, 6× `_header.html.twig`, 6× `_footer.html.twig`
-**Migrations :** oui (Menu refonte + Page.isSystem + Page.systemSlug)
+#### LegalController (nouveau)
+**Fichier** : `src/Controller/LegalController.php`
+
+```php
+#[Route('/{type}', name: 'app_legal_page',
+    requirements: ['type' => 'mentions-legales|politique-de-confidentialite|conditions-generales-de-vente|conditions-generales-utilisation'],
+    priority: -10)]
+```
+
+- [x] Charge Page par `system_key`, 404 si pas trouvée
+- [x] Réutilise `page/show.html.twig` (template full-width)
+- [x] SEO via `SeoService::resolve($page)`
+
+#### SitemapController
+- [x] Ajouter pages légales publiées au sitemap (priority 0.3, changefreq yearly)
+
+#### Commande utilitaire
+- [x] `app:legal-pages:update` — met à jour le contenu des pages légales existantes avec le dernier template
+
+### 12.5 Templates thèmes (6 headers + 6 footers) ✅
+
+#### base.html.twig
+```twig
+{% set header_menus = menu_service.findByLocation('header') %}
+{% set footer_nav_menus = menu_service.findByLocation('footer_nav') %}
+{% set footer_legal_menus = menu_service.findByLocation('footer_legal') %}
+```
+- [x] Supprimer script GA inline (géré par cookie consent)
+- [x] Ajouter `{% include '_partials/_cookie_consent.html.twig' %}`
+
+#### 6 Headers — même pattern
+- [x] Remplacer liens hardcodés (Accueil, Blog, Contact) par boucle `header_menus`
+- [x] Support dropdown pour sous-menus
+- [x] Conserver éléments fonctionnels (search, cart, login)
+
+#### 6 Footers — même pattern
+- [x] Colonne Navigation → boucle `footer_nav_menus`
+- [x] Colonne Légal → boucle `footer_legal_menus`
+- [x] Conserver colonne Contact + liens sociaux
+
+### 12.6 Admin CRUD ✅
+
+#### MenuCrudController
+- [x] `location` (ChoiceField), `is_system` (BooleanField readonly), badge visuel
+- [x] Filtre par `location` sur l'index
+- [x] Bloquer suppression si `is_system = true`
+
+#### PageCrudController
+- [x] `is_system` (BooleanField readonly), slug readonly si système
+- [x] Bloquer suppression pages système
+- [x] TipTap reste éditable (client remplit ses infos légales)
+
+### 12.7 Commandes ✅
+
+#### app:init-site — enrichi
+- [x] Après création Site : crée pages légales obligatoires + sync menus système
+- [x] Résumé console
+
+#### app:module:enable {module} (nouveau)
+- [x] Active module dans `Site.enabledModules`
+- [x] Crée pages légales du module (ex: CGV pour ecommerce)
+- [x] Sync menus (rend visible les items du module)
+
+#### app:module:disable {module} (nouveau)
+- [x] Retire de `Site.enabledModules`
+- [x] Masque items menu (`is_visible = false`)
+- [x] Dépublie pages légales du module (préserve contenu)
+
+#### app:menu:sync (nouveau)
+- [x] Re-sync tous les items système depuis theme.yaml (utile après changement de thème)
+
+#### app:legal-pages:update (nouveau)
+- [x] Met à jour le contenu HTML des pages légales existantes avec le dernier template
+
+### 12.8 Bandeau Cookies (RGPD) ✅
+
+- [x] Stimulus `cookie_consent_controller.js` :
+  - Check localStorage, affiche banner si pas de choix
+  - Accepter → stocke consent, charge GA dynamiquement
+  - Refuser → stocke refus, pas de GA
+- [x] Template `_partials/_cookie_consent.html.twig` — fixed bottom, 2 boutons, lien politique confidentialité
+- [x] Affiché seulement si `site.googleAnalyticsId` configuré
+- [x] CSS dans `global.scss`
+
+### 12.9 Refonte CRUD Menu — Gestionnaire de Navigation ✅
+
+> Interface d'administration des menus refaite façon WordPress : 2 colonnes, sources à gauche, zones à droite.
+
+#### Layout 2 colonnes
+- [x] **Colonne gauche (30%) — Sources disponibles** :
+  - Accordéon "Pages système" : Accueil, Contact, pages légales (filtrées par modules actifs)
+  - Accordéon "Pages" : pages publiées non-système
+  - Accordéon "Catégories" : catégories d'articles
+  - Accordéon "Modules" : routes des modules actifs (Blog, Catalogue, Services, Événements, Annuaire)
+  - Bloc "Lien personnalisé" : champs Titre + URL + bouton Ajouter
+  - Bloc "Parent / Sous-menu" : crée un élément vide pour regrouper des sous-menus
+
+- [x] **Colonne droite (70%) — Zones de menu (3 onglets)** :
+  - Navigation principale (header)
+  - Footer navigation
+  - Footer légal
+  - Chaque onglet : liste drag-and-drop SortableJS avec 2 niveaux max
+
+#### Fonctionnalités
+- [x] **Ajout depuis sources** : checkboxes + bouton "Ajouter la sélection" → AJAX POST crée le Menu entity + injection DOM
+- [x] **Drag-and-drop** : SortableJS, réordonner + imbriquer (2 niveaux max), sauvegarde auto AJAX
+- [x] **Édition inline** : double-clic sur un nom → input text, sauvegarde AJAX au blur/Enter
+- [x] **Toggle visibilité** : œil/œil barré, sauvegarde AJAX
+- [x] **Suppression** : poubelle (refuse si is_system), détache les enfants avant suppression
+- [x] **Items système** : badge "Système" bleu, non-supprimables, éditables (nom, ordre, visibilité)
+- [x] **Badges colorés** : Système (bleu), Page (vert), Catégorie (jaune), Module (bleu), Lien (gris) — texte blanc
+- [x] **Items masqués** : opacité réduite (0.45) avec icône œil barré
+- [x] **Enregistrement 100% auto** : chaque action = appel AJAX instantané, pas de bouton Enregistrer
+- [x] **Responsive** : stack vertical sur mobile (<992px)
+
+#### API endpoints (5)
+| Route | Méthode | Action |
+|-------|---------|--------|
+| `/admin/api/menu/reorder` | POST | Réordonner (existant) |
+| `/admin/api/menu/toggle-visibility/{id}` | POST | Toggle visible (existant) |
+| `/admin/api/menu/add` | POST | Créer un item (nouveau) |
+| `/admin/api/menu/delete/{id}` | POST | Supprimer non-système (nouveau) |
+| `/admin/api/menu/rename/{id}` | POST | Renommer inline (nouveau) |
+
+#### Intégration admin sidebar
+- [x] "Navigation" déplacé de "Administration" vers "Apparence" (accessible `ROLE_ADMIN`)
+- [x] Section "Apparence" visible dès `ROLE_ADMIN` (Navigation), le reste `ROLE_FREELANCE`
+
+#### Backend
+- [x] `MenuRepository::findByLocationAllItems()` — tous les items (visibles + cachés) pour une zone
+- [x] `MenuRepository::getNextOrder()` — prochain menu_order pour une zone
+- [x] `PageRepository::findCustomPages()` — pages publiées non-système
+- [x] `MenuApiController` : 3 nouvelles routes (add, delete, rename) + CSRF validation
+- [x] `DashboardController::menuManager()` : enrichi avec sources (pages système, custom, catégories, modules)
+
+**Fichiers réécrits/modifiés (7) :** `templates/admin/menu/sortable.html.twig` (réécriture complète), `assets/admin/menu-sortable.js` (~280 lignes, réécriture complète), `assets/admin/menu-sortable.scss` (refonte styles), `MenuApiController.php` (+3 routes), `DashboardController.php` (menuManager enrichi + sidebar réorganisée), `MenuRepository.php` (+2 méthodes), `PageRepository.php` (+1 méthode)
+
+### Fichiers créés (~11)
+`SystemPageEnum.php`, `MenuLocationEnum.php`, `MenuSyncService.php`, `LegalPageContentService.php`, `LegalController.php`, `LegalPagesUpdateCommand.php`, `ModuleEnableCommand.php`, `ModuleDisableCommand.php`, `MenuSyncCommand.php`, `cookie_consent_controller.js`, `_cookie_consent.html.twig`
+
+### Fichiers modifiés (~30)
+`Menu.php`, `Page.php`, `MenuService.php`, `ThemeService.php`, `MenuRepository.php`, `PageRepository.php`, `AppExtension.php`, `InitSiteCommand.php`, `MenuCrudController.php`, `PageCrudController.php`, `MenuApiController.php`, `DashboardController.php`, `SitemapController.php`, `base.html.twig`, `templates/admin/menu/sortable.html.twig`, `assets/admin/menu-sortable.js`, `assets/admin/menu-sortable.scss`, 6× `_header.html.twig`, 6× `_footer.html.twig`, `templates/themes/default/theme.yaml`, `global.scss`, `SETUP.md`
+
+### Migration
+Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
 
 ---
 

@@ -40,6 +40,40 @@ class MenuRepository extends ServiceEntityRepository
     }
 
     /**
+     * Visible root menu items for a specific location, with children eager-loaded.
+     *
+     * @return Menu[]
+     */
+    public function findByLocation(string $location): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.children', 'c', 'WITH', 'c.is_visible = true')
+            ->addSelect('c')
+            ->leftJoin('m.article', 'ma')->addSelect('ma')
+            ->leftJoin('m.categorie', 'mc')->addSelect('mc')
+            ->leftJoin('m.page', 'mp')->addSelect('mp')
+            ->leftJoin('c.article', 'ca')->addSelect('ca')
+            ->leftJoin('c.categorie', 'cc')->addSelect('cc')
+            ->leftJoin('c.page', 'cp')->addSelect('cp')
+            ->where('m.is_visible = true')
+            ->andWhere('m.parent IS NULL')
+            ->andWhere('m.location = :location')
+            ->setParameter('location', $location)
+            ->orderBy('m.menu_order', 'ASC')
+            ->addOrderBy('c.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSystemByLocationAndKey(string $location, string $systemKey): ?Menu
+    {
+        return $this->findOneBy([
+            'location' => $location,
+            'system_key' => $systemKey,
+        ]);
+    }
+
+    /**
      * Root visible menu items with visible children eager-loaded.
      *
      * @return Menu[]
@@ -78,6 +112,46 @@ class MenuRepository extends ServiceEntityRepository
             ->addOrderBy('c.menu_order', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * All root menu items (visible AND hidden) for a specific location, for admin menu manager.
+     *
+     * @return Menu[]
+     */
+    public function findByLocationAllItems(string $location): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.children', 'c')
+            ->addSelect('c')
+            ->leftJoin('m.article', 'ma')->addSelect('ma')
+            ->leftJoin('m.categorie', 'mc')->addSelect('mc')
+            ->leftJoin('m.page', 'mp')->addSelect('mp')
+            ->leftJoin('c.article', 'ca')->addSelect('ca')
+            ->leftJoin('c.categorie', 'cc')->addSelect('cc')
+            ->leftJoin('c.page', 'cp')->addSelect('cp')
+            ->where('m.parent IS NULL')
+            ->andWhere('m.location = :location')
+            ->setParameter('location', $location)
+            ->orderBy('m.menu_order', 'ASC')
+            ->addOrderBy('c.menu_order', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get the next menu_order value for a location.
+     */
+    public function getNextOrder(string $location): int
+    {
+        $result = $this->createQueryBuilder('m')
+            ->select('MAX(m.menu_order)')
+            ->where('m.location = :location')
+            ->setParameter('location', $location)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return ($result ?? 0) + 1;
     }
 
     /**

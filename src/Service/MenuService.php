@@ -20,7 +20,15 @@ class MenuService
      */
     public function findMenuTwig(): array
     {
-        $menus = $this->menuRepository->findMenuVisible();
+        return $this->findByLocation('header');
+    }
+
+    /**
+     * @return Menu[]
+     */
+    public function findByLocation(string $location): array
+    {
+        $menus = $this->menuRepository->findByLocation($location);
 
         return array_filter($menus, fn (Menu $menu) => $this->isMenuAccessible($menu));
     }

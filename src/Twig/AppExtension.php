@@ -170,6 +170,11 @@ class AppExtension extends AbstractExtension
 
     public function menuLink(Menu $menu): string
     {
+        // System menu items use named routes
+        if ($menu->getRoute() !== null) {
+            return $this->router->generate($menu->getRoute(), $menu->getRouteParams() ?? []);
+        }
+
         if ($menu->getTarget() === 'url' && $menu->getUrl() !== null) {
             return $menu->getUrl();
         }

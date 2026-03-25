@@ -14,11 +14,9 @@
             </a>
 
             <nav class="d-flex align-items-center gap-3">
-                {% for menu in menus %}
+                {% for menu in header_menus %}
                     <a href="{{ menu|menuLink }}" class="start-nav-link">{{ menu.name }}</a>
                 {% endfor %}
-                <a href="{{ path('app_article_show_all') }}" class="start-nav-link">Blog</a>
-                <a href="{{ path('app_contact') }}" class="start-nav-link">Contact</a>
                 <div class="header-search dropdown ms-3" data-controller="search">
                     <form class="d-flex align-items-center gap-2" action="{{ path('app_search_results') }}" method="get" data-search-target="form" data-api-url="{{ path('app_search') }}" data-action="search#doSearch:prevent">
                         <input type="search" name="q" class="form-control form-control-sm search-input" placeholder="Rechercher..." aria-label="Rechercher" data-search-target="q" autocomplete="off">
@@ -61,12 +59,9 @@
                     <div class="dropdown-menu" data-search-target="results"></div>
                 </div>
                 <ul class="navbar-nav mb-4">
-                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
-                    {% for menu in menus %}
+                    {% for menu in header_menus %}
                         <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
                     {% endfor %}
-                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
                 </ul>
                 {% include '_partials/_cart_badge.html.twig' %}
             </div>

@@ -1,4 +1,7 @@
-{% set menus = menu_service.findMenuTwig %}
+{% set header_menus = menu_service.findByLocation('header') %}
+{% set footer_nav_menus = menu_service.findByLocation('footer_nav') %}
+{% set footer_legal_menus = menu_service.findByLocation('footer_legal') %}
+{% set menus = header_menus %}
 {% set widget_articles = widget_service.findLastArticle %}
 {% set widget_article = widget_articles['0'] | default(null) %}
 {% set categories = widget_service.findCategories %}
@@ -105,11 +108,7 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
 
-        {# ====== Google Analytics ====== #}
-        {% if site is not null and site.googleAnalyticsId is not null and site.googleAnalyticsId is not empty %}
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.googleAnalyticsId }}"></script>
-        <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ site.googleAnalyticsId }}');</script>
-        {% endif %}
+        {# Google Analytics is loaded by cookie consent controller #}
     </head>
     <body class="theme-{{ _theme }}{% if _is_preview %} is-preview{% endif %}">
         {% if _is_preview %}
@@ -183,6 +182,9 @@
         })();
         </script>
         {% endif %}
+
+        {# ====== COOKIE CONSENT ====== #}
+        {% include '_partials/_cookie_consent.html.twig' %}
 
     </body>
 </html>

@@ -13,11 +13,12 @@
             </a>
 
             <nav class="header-nav d-flex align-items-center gap-1">
-                <a href="{{ path('app_home') }}" class="nav-link">Accueil</a>
-                {% for menu in menus %}
+                {% for menu in header_menus %}
                     {% if menu.children|length > 0 %}
                         <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown">{{ menu.name }}</a>
+                            <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ menu.name }}
+                            </a>
                             <ul class="dropdown-menu">
                                 {% for child in menu.children %}
                                     {% if child.isVisible %}
@@ -30,7 +31,6 @@
                         <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
                     {% endif %}
                 {% endfor %}
-                <a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a>
             </nav>
 
             <div class="header-actions d-flex align-items-center gap-2">
@@ -82,12 +82,9 @@
                     <div class="dropdown-menu" data-search-target="results"></div>
                 </div>
                 <ul class="navbar-nav mb-4">
-                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
-                    {% for menu in menus %}
+                    {% for menu in header_menus %}
                         <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
                     {% endfor %}
-                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
                 </ul>
                 {% include '_partials/_cart_badge.html.twig' %}
                 <div class="d-grid gap-2">

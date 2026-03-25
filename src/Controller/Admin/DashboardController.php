@@ -56,10 +56,59 @@ class DashboardController extends AbstractDashboardController
 
     #[Route('/admin/menu-manager', name: 'admin_menu_manager')]
     #[IsGranted('ROLE_ADMIN')]
-    public function menuManager(MenuRepository $menuRepository): Response
-    {
+    public function menuManager(
+        MenuRepository $menuRepository,
+        \App\Repository\PageRepository $pageRepository,
+        \App\Repository\CategorieRepository $categorieRepository,
+        \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfTokenManager,
+    ): Response {
+        $site = $this->siteContext->getCurrentSite();
+        $enabledModules = $site?->getEnabledModules() ?? [];
+
+        // Build sources for the left panel
+        $systemPages = [
+            ['name' => 'Accueil', 'route' => 'app_home'],
+            ['name' => 'Contact', 'route' => 'app_contact'],
+        ];
+
+        // Legal pages
+        foreach ($pageRepository->findAllSystemPages() as $page) {
+            $systemPages[] = [
+                'name' => $page->getTitle(),
+                'pageId' => $page->getId(),
+                'target' => 'page',
+            ];
+        }
+
+        // Module routes
+        $moduleRoutes = [];
+        $moduleMap = [
+            'blog' => ['name' => 'Blog', 'route' => 'app_article_show_all'],
+            'services' => ['name' => 'Services', 'route' => 'app_service_index'],
+            'catalogue' => ['name' => 'Catalogue', 'route' => 'app_product_index'],
+            'events' => ['name' => 'Événements', 'route' => 'app_event_index'],
+            'directory' => ['name' => 'Annuaire', 'route' => 'app_directory'],
+        ];
+        foreach ($moduleMap as $module => $info) {
+            if (in_array($module, $enabledModules, true)) {
+                $moduleRoutes[] = $info;
+            }
+        }
+
         return $this->render('admin/menu/sortable.html.twig', [
-            'menus' => $menuRepository->findAllOrdered(),
+            'menus' => [
+                'header' => $menuRepository->findByLocationAllItems('header'),
+                'footer_nav' => $menuRepository->findByLocationAllItems('footer_nav'),
+                'footer_legal' => $menuRepository->findByLocationAllItems('footer_legal'),
+            ],
+            'sources' => [
+                'system_pages' => $systemPages,
+                'custom_pages' => $pageRepository->findCustomPages(),
+                'categories' => $categorieRepository->findAll(),
+                'modules' => $moduleRoutes,
+            ],
+            'locations' => \App\Enum\MenuLocationEnum::choices(),
+            'csrf_token' => $csrfTokenManager->getToken('menu_reorder')->getValue(),
         ]);
     }
 
@@ -207,14 +256,20 @@ class DashboardController extends AbstractDashboardController
                 ->setAction(Crud::PAGE_EDIT)
                 ->setEntityId($this->siteContext->getCurrentSiteId());
 
-            yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager');
-
             yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
         }
 
-        // --- Apparence (ROLE_FREELANCE+) ---
-        if ($this->isGranted('ROLE_FREELANCE')) {
+        // --- Apparence (ROLE_ADMIN for Navigation, ROLE_FREELANCE for the rest) ---
+        if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::section('Apparence');
+
+            yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager');
+        }
+
+        if ($this->isGranted('ROLE_FREELANCE')) {
+            if (!$this->isGranted('ROLE_ADMIN')) {
+                yield MenuItem::section('Apparence');
+            }
 
             yield MenuItem::linkToRoute('Catalogue de themes', 'fas fa-palette', 'admin_theme_browser');
 
