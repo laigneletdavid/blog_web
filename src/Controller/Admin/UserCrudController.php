@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\User;
 use App\Enum\RoleEnum;
+use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -22,8 +23,8 @@ class UserCrudController extends AbstractCrudController
 
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher,
-    )
-    {
+        private SiteContext $siteContext,
+    ) {
     }
 
     public static function getEntityFqcn(): string
@@ -70,6 +71,17 @@ class UserCrudController extends AbstractCrudController
             ->setChoices(RoleEnum::choices());
         yield BooleanField::new('news');
         yield BooleanField::new('articles');
+
+        if ($this->siteContext->hasModule('directory')) {
+            yield BooleanField::new('isDirectoryVisible', 'Visible dans l\'annuaire')
+                ->setHelp('Rend ce membre visible dans l\'annuaire public du site');
+            yield TextField::new('company', 'Entreprise')
+                ->hideOnIndex();
+            yield TextField::new('jobTitle', 'Poste')
+                ->hideOnIndex();
+            yield TextField::new('phone', 'Telephone')
+                ->hideOnIndex();
+        }
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void

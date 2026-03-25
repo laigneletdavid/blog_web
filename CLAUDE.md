@@ -69,13 +69,13 @@ Les SCSS utilisent `var(--primary)` — personnalisation sans rebuild Webpack.
 ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 ```
 
-| Rôle | Qui | Accès |
-|------|-----|-------|
-| `ROLE_USER` | Client final | Lecture, commentaires, profil |
-| `ROLE_AUTHOR` | Rédacteur client | Création/édition articles et pages |
-| `ROLE_ADMIN` | Admin client | Gestion complète du site (users, menus, médias) |
-| `ROLE_FREELANCE` | Freelance revendeur | Idem SUPER_ADMIN sur ses propres sites uniquement |
-| `ROLE_SUPER_ADMIN` | David | Accès total, tous les sites, config infrastructure |
+| Rôle | Qui | Accès | Visibilité contenu |
+|------|-----|-------|--------------------|
+| `ROLE_USER` | Client final | Lecture, commentaires, profil, annuaire | `public` + `user` |
+| `ROLE_AUTHOR` | Rédacteur client | Création/édition articles et pages | `public` + `user` + `author` |
+| `ROLE_ADMIN` | Admin client | Gestion complète du site (users, menus, médias) | Tout |
+| `ROLE_FREELANCE` | Freelance revendeur | Idem SUPER_ADMIN sur ses propres sites uniquement | Tout |
+| `ROLE_SUPER_ADMIN` | David | Accès total, tous les sites, config infrastructure | Tout |
 
 ### Modèle de distribution freelance
 

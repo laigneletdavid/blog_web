@@ -80,6 +80,28 @@
 </section>
 {% endif %}
 
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
+{# ====== ÉVÉNEMENTS (si module actif) ====== #}
+{% if upcomingEvents|default([])|length > 0 %}
+<section class="home-events py-5">
+    <div class="container">
+        <h2 class="section-title">Prochains événements</h2>
+        <div class="events-grid events-grid--home">
+            {% for event in upcomingEvents %}
+                {% include '_partials/_event_card.html.twig' with { event: event } %}
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_event_index') }}" class="btn btn-outline-primary">Voir tous les événements</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 {# ====== METRICS ====== #}
 <section class="metrics">
     <div class="container">

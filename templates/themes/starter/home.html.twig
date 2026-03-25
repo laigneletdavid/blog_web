@@ -23,6 +23,11 @@
 </section>
 {% endif %}
 
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
 {# ====== DERNIERS ARTICLES — liste simple ====== #}
 <section class="start-articles">
     <div class="container">

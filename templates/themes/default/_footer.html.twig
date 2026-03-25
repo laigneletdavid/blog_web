@@ -30,10 +30,9 @@
             <div class="col-lg-4 mb-4 mb-lg-0">
                 <h6 class="footer-section">Navigation</h6>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
-                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Aide & assistance</a></li>
+                    {% for menu in footer_nav_menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
 
@@ -41,8 +40,9 @@
             <div class="col-lg-4">
                 <h6 class="footer-section">Informations</h6>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a href="#" class="nav-link">Mentions legales</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Confidentialite & Cookies</a></li>
+                    {% for menu in footer_legal_menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

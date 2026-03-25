@@ -21,15 +21,20 @@
                     {% if site.address1 %}<li class="nav-item"><span class="nav-link">{{ site.address1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</span></li>{% endif %}
                 </ul>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-2">
                 <h6 class="footer-heading">Navigation</h6>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
-                    {% for menu in menus %}
-                    <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% for menu in footer_nav_menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
                     {% endfor %}
-                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2">
+                <h6 class="footer-heading">Informations</h6>
+                <ul class="nav flex-column">
+                    {% for menu in footer_legal_menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

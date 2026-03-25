@@ -43,6 +43,11 @@
     </div>
 </section>
 
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
 {# ====== A PROPOS ====== #}
 <section class="vit-about" id="vit-about">
     <div class="container">

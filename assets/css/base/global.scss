@@ -192,3 +192,22 @@ a {
     padding-right: 1rem;
   }
 }
+
+// =============================================================================
+// Cookie Consent Banner
+// =============================================================================
+.cookie-consent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: var(--surface, #f8fafc);
+  border-top: 1px solid var(--border, #e2e8f0);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+
+  a {
+    color: var(--primary, #2563eb);
+    text-decoration: underline;
+  }
+}

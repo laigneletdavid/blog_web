@@ -46,6 +46,11 @@
     </div>
 </section>
 
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
 {# ====== GALERIE ====== #}
 {% set gallery = site.getGalleryBySlot('gallery') %}
 {% if gallery|length > 0 %}

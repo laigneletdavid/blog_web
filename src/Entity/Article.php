@@ -64,6 +64,9 @@ class Article implements TimestampedInterface
     #[ORM\Column(options: ['default' => false])]
     private bool $isFeatured = false;
 
+    #[ORM\Column(length: 20, options: ['default' => 'public'])]
+    private string $visibility = 'public';
+
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $blocks = null;
 
@@ -284,6 +287,18 @@ class Article implements TimestampedInterface
     public function isFeatured(): bool
     {
         return $this->isFeatured;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        $this->visibility = $visibility;
+
+        return $this;
     }
 
     public function setIsFeatured(bool $isFeatured): self

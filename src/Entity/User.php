@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $subscribeArticles = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $subscribeEvents = false;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isVerified = false;
 
     #[ORM\ManyToOne]
@@ -54,6 +57,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $bio = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $company = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $jobTitle = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $phone = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isDirectoryVisible = false;
 
     public function __construct()
     {
@@ -208,6 +223,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isSubscribeEvents(): bool
+    {
+        return $this->subscribeEvents;
+    }
+
+    public function setSubscribeEvents(bool $subscribeEvents): self
+    {
+        $this->subscribeEvents = $subscribeEvents;
+
+        return $this;
+    }
+
     public function isVerified(): bool
     {
         return $this->isVerified;
@@ -240,6 +267,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBio(?string $bio): self
     {
         $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?string $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    public function getJobTitle(): ?string
+    {
+        return $this->jobTitle;
+    }
+
+    public function setJobTitle(?string $jobTitle): self
+    {
+        $this->jobTitle = $jobTitle;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function isDirectoryVisible(): bool
+    {
+        return $this->isDirectoryVisible;
+    }
+
+    public function setIsDirectoryVisible(bool $isDirectoryVisible): self
+    {
+        $this->isDirectoryVisible = $isDirectoryVisible;
 
         return $this;
     }

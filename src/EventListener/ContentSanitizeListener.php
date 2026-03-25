@@ -3,7 +3,9 @@
 namespace App\EventListener;
 
 use App\Entity\Article;
+use App\Entity\Event;
 use App\Entity\Page;
+use App\Entity\Product;
 use App\Entity\Service;
 use App\Service\BlockRenderer;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
@@ -34,7 +36,7 @@ class ContentSanitizeListener
 
     private function process(object $entity): void
     {
-        if (!$entity instanceof Article && !$entity instanceof Page && !$entity instanceof Service) {
+        if (!$entity instanceof Article && !$entity instanceof Page && !$entity instanceof Service && !$entity instanceof Event && !$entity instanceof Product) {
             return;
         }
 

@@ -48,6 +48,23 @@
     </url>
     {% endfor %}
 
+    {% for product in products|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_product_show', {slug: product.slug})) }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    {% endfor %}
+
+    {% for event in events|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_event_show', {slug: event.slug})) }}</loc>
+        <lastmod>{{ event.dateStart|date('Y-m-d') }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
     <url>
         <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
         <changefreq>daily</changefreq>
@@ -59,4 +76,17 @@
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
+
+    {% for legalPage in legalPages|default([]) %}
+    <url>
+        <loc>{{ absolute_url('/' ~ legalPage.slug) }}</loc>
+        {% if legalPage.updatedAt %}
+        <lastmod>{{ legalPage.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif legalPage.createdAt %}
+        <lastmod>{{ legalPage.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    {% endfor %}
 </urlset>

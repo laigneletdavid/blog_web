@@ -2,11 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "blog-web",
-      "runtimeExecutable": "echo",
-      "runtimeArgs": ["Server already running on Docker"],
-      "port": 8080,
-      "autoPort": false
+      "name": "dev",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "logs", "-f", "nginx"],
+      "port": 8080
     }
   ]
 }

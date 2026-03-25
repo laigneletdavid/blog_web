@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\Page;
+use App\Entity\Product;
 use App\Service\SeoService;
+use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +22,7 @@ class SearchController extends AbstractController
 
     public function __construct(
         private EntityManagerInterface $em,
+        private SiteContext $siteContext,
     ) {
     }
 
@@ -36,6 +39,7 @@ class SearchController extends AbstractController
             iterator_to_array($this->searchCategorie($keyword)),
             iterator_to_array($this->searchArticle($keyword)),
             iterator_to_array($this->searchPage($keyword)),
+            $this->siteContext->hasModule('catalogue') ? iterator_to_array($this->searchProduct($keyword)) : [],
         );
 
         return $this->json([
@@ -54,6 +58,7 @@ class SearchController extends AbstractController
         $articles = [];
         $pages = [];
         $categories = [];
+        $products = [];
         $totalArticles = 0;
 
         if (mb_strlen($keyword) >= 2) {
@@ -62,6 +67,9 @@ class SearchController extends AbstractController
             $articles = $articlesPaginator;
             $pages = $this->searchPageEntities($keyword);
             $categories = $this->searchCategorieEntities($keyword);
+            if ($this->siteContext->hasModule('catalogue')) {
+                $products = $this->searchProductEntities($keyword);
+            }
         }
 
         return $this->render('search/results.html.twig', [
@@ -69,6 +77,7 @@ class SearchController extends AbstractController
             'articles' => $articles,
             'pages' => $pages,
             'categories' => $categories,
+            'products' => $products,
             'totalArticles' => $totalArticles,
             'currentPage' => $page,
             'totalPages' => $totalArticles > 0 ? (int) ceil($totalArticles / self::PER_PAGE) : 1,
@@ -173,6 +182,43 @@ class SearchController extends AbstractController
             ->where('c.name LIKE :kw')
             ->setParameter('kw', '%' . $keyword . '%')
             ->orderBy('c.name', 'ASC')
+            ->setMaxResults(20);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    // --- Product search methods ---
+
+    private function searchProduct(string $keyword): iterable
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->from(Product::class, 'p')
+            ->select('p.title', 'p.slug')
+            ->where('p.isActive = TRUE')
+            ->andWhere('p.title LIKE :kw OR p.shortDescription LIKE :kw')
+            ->setParameter('kw', '%' . $keyword . '%')
+            ->setMaxResults(10);
+
+        foreach ($qb->getQuery()->toIterable() as $result) {
+            yield [
+                'type' => 'produit',
+                'text' => $result['title'],
+                'url' => $this->generateUrl('app_product_show', ['slug' => $result['slug']]),
+            ];
+        }
+    }
+
+    private function searchProductEntities(string $keyword): array
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->from(Product::class, 'p')
+            ->select('p')
+            ->leftJoin('p.image', 'i')->addSelect('i')
+            ->leftJoin('p.category', 'c')->addSelect('c')
+            ->where('p.isActive = TRUE')
+            ->andWhere('p.title LIKE :kw OR p.shortDescription LIKE :kw')
+            ->setParameter('kw', '%' . $keyword . '%')
+            ->orderBy('p.position', 'ASC')
             ->setMaxResults(20);
 
         return $qb->getQuery()->getResult();

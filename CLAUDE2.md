@@ -101,6 +101,8 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 | Phase 5 | Refonte design & CSS (thème default moderne, header sticky, homepage SaaS) | ✅ |
 | Phase 6 | Fondations Modules + Services + Tags | ✅ |
 | Phase 7 | Refonte UX Blog + Design Themes (overrides CSS, documentation, bug fixes) | ✅ |
+| Phase 8 | Module Événements (entité Event, CRUD admin, front, sidebar, notifications, CSS) | ✅ |
+| Phase 9 | Pages Privées / Contenu Restreint (VisibilityEnum 4 niveaux, ContentVoter, Annuaire membres) | ✅ |
 
 ---
 
@@ -249,354 +251,632 @@ Chaque `theme.css` contient des overrides complets pour toutes les pages globale
 
 ---
 
-## Phase 8 — Module Événements / Calendrier
+## Phase 8 — Module Événements / Calendrier ✅
 
-> Temps estimé : ~1.5 jours
+> Temps réel : ~1 jour
 > Prérequis : Phase 6.1 (enabledModules)
 
-### 8.1 Entité Event
+### 8.1 Entité Event + Repository + Migration ✅
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `title` | string(255) | Requis |
-| `slug` | string(255) | Unique, auto-généré |
-| `shortDescription` | text | Résumé pour les cards/listes |
-| `blocks` | json (nullable) | Contenu TipTap |
-| `content` | text (nullable) | HTML compilé (cache) |
-| `dateStart` | datetime | Requis |
-| `dateEnd` | datetime (nullable) | Null = événement ponctuel |
-| `location` | string(255, nullable) | Lieu texte libre |
-| `image` | ManyToOne Media (nullable) | Image illustrative |
-| `isActive` | boolean (default true) | Publié/brouillon |
-| `isFeatured` | boolean (default false) | Mis en avant |
-
-+ `use SeoTrait;` pour le référencement
-
-- [ ] Créer `src/Entity/Event.php`
-- [ ] Créer `src/Repository/EventRepository.php` :
+- [x] `src/Entity/Event.php` — title, slug (unique), shortDescription, blocks (JSON), content (TEXT cache), dateStart, dateEnd (nullable), location, image (FK Media nullable), isActive, isFeatured, `use SeoTrait;`
+- [x] Virtual `getBlocksJson()`/`setBlocksJson()` — même pattern que Service/Article
+- [x] Helpers : `isUpcoming()`, `isPast()`, `isMultiDay()`
+- [x] Index sur `is_active`, `date_start`, `is_featured`
+- [x] `src/Repository/EventRepository.php` :
   - `findUpcoming(int $limit)` — événements futurs, triés dateStart ASC
-  - `findPast(int $limit, int $offset)` — événements passés, paginés
-  - `findByMonth(int $year, int $month)` — pour le widget calendrier
-  - `findAllActiveForSitemap()`
-- [ ] Migration Doctrine
+  - `findPast(int $limit, int $offset)` — événements passés, paginés DESC
+  - `countPast()` — pour pagination
+  - `findByMonth(int $year, int $month)` — pour widget
+  - `findOneActiveBySlug(string $slug)`
+  - `findAllActiveForSitemap()` — filtre noIndex=false
+  - `findFeatured()` — upcoming + featured
+- [x] Migration `Version20260320173148.php` — table Event
 
-### 8.2 CRUD Admin
+### 8.2 CRUD Admin ✅
 
-- [ ] Créer `src/Controller/Admin/EventCrudController.php` :
-  - Panels : "Contenu" (title, shortDescription, blocks/blocksJson, image) | "Date & Lieu" (dateStart, dateEnd, location) | "SEO" (SeoTrait) | "Paramètres" (isActive, isFeatured)
-  - Liste : colonnes title, dateStart, location, isActive (toggle), isFeatured
-  - Filtres : à venir / passés / tous (filtre dateStart)
-  - Tri : dateStart DESC par défaut
-  - Visible uniquement si module `events` activé
-- [ ] Ajouter dans `DashboardController::configureMenuItems()` conditionné par module
+- [x] `src/Controller/Admin/EventCrudController.php` (`#[IsGranted('ROLE_ADMIN')]`) :
+  - 4 panels : "Contenu" (title, shortDescription, blocksJson TipTap, image) | "Date & Lieu" (dateStart, dateEnd, location) | "SEO" (5 champs SeoTrait) | "Paramètres" (slug, isActive, isFeatured)
+  - Index : title, dateStart, location, isActive (toggle), isFeatured
+  - Tri default : dateStart DESC
+- [x] `DashboardController` : menu "Événements" conditionné par `hasModule('events')` + `ROLE_ADMIN`
+- [x] `EventNotificationService` injecté : notification aux abonnés quand event publié (persistEntity/updateEntity)
 
-### 8.3 Front
+### 8.3 Front ✅
 
-- [ ] Créer `src/Controller/EventController.php` :
-  - `GET /evenements` — liste (prochains d'abord, puis passés, paginé)
-  - `GET /evenement/{slug}` — détail
-  - Guard `hasModule('events')`
-- [ ] Créer templates :
-  - `templates/event/index.html.twig` — liste avec séparation "À venir" / "Passés"
-  - `templates/event/show.html.twig` — détail (date, lieu, map embed optionnel, contenu)
-  - `templates/_partials/_event_card.html.twig` — card événement (date stylisée, titre, lieu)
-  - `templates/_partials/_calendar_widget.html.twig` — mini calendrier mensuel HTML
-- [ ] Stimulus : `calendar_controller.js` — navigation mois (fetch JSON des événements du mois)
-- [ ] Widget "Prochains événements" pour sidebar/homepage (conditionné par module)
-- [ ] Ajouter les événements au `SitemapController` (conditionné par module)
-- [ ] Créer `assets/css/base/events.scss`
+- [x] `src/Controller/EventController.php` :
+  - `GET /evenements` — index avec upcoming (tous) + past (paginés, 10 par page)
+  - `GET /evenement/{slug}` — détail avec sidebar
+  - Guard `hasModule('events')` → 404 si désactivé
+  - SEO via `SeoService`
+- [x] `templates/event/index.html.twig` — sections "À venir" / "Événements passés", pagination, état vide (SVG calendrier)
+- [x] `templates/event/show.html.twig` — layout col-lg-8 (contenu) + col-lg-4 (sidebar) :
+  - Header : date badge, titre h1, meta (date/lieu/badge statut), image, lead, contenu TipTap, bouton retour
+  - Sidebar : widget infos pratiques (date, horaires, lieu), widget s'abonner (3 états : non connecté, connecté non abonné, connecté abonné), widget prochains événements
+- [x] `templates/_partials/_event_card.html.twig` — card réutilisable (image, date badge jour/mois, titre, lieu, extrait tronqué, horaires, badge "Terminé")
+- [x] `templates/_partials/_upcoming_events_widget.html.twig` — widget sidebar liste compacte (date + titre + lieu, lien "Voir tous →")
+- [x] Widget "Prochains événements" dans `WidgetService::findUpcomingEvents()`
+- [x] Section événements sur homepage default (`themes/default/home.html.twig`) : grille 3 colonnes, conditionnée par `upcomingEvents|length > 0`
 
-### 8.4 Abonnements / Alertes événements
+### 8.4 Abonnements / Alertes événements ✅
 
-- [ ] Activer `subscribeNews` / `subscribeArticles` existants sur User
-- [ ] Ajouter `subscribeEvents` (boolean, default false) sur User + migration
-- [ ] Page profil utilisateur : checkboxes pour gérer ses abonnements
-- [ ] `EventNotificationService.php` — envoie email Brevo aux abonnés events quand un événement est publié
-- [ ] Câbler dans `EventCrudController::persistEntity()` / `updateEntity()`
+- [x] `subscribeEvents` (boolean, default false) ajouté sur `User` + migration `Version20260321055237.php`
+- [x] `src/Service/EventNotificationService.php` — email Brevo aux users avec `subscribeEvents = true` (pattern ArticleNotificationService)
+- [x] Câblé dans `EventCrudController::persistEntity()` / `updateEntity()`
+- [ ] Page profil utilisateur : checkbox `subscribeEvents` (à ajouter au formulaire profil)
 
-**Fichiers créés :** `Event.php`, `EventRepository.php`, `EventCrudController.php`, `EventController.php`, `EventNotificationService.php`, `event/index.html.twig`, `event/show.html.twig`, `_event_card.html.twig`, `_calendar_widget.html.twig`, `calendar_controller.js`, `events.scss`
-**Fichiers modifiés :** `User.php`, `DashboardController.php`, `SitemapController.php`, `main.scss`, templates sidebar/homepage
-**Migrations :** oui (Event + User.subscribeEvents)
+### 8.5 Sitemap + ContentSanitizeListener ✅
+
+- [x] `SitemapController` : events ajoutés (priority 0.6, weekly, conditionné par module)
+- [x] `sitemap/index.xml.twig` : boucle events
+- [x] `ContentSanitizeListener` : Event ajouté (compile blocks → content HTML)
+- [x] `HomeController` : passe `upcomingEvents` si module events actif
+
+### 8.6 CSS ✅
+
+- [x] `assets/css/base/events.scss` (~614 lignes) — 100% CSS custom properties, compatible 6 thèmes :
+  - `.events-section` — titre page index
+  - `.events-grid` — grille responsive (2 cols → 1 col mobile, 3 cols home)
+  - `.event-card` — card complète (hover translateY + shadow, image zoom, date badge `color-mix()`, badge "Terminé")
+  - `.events-empty` — état vide (SVG + message)
+  - `.event-detail` — page détail (header flex, date badge large, meta items, image, lead, content, back, responsive mobile)
+  - `.home-events` — section homepage
+  - `.widget-events` — widget sidebar "Prochains événements"
+  - `.widget-event-info` — widget sidebar "Infos pratiques"
+  - `.widget-event-subscribe` — widget sidebar "S'abonner aux événements"
+- [x] Import dans `main.scss`
+
+### Décision de design
+
+- **Widget calendrier** : choix "Liste simple" (pas de calendrier interactif) — plus simple, suffisant pour le cas d'usage
+- **Intégration thèmes** : Option A retenue — terminer tous les modules d'abord, puis construire un système de sections configurables (voir Phase 13)
+
+**Fichiers créés (9) :** `Event.php`, `EventRepository.php`, `EventCrudController.php`, `EventController.php`, `EventNotificationService.php`, `event/index.html.twig`, `event/show.html.twig`, `_event_card.html.twig`, `_upcoming_events_widget.html.twig`, `events.scss`
+**Fichiers modifiés (9) :** `User.php`, `DashboardController.php`, `HomeController.php`, `SitemapController.php`, `sitemap/index.xml.twig`, `ContentSanitizeListener.php`, `WidgetService.php`, `themes/default/home.html.twig`, `main.scss`
+**Migrations (2) :** `Version20260320173148.php` (Event), `Version20260321055237.php` (User.subscribeEvents)
+
+### Reste à faire (Phase 8)
+
+- [ ] Ajouter checkbox `subscribeEvents` dans le formulaire profil utilisateur
+- [ ] Intégrer section événements dans les 5 autres thèmes (corporate, artisan, vitrine, starter, moderne) — reporté à Phase 13
 
 ---
 
-## Phase 9 — Pages Privées / Contenu Restreint
+## Phase 9 — Pages Privées / Contenu Restreint ✅
 
-> Temps estimé : ~0.5 jour
+> Temps réel : ~0.5 jour
 > Prérequis : Phase 6.1 (enabledModules)
 
-### 9.1 Visibilité sur les contenus
+### 9.1 Visibilité sur les contenus ✅
 
-- [ ] Créer `src/Enum/VisibilityEnum.php` :
-  ```php
-  enum VisibilityEnum: string {
-      case PUBLIC = 'public';
-      case MEMBERS = 'members';    // ROLE_USER minimum
-      case ADMIN = 'admin';        // ROLE_ADMIN minimum
-  }
-  ```
-- [ ] Ajouter `visibility` (string, default 'public') sur `Page` + migration
-- [ ] Optionnel : ajouter `visibility` sur `Article` aussi
-- [ ] Créer `src/Security/Voter/ContentVoter.php` — vérifie le rôle vs la visibilité
-- [ ] Modifier les repositories : `findAllPublished()` filtre par visibilité selon le user courant
-- [ ] Modifier les menus : masquer les liens vers les pages restreintes pour les non-connectés
-- [ ] Admin : `ChoiceField::new('visibility')` dans `PageCrudController` — visible uniquement si module `private_pages` activé
+- [x] `src/Enum/VisibilityEnum.php` — enum string-backed 4 niveaux (public, user, author, admin) avec `label()`, `requiredRole()`, `choices()`
+- [x] Champ `visibility` (string, default 'public') ajouté sur `Page` et `Article` + migration `Version20260321064455.php`
+- [x] `src/Security/Voter/ContentVoter.php` — vérifie le rôle vs la visibilité via `RoleHierarchyInterface` (respecte la hiérarchie configurée dans `security.yaml`)
+- [x] `PageRepository` : `findAllPublishedForSitemap()` filtre `visibility = 'public'` (sitemap n'expose pas les pages privées)
+- [x] `MenuService` : filtre automatique des menus liés à du contenu restreint (vérifie `page.visibility` et `article.visibility`, masque les entrées si le user n'a pas le rôle requis)
+- [x] `AppExtension` : filtre Twig `menuVisible` ajouté (utilisable dans les templates si besoin)
+- [x] Admin `PageCrudController` : `ChoiceField::new('visibility')` — visible uniquement si module `private_pages` activé, avec help text explicatif
+- [x] Admin `ArticleCrudController` : idem, `ChoiceField` conditionné par module `private_pages`
 
-### 9.2 UX page restreinte
+### 9.2 UX page restreinte ✅
 
-- [ ] Créer `templates/_partials/_restricted_access.html.twig` :
-  - Message "Contenu réservé aux membres"
-  - Boutons "Se connecter" / "S'inscrire"
-  - Conserve header/footer du site (pas de 403 brut)
-- [ ] `PageController::show()` : si accès refusé, render le template restricted au lieu de throw 403
+- [x] `templates/_partials/_restricted_access.html.twig` :
+  - Icône cadenas SVG, titre "Contenu restreint"
+  - Message adapté selon visibilité (user → "réservée aux membres", author → "réservée aux auteurs", admin → "réservée aux administrateurs")
+  - Boutons "Se connecter" / "Créer un compte" si non connecté
+  - Message "droits insuffisants" si connecté mais pas autorisé
+  - Lien "Retour à l'accueil"
+  - Conserve header/footer du site (extends `base.html.twig`, pas de 403 brut)
+- [x] `PageController::show()` : réécrit — si accès refusé par ContentVoter, render restricted_access avec Response 403
+- [x] `ArticleController::show()` : même logique voter + restricted_access
+- [x] `assets/css/base/restricted.scss` — styles adaptatifs via CSS custom properties (compatible 6 thèmes)
 
-### 9.3 Annuaire membres (sous-module directory, optionnel)
+### 9.3 Annuaire membres (sous-module directory) ✅
 
-- [ ] Ajouter champs optionnels sur `User` : `company` (string nullable), `jobTitle` (string nullable), `companyLogo` (FK Media nullable)
-- [ ] Créer `src/Controller/DirectoryController.php` :
-  - `GET /annuaire` — liste des users ROLE_USER+ avec company renseignée
-  - Guard `hasModule('directory')` + `isGranted('ROLE_USER')`
-- [ ] Template `templates/directory/index.html.twig` — grille cards membres
-- [ ] SCSS : `directory.scss`
+- [x] Champs ajoutés sur `User` : `company` (string nullable), `jobTitle` (string nullable), `phone` (string nullable), `isDirectoryVisible` (boolean, default false) + migration
+- [x] `src/Controller/DirectoryController.php` :
+  - `GET /annuaire` — liste des users avec `isDirectoryVisible = true`
+  - Recherche par nom, prénom, entreprise, poste (paramètre `?q=`)
+  - Guard `hasModule('directory')` + `#[IsGranted('ROLE_USER')]`
+  - SEO via `SeoService`
+- [x] `src/Repository/UserRepository.php` :
+  - `findDirectoryMembers(string $search)` — filtre `isDirectoryVisible`, recherche LIKE multi-champs
+  - `findSubscribersForEvents()` — pour les notifications événements
+- [x] `templates/directory/index.html.twig` :
+  - Header titre + sous-titre
+  - Barre de recherche centrée
+  - Grille 3 colonnes (responsive 2→1) de cards membres
+  - Card : avatar (image ou placeholder initiales), nom, poste, entreprise (icône), bio tronquée
+  - État vide avec SVG et message adapté (recherche vs aucun membre)
+  - Compteur de résultats
+- [x] `assets/css/base/directory.scss` — 100% CSS custom properties (compatible 6 thèmes) :
+  - `.directory-grid` responsive, `.member-card` avec hover, `.member-avatar-placeholder` avec `color-mix()`
+- [x] Admin `UserCrudController` : champs `isDirectoryVisible`, `company`, `jobTitle`, `phone` — conditionnés par module `directory`
 
-**Fichiers créés :** `VisibilityEnum.php`, `ContentVoter.php`, `_restricted_access.html.twig`, `DirectoryController.php`, `directory/index.html.twig`, `directory.scss`
-**Fichiers modifiés :** `Page.php`, `PageRepository.php`, `PageController.php`, `PageCrudController.php`, `User.php`, `DashboardController.php`, `AppExtension.php` (menus), `main.scss`
-**Migrations :** oui (Page.visibility, User company/jobTitle/companyLogo)
+**Fichiers créés (6) :** `VisibilityEnum.php`, `ContentVoter.php`, `_restricted_access.html.twig`, `DirectoryController.php`, `directory/index.html.twig`, `restricted.scss`, `directory.scss`
+**Fichiers modifiés (10) :** `Page.php`, `Article.php`, `User.php`, `PageRepository.php`, `UserRepository.php`, `PageController.php`, `ArticleController.php`, `PageCrudController.php`, `ArticleCrudController.php`, `UserCrudController.php`, `MenuService.php`, `AppExtension.php`, `main.scss`
+**Migration :** `Version20260321064455.php` (Page.visibility, Article.visibility, User.company/jobTitle/phone/isDirectoryVisible)
 
 ---
 
-## Phase 10 — Catalogue Produits
+## Phase 10 — Catalogue Produits ✅
 
-> Temps estimé : ~1.5 jours
+> Réalisé en ~1 jour
 > Prérequis : Phase 6.1 (enabledModules), Phase 7.3 (composants partagés)
 
-### 10.1 Entités
+### Vision
 
-**`ProductCategory`** :
+Catalogue vitrine pour petits pros : artisan qui montre ses créations, gîte qui présente ses chambres, guide de pêche qui affiche ses formules, formateur ses sessions. Pas un site e-commerce — une vitrine produits/prestations avec prix. Le module `ecommerce` (Phase 11) ajoute le paiement par-dessus si besoin.
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `name` | string(255) | Requis |
-| `slug` | string(255) | Unique |
-| `description` | text (nullable) | |
-| `image` | ManyToOne Media (nullable) | |
-| `position` | integer (default 0) | |
-| `isActive` | boolean (default true) | |
+### 10.1 Entités ✅
 
-**`Product`** :
+**`ProductCategory`** : name, slug (unique), description, image (FK Media), position, isActive
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `title` | string(255) | Requis |
-| `slug` | string(255) | Unique |
-| `shortDescription` | text | Pour les cards |
-| `blocks` | json (nullable) | Contenu TipTap |
-| `content` | text (nullable) | HTML compilé |
-| `price` | decimal(10,2) | Prix TTC |
-| `oldPrice` | decimal(10,2, nullable) | Prix barré (promo) |
-| `category` | ManyToOne ProductCategory | |
-| `tags` | ManyToMany Tag | Réutilisation des tags existants |
-| `image` | ManyToOne Media | Image principale |
-| `gallery` | ManyToMany Media | Images galerie |
-| `isActive` | boolean (default true) | |
-| `isFeatured` | boolean (default false) | |
-| `position` | integer (default 0) | |
+**`Product`** : title, slug (unique), shortDescription, blocks (JSON TipTap), content (HTML cache), priceHT (decimal nullable), oldPriceHT (decimal nullable), vatRate (decimal default 20.00), availability (enum), category (FK ProductCategory), tags (M2M Tag), image (FK Media), relatedProducts (M2M self-ref), bookingUrl, bookingLabel, isActive, isFeatured, position + `use SeoTrait;`
 
-+ `use SeoTrait;`
+**Getters calculés :** `getPriceTTC()`, `getOldPriceTTC()`, `getVatAmount()`, `isOnSale()`, `isOnRequest()`
 
-- [ ] Créer `src/Entity/ProductCategory.php`
-- [ ] Créer `src/Entity/Product.php`
-- [ ] Créer repositories avec méthodes : `findAllActive()`, `findByCategory()`, `findFeatured()`, `findForSitemap()`
-- [ ] Migrations Doctrine
+**`ProductImage`** (table pivot ordonnée) : product (FK), media (FK), position
 
-### 10.2 Admin
+**`ProductVariant`** : product (FK), label, priceHT (nullable = hérite du produit), oldPriceHT, position, isActive
 
-- [ ] Créer `ProductCategoryCrudController.php` — liste triable, formulaire simple
-- [ ] Créer `ProductCrudController.php` :
-  - Panels : "Contenu" (title, shortDescription, blocks, image, gallery) | "Prix" (price, oldPrice) | "Classification" (category, tags) | "SEO" (SeoTrait) | "Paramètres" (isActive, isFeatured, position)
-  - Liste : image thumb, title, price, category, isActive, isFeatured
-  - Filtres : par catégorie, par statut
-- [ ] Menu admin conditionné par module `catalogue`
+**`AvailabilityEnum`** : `AVAILABLE` ("Disponible"), `UNAVAILABLE` ("Indisponible"), `ON_REQUEST` ("Sur devis")
 
-### 10.3 Front
+**Réglage Site :** `catalogDisplayHT` (boolean, default false) — `isCatalogDisplayHT()` contrôle l'affichage front (B2B = HT, B2C = TTC)
 
-- [ ] `ProductController.php` :
-  - `GET /produits` — grille filtrable (par catégorie, par tag)
-  - `GET /produit/{slug}` — page détail (galerie, description, prix, CTA)
-  - `GET /produits/categorie/{slug}` — filtre par catégorie
-  - Guard `hasModule('catalogue')`
-- [ ] Templates :
-  - `product/index.html.twig` — grille avec sidebar filtres
-  - `product/show.html.twig` — page détail (galerie lightbox, prix, description, produits similaires)
-  - `_partials/_product_card.html.twig` — card produit (image, titre, prix, badge promo)
-  - `_partials/_product_featured.html.twig` — widget homepage "Produits phares"
-- [ ] Stimulus : `gallery_controller.js` (lightbox images), `product_filter_controller.js` (filtrage)
-- [ ] Ajouter au sitemap (conditionné par module)
-- [ ] SCSS : `products.scss`
+- [x] Créer `src/Entity/Product.php`
+- [x] Créer `src/Entity/ProductCategory.php`
+- [x] Créer `src/Entity/ProductImage.php`
+- [x] Créer `src/Entity/ProductVariant.php`
+- [x] Créer `src/Enum/AvailabilityEnum.php`
+- [x] Ajouter `catalogDisplayHT` sur `Site.php`
+- [x] Créer repositories : `ProductRepository` (`findAllActive()`, `findByCategory()`, `findFeatured()`, `findForSitemap()`, `findRelated()`), `ProductCategoryRepository`, `ProductImageRepository`, `ProductVariantRepository`
+- [x] `ContentSanitizeListener` : ajouter Product (compile blocks → content)
+- [x] Migrations Doctrine (`Version20260321154700.php`)
 
-**Fichiers créés :** ~15 fichiers (entités, repos, CRUDs, controllers, templates, Stimulus, SCSS)
-**Migrations :** oui
+### 10.2 Admin ✅
 
----
+- [x] `ProductCategoryCrudController.php` — liste triable par position, formulaire (name, slug auto, description, image, isActive)
+- [x] `ProductCrudController.php` :
+  - 7 panels : Contenu | Galerie photos (CollectionField inline) | Tarifs (priceHT, oldPriceHT, vatRate dropdown, availability) | Variantes (CollectionField inline) | Réservation/RDV (bookingUrl, bookingLabel) | Classification (tags, relatedProducts) | SEO (5 champs) | Paramètres (slug, isActive, isFeatured, position)
+  - Liste : title, category, priceHT, availability (formatValue label), priceTTC (NumberField calculé), isActive toggle, isFeatured toggle
+  - Filtres : EntityFilter category, ChoiceFilter availability, BooleanFilter isActive/isFeatured
+- [x] `ProductImageCrudController.php` — formulaire inline pour CollectionField galerie
+- [x] `ProductVariantCrudController.php` — formulaire inline pour CollectionField variantes
+- [x] `SiteCrudController` : `catalogDisplayHT` conditionné par module `catalogue`
+- [x] Menu admin conditionné par module `catalogue` : "Produits" + "Categories produits"
+- [x] Affichage prix TTC calculé en index (lecture seule, `NumberField::formatValue`)
 
-## Phase 11 — E-commerce Light
+**Bugs corrigés en admin :**
+- AvailabilityEnum : ChoiceField avec enum cases directement (pas `::choices()` string) + `formatValue()` pour labels FR
+- priceTTC : `NumberField` au lieu de `TextField` (évite erreur conversion float→string)
+- `renderAsBadges()` retiré (crash avec enum keys)
+- Position nullable (`?int`) sur Product et ProductVariant — évite crash EasyAdmin PropertyAccessor
+- Upload galerie : `ImageField` remplacé par `FileType` Symfony standard (l'`ImageField` ne fonctionne pas dans `CollectionField::useEntryCrudForm()`)
+- `ProductCrudController::processGalleryUploads()` — déplace le fichier, crée le `Media`, génère WebP via `MediaProcessorService`
+- Auto-affectation image principale : si aucune image principale et galerie non vide, la 1re image galerie est affectée automatiquement à la sauvegarde
+- `ProductImage.uploadFile` : propriété non persistée (`UploadedFile`), plus de colonne DB
 
-> Temps estimé : ~2 jours
-> Prérequis : Phase 10 (catalogue), compte Stripe configuré
+### 10.3 Front ✅
 
-### 11.1 Panier
+- [x] `ProductController.php` — 3 routes :
+  - `GET /catalogue` — grille avec sidebar (catégories + tri position/prix)
+  - `GET /catalogue/categorie/{slug}` — filtre par catégorie
+  - `GET /catalogue/{slug}` — fiche produit détail
+  - Guard `hasModule('catalogue')` → 404 si désactivé
+  - SEO via `SeoService`
+- [x] Templates :
+  - `product/index.html.twig` — grille responsive + sidebar catégories/tri + empty state SVG
+  - `product/show.html.twig` — fiche détail complète :
+    - Galerie images avec lightbox (Stimulus `product_gallery_controller.js`)
+    - Prix HT/TTC avec prix secondaire et taux TVA
+    - Sélecteur variantes (Stimulus `product_variant_controller.js`)
+    - Badge disponibilité (vert/rouge/orange)
+    - CTA dynamique : bookingUrl → on_request contact → available contact → disabled
+    - Description TipTap (`product.content|raw`)
+    - Produits associés en grille
+  - `_partials/_product_card.html.twig` — card réutilisable (image/placeholder, badges promo/indispo, catégorie, prix)
+  - `_partials/_product_featured.html.twig` — widget homepage "Nos produits" + lien "Voir tout le catalogue"
+- [x] Stimulus controllers :
+  - `product_gallery_controller.js` — lightbox, navigation clavier (Escape, flèches), thumbnails
+  - `product_variant_controller.js` — sélection variante, mise à jour prix dynamique HT/TTC
+- [x] Intégration recherche : `SearchController` enrichi (dropdown JSON + page HTML) pour produits si module `catalogue` actif
+- [x] Sitemap : produits ajoutés avec priorité 0.7, changefreq weekly
+- [x] Homepage : widget produits featured ajouté sur les 6 thèmes (default, corporate, artisan, vitrine, starter, moderne)
+- [x] SCSS : `products.scss` — styles complets avec CSS custom properties uniquement (grille, cards, galerie, lightbox, variantes, badges, responsive 991px/575px)
+- [x] Fallback image : fiche produit et cards catalogue utilisent la 1re image galerie si pas d'image principale
+- [x] Catégories dynamiques : variable Twig renommée `productCategories` pour éviter conflit avec `categories` de `base.html.twig`
+- [x] Thumbnails galerie : affichées uniquement si >1 image, première thumb active automatiquement
 
-- [ ] `CartService.php` — panier en session Symfony (pas de BDD) :
-  - `add(Product, qty)`, `remove(Product)`, `update(Product, qty)`, `clear()`, `getTotal()`, `getItems()`
-- [ ] Stimulus `cart_controller.js` — ajout au panier sans rechargement, badge compteur header
-- [ ] Page `/panier` — récapitulatif, modifier quantités, supprimer, total, bouton "Commander"
+**Vérifié sur les 6 thèmes via Chrome :** catalogue index, fiche produit détail, widget homepage — les CSS custom properties s'adaptent automatiquement à chaque thème (dark mode moderne inclus).
 
-### 11.2 Checkout Stripe
-
-- [ ] `CheckoutController.php` :
-  - `GET /commander` — page récapitulatif + formulaire (nom, email, adresse, téléphone)
-  - `POST /commander` — crée la Stripe Checkout Session, redirige vers Stripe
-  - `GET /commande/confirmation/{id}` — page merci
-  - `GET /commande/annulation` — page annulation
-- [ ] `StripeService.php` — crée la Checkout Session depuis le panier
-- [ ] Webhook Stripe `/webhook/stripe` — écoute `checkout.session.completed`, crée la commande en BDD
-
-### 11.3 Entité Order
-
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `reference` | string(20) | Unique, auto-généré (ex: BW-20260316-001) |
-| `customerName` | string | |
-| `customerEmail` | string | |
-| `customerAddress` | text | |
-| `customerPhone` | string (nullable) | |
-| `items` | json | Snapshot des produits au moment de la commande |
-| `totalAmount` | decimal(10,2) | |
-| `stripeSessionId` | string | |
-| `status` | string (enum: pending/paid/shipped/cancelled) | |
-| `createdAt` | datetime | |
-| `paidAt` | datetime (nullable) | |
-
-- [ ] Créer `Order.php` + `OrderRepository.php`
-- [ ] `OrderCrudController.php` — lecture seule pour l'admin client (pas d'édition), export CSV
-- [ ] Email confirmation commande au client + notification à l'admin
-
-### 11.4 Dashboard commandes
-
-- [ ] Widget EasyAdmin sur le dashboard : commandes récentes, CA du mois, nombre de commandes
-- [ ] Conditionné par module `ecommerce`
+**Fichiers créés (20) :** `Product.php`, `ProductCategory.php`, `ProductImage.php`, `ProductVariant.php`, `AvailabilityEnum.php`, `VisibilityEnum.php`, `ProductRepository.php`, `ProductCategoryRepository.php`, `ProductImageRepository.php`, `ProductVariantRepository.php`, `ProductCrudController.php`, `ProductCategoryCrudController.php`, `ProductImageCrudController.php`, `ProductVariantCrudController.php`, `ProductController.php`, `product/index.html.twig`, `product/show.html.twig`, `_product_card.html.twig`, `_product_featured.html.twig`, `product_gallery_controller.js`, `product_variant_controller.js`, `products.scss`
+**Fichiers modifiés (12) :** `Site.php`, `ContentSanitizeListener.php`, `SitemapController.php`, `sitemap/index.xml.twig`, `SearchController.php`, `search/results.html.twig`, `HomeController.php`, `DashboardController.php`, `SiteCrudController.php`, `main.scss`, + 6 `home.html.twig` (tous les thèmes)
+**Migrations :** `Version20260321154700.php` (Product, ProductCategory, ProductImage, ProductVariant, Site.catalogDisplayHT), `Version20260322055518.php` (ProductImage.media nullable), `Version20260322061559.php` (drop ProductImage.upload_file)
 
 ---
 
-## Phase 12 — Navigation, Pages légales & Menus
+## Phase 11 — Boutique / Paiement ✅
 
-> Temps estimé : ~1.5 jours
-> Prérequis : toutes les phases précédentes (pour avoir la liste complète des entrées de menu possibles)
+> Prérequis : Phase 10 (catalogue), Phase 8 (événements)
+> Module : `ecommerce` (activable indépendamment du catalogue pur)
 
-**Pourquoi en dernier ?** À ce stade, tous les modules existent (blog, services, événements, catalogue, boutique). On peut construire un système de menu qui couvre tous les cas, avec les bonnes liaisons.
+### Vision
 
-### 12.1 Refonte entité Menu
+E-commerce light pour tous les profils : asso qui vend des cotisations/places, artisan qui vend ses créations, guide qui vend ses sorties, formateur ses sessions, commerce sa vitrine. Panier multi-items, pas de gestion de stock, pas d'expédition, pas de retours.
 
-**Problème actuel** : une seule entité Menu plate, pas de zones, pas de sous-menus structurés, liens manuels fragiles.
+**Checkout sans compte :** pas de création de compte, pas de login. Le client remplit un formulaire simple (prénom, nom, email, téléphone, message optionnel) et commande directement. L'admin récupère les coordonnées dans chaque commande.
 
-**Nouvelle structure :**
+**2 moyens de paiement :**
+- **Stripe Checkout** (redirect) — carte bancaire, zéro PCI-DSS côté serveur
+- **Paiement manuel** — commande enregistrée, l'admin valide à réception (virement, chèque, espèces)
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `id` | int (auto) | PK |
-| `label` | string(255) | Texte affiché |
-| `zone` | string (enum: `header`, `footer`, `legal`) | Zone d'affichage |
-| `type` | string (enum) | `page`, `article_list`, `service_list`, `event_list`, `product_list`, `category`, `external`, `home`, `contact` |
-| `targetPage` | ManyToOne Page (nullable) | Si type = `page` |
-| `targetCategory` | ManyToOne Categorie (nullable) | Si type = `category` |
-| `externalUrl` | string(255, nullable) | Si type = `external` |
-| `parent` | ManyToOne Menu (nullable, self-ref) | Sous-menus |
-| `position` | integer (default 0) | Ordre |
-| `isVisible` | boolean (default true) | |
-| `linkedModule` | string (nullable) | Slug module → auto-masqué si module désactivé |
-| `cssClass` | string(100, nullable) | Classe CSS custom (optionnel) |
-| `openInNewTab` | boolean (default false) | Target blank |
+> Si les clés Stripe ne sont pas configurées, seul le paiement manuel est proposé.
 
-- [ ] Refondre `src/Entity/Menu.php` avec les champs ci-dessus
-- [ ] Créer `src/Enum/MenuZoneEnum.php` — `header`, `footer`, `legal`
-- [ ] Créer `src/Enum/MenuTypeEnum.php` — `home`, `page`, `article_list`, `service_list`, `event_list`, `product_list`, `category`, `contact`, `external`
-- [ ] `MenuRepository` : `findByZone(string $zone)` avec tri position, filtre module actif + isVisible, eager load children
-- [ ] Migration Doctrine (attention : migration de données depuis l'ancien schéma)
+**Liaison Event ↔ Product :** un événement peut être lié à un produit du catalogue. L'inscription/paiement passe par le panier existant — pas de duplication de logique.
 
-**Logique `linkedModule`** : quand `type = article_list` → `linkedModule = 'blog'`, `type = service_list` → `linkedModule = 'services'`, etc. Le repository filtre automatiquement les entrées dont le module est désactivé.
+**Config Stripe dans l'admin :** les clés Stripe (publique, secrète, webhook secret) sont configurables depuis l'admin (panel "Paiement Stripe" dans Identité du site, visible `ROLE_FREELANCE+`). Fallback sur `.env` si vide dans l'admin.
 
-**Génération d'URL par type :**
-```php
-match($menu->getType()) {
-    'home' => path('app_home'),
-    'page' => path('app_page_show', ['slug' => $menu->getTargetPage()->getSlug()]),
-    'article_list' => path('app_article_show_all'),
-    'service_list' => path('app_service_index'),
-    'event_list' => path('app_event_index'),
-    'product_list' => path('app_product_index'),
-    'category' => path('app_categorie_show', ['slug' => $menu->getTargetCategory()->getSlug()]),
-    'contact' => path('app_contact'),
-    'external' => $menu->getExternalUrl(),
-}
+### 11.1 Panier ✅
+
+- [x] `CartService.php` — panier en session Symfony : add, remove, update, clear, getItems, getTotalHT/TTC/VAT, getCount, isEmpty, buildOrderItems (snapshot JSON)
+- [x] Stimulus `cart_badge_controller.js` — badge compteur header, refresh via event `cart:updated`
+- [x] Stimulus `cart_add_controller.js` — ajout AJAX avec feedback visuel ("Ajouté !"), fallback form submit
+- [x] `CartController.php` — 5 routes : `/panier` (index), `/panier/ajouter` (POST + AJAX), `/panier/modifier`, `/panier/supprimer`, `/panier/count` (JSON)
+- [x] `_partials/_cart_badge.html.twig` — partial réutilisable, conditionné par module `ecommerce`
+- [x] Badge panier intégré dans les 6 headers de thèmes (desktop + mobile top bar + mobile offcanvas)
+- [x] `templates/cart/index.html.twig` — tableau desktop + cards mobile, état vide, totaux, boutons "Continuer" + "Commander"
+- [x] `cart.scss` — styles avec CSS custom properties (adapté à tous les thèmes)
+
+### 11.2 Checkout & Paiement ✅
+
+- [x] `CheckoutType.php` — formulaire : prénom, nom, email, téléphone, message, choix paiement (Stripe masqué si non configuré)
+- [x] `CheckoutController.php` :
+  - `GET/POST /commander` — récap panier + formulaire + création commande
+  - Stripe : crée Checkout Session, redirect vers Stripe, fallback manuel si erreur
+  - Manuel : commande `pending`, emails, page confirmation
+  - `GET /commande/confirmation/{reference}` — page merci
+  - `GET /commande/annulation/{reference}` — page annulation Stripe
+  - Guard `hasModule('ecommerce')`
+- [x] `StripeService.php` — crée Checkout Session, vérifie webhook, résout clés depuis Site (admin) > `.env` (fallback)
+- [x] Webhook `POST /webhook/stripe` — écoute `checkout.session.completed`, valide paiement, envoie emails
+- [x] Config Stripe dans admin : 3 champs sur `Site` (stripePublicKey, stripeSecretKey, stripeWebhookSecret) — panel "Paiement Stripe" visible `ROLE_FREELANCE+`
+- [x] Config `.env` : `STRIPE_SECRET_KEY`, `STRIPE_PUBLIC_KEY`, `STRIPE_WEBHOOK_SECRET` (fallback)
+- [x] `stripe/stripe-php` v19 installé
+
+### 11.3 Entité Order ✅
+
+- [x] `Order.php` — reference auto BW-YYYYMMDD-XXXXX, customerFirst/LastName, email, phone, message, items JSON, totalHT/VAT/TTC, paymentMethod (enum), stripeSessionId, status (enum), createdAt, paidAt
+- [x] `OrderStatusEnum.php` — pending, paid, cancelled, refunded (avec label/cssClass)
+- [x] `PaymentMethodEnum.php` — stripe, manual (avec label/icon)
+- [x] `OrderRepository.php` — findRecent, countByStatus, revenueThisMonth, countPaidThisMonth, revenueByMonth
+- [x] Migrations exécutées
+
+### 11.4 Admin commandes ✅
+
+- [x] `OrderCrudController.php` (`ROLE_ADMIN`) — liste (reference, client, statut badge couleur, total €, date) + détail complet + filtres (statut, paiement, date)
+- [x] Pas de création/suppression — lecture + modification statut uniquement
+- [x] Menu "Commandes" conditionné par module `ecommerce`
+
+### 11.5 Notifications email ✅
+
+- [x] Email confirmation client — référence, récap items, totaux, instructions paiement si manuel
+- [x] Email notification admin — nouvelle commande, infos client, montant, méthode
+- [x] Templates : `emails/order_confirmation.html.twig`, `emails/order_admin_notification.html.twig`
+- [x] Envoi intégré dans CheckoutController (manuel) et webhook (Stripe)
+
+### 11.6 Dashboard widget
+
+- [ ] Widget EasyAdmin sur le dashboard (conditionné par module `ecommerce`) : 5 dernières ventes, CA du mois, nombre commandes payées
+- [ ] `OrderRepository` : méthodes prêtes (findRecent, revenueThisMonth, countPaidThisMonth) — à câbler dans DashboardController
+
+### 11.7 Front templates ✅
+
+- [x] `templates/cart/index.html.twig` — tableau desktop + cards mobile, état vide, totaux
+- [x] `templates/checkout/index.html.twig` — formulaire client + récap + choix paiement (radio)
+- [x] `templates/checkout/confirmation.html.twig` — page merci avec récap items
+- [x] `templates/checkout/cancel.html.twig` — page annulation Stripe
+- [x] `templates/emails/order_confirmation.html.twig` + `order_admin_notification.html.twig`
+- [x] `cart.scss` — styles CSS custom properties (adapté aux 6 thèmes)
+- [x] Bouton "Ajouter au panier" sur `product/show.html.twig` (si ecommerce + prix + disponible)
+- [x] Vérifié visuellement sur les 6 thèmes (default, corporate, artisan, vitrine, starter, moderne)
+
+### 11.8 Liaison Event ↔ Product ✅
+
+- [x] `linkedProduct` (FK Product, nullable, SET NULL) sur `Event`
+- [x] Migration exécutée
+- [x] Admin `EventCrudController` : AssociationField `linkedProduct` dans panel Paramètres
+- [x] Front `event/show.html.twig` : bloc "Inscription / Tarif" dans la sidebar — prix + bouton "Ajouter au panier" si ecommerce + prix + disponible, sinon "Nous contacter"
+
+**Fichiers créés (~18) :** `CartService.php`, `StripeService.php`, `CartController.php`, `CheckoutController.php`, `CheckoutType.php`, `OrderCrudController.php`, `cart_badge_controller.js`, `cart_add_controller.js`, `_cart_badge.html.twig`, `cart/index.html.twig`, `checkout/index.html.twig`, `checkout/confirmation.html.twig`, `checkout/cancel.html.twig`, `emails/order_confirmation.html.twig`, `emails/order_admin_notification.html.twig`, `cart.scss`
+**Fichiers modifiés (~15) :** `Event.php`, `Site.php` (3 champs Stripe), `EventCrudController.php`, `SiteCrudController.php` (panel Paiement), `DashboardController.php` (menu Commandes), `product/show.html.twig` (bouton CTA panier), `event/show.html.twig` (bloc produit lié), 6 `_header.html.twig` (badge panier), `main.scss`, `services.yaml`, `.env`
+**Dépendances :** `stripe/stripe-php` v19
+**Migrations :** 2 (Event.linkedProduct + Site.stripe*)
+
+---
+
+## Phase 12 — Navigation, Pages Légales & Cookie Consent ✅
+
+> **Approche** : theme.yaml déclare les zones de menu + items système → matérialisés en BDD par les commandes init/sync → admin peut éditer/réordonner/masquer mais pas supprimer les items système.
+
+### 12.1 Entités & Migration ✅
+
+#### Menu entity — 5 nouveaux champs
+
+| Champ | Type | Default | Notes |
+|-------|------|---------|-------|
+| `location` | string(20) | `'header'` | Zone : `header`, `footer_nav`, `footer_legal` (indexé) |
+| `is_system` | bool | false | Items créés par init/sync, non-supprimables |
+| `system_key` | string(50) | null | ID unique par zone (`home`, `blog`, `contact`, `mentions-legales`...) |
+| `route` | string(100) | null | Route Symfony (prioritaire sur target/article/page) |
+| `route_params` | JSON | null | Params de route (ex: `{"type": "mentions-legales"}`) |
+
+- [x] Modifier `src/Entity/Menu.php` avec les 5 champs
+- [x] Index UNIQUE `(location, system_key)` — MariaDB autorise NULL multiples
+- [x] Index sur `location`
+
+#### Page entity — 2 nouveaux champs
+
+| Champ | Type | Default | Notes |
+|-------|------|---------|-------|
+| `is_system` | bool | false | Pages légales non-supprimables |
+| `system_key` | string(50) | null | Unique : `mentions-legales`, `politique-confidentialite`, `cgv`, `cgu` |
+
+- [x] Modifier `src/Entity/Page.php`
+
+#### Nouveaux Enums
+
+- [x] `src/Enum/SystemPageEnum.php` — `MENTIONS_LEGALES`, `POLITIQUE_CONFIDENTIALITE`, `CGV`, `CGU`
+  - `requiredModule()` → null (toujours) / `ecommerce` / `services`
+  - `title()`, `slug()`, `defaultContent()` (TipTap avec sections `[À COMPLÉTER]`)
+  - `alwaysRequired()` → mentions + confidentialité
+- [x] `src/Enum/MenuLocationEnum.php` — `HEADER`, `FOOTER_NAV`, `FOOTER_LEGAL`
+
+#### Migration
+- [x] ALTER menu : +5 colonnes, index location, unique (location, system_key)
+- [x] ALTER page : +2 colonnes, unique system_key
+- Données existantes préservées : tous les Menu → `location='header'`, `is_system=false`
+
+### 12.2 theme.yaml : zones de menu ✅
+
+Le `theme.yaml` déclare les zones et items système. Les autres thèmes héritent de `default` si pas de section `menus`.
+
+```yaml
+# templates/themes/default/theme.yaml
+menus:
+  header:
+    label: "Navigation principale"
+    items:
+      - { system_key: "home", name: "Accueil", route: "app_home" }
+      - { system_key: "blog", name: "Blog", route: "app_article_show_all", module: "blog" }
+      - { system_key: "services", name: "Services", route: "app_service_index", module: "services" }
+      - { system_key: "catalogue", name: "Catalogue", route: "app_product_index", module: "catalogue" }
+      - { system_key: "events", name: "Événements", route: "app_event_index", module: "events" }
+      - { system_key: "annuaire", name: "Annuaire", route: "app_directory", module: "directory" }
+      - { system_key: "contact", name: "Contact", route: "app_contact" }
+  footer_nav:
+    label: "Navigation footer"
+    items:
+      - { system_key: "home", name: "Accueil", route: "app_home" }
+      - { system_key: "blog", name: "Blog", route: "app_article_show_all", module: "blog" }
+      - { system_key: "contact", name: "Contact", route: "app_contact" }
+  footer_legal:
+    label: "Liens légaux"
+    items:
+      - { system_key: "mentions-legales", name: "Mentions légales", route: "app_legal_page", route_params: { type: "mentions-legales" } }
+      - { system_key: "politique-confidentialite", name: "Politique de confidentialité", route: "app_legal_page", route_params: { type: "politique-confidentialite" } }
+      - { system_key: "cgv", name: "CGV", route: "app_legal_page", route_params: { type: "cgv" }, module: "ecommerce" }
+      - { system_key: "cgu", name: "CGU", route: "app_legal_page", route_params: { type: "cgu" }, module: "services" }
 ```
 
-### 12.2 Pages légales (système)
+- [x] Ajouter section `menus` dans `templates/themes/default/theme.yaml`
+- [x] `ThemeService` : `getMenuZones()`, `getMenuItemsForZone()` avec fallback default
 
-**Objectif** : mentions légales, politique cookies, CGV sont des pages obligatoires, pré-créées, éditables mais non supprimables.
+### 12.3 Services ✅
 
-- [ ] Ajouter `isSystem` (boolean, default false) sur `Page` — les pages système ne peuvent pas être supprimées
-- [ ] Ajouter `systemSlug` (string nullable, unique) sur `Page` — identifiant technique (`mentions-legales`, `cookies`, `cgv`)
-- [ ] `app:init-site` : créer automatiquement les 3 pages légales avec contenu template pré-rempli :
-  - `mentions-legales` — Mentions légales (contenu type avec placeholders nom, adresse, SIRET)
-  - `politique-cookies` — Politique de cookies (contenu RGPD standard)
-  - `cgv` — Conditions Générales de Vente (contenu si module ecommerce actif, sinon non créée)
-- [ ] `PageCrudController` : masquer le bouton "Supprimer" sur les pages système (`configureActions` conditionnel)
-- [ ] Template dédié `templates/page/legal.html.twig` — layout épuré (pas de sidebar, pas d'image hero, juste le contenu centré)
-- [ ] Les pages légales utilisent le template `legal` automatiquement (détecté via `isSystem`)
+#### MenuSyncService (nouveau)
+**Fichier** : `src/Service/MenuSyncService.php`
 
-### 12.3 Admin Navigation (refonte)
+- [x] `syncAllZones(Site $site)` — lit theme.yaml, sync chaque zone
+- [x] `syncZone()` — upsert par system_key, masque si module inactif, préserve customisations admin (name, order)
+- [x] Gestion des orphelins après changement de thème
 
-- [ ] Refondre `MenuCrudController` / page admin Navigation :
-  - Vue par zone : onglets "Header" | "Footer" | "Légal"
-  - Drag & drop pour réordonner (Stimulus `sortable_controller.js`)
-  - Formulaire : label, type (dropdown dynamique), cible (selon type), zone, parent (sous-menu), options (new tab, CSS class)
-  - Preview en temps réel du menu (mini-rendu HTML)
-- [ ] Boutons rapides : "Ajouter Accueil", "Ajouter Blog", "Ajouter Services" — pré-remplis selon modules actifs
-- [ ] Validation : empêcher les liens vers des modules désactivés
+#### LegalPageContentService (nouveau)
+**Fichier** : `src/Service/LegalPageContentService.php`
 
-### 12.4 Intégration thèmes
+- [x] `createIfNotExists(SystemPageEnum $type): Page` — crée page système avec contenu HTML riche pré-rempli
+- [x] Contenu riche avec tableaux, listes structurées et placeholders `{{À_COMPLÉTER}}` :
+  - **mentions-legales** : Éditeur (tableau), Hébergeur (tableau), Propriété intellectuelle, Protection des données, Cookies (tableau), Limitation responsabilité, Droit applicable, Contact
+  - **politique-confidentialite** : Responsable traitement, Données collectées (3 sous-sections avec tableaux), Finalités, Base légale (tableau), Ce qu'on ne fait pas, Cookies (2 tableaux), Sous-traitants (tableau), Droits RGPD (tableau), Sécurité, Contact
+  - **cgv** : Objet, Vendeur, Prix, Commande (liste numérotée), Paiement, Livraison (tableau), Rétractation, Garanties, Responsabilité, Réclamations, Contact
+  - **cgu** : Objet, Éditeur, Accès, Inscription, Services, Propriété intellectuelle, Comportement utilisateur, Responsabilité, Liens hypertextes, Données perso, Modification CGU, Droit applicable, Contact
+- [x] SEO description auto-remplie, `noIndex: true` par défaut
 
-**Objectif** : chaque thème consomme les menus par zone, pas en dur.
+#### MenuService — mise à jour
+- [x] `findByLocation(string $location): array` — méthode principale, filtre zone + visibilité
+- [x] `findMenuTwig()` → délègue à `findByLocation('header')` (rétrocompat)
 
-- [ ] `MenuService` (ou extension Twig) : `getMenusByZone('header')`, `getMenusByZone('footer')`, `getMenusByZone('legal')`
-- [ ] Chaque `_header.html.twig` de thème : boucle sur `menus_header` au lieu de requête brute
-  - Sous-menus : dropdown Bootstrap (desktop) / accordion (mobile)
-  - Liens auto-générés via `MenuTypeEnum` → pas de `href="#"` en dur
-- [ ] Chaque `_footer.html.twig` de thème :
-  - Colonne "Navigation" → `menus_footer`
-  - Colonne "Légal" → `menus_legal` (mentions, cookies, CGV)
-  - Colonne "Contact" → infos depuis `Site` (adresse, téléphone, email)
-  - Liens sociaux → depuis `Site` (déjà existants)
-- [ ] Fallback : si aucun menu n'est configuré → menu par défaut généré depuis les modules actifs
+#### MenuRepository
+- [x] `findByLocation(string $location)` — eager-load, filtre visible, tri menu_order
+- [x] `findSystemByLocationAndKey(string $location, string $key): ?Menu`
 
-### 12.5 Bandeau cookies (RGPD)
+#### AppExtension — update menuLink
+- [x] Si `$menu->getRoute()` → `$router->generate(route, params)` (prioritaire sur target/article/page)
 
-- [ ] Stimulus `cookie_consent_controller.js` :
-  - Bandeau non-intrusif en bas de page (pas de modal bloquant)
-  - 3 boutons : "Accepter tout", "Refuser", "Personnaliser"
-  - Stockage `localStorage` (pas de cookie pour stocker le consentement = ironie)
-  - Si Google Analytics configuré → ne charge le script que si consent donné
-- [ ] Template `_partials/_cookie_banner.html.twig` — inclus dans `base.html.twig`
-- [ ] Lien vers la page "Politique de cookies" dans le bandeau
-- [ ] SCSS : `cookie_banner.scss`
+### 12.4 Pages légales ✅
 
-**Fichiers créés :** `MenuZoneEnum.php`, `MenuTypeEnum.php`, `MenuService.php`, `page/legal.html.twig`, `_cookie_banner.html.twig`, `cookie_consent_controller.js`, `sortable_controller.js`, `cookie_banner.scss`
-**Fichiers modifiés :** `Menu.php`, `MenuRepository.php`, `Page.php`, `PageCrudController.php`, `MenuCrudController.php`, `DashboardController.php`, `InitSiteCommand.php`, `base.html.twig`, 6× `_header.html.twig`, 6× `_footer.html.twig`
-**Migrations :** oui (Menu refonte + Page.isSystem + Page.systemSlug)
+#### LegalController (nouveau)
+**Fichier** : `src/Controller/LegalController.php`
+
+```php
+#[Route('/{type}', name: 'app_legal_page',
+    requirements: ['type' => 'mentions-legales|politique-de-confidentialite|conditions-generales-de-vente|conditions-generales-utilisation'],
+    priority: -10)]
+```
+
+- [x] Charge Page par `system_key`, 404 si pas trouvée
+- [x] Réutilise `page/show.html.twig` (template full-width)
+- [x] SEO via `SeoService::resolve($page)`
+
+#### SitemapController
+- [x] Ajouter pages légales publiées au sitemap (priority 0.3, changefreq yearly)
+
+#### Commande utilitaire
+- [x] `app:legal-pages:update` — met à jour le contenu des pages légales existantes avec le dernier template
+
+### 12.5 Templates thèmes (6 headers + 6 footers) ✅
+
+#### base.html.twig
+```twig
+{% set header_menus = menu_service.findByLocation('header') %}
+{% set footer_nav_menus = menu_service.findByLocation('footer_nav') %}
+{% set footer_legal_menus = menu_service.findByLocation('footer_legal') %}
+```
+- [x] Supprimer script GA inline (géré par cookie consent)
+- [x] Ajouter `{% include '_partials/_cookie_consent.html.twig' %}`
+
+#### 6 Headers — même pattern
+- [x] Remplacer liens hardcodés (Accueil, Blog, Contact) par boucle `header_menus`
+- [x] Support dropdown pour sous-menus
+- [x] Conserver éléments fonctionnels (search, cart, login)
+
+#### 6 Footers — même pattern
+- [x] Colonne Navigation → boucle `footer_nav_menus`
+- [x] Colonne Légal → boucle `footer_legal_menus`
+- [x] Conserver colonne Contact + liens sociaux
+
+### 12.6 Admin CRUD ✅
+
+#### MenuCrudController
+- [x] `location` (ChoiceField), `is_system` (BooleanField readonly), badge visuel
+- [x] Filtre par `location` sur l'index
+- [x] Bloquer suppression si `is_system = true`
+
+#### PageCrudController
+- [x] `is_system` (BooleanField readonly), slug readonly si système
+- [x] Bloquer suppression pages système
+- [x] TipTap reste éditable (client remplit ses infos légales)
+
+### 12.7 Commandes ✅
+
+#### app:init-site — enrichi
+- [x] Après création Site : crée pages légales obligatoires + sync menus système
+- [x] Résumé console
+
+#### app:module:enable {module} (nouveau)
+- [x] Active module dans `Site.enabledModules`
+- [x] Crée pages légales du module (ex: CGV pour ecommerce)
+- [x] Sync menus (rend visible les items du module)
+
+#### app:module:disable {module} (nouveau)
+- [x] Retire de `Site.enabledModules`
+- [x] Masque items menu (`is_visible = false`)
+- [x] Dépublie pages légales du module (préserve contenu)
+
+#### app:menu:sync (nouveau)
+- [x] Re-sync tous les items système depuis theme.yaml (utile après changement de thème)
+
+#### app:legal-pages:update (nouveau)
+- [x] Met à jour le contenu HTML des pages légales existantes avec le dernier template
+
+### 12.8 Bandeau Cookies (RGPD) ✅
+
+- [x] Stimulus `cookie_consent_controller.js` :
+  - Check localStorage, affiche banner si pas de choix
+  - Accepter → stocke consent, charge GA dynamiquement
+  - Refuser → stocke refus, pas de GA
+- [x] Template `_partials/_cookie_consent.html.twig` — fixed bottom, 2 boutons, lien politique confidentialité
+- [x] Affiché seulement si `site.googleAnalyticsId` configuré
+- [x] CSS dans `global.scss`
+
+### 12.9 Refonte CRUD Menu — Gestionnaire de Navigation ✅
+
+> Interface d'administration des menus refaite façon WordPress : 2 colonnes, sources à gauche, zones à droite.
+
+#### Layout 2 colonnes
+- [x] **Colonne gauche (30%) — Sources disponibles** :
+  - Accordéon "Pages système" : Accueil, Contact, pages légales (filtrées par modules actifs)
+  - Accordéon "Pages" : pages publiées non-système
+  - Accordéon "Catégories" : catégories d'articles
+  - Accordéon "Modules" : routes des modules actifs (Blog, Catalogue, Services, Événements, Annuaire)
+  - Bloc "Lien personnalisé" : champs Titre + URL + bouton Ajouter
+  - Bloc "Parent / Sous-menu" : crée un élément vide pour regrouper des sous-menus
+
+- [x] **Colonne droite (70%) — Zones de menu (3 onglets)** :
+  - Navigation principale (header)
+  - Footer navigation
+  - Footer légal
+  - Chaque onglet : liste drag-and-drop SortableJS avec 2 niveaux max
+
+#### Fonctionnalités
+- [x] **Ajout depuis sources** : checkboxes + bouton "Ajouter la sélection" → AJAX POST crée le Menu entity + injection DOM
+- [x] **Drag-and-drop** : SortableJS, réordonner + imbriquer (2 niveaux max), sauvegarde auto AJAX
+- [x] **Édition inline** : double-clic sur un nom → input text, sauvegarde AJAX au blur/Enter
+- [x] **Toggle visibilité** : œil/œil barré, sauvegarde AJAX
+- [x] **Suppression** : poubelle (refuse si is_system), détache les enfants avant suppression
+- [x] **Items système** : badge "Système" bleu, non-supprimables, éditables (nom, ordre, visibilité)
+- [x] **Badges colorés** : Système (bleu), Page (vert), Catégorie (jaune), Module (bleu), Lien (gris) — texte blanc
+- [x] **Items masqués** : opacité réduite (0.45) avec icône œil barré
+- [x] **Enregistrement 100% auto** : chaque action = appel AJAX instantané, pas de bouton Enregistrer
+- [x] **Responsive** : stack vertical sur mobile (<992px)
+
+#### API endpoints (5)
+| Route | Méthode | Action |
+|-------|---------|--------|
+| `/admin/api/menu/reorder` | POST | Réordonner (existant) |
+| `/admin/api/menu/toggle-visibility/{id}` | POST | Toggle visible (existant) |
+| `/admin/api/menu/add` | POST | Créer un item (nouveau) |
+| `/admin/api/menu/delete/{id}` | POST | Supprimer non-système (nouveau) |
+| `/admin/api/menu/rename/{id}` | POST | Renommer inline (nouveau) |
+
+#### Intégration admin sidebar
+- [x] "Navigation" déplacé de "Administration" vers "Apparence" (accessible `ROLE_ADMIN`)
+- [x] Section "Apparence" visible dès `ROLE_ADMIN` (Navigation), le reste `ROLE_FREELANCE`
+
+#### Backend
+- [x] `MenuRepository::findByLocationAllItems()` — tous les items (visibles + cachés) pour une zone
+- [x] `MenuRepository::getNextOrder()` — prochain menu_order pour une zone
+- [x] `PageRepository::findCustomPages()` — pages publiées non-système
+- [x] `MenuApiController` : 3 nouvelles routes (add, delete, rename) + CSRF validation
+- [x] `DashboardController::menuManager()` : enrichi avec sources (pages système, custom, catégories, modules)
+
+**Fichiers réécrits/modifiés (7) :** `templates/admin/menu/sortable.html.twig` (réécriture complète), `assets/admin/menu-sortable.js` (~280 lignes, réécriture complète), `assets/admin/menu-sortable.scss` (refonte styles), `MenuApiController.php` (+3 routes), `DashboardController.php` (menuManager enrichi + sidebar réorganisée), `MenuRepository.php` (+2 méthodes), `PageRepository.php` (+1 méthode)
+
+### Fichiers créés (~11)
+`SystemPageEnum.php`, `MenuLocationEnum.php`, `MenuSyncService.php`, `LegalPageContentService.php`, `LegalController.php`, `LegalPagesUpdateCommand.php`, `ModuleEnableCommand.php`, `ModuleDisableCommand.php`, `MenuSyncCommand.php`, `cookie_consent_controller.js`, `_cookie_consent.html.twig`
+
+### Fichiers modifiés (~30)
+`Menu.php`, `Page.php`, `MenuService.php`, `ThemeService.php`, `MenuRepository.php`, `PageRepository.php`, `AppExtension.php`, `InitSiteCommand.php`, `MenuCrudController.php`, `PageCrudController.php`, `MenuApiController.php`, `DashboardController.php`, `SitemapController.php`, `base.html.twig`, `templates/admin/menu/sortable.html.twig`, `assets/admin/menu-sortable.js`, `assets/admin/menu-sortable.scss`, 6× `_header.html.twig`, 6× `_footer.html.twig`, `templates/themes/default/theme.yaml`, `global.scss`, `SETUP.md`
+
+### Migration
+Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
+
+---
+
+## ~~Phase 13 — Sections Configurables Home & Sidebar~~ ❌ ANNULÉE
+
+> **Décision** : Sur-engineering. Le modèle commercial est du service (installation + personnalisation par David/freelance via Claude Code), pas du SaaS. L'admin client se concentre sur son contenu, pas sur la structure de sa homepage. Les sections sont déjà conditionnelles via `{% if modules %}` dans les templates — suffisant.
+
+---
+
+## Dette technique & Items ponctuels restants
+
+### Items ponctuels à faire
+
+| Source | Item | Priorité |
+|--------|------|----------|
+| Phase 8 | Checkbox `subscribeEvents` dans formulaire profil utilisateur | Basse |
+| Phase 8 | Intégrer événements dans les 5 autres thèmes homepage | Basse |
+| Phase 11 | Widget dashboard e-commerce (5 dernières ventes, CA mois, commandes payées) | Moyenne |
+
+### Dette technique
+
+| Item | Priorité | Notes |
+|------|----------|-------|
+| `docker-compose.prod.yml` | Haute (déploiement) | opcache max, restart always, pas de Xdebug |
+| Sécurité prod (SSL, Fail2ban, backups, CSP) | Haute (déploiement) | Config serveur |
+| Typos `adress_1/2` → `address_1/2` | Basse | Renommage champs Site + migration |
+| Vérification email installée mais non activée | Basse | VerifyEmailBundle câblé mais pas en production |
+| Abonnements `news`/`articles` sur User : stockés mais jamais utilisés | Basse | Soit câbler soit supprimer |
 
 ---
 

@@ -166,6 +166,54 @@ class ThemeService
     }
 
     /**
+     * Menu zones declared in theme.yaml, with fallback to default theme.
+     *
+     * @return array<string, array{label: string, items: array}>
+     */
+    public function getMenuZones(?string $slug = null): array
+    {
+        $slug ??= $this->getCurrentThemeSlug();
+        $theme = $this->getTheme($slug);
+
+        $menus = $theme['menus'] ?? null;
+
+        // Fallback to default theme if current theme has no menus section
+        if ($menus === null && $slug !== 'default') {
+            $defaultTheme = $this->getTheme('default');
+            $menus = $defaultTheme['menus'] ?? [];
+        }
+
+        return $menus ?? [];
+    }
+
+    /**
+     * Menu items for a specific zone, filtered by active modules.
+     *
+     * @param string[] $enabledModules
+     * @return array<array{system_key: string, name: string, route: string, route_params?: array, module?: string}>
+     */
+    public function getMenuItemsForZone(string $zone, array $enabledModules): array
+    {
+        $zones = $this->getMenuZones();
+        $zoneConfig = $zones[$zone] ?? null;
+
+        if ($zoneConfig === null) {
+            return [];
+        }
+
+        $items = [];
+        foreach ($zoneConfig['items'] ?? [] as $item) {
+            // Filter by module: skip items whose module is not enabled
+            if (isset($item['module']) && !in_array($item['module'], $enabledModules, true)) {
+                continue;
+            }
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    /**
      * Current theme slug from Site entity.
      */
     public function getCurrentThemeSlug(): string

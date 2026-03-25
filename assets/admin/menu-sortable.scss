@@ -1,17 +1,51 @@
-// ─── Menu Manager (DnD) ─────────────────────────────────────────────────────
+// ─── Menu Manager — Navigation Admin ─────────────────────────────────────────
 
 .menu-manager {
-    max-width: 800px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-.menu-sortable-list {
+// ─── Layout 2 colonnes ───
+.menu-manager-layout {
+    display: flex !important;
+    gap: 1.5rem;
+    align-items: flex-start;
+
+    @media (max-width: 991px) {
+        flex-direction: column;
+    }
+}
+
+// ─── LEFT: Sources Panel ───
+.menu-sources {
+    width: 280px;
+    min-width: 280px;
     background: #fff;
     border: 1px solid #dee2e6;
     border-radius: 0.5rem;
     overflow: hidden;
+
+    @media (max-width: 991px) {
+        width: 100%;
+        min-width: 100%;
+    }
 }
 
-.menu-sortable-item {
+.menu-sources-title {
+    padding: 0.75rem 1rem;
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #495057;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+// ─── Source Accordions ───
+.source-accordion {
     border-bottom: 1px solid #f0f0f0;
 
     &:last-child {
@@ -19,7 +53,112 @@
     }
 }
 
-.menu-sortable-handle {
+.source-accordion-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: none;
+    background: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #495057;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+        background: #f8f9fa;
+    }
+
+    .source-chevron {
+        font-size: 0.65rem;
+        transition: transform 0.2s;
+    }
+
+    &[aria-expanded="false"] .source-chevron,
+    &.collapsed .source-chevron {
+        transform: rotate(-90deg);
+    }
+}
+
+.source-items {
+    padding: 0.5rem 1rem 0.75rem;
+}
+
+.source-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    font-size: 0.82rem;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        accent-color: #0d6efd;
+    }
+
+    &:hover {
+        color: #0d6efd;
+    }
+}
+
+// ─── RIGHT: Menu Zones ───
+.menu-zones {
+    flex: 1;
+    min-width: 0;
+}
+
+.menu-zone-tabs {
+    .nav-link {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6c757d;
+        padding: 0.6rem 1rem;
+
+        &.active {
+            color: #0d6efd;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.2em 0.5em;
+        }
+    }
+}
+
+// ─── Zone List ───
+.menu-zone-list {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    min-height: 60px;
+}
+
+// ─── Menu Items ───
+.menu-sortable-item {
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &.is-hidden {
+        opacity: 0.45;
+    }
+
+    &.is-system .menu-item-name {
+        font-weight: 600;
+    }
+}
+
+.menu-item-row {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    gap: 0.5rem;
     background: #fff;
     transition: background 0.15s;
 
@@ -28,14 +167,67 @@
     }
 }
 
-.menu-sortable-children {
-    min-height: 6px;
-    border-left: 3px solid #0455C0;
-    margin-left: 1.5rem;
-    background: #fafbfc;
+.drag-handle {
+    cursor: grab;
+    color: #adb5bd;
+    font-size: 1rem;
+    padding: 0.2rem;
 
-    .menu-sortable-handle {
-        background: #fafbfc;
+    &:hover {
+        color: #6c757d;
+    }
+}
+
+.menu-item-name {
+    flex: 1;
+    font-size: 0.88rem;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge-type {
+    font-size: 0.65rem;
+    padding: 0.2em 0.5em;
+    font-weight: 500;
+    flex-shrink: 0;
+    color: #fff !important;
+}
+
+.menu-item-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    margin-left: auto;
+
+    .btn {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.75rem;
+        color: #6c757d;
+        border: none;
+        background: none;
+
+        &:hover {
+            color: #0d6efd;
+        }
+    }
+
+    .btn-delete-item:hover {
+        color: #dc3545;
+    }
+}
+
+// ─── Children (nested) ───
+.menu-sortable-children {
+    min-height: 4px;
+    margin-left: 1.5rem;
+    border-left: 3px solid #0d6efd;
+    background: #f8f9fc;
+
+    .menu-item-row {
+        background: #f8f9fc;
+        padding-left: 0.5rem;
 
         &:hover {
             background: #f0f4f8;
@@ -43,16 +235,38 @@
     }
 }
 
+// ─── Sortable States ───
 .menu-sortable-ghost {
-    opacity: 0.4;
+    opacity: 0.35;
     background: #e3f2fd !important;
 }
 
 .menu-sortable-chosen {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 10;
 }
 
-.drag-handle {
-    cursor: grab;
-    font-size: 1.1rem;
+// ─── Inline Edit ───
+.menu-inline-edit {
+    flex: 1;
+    border: 1px solid #0d6efd;
+    border-radius: 3px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.88rem;
+    outline: none;
+    background: #fff;
+
+    &:focus {
+        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2);
+    }
+}
+
+// ─── Empty State ───
+.menu-empty-state {
+    padding: 2rem;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
 }

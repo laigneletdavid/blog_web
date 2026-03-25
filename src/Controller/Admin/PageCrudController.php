@@ -3,6 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Page;
+use App\Enum\VisibilityEnum;
+use App\Service\SiteContext;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -16,6 +20,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PageCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly SiteContext $siteContext,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Page::class;
@@ -28,6 +37,17 @@ class PageCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvelle page')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier la page')
             ->setDefaultSort(['created_at' => 'DESC']);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action->displayIf(fn (Page $page) => !$page->isSystem());
+            })
+            ->update(Crud::PAGE_DETAIL, Action::DELETE, function (Action $action) {
+                return $action->displayIf(fn (Page $page) => !$page->isSystem());
+            });
     }
 
     public function configureFields(string $pageName): iterable
@@ -57,6 +77,13 @@ class PageCrudController extends AbstractCrudController
 
         yield BooleanField::new('published', 'Publiée');
 
+        if ($this->siteContext->hasModule('private_pages')) {
+            yield ChoiceField::new('visibility', 'Visibilite')
+                ->setChoices(VisibilityEnum::choices())
+                ->renderExpanded(false)
+                ->setHelp('Public = visible par tous. Membres = connectes uniquement. Admin = administrateurs uniquement.');
+        }
+
         yield ChoiceField::new('template', 'Mise en page')
             ->setChoices([
                 'Par défaut (sidebar droite)' => 'default',
@@ -75,6 +102,11 @@ class PageCrudController extends AbstractCrudController
         yield SlugField::new('slug')
             ->setTargetFieldName('title')
             ->setHelp('Généré automatiquement depuis le titre')
+            ->hideOnIndex();
+
+        yield BooleanField::new('is_system', 'Page système')
+            ->renderAsSwitch(false)
+            ->setFormTypeOption('disabled', true)
             ->hideOnIndex();
 
         yield DateTimeField::new('created_at', 'Créée le')
@@ -127,5 +159,15 @@ class PageCrudController extends AbstractCrudController
         $entityInstance->setUpdatedAt(new \DateTime());
 
         parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    public function deleteEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Page && $entityInstance->isSystem()) {
+            $this->addFlash('danger', 'Les pages système ne peuvent pas être supprimées.');
+            return;
+        }
+
+        parent::deleteEntity($entityManager, $entityInstance);
     }
 }

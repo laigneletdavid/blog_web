@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section class="catalogue-page py-5">
+    <div class="container">
+
+        {# Breadcrumbs #}
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                {% if currentCategory %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_product_index') }}">Catalogue</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ currentCategory.name }}</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">Catalogue</li>
+                {% endif %}
+            </ol>
+        </nav>
+
+        {# Header #}
+        <div class="catalogue-header mb-4">
+            <h1 class="catalogue-title">{{ title_page }}</h1>
+            {% if currentCategory and currentCategory.description %}
+                <p class="catalogue-description">{{ currentCategory.description }}</p>
+            {% endif %}
+            <span class="catalogue-count">{{ products|length }} produit{{ products|length > 1 ? 's' : '' }}</span>
+        </div>
+
+        <div class="row">
+            {# Sidebar filtres #}
+            <aside class="col-lg-3 mb-4 mb-lg-0">
+                {# Categories #}
+                <div class="catalogue-filter-card mb-3">
+                    <h3 class="catalogue-filter-title">Categories</h3>
+                    <ul class="catalogue-filter-list">
+                        <li>
+                            <a href="{{ path('app_product_index') }}"
+                               class="catalogue-filter-link {{ currentCategory is null ? 'active' : '' }}">
+                                Tous les produits
+                            </a>
+                        </li>
+                        {% for cat in productCategories %}
+                        <li>
+                            <a href="{{ path('app_product_category', { slug: cat.slug }) }}"
+                               class="catalogue-filter-link {{ currentCategory and currentCategory.id == cat.id ? 'active' : '' }}">
+                                {{ cat.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {# Tri #}
+                <div class="catalogue-filter-card">
+                    <h3 class="catalogue-filter-title">Trier par</h3>
+                    <ul class="catalogue-filter-list">
+                        {% set baseUrl = currentCategory ? path('app_product_category', { slug: currentCategory.slug }) : path('app_product_index') %}
+                        <li>
+                            <a href="{{ baseUrl }}"
+                               class="catalogue-filter-link {{ currentSort is null ? 'active' : '' }}">
+                                Position
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ baseUrl }}?tri=price_asc"
+                               class="catalogue-filter-link {{ currentSort == 'price_asc' ? 'active' : '' }}">
+                                Prix croissant
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ baseUrl }}?tri=price_desc"
+                               class="catalogue-filter-link {{ currentSort == 'price_desc' ? 'active' : '' }}">
+                                Prix decroissant
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            {# Grille produits #}
+            <div class="col-lg-9">
+                {% if products|length > 0 %}
+                    <div class="products-grid">
+                        {% for product in products %}
+                            {% include '_partials/_product_card.html.twig' with {
+                                product: product,
+                                site: site,
+                                displayHT: site.catalogDisplayHT|default(false)
+                            } %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="catalogue-empty">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <h3>Aucun produit trouve</h3>
+                        <p>Revenez bientot, notre catalogue s'enrichit regulierement.</p>
+                        {% if currentCategory %}
+                            <a href="{{ path('app_product_index') }}" class="btn btn-outline-primary">Voir tout le catalogue</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

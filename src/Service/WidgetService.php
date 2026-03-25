@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
+use App\Repository\EventRepository;
 use App\Repository\TagRepository;
 
 class WidgetService
@@ -14,6 +15,7 @@ class WidgetService
         private CategorieRepository $categorieRepository,
         private ArticleRepository $articleRepository,
         private TagRepository $tagRepository,
+        private EventRepository $eventRepository,
     )
     {
     }
@@ -50,5 +52,15 @@ class WidgetService
     public function findTagCloud(): array
     {
         return $this->tagRepository->findAllWithArticleCount();
+    }
+
+    /**
+     * Prochains événements (pour widget sidebar).
+     *
+     * @return \App\Entity\Event[]
+     */
+    public function findUpcomingEvents(int $limit = 3): array
+    {
+        return $this->eventRepository->findUpcoming($limit);
     }
 }

@@ -11,11 +11,13 @@
                 {% endif %}
             </a>
             <nav class="d-flex flex-wrap justify-content-center gap-3">
-                {% for menu in menus %}
+                {% for menu in footer_nav_menus %}
                     <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
                 {% endfor %}
-                <a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a>
-                <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
+                <span class="text-muted">|</span>
+                {% for menu in footer_legal_menus %}
+                    <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                {% endfor %}
             </nav>
             <span class="footer-copy">&copy; {{ "now"|date("Y") }} {{ site.name|default('') }}</span>
         </div>

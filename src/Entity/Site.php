@@ -100,10 +100,26 @@ class Site
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $galleryItems;
 
+    // --- Catalogue ---
+
+    #[ORM\Column(length: 3, options: ['default' => 'ttc'])]
+    private string $catalogPriceDisplay = 'ttc';
+
     // --- Modules ---
 
     #[ORM\Column(type: Types::JSON, options: ['default' => '["vitrine"]'])]
     private array $enabledModules = ['vitrine'];
+
+    // --- Paiement Stripe ---
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripePublicKey = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeSecretKey = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeWebhookSecret = null;
 
     // --- Proprietaire (Freelance) ---
 
@@ -443,6 +459,25 @@ class Site
         );
     }
 
+    // --- Catalogue Getters/Setters ---
+
+    public function getCatalogPriceDisplay(): string
+    {
+        return $this->catalogPriceDisplay;
+    }
+
+    public function setCatalogPriceDisplay(string $catalogPriceDisplay): self
+    {
+        $this->catalogPriceDisplay = $catalogPriceDisplay;
+
+        return $this;
+    }
+
+    public function isCatalogDisplayHT(): bool
+    {
+        return $this->catalogPriceDisplay === 'ht';
+    }
+
     // --- Modules Getters/Setters ---
 
     /** @return string[] */
@@ -464,6 +499,44 @@ class Site
         $value = $module instanceof ModuleEnum ? $module->value : $module;
 
         return in_array($value, $this->enabledModules, true);
+    }
+
+    // --- Stripe Getters/Setters ---
+
+    public function getStripePublicKey(): ?string
+    {
+        return $this->stripePublicKey;
+    }
+
+    public function setStripePublicKey(?string $stripePublicKey): self
+    {
+        $this->stripePublicKey = $stripePublicKey;
+
+        return $this;
+    }
+
+    public function getStripeSecretKey(): ?string
+    {
+        return $this->stripeSecretKey;
+    }
+
+    public function setStripeSecretKey(?string $stripeSecretKey): self
+    {
+        $this->stripeSecretKey = $stripeSecretKey;
+
+        return $this;
+    }
+
+    public function getStripeWebhookSecret(): ?string
+    {
+        return $this->stripeWebhookSecret;
+    }
+
+    public function setStripeWebhookSecret(?string $stripeWebhookSecret): self
+    {
+        $this->stripeWebhookSecret = $stripeWebhookSecret;
+
+        return $this;
     }
 
     // --- Owner Getters/Setters ---

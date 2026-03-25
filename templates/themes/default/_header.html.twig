@@ -14,8 +14,7 @@
             </a>
 
             <nav class="header-nav d-flex align-items-center gap-1">
-                <a href="{{ path('app_home') }}" class="nav-link">Accueil</a>
-                {% for menu in menus %}
+                {% for menu in header_menus %}
                     {% if menu.children|length > 0 %}
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -33,8 +32,6 @@
                         <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
                     {% endif %}
                 {% endfor %}
-                <a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a>
-                <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
             </nav>
 
             <div class="header-actions d-flex align-items-center gap-2">
@@ -52,6 +49,7 @@
                     </div>
                 </div>
 
+                {% include '_partials/_cart_badge.html.twig' %}
                 {% if app.user %}
                     <a class="btn btn-sm btn-primary" href="{{ path('app_user_show', { 'id': app.user.id}) }}">Mon compte</a>
                     <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_logout')}}">Deconnexion</a>
@@ -78,7 +76,7 @@
                     <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
                 {% endif %}
             </a>
-            <div></div>{# spacer for flex balance #}
+            {% include '_partials/_cart_badge.html.twig' %}
         </div>
 
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
@@ -102,8 +100,7 @@
                 </div>
 
                 <ul class="navbar-nav flex-grow-1 mb-4">
-                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
-                    {% for menu in menus %}
+                    {% for menu in header_menus %}
                         {% if menu.children|length > 0 %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -121,10 +118,9 @@
                             <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
                         {% endif %}
                     {% endfor %}
-                    <li class="nav-item"><a href="{{ path('app_article_show_all') }}" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
                 </ul>
 
+                {% include '_partials/_cart_badge.html.twig' %}
                 <div class="d-grid gap-2">
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                         <a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="btn btn-primary">Mon profil</a>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Page;
+use App\Security\Voter\ContentVoter;
 use App\Service\SeoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,14 @@ class PageController extends AbstractController
     {
         if (!$page) {
             throw $this->createNotFoundException('Page introuvable.');
+        }
+
+        if (!$this->isGranted(ContentVoter::VIEW, $page)) {
+            return $this->render('_partials/_restricted_access.html.twig', [
+                'title' => $page->getTitle(),
+                'visibility' => $page->getVisibility(),
+                'seo' => $this->seoService->resolveForPage($page->getTitle()),
+            ], new Response('', 403));
         }
 
         return $this->render('page/show.html.twig', [

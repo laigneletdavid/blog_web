@@ -3,6 +3,8 @@
 namespace App\Twig;
 
 use App\Entity\Menu;
+use App\Enum\VisibilityEnum;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -13,6 +15,7 @@ class AppExtension extends AbstractExtension
 
         public function __construct(
             private RouterInterface $router,
+            private Security $security,
         ) {
         }
 
@@ -23,6 +26,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('readingTime', [$this, 'readingTime']),
             new TwigFilter('highlight', [$this, 'highlight'], ['is_safe' => ['html']]),
             new TwigFilter('toc_anchors', [$this, 'addTocAnchors'], ['is_safe' => ['html']]),
+            new TwigFilter('menuVisible', [$this, 'menuVisible']),
         ];
     }
 
@@ -31,6 +35,36 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('toc_extract', [$this, 'extractToc']),
         ];
+    }
+
+    /**
+     * Checks if a menu item should be visible based on the linked content's visibility.
+     */
+    public function menuVisible(Menu $menu): bool
+    {
+        $page = $menu->getPage();
+        if ($page !== null) {
+            $visibility = VisibilityEnum::tryFrom($page->getVisibility()) ?? VisibilityEnum::PUBLIC;
+            if ($visibility !== VisibilityEnum::PUBLIC) {
+                $requiredRole = $visibility->requiredRole();
+                if ($requiredRole && !$this->security->isGranted($requiredRole)) {
+                    return false;
+                }
+            }
+        }
+
+        $article = $menu->getArticle();
+        if ($article !== null) {
+            $visibility = VisibilityEnum::tryFrom($article->getVisibility()) ?? VisibilityEnum::PUBLIC;
+            if ($visibility !== VisibilityEnum::PUBLIC) {
+                $requiredRole = $visibility->requiredRole();
+                if ($requiredRole && !$this->security->isGranted($requiredRole)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -136,6 +170,11 @@ class AppExtension extends AbstractExtension
 
     public function menuLink(Menu $menu): string
     {
+        // System menu items use named routes
+        if ($menu->getRoute() !== null) {
+            return $this->router->generate($menu->getRoute(), $menu->getRouteParams() ?? []);
+        }
+
         if ($menu->getTarget() === 'url' && $menu->getUrl() !== null) {
             return $menu->getUrl();
         }

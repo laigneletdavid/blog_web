@@ -33,12 +33,16 @@ class Tag
     #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'tag')]
     private Collection $media;
 
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'tags')]
+    private Collection $product;
+
     public function __construct()
     {
         $this->article = new ArrayCollection();
         $this->page = new ArrayCollection();
         $this->categorie = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->product = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +166,31 @@ class Tag
     public function removeMedium(Media $medium): self
     {
         $this->media->removeElement($medium);
+
+        return $this;
+    }
+
+    /** @return Collection<int, Product> */
+    public function getProduct(): Collection
+    {
+        return $this->product;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->product->contains($product)) {
+            $this->product->add($product);
+            $product->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->product->removeElement($product)) {
+            $product->removeTag($this);
+        }
 
         return $this;
     }

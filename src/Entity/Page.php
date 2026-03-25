@@ -20,6 +20,9 @@ class Page implements TimestampedInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 20, options: ['default' => 'public'])]
+    private string $visibility = 'public';
+
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -49,6 +52,12 @@ class Page implements TimestampedInterface
 
     #[ORM\Column(length: 30, options: ['default' => 'default'])]
     private string $template = 'default';
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $is_system = false;
+
+    #[ORM\Column(length: 50, nullable: true, unique: true)]
+    private ?string $system_key = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
     private Collection $tag;
@@ -226,6 +235,42 @@ class Page implements TimestampedInterface
     public function setTemplate(string $template): self
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    public function isSystem(): bool
+    {
+        return $this->is_system;
+    }
+
+    public function setIsSystem(bool $is_system): self
+    {
+        $this->is_system = $is_system;
+
+        return $this;
+    }
+
+    public function getSystemKey(): ?string
+    {
+        return $this->system_key;
+    }
+
+    public function setSystemKey(?string $system_key): self
+    {
+        $this->system_key = $system_key;
 
         return $this;
     }

@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\MenuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 #[ORM\Index(columns: ['is_visible'], name: 'idx_menu_is_visible')]
+#[ORM\Index(columns: ['location'], name: 'idx_menu_location')]
+#[ORM\UniqueConstraint(name: 'uniq_menu_location_system_key', columns: ['location', 'system_key'])]
 class Menu
 {
     #[ORM\Id]
@@ -27,6 +30,21 @@ class Menu
 
     #[ORM\Column(length: 255)]
     private ?string $target = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'header'])]
+    private string $location = 'header';
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $is_system = false;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $system_key = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $route = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $route_params = null;
 
     #[ORM\ManyToOne]
     private ?Article $article = null;
@@ -190,6 +208,66 @@ class Menu
     public function setUrl(?string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getLocation(): string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function isSystem(): bool
+    {
+        return $this->is_system;
+    }
+
+    public function setIsSystem(bool $is_system): self
+    {
+        $this->is_system = $is_system;
+
+        return $this;
+    }
+
+    public function getSystemKey(): ?string
+    {
+        return $this->system_key;
+    }
+
+    public function setSystemKey(?string $system_key): self
+    {
+        $this->system_key = $system_key;
+
+        return $this;
+    }
+
+    public function getRoute(): ?string
+    {
+        return $this->route;
+    }
+
+    public function setRoute(?string $route): self
+    {
+        $this->route = $route;
+
+        return $this;
+    }
+
+    public function getRouteParams(): ?array
+    {
+        return $this->route_params;
+    }
+
+    public function setRouteParams(?array $route_params): self
+    {
+        $this->route_params = $route_params;
 
         return $this;
     }
