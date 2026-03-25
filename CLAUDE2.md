@@ -852,150 +852,31 @@ Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
 
 ---
 
-## Phase 13 — Sections Configurables Home & Sidebar
+## ~~Phase 13 — Sections Configurables Home & Sidebar~~ ❌ ANNULÉE
 
-> Temps estimé : ~2 jours
-> Prérequis : Phases 8-12 terminées (tous les modules existent)
-> Décision : Option A — construire le système configurable après avoir terminé tous les modules
+> **Décision** : Sur-engineering. Le modèle commercial est du service (installation + personnalisation par David/freelance via Claude Code), pas du SaaS. L'admin client se concentre sur son contenu, pas sur la structure de sa homepage. Les sections sont déjà conditionnelles via `{% if modules %}` dans les templates — suffisant.
 
-### Contexte
+---
 
-Actuellement, chaque thème a sa propre `home.html.twig` avec les sections en dur (hero, services, articles, événements, etc.). La sidebar est aussi fixe dans chaque template. Cela pose deux problèmes :
-1. Ajouter un module nécessite de modifier les 6 fichiers `home.html.twig` de chaque thème
-2. Le client/freelance ne peut pas réorganiser les sections de la homepage ni de la sidebar
+## Dette technique & Items ponctuels restants
 
-### 13.1 Modèle de données
+### Items ponctuels à faire
 
-**Ajouter sur l'entité `Site` :**
+| Source | Item | Priorité |
+|--------|------|----------|
+| Phase 8 | Checkbox `subscribeEvents` dans formulaire profil utilisateur | Basse |
+| Phase 8 | Intégrer événements dans les 5 autres thèmes homepage | Basse |
+| Phase 11 | Widget dashboard e-commerce (5 dernières ventes, CA mois, commandes payées) | Moyenne |
 
-| Champ | Type | Notes |
-|-------|------|-------|
-| `homeSections` | json | Liste ordonnée des sections homepage |
-| `sidebarSections` | json | Liste ordonnée des widgets sidebar |
+### Dette technique
 
-**Format JSON `homeSections` :**
-```json
-[
-  { "type": "hero", "enabled": true },
-  { "type": "services", "enabled": true, "limit": 6 },
-  { "type": "articles", "enabled": true, "limit": 3 },
-  { "type": "events", "enabled": true, "limit": 3 },
-  { "type": "products_featured", "enabled": false, "limit": 4 },
-  { "type": "metrics", "enabled": true },
-  { "type": "cta", "enabled": true }
-]
-```
-
-**Format JSON `sidebarSections` :**
-```json
-[
-  { "type": "search", "enabled": true },
-  { "type": "categories", "enabled": true },
-  { "type": "tag_cloud", "enabled": true },
-  { "type": "upcoming_events", "enabled": true, "limit": 3 },
-  { "type": "subscribe", "enabled": true },
-  { "type": "archives", "enabled": true }
-]
-```
-
-- Chaque section a un `type` (identifiant unique) et `enabled` (toggle)
-- Les sections liées à un module sont auto-masquées si le module est désactivé
-- Les sections peuvent avoir des options (`limit`, etc.)
-- L'ordre du tableau JSON = l'ordre d'affichage
-
-### 13.2 SectionService
-
-- [ ] Créer `src/Service/SectionService.php` :
-  - `getHomeSections(): array` — résout les sections homepage (filtre modules désactivés, merge avec defaults)
-  - `getSidebarSections(): array` — idem pour sidebar
-  - `getDefaultHomeSections(): array` — sections par défaut selon modules activés
-  - `getDefaultSidebarSections(): array` — idem sidebar
-  - `getAvailableSectionTypes(string $zone): array` — liste tous les types possibles avec label/description/module requis
-
-**Mapping section → module :**
-```php
-'services' => 'services',
-'articles' => 'blog',
-'events' => 'events',
-'products_featured' => 'catalogue',
-'categories' => 'blog',
-'tag_cloud' => 'blog',
-'upcoming_events' => 'events',
-'archives' => 'blog',
-```
-
-Sections sans module (toujours disponibles) : `hero`, `metrics`, `cta`, `search`, `subscribe`
-
-### 13.3 Partials Twig
-
-**Découper chaque section en partial réutilisable :**
-
-```
-templates/_sections/
-├── home/
-│   ├── _hero.html.twig
-│   ├── _services.html.twig
-│   ├── _articles.html.twig
-│   ├── _events.html.twig
-│   ├── _products_featured.html.twig
-│   ├── _metrics.html.twig
-│   └── _cta.html.twig
-└── sidebar/
-    ├── _search.html.twig
-    ├── _categories.html.twig
-    ├── _tag_cloud.html.twig
-    ├── _upcoming_events.html.twig
-    ├── _subscribe.html.twig
-    └── _archives.html.twig
-```
-
-**Chaque partial reçoit ses données via le controller** (pas de requête Twig) et est autonome.
-
-### 13.4 Intégration thèmes
-
-**Transformer `home.html.twig` de chaque thème :**
-
-```twig
-{# Avant (sections hardcodées) #}
-{% include 'themes/default/_hero.html.twig' %}
-{% include '_partials/_services_grid.html.twig' %}
-...
-
-{# Après (sections dynamiques) #}
-{% for section in homeSections %}
-  {% if section.enabled %}
-    {% include ['themes/' ~ _theme ~ '/_sections/' ~ section.type ~ '.html.twig',
-                '_sections/home/_' ~ section.type ~ '.html.twig']
-       with { config: section } %}
-  {% endif %}
-{% endfor %}
-```
-
-**Avantages :**
-- Chaque thème peut override une section spécifique (fallback vers le partial commun)
-- Ajouter un nouveau module = ajouter un partial, sans toucher aux thèmes
-- Le FREELANCE/SUPER_ADMIN réordonne les sections dans l'admin
-
-### 13.5 Admin Sections
-
-- [ ] Créer page admin "Sections" (`ROLE_FREELANCE+`) :
-  - 2 onglets : "Homepage" | "Sidebar"
-  - Liste drag & drop (Stimulus `sortable_controller.js`) des sections
-  - Toggle enabled/disabled par section
-  - Options par section (limit, etc.) via formulaire inline
-  - Bouton "Réinitialiser" (remet les defaults du thème)
-- [ ] Preview en temps réel via iframe
-- [ ] Menu admin : ajout dans section "Apparence"
-
-### 13.6 Controller updates
-
-- [ ] `HomeController` : passe les données de toutes les sections activées
-- [ ] Créer `SidebarDataProvider` ou enrichir `WidgetService` pour fournir les données sidebar selon les sections activées
-- [ ] Migration Doctrine (Site.homeSections, Site.sidebarSections)
-
-**Fichiers créés :** `SectionService.php`, `_sections/home/*.html.twig` (7), `_sections/sidebar/*.html.twig` (6), admin template sections
-**Fichiers modifiés :** `Site.php`, `HomeController.php`, `WidgetService.php`, 6× `home.html.twig` thèmes, `DashboardController.php`
-**Migration :** oui (Site.homeSections + Site.sidebarSections)
+| Item | Priorité | Notes |
+|------|----------|-------|
+| `docker-compose.prod.yml` | Haute (déploiement) | opcache max, restart always, pas de Xdebug |
+| Sécurité prod (SSL, Fail2ban, backups, CSP) | Haute (déploiement) | Config serveur |
+| Typos `adress_1/2` → `address_1/2` | Basse | Renommage champs Site + migration |
+| Vérification email installée mais non activée | Basse | VerifyEmailBundle câblé mais pas en production |
+| Abonnements `news`/`articles` sur User : stockés mais jamais utilisés | Basse | Soit câbler soit supprimer |
 
 ---
 
