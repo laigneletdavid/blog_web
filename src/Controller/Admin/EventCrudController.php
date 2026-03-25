@@ -36,8 +36,21 @@ class EventCrudController extends AbstractCrudController
     {
         parent::persistEntity($em, $entityInstance);
 
-        if ($entityInstance instanceof Event && $entityInstance->isActive()) {
+        if ($entityInstance instanceof Event && $entityInstance->isActive() && $entityInstance->getNotifiedAt() === null) {
             $this->notificationService->notifySubscribers($entityInstance);
+            $entityInstance->setNotifiedAt(new \DateTime());
+            $em->flush();
+        }
+    }
+
+    public function updateEntity(EntityManagerInterface $em, $entityInstance): void
+    {
+        parent::updateEntity($em, $entityInstance);
+
+        if ($entityInstance instanceof Event && $entityInstance->isActive() && $entityInstance->getNotifiedAt() === null) {
+            $this->notificationService->notifySubscribers($entityInstance);
+            $entityInstance->setNotifiedAt(new \DateTime());
+            $em->flush();
         }
     }
 

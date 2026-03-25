@@ -23,15 +23,14 @@ class UserType extends AbstractType
         $builder
             ->add('email', EmailType::class, ['label' => 'Votre adresse email'])
             ->add('name', TextType::class, ['label' => 'Votre nom'])
-            ->add('first_name', TextType::class, ['label' => 'Votre prénom'])
-            ->add('subscribeNews', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Recevoir la newsletter',
-            ])
-            ->add('subscribeArticles', CheckboxType::class, [
+            ->add('first_name', TextType::class, ['label' => 'Votre prénom']);
+
+        if ($this->siteContext->hasModule('blog')) {
+            $builder->add('subscribeArticles', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Recevoir les notifications de nouveaux articles',
             ]);
+        }
 
         if ($this->siteContext->hasModule('events')) {
             $builder->add('subscribeEvents', CheckboxType::class, [

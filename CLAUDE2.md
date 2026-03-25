@@ -875,8 +875,8 @@ Oui — Menu (+5 colonnes, indexes) + Page (+2 colonnes, unique)
 | ~~`docker-compose.prod.yml`~~ | ✅ | PHP target prod (opcache preload, no display_errors), DB sans port exposé, Mailpit désactivé, logging json-file, healthchecks, MariaDB tuning |
 | Sécurité prod (SSL, Fail2ban, backups, CSP) | Haute (déploiement) | Config serveur |
 | ~~Typos `adress_1/2` → `address_1/2`~~ | ✅ | Déjà corrigé, schema en sync |
-| Vérification email installée mais non activée | Basse | VerifyEmailBundle câblé mais pas en production |
-| Abonnements `news`/`articles` sur User : stockés mais jamais utilisés | Basse | Soit câbler soit supprimer |
+| ~~Vérification email~~ | ✅ | Câblé et fonctionnel (inscription → email → lien verify). Non bloquant par choix — un user non vérifié peut utiliser le site |
+| ~~Abonnements `news`/`articles` sur User~~ | ✅ | `subscribeArticles` déjà câblé dans `ArticleNotificationService`. `subscribeNews` prêt pour future newsletter |
 
 ---
 

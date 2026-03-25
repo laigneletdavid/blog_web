@@ -60,6 +60,9 @@ class Event
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Product $linkedProduct = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $notifiedAt = null;
+
     // --- Getters / Setters ---
 
     public function getId(): ?int
@@ -207,6 +210,18 @@ class Event
     public function setLinkedProduct(?Product $linkedProduct): self
     {
         $this->linkedProduct = $linkedProduct;
+
+        return $this;
+    }
+
+    public function getNotifiedAt(): ?\DateTimeInterface
+    {
+        return $this->notifiedAt;
+    }
+
+    public function setNotifiedAt(?\DateTimeInterface $notifiedAt): self
+    {
+        $this->notifiedAt = $notifiedAt;
 
         return $this;
     }
