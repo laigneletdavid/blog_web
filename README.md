@@ -173,7 +173,9 @@ blog_web/
 │   ├── themes/                # 6 themes (default, corporate, artisan, vitrine, starter, moderne)
 │   ├── admin/                 # Dashboard, guide, aide contextuelle
 │   └── ...                    # Templates front (articles, pages, contact, recherche)
+├── .claude/docs/              # Spec technique dev (supprime chez clients)
+├── scripts/                   # deploy.sh, backup.sh
 ├── SETUP.md                   # Process d'installation client
-├── CLAUDE.md                  # Spec technique detaillee (pour Claude Code)
+├── CLAUDE.md                  # Conventions et references (pour Claude Code)
 └── README.md                  # Ce fichier
 ```

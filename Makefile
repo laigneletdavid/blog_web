@@ -6,7 +6,7 @@ DOCKER_PROD = docker compose -f docker-compose.yml -f docker-compose.prod.yml
 PHP    = $(DOCKER) exec php
 NPM    = $(DOCKER) run --rm -w /var/www/html node npm
 
-.PHONY: help up down restart sh db migrate cc assets assets-build logs test deploy backup restore
+.PHONY: help up down restart sh db migrate cc assets assets-build logs test deploy backup restore update
 
 ## — Docker ————————————————————————————————————
 help: ## Show this help
@@ -60,6 +60,22 @@ logs: ## Show all container logs
 ## — Tests —————————————————————————————————————
 test: ## Run PHPUnit tests
 	$(PHP) php bin/phpunit
+
+## — Mise a jour ———————————————————————————————
+update: ## Update client site (pull + composer + migrate + assets + cache)
+	@echo "=== BlogWeb — Mise a jour ==="
+	@echo "[1/5] Pull du code..."
+	git pull --ff-only
+	@echo "[2/5] Dependances PHP..."
+	$(PHP) composer install --no-interaction
+	@echo "[3/5] Migrations BDD..."
+	$(PHP) php bin/console doctrine:migrations:migrate --no-interaction
+	@echo "[4/5] Build des assets..."
+	$(NPM) install
+	$(NPM) run dev
+	@echo "[5/5] Cache..."
+	$(PHP) php bin/console cache:clear
+	@echo "=== Mise a jour terminee ==="
 
 ## — Production ————————————————————————————————
 deploy: ## Deploy (pull + install + migrate + cache + assets)
