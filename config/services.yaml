@@ -46,6 +46,10 @@ services:
             $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
             $stripeWebhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
 
+    App\Command\RecaptchaSetupCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Service\RecaptchaValidator:
         arguments:
             $recaptchaSecretKey: '%recaptcha_secret_key%'
