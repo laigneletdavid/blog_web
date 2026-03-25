@@ -20,6 +20,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
 
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher,
@@ -30,6 +31,35 @@ class UserCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return User::class;
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Utilisateurs',
+            'sections' => [
+                [
+                    'title' => 'Les roles',
+                    'content' => '<ul>
+                        <li><strong>Utilisateur</strong> — Visiteur inscrit. Peut lire, commenter et gerer son profil.</li>
+                        <li><strong>Auteur</strong> — Redacteur. Peut creer et editer des articles, pages et medias.</li>
+                        <li><strong>Admin</strong> — Administrateur. Acces complet a la gestion du site.</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Creer un utilisateur',
+                    'content' => '<p>Renseignez l\'email, le prenom, le nom et un mot de passe temporaire. L\'utilisateur pourra le changer depuis son profil.</p>
+                    <p>Le mot de passe doit faire au moins <strong>12 caracteres</strong>.</p>',
+                ],
+                [
+                    'title' => 'Annuaire',
+                    'content' => '<p>Si le module annuaire est actif, cochez <em>Visible dans l\'annuaire</em> pour que l\'utilisateur apparaisse dans l\'annuaire public du site.</p>',
+                ],
+            ],
+            'tips' => [
+                'Creez un compte Auteur pour vos redacteurs. Ils pourront ecrire sans acceder aux reglages sensibles.',
+            ],
+        ];
     }
 
     public function configureCrud(Crud $crud): Crud

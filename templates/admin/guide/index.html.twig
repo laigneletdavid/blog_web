@@ -1,0 +1,378 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    <span style="font-size: 1.1rem; font-weight: 600;">
+        <i class="fas fa-book-open me-2"></i>Guide d'utilisation
+    </span>
+{% endblock %}
+
+{% block main %}
+<div class="bw-guide" style="max-width: 900px;">
+
+    <p class="text-muted mb-4" style="font-size: 0.92rem;">
+        Bienvenue dans le guide BlogWeb. Cliquez sur une section pour en savoir plus.
+        Ce guide est toujours accessible depuis le menu <strong>Aide &rarr; Guide</strong>.
+    </p>
+
+    <div class="accordion" id="guideAccordion">
+
+        {# ── 1. Premiers pas ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#guide-start" aria-expanded="true">
+                    <i class="fas fa-rocket me-2 text-primary"></i> Premiers pas
+                </button>
+            </h2>
+            <div id="guide-start" class="accordion-collapse collapse show" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Qu'est-ce que BlogWeb ?</h5>
+                    <p>BlogWeb est un CMS (systeme de gestion de contenu) qui vous permet de gerer votre site web de maniere autonome : articles, pages, medias, navigation, et plus encore.</p>
+
+                    <h5>Votre tableau de bord</h5>
+                    <p>Le <strong>Tableau de bord</strong> est votre page d'accueil dans l'administration. Vous y trouvez :</p>
+                    <ul>
+                        <li>Les <strong>statistiques de visites</strong> de votre site</li>
+                        <li>Vos <strong>derniers articles</strong> et <strong>commentaires</strong></li>
+                        <li>Des <strong>raccourcis</strong> vers les actions les plus courantes</li>
+                        <li>Des <strong>astuces</strong> pour mieux utiliser votre site</li>
+                    </ul>
+
+                    <h5>Le menu de navigation</h5>
+                    <p>Le menu a gauche est organise par sections :</p>
+                    <ul>
+                        <li><strong>Contenu</strong> &mdash; Tout ce que vos visiteurs voient : articles, pages, medias</li>
+                        <li><strong>Communaute</strong> &mdash; Commentaires et utilisateurs</li>
+                        <li><strong>Reglages</strong> &mdash; Configuration du site (identite, navigation, apparence)</li>
+                        <li><strong>Aide</strong> &mdash; Ce guide, toujours accessible</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Commencez par configurer l'identite de votre site (nom, logo, coordonnees) dans <em>Reglages &rarr; Identite du site</em>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 2. Articles ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-articles">
+                    <i class="fas fa-newspaper me-2 text-primary"></i> Gerer vos articles
+                </button>
+            </h2>
+            <div id="guide-articles" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Creer un article</h5>
+                    <p>Depuis <strong>Contenu &rarr; Blog &rarr; Articles</strong>, cliquez sur <em>Creer un article</em>.</p>
+
+                    <h5>L'editeur de contenu</h5>
+                    <p>BlogWeb utilise un editeur visuel (TipTap) qui vous permet de :</p>
+                    <ul>
+                        <li>Mettre en forme votre texte (gras, italique, titres, listes)</li>
+                        <li>Inserer des <strong>images</strong> depuis votre bibliotheque de medias</li>
+                        <li>Integrer des <strong>videos YouTube</strong></li>
+                        <li>Ajouter des <strong>citations</strong>, du <strong>code</strong>, des <strong>separateurs</strong></li>
+                    </ul>
+                    <p>L'editeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur.</p>
+
+                    <h5>Publier un article</h5>
+                    <p>Par defaut, un article est en <strong>brouillon</strong> (non visible). Pour le publier :</p>
+                    <ul>
+                        <li>Cochez la case <em>Publie</em> dans le formulaire</li>
+                        <li>La date de publication sera automatiquement remplie</li>
+                    </ul>
+
+                    <h5>Article vedette</h5>
+                    <p>Vous pouvez mettre un article en avant avec le champ <em>Article vedette</em>. Il sera affiche en evidence sur la page Blog.</p>
+
+                    <h5>Visibilite</h5>
+                    <ul>
+                        <li><strong>Public</strong> &mdash; Visible par tous les visiteurs</li>
+                        <li><strong>Membres</strong> &mdash; Uniquement les utilisateurs connectes</li>
+                        <li><strong>Admin</strong> &mdash; Uniquement les administrateurs</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Ajoutez toujours une image mise en avant et un texte d'accroche. Vos articles seront plus attractifs dans les listes et sur les reseaux sociaux.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 3. Pages ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-pages">
+                    <i class="fas fa-file-lines me-2 text-primary"></i> Gerer vos pages
+                </button>
+            </h2>
+            <div id="guide-pages" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Pages systeme vs pages personnalisees</h5>
+                    <p>Il existe deux types de pages :</p>
+                    <ul>
+                        <li><strong>Pages systeme</strong> (mentions legales, politique de confidentialite) &mdash; Elles ne peuvent pas etre supprimees, mais leur contenu est modifiable.</li>
+                        <li><strong>Pages personnalisees</strong> &mdash; Creez autant de pages que vous le souhaitez (A propos, Nos services, etc.).</li>
+                    </ul>
+
+                    <h5>Mise en page</h5>
+                    <p>Chaque page peut utiliser un modele de mise en page different :</p>
+                    <ul>
+                        <li><strong>Standard</strong> &mdash; Contenu pleine largeur, ideal pour du texte</li>
+                        <li><strong>Avec barre laterale</strong> &mdash; Contenu + sidebar widgets</li>
+                        <li><strong>Landing</strong> &mdash; Page d'atterrissage sans elements de navigation superflus</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> N'oubliez pas d'ajouter vos pages personnalisees dans la navigation via <em>Reglages &rarr; Navigation</em>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 4. Medias ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-medias">
+                    <i class="fas fa-photo-video me-2 text-primary"></i> Medias et images
+                </button>
+            </h2>
+            <div id="guide-medias" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Formats acceptes</h5>
+                    <p>Vous pouvez telecharger des images aux formats <strong>JPG</strong>, <strong>PNG</strong>, <strong>GIF</strong> et <strong>WebP</strong>. Taille maximale : 25 Mo.</p>
+
+                    <h5>Conversion WebP automatique</h5>
+                    <p>Chaque image uploadee est automatiquement convertie en <strong>WebP</strong>, un format moderne plus leger. Vos pages se chargent plus vite, et votre SEO s'ameliore.</p>
+
+                    <h5>Images responsives</h5>
+                    <p>BlogWeb genere automatiquement <strong>3 tailles</strong> de chaque image (480px, 800px, 1200px) pour s'adapter a tous les ecrans (mobile, tablette, ordinateur).</p>
+
+                    <h5>Texte alternatif (alt)</h5>
+                    <p>Le champ <em>Nom</em> d'un media sert aussi de <strong>texte alternatif</strong>. C'est important pour :</p>
+                    <ul>
+                        <li>L'<strong>accessibilite</strong> (lecteurs d'ecran pour malvoyants)</li>
+                        <li>Le <strong>SEO</strong> (Google comprend le contenu de vos images)</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Donnez des noms descriptifs a vos images. Preferez "equipe-reunion-bureau" a "IMG_20240315.jpg".
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 5. Navigation ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-navigation">
+                    <i class="fas fa-bars me-2 text-primary"></i> Navigation et menus
+                </button>
+            </h2>
+            <div id="guide-navigation" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Le gestionnaire de menus</h5>
+                    <p>Accessible via <strong>Reglages &rarr; Navigation</strong>, il vous permet d'organiser vos menus par <strong>glisser-deposer</strong>.</p>
+
+                    <h5>Les emplacements</h5>
+                    <p>Votre site a 3 zones de navigation :</p>
+                    <ul>
+                        <li><strong>Header</strong> &mdash; Le menu principal en haut de page</li>
+                        <li><strong>Footer navigation</strong> &mdash; Liens utiles en bas de page</li>
+                        <li><strong>Footer legal</strong> &mdash; Mentions legales, CGV, politique de confidentialite</li>
+                    </ul>
+
+                    <h5>Types de liens</h5>
+                    <p>Vous pouvez ajouter des liens vers :</p>
+                    <ul>
+                        <li>Des <strong>pages</strong> de votre site</li>
+                        <li>Des <strong>categories</strong> d'articles</li>
+                        <li>Des <strong>modules</strong> (blog, services, catalogue...)</li>
+                        <li>Des <strong>URLs externes</strong></li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Gardez votre menu header court (5-7 liens maximum). Trop de liens perturbent la navigation.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 6. SEO ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-seo">
+                    <i class="fas fa-search me-2 text-primary"></i> SEO et referencement
+                </button>
+            </h2>
+            <div id="guide-seo" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Qu'est-ce que le SEO ?</h5>
+                    <p>Le SEO (Search Engine Optimization) designe l'ensemble des techniques pour que votre site apparaisse dans les <strong>premiers resultats de Google</strong>.</p>
+
+                    <h5>Les champs SEO</h5>
+                    <p>Chaque article, page et categorie dispose d'un panneau <em>SEO</em> avec :</p>
+                    <ul>
+                        <li><strong>Titre SEO</strong> (max 70 caracteres) &mdash; Le titre affiche dans Google. S'il est vide, le titre de votre contenu est utilise.</li>
+                        <li><strong>Description SEO</strong> (max 160 caracteres) &mdash; Le texte sous le titre dans Google. C'est ce qui donne envie de cliquer !</li>
+                        <li><strong>Mots-cles</strong> &mdash; Les termes principaux de votre contenu, separes par des virgules.</li>
+                        <li><strong>No Index</strong> &mdash; Cochez si vous ne voulez pas que cette page apparaisse dans Google (brouillons, pages privees).</li>
+                        <li><strong>URL canonique</strong> &mdash; A remplir uniquement si le contenu existe aussi sur un autre site.</li>
+                    </ul>
+
+                    <h5>Ce que BlogWeb fait automatiquement</h5>
+                    <ul>
+                        <li>Generation du <strong>sitemap XML</strong> (plan du site pour Google)</li>
+                        <li>Balises <strong>Open Graph</strong> pour les reseaux sociaux</li>
+                        <li>Schema.org <strong>JSON-LD</strong> pour les extraits enrichis</li>
+                        <li><strong>robots.txt</strong> optimise</li>
+                        <li>Images <strong>WebP</strong> et <strong>lazy-loading</strong> pour la vitesse</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Remplissez les champs SEO de vos 10 pages les plus importantes. C'est le meilleur rapport effort/resultat pour votre referencement.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 7. Personnalisation ── #}
+        {% if is_granted('ROLE_FREELANCE') %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-theme">
+                    <i class="fas fa-palette me-2 text-primary"></i> Personnalisation et themes
+                </button>
+            </h2>
+            <div id="guide-theme" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Changer de theme</h5>
+                    <p>Dans <strong>Reglages &rarr; Apparence &rarr; Catalogue de themes</strong>, parcourez les themes disponibles et previsualisez-les avant de les activer.</p>
+
+                    <h5>Personnaliser les couleurs et polices</h5>
+                    <p>Dans <strong>Reglages &rarr; Apparence &rarr; Reglages du theme</strong>, modifiez :</p>
+                    <ul>
+                        <li><strong>Couleur principale</strong> &mdash; Boutons, liens, accents</li>
+                        <li><strong>Couleur secondaire</strong> &mdash; Elements d'accompagnement</li>
+                        <li><strong>Couleur d'accent</strong> &mdash; Details, badges, decorations</li>
+                        <li><strong>Polices</strong> &mdash; 20 Google Fonts disponibles</li>
+                    </ul>
+                    <p>Si vous laissez un champ vide, la valeur par defaut du theme s'applique.</p>
+
+                    <h5>Images du theme</h5>
+                    <p>Gerez vos images hero, equipe, et galerie dans <strong>Reglages &rarr; Apparence &rarr; Images du theme</strong>.</p>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Changez les couleurs plutot que le theme entier. Vous gardez la structure tout en personnalisant l'identite visuelle.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── 8. Utilisateurs ── #}
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-users">
+                    <i class="fas fa-users me-2 text-primary"></i> Utilisateurs et roles
+                </button>
+            </h2>
+            <div id="guide-users" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Les roles</h5>
+                    <p>Chaque utilisateur a un role qui determine ce qu'il peut faire :</p>
+                    <table class="table table-sm" style="font-size: 0.85rem;">
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Qui</th>
+                                <th>Peut faire</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Utilisateur</strong></td>
+                                <td>Visiteur inscrit</td>
+                                <td>Lire, commenter, gerer son profil</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Auteur</strong></td>
+                                <td>Redacteur</td>
+                                <td>Creer et editer des articles et pages</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Admin</strong></td>
+                                <td>Administrateur</td>
+                                <td>Gestion complete du site</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Creez un compte <em>Auteur</em> pour vos redacteurs. Ils pourront ecrire sans acceder aux reglages sensibles.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<style>
+    .bw-guide .accordion-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px !important;
+        margin-bottom: 0.5rem;
+        overflow: hidden;
+    }
+    .bw-guide .accordion-button {
+        font-weight: 600;
+        font-size: 0.92rem;
+        padding: 0.875rem 1.125rem;
+        background: #fff;
+    }
+    .bw-guide .accordion-button:not(.collapsed) {
+        background: #f8fafc;
+        color: #1e293b;
+        box-shadow: none;
+    }
+    .bw-guide .accordion-button:focus {
+        box-shadow: none;
+        border-color: #e2e8f0;
+    }
+    .bw-guide .accordion-body {
+        font-size: 0.875rem;
+        line-height: 1.65;
+        color: #475569;
+        padding: 1.25rem;
+    }
+    .bw-guide .accordion-body h5 {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 1.25rem 0 0.5rem;
+    }
+    .bw-guide .accordion-body h5:first-child {
+        margin-top: 0;
+    }
+    .bw-guide-tip {
+        padding: 0.75rem 1rem;
+        background: #fffbeb;
+        border-left: 3px solid #f59e0b;
+        border-radius: 0 8px 8px 0;
+        margin: 1rem 0 0;
+        font-size: 0.84rem;
+    }
+</style>
+{% endblock %}

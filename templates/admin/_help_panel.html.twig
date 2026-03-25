@@ -1,0 +1,66 @@
+{# Panneau d'aide contextuelle — inclus dans le layout EasyAdmin #}
+{% if admin_help is defined and admin_help is not null %}
+<button type="button" class="bw-help-toggle" id="helpToggle" title="Aide">
+    <i class="fas fa-question"></i>
+</button>
+
+<div class="bw-help-overlay" id="helpOverlay"></div>
+
+<div class="bw-help-panel" id="helpPanel">
+    <div class="bw-help-panel__header">
+        <h3 class="bw-help-panel__title">
+            <i class="fas fa-circle-question me-2"></i>{{ admin_help.title }}
+        </h3>
+        <button type="button" class="bw-help-panel__close" id="helpClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="bw-help-panel__body">
+        {% for section in admin_help.sections %}
+            <h4>{{ section.title }}</h4>
+            {{ section.content|raw }}
+        {% endfor %}
+
+        {% if admin_help.tips is defined and admin_help.tips|length > 0 %}
+            {% for tip in admin_help.tips %}
+                <div class="bw-help-tip">
+                    <i class="fas fa-lightbulb me-1" style="color: #d97706;"></i>
+                    {{ tip }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+            <a href="{{ path('admin_guide') }}" style="font-size: 0.82rem; color: #2563eb;">
+                <i class="fas fa-book-open me-1"></i>Consulter le guide complet
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const toggle = document.getElementById('helpToggle');
+    const panel = document.getElementById('helpPanel');
+    const overlay = document.getElementById('helpOverlay');
+    const close = document.getElementById('helpClose');
+    if (!toggle || !panel) return;
+
+    function open() {
+        panel.classList.add('is-open');
+        overlay.classList.add('is-open');
+    }
+    function shut() {
+        panel.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+    }
+
+    toggle.addEventListener('click', open);
+    close.addEventListener('click', shut);
+    overlay.addEventListener('click', shut);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') shut();
+    });
+})();
+</script>
+{% endif %}
