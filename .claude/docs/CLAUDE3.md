@@ -58,13 +58,63 @@ Deux nouveaux modules activables par site, suivant les conventions etablies (Mod
 
 ---
 
-## Phase 10.2 — Module Portfolio / Realisations
+## Phase 10.2 — Module Portfolio / Realisations ✓ TERMINE
 
-> Prerequis : Phase 6.1 (enabledModules)
-> Estimation : ~1 jour
-> Pattern de reference : module Services (listing + page detail + blocks TipTap)
+> Implemente le 2026-03-26
 
-### 10.2.1 Entite PortfolioCategory + Migration
+### Fichiers crees
+
+| Fichier | Role |
+|---------|------|
+| `src/Entity/PortfolioItem.php` | Realisation avec titre, description, blocks TipTap, client, date, URL projet, image, tags (ManyToMany Tag), SeoTrait |
+| `src/Entity/PortfolioCategory.php` | Categorie avec nom, slug, icon, position, isActive |
+| `src/Repository/PortfolioItemRepository.php` | `findAllActive`, `findFeatured`, `findActiveByCategory`, `findOneActiveBySlug`, `findAllActiveForSitemap` |
+| `src/Repository/PortfolioCategoryRepository.php` | `findAllActive` |
+| `src/Controller/Admin/PortfolioItemCrudController.php` | CRUD admin — Panels Contenu/Projet/Referencement/Parametres avec helps detailles |
+| `src/Controller/Admin/PortfolioCategoryCrudController.php` | CRUD categories |
+| `src/Controller/PortfolioController.php` | Front `GET /realisations` (index filtrable) + `GET /realisation/{slug}` (detail) |
+| `templates/portfolio/index.html.twig` | Grille filtrable par categorie (pills) |
+| `templates/portfolio/show.html.twig` | Page detail avec meta, contenu TipTap, tags, CTA projet, breadcrumb |
+| `templates/_partials/_portfolio_card.html.twig` | Card portfolio reutilisable (image, badge categorie, client, excerpt) |
+| `templates/_partials/_portfolio_grid.html.twig` | Grille homepage (6 items max + lien "Voir toutes") |
+| `assets/css/base/portfolio.scss` | Styles globaux (grille, card, detail, filtres, responsive) |
+| `migrations/Version20260326070851.php` | Tables `portfolio_item` + `portfolio_category` + jointure `portfolio_item_tag` |
+
+### Fichiers modifies
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Enum/ModuleEnum.php` | Ajout `PORTFOLIO = 'portfolio'` + label |
+| `src/Controller/Admin/DashboardController.php` | Menu Portfolio conditionnel, `$hasModules`, moduleMap route `app_portfolio_index` |
+| `src/EventListener/ContentSanitizeListener.php` | Ajout `PortfolioItem` dans les entites traitees |
+| `src/Controller/SitemapController.php` | Ajout realisations dans le sitemap (priority 0.6, monthly) |
+| `templates/sitemap/index.xml.twig` | Boucle `portfolioItems` |
+| `src/Controller/HomeController.php` | Passage `faqs` + `featuredPortfolio` aux templates home |
+| `assets/css/main.scss` | Import `portfolio.scss` |
+| 6x `templates/themes/*/home.html.twig` | Sections FAQ + Portfolio conditionnelles |
+| `SETUP.md` | Ajout modules faq + portfolio dans la doc |
+| `README.md` | Ajout FAQ + Portfolio dans la liste des modules |
+
+### Overrides CSS par theme
+
+| Theme | Override |
+|-------|---------|
+| `default` | Squelette commente (personnalisable) |
+| `corporate` | Cards avec radius reduit, hover subtle |
+| `artisan` | Radius genereux 1rem, hover chaleureux |
+| `moderne` | Dark mode : surface/border adaptes, gradient hover |
+| `starter` | Minimaliste : radius 0.375rem, pas d'overlay |
+| `vitrine` | Hover indigo, radius intermediaire |
+
+### Decisions d'implementation
+
+- **Tags relies a la table Tag** existante (ManyToMany) — partages avec blog et catalogue.
+- **Chemin medias** : `documents/medias/` (corrige depuis `uploads/medias/` sur services aussi).
+- **Filtres categories** : via query param `?categorie=slug` (meme pattern que blog).
+- **Routes francaises** : `/realisations` et `/realisation/{slug}`.
+- **SeoTrait** integre pour SEO complet sur chaque realisation.
+
+### 10.2.1 Entite PortfolioCategory + Migration (ancien plan)
 
 - [ ] `src/Entity/PortfolioCategory.php` :
   - `id` (int, auto)
