@@ -25,7 +25,7 @@ class FaqCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, 'FAQ')
+            ->setPageTitle(Crud::PAGE_INDEX, 'Questions fréquentes')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvelle question')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier la question')
             ->setDefaultSort(['position' => 'ASC']);
@@ -38,32 +38,36 @@ class FaqCrudController extends AbstractCrudController
             ->setIcon('fa fa-pen')
             ->collapsible();
 
-        yield TextField::new('question', 'Question');
+        yield TextField::new('question', 'Question')
+            ->setHelp('Formulez la question du point de vue du visiteur (ex : « Comment puis-je vous contacter ? »).');
 
-        yield TextareaField::new('blocksJson', 'Reponse')
+        yield TextareaField::new('blocksJson', 'Réponse')
             ->setFormTypeOptions(['attr' => ['data-tiptap-editor' => '', 'style' => 'display: none']])
-            ->setHelp('Reponse detaillee a la question (editeur visuel).')
+            ->setHelp('Reponse detaillee a la question. Utilisez l\'editeur visuel pour ajouter des liens, listes ou mise en forme.')
             ->hideOnIndex();
 
-        yield TextField::new('icon', 'Icone')
-            ->setHelp('Classe Bootstrap Icons (ex: bi-question-circle). Voir <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a>')
+        yield TextField::new('icon', 'Icône')
+            ->setHelp('Optionnel. Icone affichee devant la question. Classe Bootstrap Icons (ex : bi-question-circle). Voir <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a>')
             ->hideOnIndex();
 
         // --- Panel Parametres ---
-        yield FormField::addPanel('Parametres')
+        yield FormField::addPanel('Paramètres')
             ->setIcon('fa fa-cog')
             ->collapsible();
 
         yield SlugField::new('slug')
             ->setTargetFieldName('question')
+            ->setHelp('Généré automatiquement depuis la question. Sert d\'ancre dans l\'URL (/faq#slug).')
             ->hideOnIndex();
 
-        yield AssociationField::new('category', 'Categorie')
-            ->setRequired(false);
+        yield AssociationField::new('category', 'Catégorie')
+            ->setRequired(false)
+            ->setHelp('Optionnel. Permet de regrouper les questions par thème sur la page FAQ.');
 
         yield IntegerField::new('position', 'Ordre')
-            ->setHelp('Ordre d\'affichage (0 = premier)');
+            ->setHelp('Ordre d\'affichage dans sa catégorie (0 = en premier).');
 
-        yield BooleanField::new('isActive', 'Active');
+        yield BooleanField::new('isActive', 'Activée')
+            ->setHelp('Désactivez pour masquer cette question sans la supprimer.');
     }
 }

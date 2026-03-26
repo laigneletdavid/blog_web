@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{{ seo.title|default('Nos realisations') }} — {{ site.name|default('') }}</title>
+    <meta name="description" content="{{ seo.description|default('Decouvrez nos realisations') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Realisations</li>
+        </ol>
+    </nav>
+
+    <h1 class="title-one mb-4">{{ title_page }}</h1>
+
+    {# --- Filtres categories --- #}
+    {% if categories|length > 1 %}
+    <div class="portfolio-filters mb-4">
+        <a href="{{ path('app_portfolio_index') }}"
+           class="portfolio-filters__pill{% if not activeCategory %} portfolio-filters__pill--active{% endif %}">
+            Toutes
+        </a>
+        {% for cat in categories %}
+        <a href="{{ path('app_portfolio_index', {categorie: cat.slug}) }}"
+           class="portfolio-filters__pill{% if activeCategory and activeCategory.id == cat.id %} portfolio-filters__pill--active{% endif %}">
+            {% if cat.icon %}<i class="{{ cat.icon }} me-1"></i>{% endif %}
+            {{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# --- Grille --- #}
+    {% if items|length > 0 %}
+        <div class="portfolio-grid">
+            {% for item in items %}
+                {% include '_partials/_portfolio_card.html.twig' with { item: item } %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted text-center py-5">Aucune realisation disponible pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

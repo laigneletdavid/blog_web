@@ -287,7 +287,70 @@
         </div>
         {% endif %}
 
-        {# ── 8. Personnalisation ── #}
+        {# ── 8. Portfolio ── #}
+        {% if site is defined and site and 'portfolio' in site.enabledModules %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-portfolio">
+                    <i class="fas fa-images me-2 text-primary"></i> Portfolio (Realisations)
+                </button>
+            </h2>
+            <div id="guide-portfolio" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>A quoi sert le module Portfolio ?</h5>
+                    <p>Le module Portfolio vous permet de presenter vos <strong>realisations</strong>, projets clients ou travaux dans une grille visuelle avec pages de detail. Ideal pour montrer votre savoir-faire a vos prospects.</p>
+
+                    <h5>Categories</h5>
+                    <p>Dans <strong>Modules &rarr; Portfolio &rarr; Categories</strong>, organisez vos realisations par type de projet :</p>
+                    <ul>
+                        <li>Creez des categories (ex : "Sites web", "Applications", "Design graphique")</li>
+                        <li>Ajoutez une icone Bootstrap Icons pour un rendu visuel dans les filtres</li>
+                        <li>Ordonnez-les avec le champ <em>Ordre</em></li>
+                    </ul>
+                    <p>Vos visiteurs pourront <strong>filtrer par categorie</strong> sur la page /realisations.</p>
+
+                    <h5>Creer une realisation</h5>
+                    <p>Dans <strong>Modules &rarr; Portfolio &rarr; Realisations</strong>, cliquez sur <em>Creer</em> :</p>
+
+                    <p><strong>Contenu :</strong></p>
+                    <ul>
+                        <li><strong>Titre</strong> &mdash; Nom du projet, affiche dans la grille et en titre de page</li>
+                        <li><strong>Description courte</strong> &mdash; Resume de 2-3 lignes affiche dans la grille</li>
+                        <li><strong>Contenu detaille</strong> &mdash; Description complete du projet (editeur visuel)</li>
+                        <li><strong>Image principale</strong> &mdash; Image de couverture, format 4:3 recommande</li>
+                    </ul>
+
+                    <p><strong>Projet :</strong></p>
+                    <ul>
+                        <li><strong>Client</strong> &mdash; Nom du client ou de l'entreprise</li>
+                        <li><strong>Date de realisation</strong> &mdash; Date de livraison du projet</li>
+                        <li><strong>Lien du projet</strong> &mdash; URL complete vers le projet en ligne (ex : https://www.client.fr). Un bouton "Voir le projet" sera affiche sur la page de detail</li>
+                        <li><strong>Tags</strong> &mdash; Technologies ou competences utilisees. Les tags sont partages avec le blog et le catalogue</li>
+                    </ul>
+
+                    <p><strong>Parametres :</strong></p>
+                    <ul>
+                        <li><strong>Categorie</strong> &mdash; Permet aux visiteurs de filtrer par type</li>
+                        <li><strong>Mis en avant</strong> &mdash; Les realisations mises en avant peuvent etre affichees sur la page d'accueil</li>
+                        <li><strong>Active</strong> &mdash; Masquer sans supprimer</li>
+                    </ul>
+
+                    <h5>Affichage sur le site</h5>
+                    <ul>
+                        <li><strong>/realisations</strong> &mdash; Grille de toutes les realisations avec filtres par categorie</li>
+                        <li><strong>/realisation/mon-projet</strong> &mdash; Page de detail avec image, description, infos projet, tags et bouton lien</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Privilegiez des images de qualite et un format homogene (4:3). Remplissez les champs SEO pour chaque realisation importante — cela aide votre site a apparaitre quand un prospect cherche vos competences.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── 9. Personnalisation ── #}
         {% if is_granted('ROLE_FREELANCE') %}
         <div class="accordion-item">
             <h2 class="accordion-header">

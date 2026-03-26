@@ -6,6 +6,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
 use App\Repository\EventRepository;
 use App\Repository\PageRepository;
+use App\Repository\PortfolioItemRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
 use App\Service\SiteContext;
@@ -23,6 +24,7 @@ class SitemapController extends AbstractController
         ServiceRepository $serviceRepository,
         EventRepository $eventRepository,
         ProductRepository $productRepository,
+        PortfolioItemRepository $portfolioItemRepository,
         SiteContext $siteContext,
     ): Response {
         $articles = $articleRepository->findAllPublishedForSitemap();
@@ -31,6 +33,7 @@ class SitemapController extends AbstractController
         $services = $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [];
         $events = $siteContext->hasModule('events') ? $eventRepository->findAllActiveForSitemap() : [];
         $products = $siteContext->hasModule('catalogue') ? $productRepository->findForSitemap() : [];
+        $portfolioItems = $siteContext->hasModule('portfolio') ? $portfolioItemRepository->findAllActiveForSitemap() : [];
         $hasFaq = $siteContext->hasModule('faq');
 
         $legalPages = $pageRepository->findAllSystemPages();
@@ -42,6 +45,7 @@ class SitemapController extends AbstractController
             'services' => $services,
             'events' => $events,
             'products' => $products,
+            'portfolioItems' => $portfolioItems,
             'legalPages' => $legalPages,
             'hasFaq' => $hasFaq,
         ]);

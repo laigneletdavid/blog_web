@@ -1,0 +1,29 @@
+{# ====== Portfolio Card — Composant reutilisable ====== #}
+{# Variable attendue : item (PortfolioItem) #}
+<a href="{{ path('app_portfolio_show', {slug: item.slug}) }}" class="portfolio-card">
+    <div class="portfolio-card__img">
+        {% if item.image %}
+        <img src="{{ asset('uploads/medias/' ~ item.image.fileName) }}"
+             alt="{{ item.title }}"
+             loading="lazy">
+        {% else %}
+        <div class="portfolio-card__placeholder">
+            <i class="bi bi-image"></i>
+        </div>
+        {% endif %}
+        {% if item.category %}
+        <span class="portfolio-card__badge">{{ item.category.name }}</span>
+        {% endif %}
+    </div>
+    <div class="portfolio-card__body">
+        <h3 class="portfolio-card__title">{{ item.title }}</h3>
+        {% if item.client %}
+        <span class="portfolio-card__client">
+            <i class="bi bi-person-fill me-1"></i>{{ item.client }}
+        </span>
+        {% endif %}
+        {% if item.shortDescription %}
+        <p class="portfolio-card__excerpt">{{ item.shortDescription|u.truncate(120, '...') }}</p>
+        {% endif %}
+    </div>
+</a>

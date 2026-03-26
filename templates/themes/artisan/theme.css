@@ -449,6 +449,20 @@
     color: var(--accent);
 }
 
+/* ====== PORTFOLIO OVERRIDES ====== */
+.theme-artisan .portfolio-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .portfolio-detail__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .portfolio-card {
+    border-radius: 1rem;
+}
+.theme-artisan .portfolio-card__badge {
+    background: var(--accent);
+}
+
 /* --- FOOTER --- */
 .theme-artisan .footer--artisan { background: var(--text); color: rgba(255,255,255,0.8); }
 .theme-artisan .footer--artisan .footer-heading {

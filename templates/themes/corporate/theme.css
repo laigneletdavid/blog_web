@@ -618,3 +618,17 @@
     font-size: 0.9375rem;
     border-radius: 0.375rem;
 }
+
+/* ====== PORTFOLIO OVERRIDES ====== */
+.theme-corporate .portfolio-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-corporate .portfolio-detail__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-corporate .portfolio-card {
+    border-radius: 0.375rem;
+}
+.theme-corporate .portfolio-filters__pill {
+    border-radius: 0.25rem;
+}
