@@ -614,3 +614,33 @@
 .theme-moderne .mod-articles .blog-card__title {
     color: var(--text);
 }
+
+/* ====== FAQ OVERRIDES ====== */
+.theme-moderne .faq-category__title {
+    border-bottom-color: var(--primary);
+}
+.theme-moderne .faq-accordion .accordion-item {
+    background: var(--surface);
+    border-color: var(--border);
+}
+.theme-moderne .faq-accordion .accordion-button {
+    background: var(--surface);
+    color: var(--text);
+}
+.theme-moderne .faq-accordion .accordion-button:not(.collapsed) {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--primary);
+}
+.theme-moderne .faq-accordion .accordion-button::after {
+    border-color: var(--text-muted);
+}
+.theme-moderne .faq-accordion .accordion-button:not(.collapsed)::after {
+    border-color: var(--primary);
+}
+.theme-moderne .faq-accordion .accordion-body {
+    border-top-color: var(--border);
+    color: var(--text);
+}
+.theme-moderne .faq-accordion .accordion-body a {
+    color: var(--accent);
+}

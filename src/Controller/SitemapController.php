@@ -31,6 +31,7 @@ class SitemapController extends AbstractController
         $services = $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [];
         $events = $siteContext->hasModule('events') ? $eventRepository->findAllActiveForSitemap() : [];
         $products = $siteContext->hasModule('catalogue') ? $productRepository->findForSitemap() : [];
+        $hasFaq = $siteContext->hasModule('faq');
 
         $legalPages = $pageRepository->findAllSystemPages();
 
@@ -42,6 +43,7 @@ class SitemapController extends AbstractController
             'events' => $events,
             'products' => $products,
             'legalPages' => $legalPages,
+            'hasFaq' => $hasFaq,
         ]);
 
         $response->headers->set('Content-Type', 'application/xml');

@@ -1,0 +1,143 @@
+// =============================================================================
+// FAQ — Module FAQ (accordeon Bootstrap)
+// Utilise uniquement des CSS custom properties pour s'adapter
+// a tous les themes (default, corporate, artisan, vitrine,
+// starter, moderne).
+// =============================================================================
+
+// --- Section page ---
+
+.faq-section {
+  max-width: 800px;
+}
+
+// --- Titre categorie ---
+
+.faq-category__title {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary);
+}
+
+// --- Accordeon FAQ ---
+
+.faq-accordion {
+  .accordion-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) !important;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .accordion-header {
+    margin: 0;
+  }
+
+  .accordion-button {
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+    border: none;
+    box-shadow: none;
+    transition: background 0.2s ease, color 0.2s ease;
+
+    &:not(.collapsed) {
+      background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+      color: var(--primary);
+      box-shadow: none;
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--primary) 6%, var(--surface));
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--primary) 25%, transparent);
+    }
+
+    // Override Bootstrap arrow color
+    &::after {
+      background-image: none;
+      content: "";
+      width: 1.25rem;
+      height: 1.25rem;
+      border: solid var(--text-muted);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+      margin-left: auto;
+      display: inline-block;
+      padding: 0.2rem;
+    }
+
+    &:not(.collapsed)::after {
+      transform: rotate(-135deg);
+      border-color: var(--primary);
+    }
+
+    // Icone optionnelle
+    i {
+      color: var(--primary);
+      font-size: 1.125rem;
+    }
+  }
+
+  .accordion-body {
+    padding: 1rem 1.25rem 1.25rem;
+    color: var(--text);
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+
+    // Content body (TipTap rendered HTML)
+    p {
+      margin-bottom: 0.75rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    a {
+      color: var(--primary);
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+}
+
+// --- Partial homepage ---
+
+.faq-home-section {
+  .faq-accordion {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
+// --- Responsive ---
+
+@media (max-width: 575.98px) {
+  .faq-accordion .accordion-button {
+    font-size: 0.9375rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .faq-accordion .accordion-body {
+    padding: 0.875rem 1rem 1rem;
+  }
+}

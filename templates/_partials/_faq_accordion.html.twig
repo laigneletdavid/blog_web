@@ -1,0 +1,32 @@
+{# ====== FAQ ACCORDION — Partial reutilisable ====== #}
+{# Utilise par les templates home des themes (section FAQ optionnelle) #}
+{# Variables attendues : faqs (tableau de Faq) #}
+{% if faqs is defined and faqs|length > 0 %}
+<div class="faq-home-section">
+    <div class="accordion faq-accordion" id="faq-home">
+        {% for faq in faqs|slice(0, 6) %}
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#faq-home-{{ faq.id }}"
+                        aria-expanded="false"
+                        aria-controls="faq-home-{{ faq.id }}">
+                    {% if faq.icon %}<i class="{{ faq.icon }} me-2"></i>{% endif %}
+                    {{ faq.question }}
+                </button>
+            </h3>
+            <div id="faq-home-{{ faq.id }}" class="accordion-collapse collapse"
+                 data-bs-parent="#faq-home">
+                <div class="accordion-body content-body">
+                    {{ faq.content|raw }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-3">
+        <a href="{{ path('app_faq_index') }}" class="btn btn-outline-primary">Voir toutes les questions &rarr;</a>
+    </div>
+</div>
+{% endif %}

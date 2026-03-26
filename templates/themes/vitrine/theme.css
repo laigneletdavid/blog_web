@@ -330,6 +330,18 @@
     color: var(--primary);
 }
 
+/* ====== FAQ OVERRIDES ====== */
+.theme-vitrine .faq-category__title {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+.theme-vitrine .faq-accordion .accordion-item {
+    border-radius: 0.625rem;
+}
+.theme-vitrine .faq-accordion .accordion-button:not(.collapsed) {
+    color: var(--primary);
+}
+
 /* --- FOOTER --- */
 .theme-vitrine .footer--vitrine {
     background: var(--text);

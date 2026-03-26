@@ -65,6 +65,14 @@
     </url>
     {% endfor %}
 
+    {% if hasFaq|default(false) %}
+    <url>
+        <loc>{{ absolute_url(path('app_faq_index')) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endif %}
+
     <url>
         <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
         <changefreq>daily</changefreq>

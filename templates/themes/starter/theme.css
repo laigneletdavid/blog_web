@@ -402,6 +402,20 @@
     color: var(--bg);
 }
 
+/* ====== FAQ OVERRIDES ====== */
+.theme-starter .faq-category__title {
+    font-size: 1.125rem;
+    border-bottom: 1px solid var(--border);
+    border-bottom-width: 1px;
+}
+.theme-starter .faq-accordion .accordion-item {
+    border-radius: 0.375rem;
+    border: 1px solid var(--border);
+}
+.theme-starter .faq-accordion .accordion-button {
+    font-size: 0.9375rem;
+}
+
 /* --- FOOTER --- */
 .theme-starter .footer--starter {
     border-top: 1px solid var(--border);

@@ -438,6 +438,17 @@
     border: 1px solid var(--border);
 }
 
+/* ====== FAQ OVERRIDES ====== */
+.theme-artisan .faq-category__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .faq-accordion .accordion-item {
+    border-radius: 1rem;
+}
+.theme-artisan .faq-accordion .accordion-button i {
+    color: var(--accent);
+}
+
 /* --- FOOTER --- */
 .theme-artisan .footer--artisan { background: var(--text); color: rgba(255,255,255,0.8); }
 .theme-artisan .footer--artisan .footer-heading {

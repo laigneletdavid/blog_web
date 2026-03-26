@@ -242,7 +242,52 @@
             </div>
         </div>
 
-        {# ── 7. Personnalisation ── #}
+        {# ── 7. FAQ ── #}
+        {% if site is defined and site and 'faq' in site.enabledModules %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-faq">
+                    <i class="fas fa-circle-question me-2 text-primary"></i> FAQ (Foire aux questions)
+                </button>
+            </h2>
+            <div id="guide-faq" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>A quoi sert le module FAQ ?</h5>
+                    <p>Le module FAQ vous permet de creer une page de <strong>questions/reponses</strong> en accordeon sur votre site. C'est ideal pour rassurer vos visiteurs et ameliorer votre referencement (Google affiche parfois les FAQ directement dans les resultats).</p>
+
+                    <h5>Categories (optionnelles)</h5>
+                    <p>Vous pouvez organiser vos questions par categories. Dans <strong>Modules &rarr; FAQ &rarr; Categories</strong> :</p>
+                    <ul>
+                        <li>Creez des categories thematiques (ex : "Livraison", "Paiement", "Technique")</li>
+                        <li>Ordonnez-les avec le champ <em>Ordre</em> (0 = en premier)</li>
+                        <li>Activez ou desactivez-les a tout moment</li>
+                    </ul>
+                    <p>Si vous n'avez que quelques questions, <strong>pas besoin de categories</strong> : les questions s'afficheront dans un seul groupe.</p>
+
+                    <h5>Creer une question</h5>
+                    <p>Dans <strong>Modules &rarr; FAQ &rarr; Questions</strong>, cliquez sur <em>Creer</em> :</p>
+                    <ul>
+                        <li><strong>Question</strong> &mdash; Le texte affiche dans le titre de l'accordeon</li>
+                        <li><strong>Reponse</strong> &mdash; Utilisez l'editeur visuel pour mettre en forme votre reponse (texte riche, liens, listes...)</li>
+                        <li><strong>Categorie</strong> &mdash; Rattachez la question a une categorie (optionnel)</li>
+                        <li><strong>Icone</strong> &mdash; Ajoutez une icone Bootstrap Icons (optionnel)</li>
+                        <li><strong>Ordre</strong> &mdash; Position dans sa categorie (0 = en premier)</li>
+                        <li><strong>Active</strong> &mdash; Desactivez une question sans la supprimer</li>
+                    </ul>
+
+                    <h5>Affichage sur le site</h5>
+                    <p>La page <strong>/faq</strong> affiche toutes les questions actives en accordeon, groupees par categorie. Le schema <strong>FAQ structuree</strong> (schema.org) est genere automatiquement pour le SEO.</p>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Redigez vos questions du point de vue du client ("Comment puis-je..." plutot que "Nous proposons..."). Google valorise les FAQ qui repondent aux vraies questions des internautes.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── 8. Personnalisation ── #}
         {% if is_granted('ROLE_FREELANCE') %}
         <div class="accordion-item">
             <h2 class="accordion-header">

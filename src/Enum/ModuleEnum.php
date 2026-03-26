@@ -12,6 +12,7 @@ enum ModuleEnum: string
     case EVENTS = 'events';
     case PRIVATE_PAGES = 'private_pages';
     case DIRECTORY = 'directory';
+    case FAQ = 'faq';
 
     public function label(): string
     {
@@ -24,6 +25,7 @@ enum ModuleEnum: string
             self::EVENTS => 'Événements',
             self::PRIVATE_PAGES => 'Pages privées',
             self::DIRECTORY => 'Annuaire',
+            self::FAQ => 'FAQ',
         };
     }
 
