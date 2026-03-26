@@ -3,7 +3,7 @@
 <a href="{{ path('app_portfolio_show', {slug: item.slug}) }}" class="portfolio-card">
     <div class="portfolio-card__img">
         {% if item.image %}
-        <img src="{{ asset('uploads/medias/' ~ item.image.fileName) }}"
+        <img src="{{ asset('documents/medias/' ~ item.image.fileName) }}"
              alt="{{ item.title }}"
              loading="lazy">
         {% else %}

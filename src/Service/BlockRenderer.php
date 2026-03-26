@@ -111,7 +111,12 @@ class BlockRenderer
 
     private function renderImage(array $attrs): string
     {
-        $src = htmlspecialchars($attrs['src'] ?? '', ENT_QUOTES, 'UTF-8');
+        $rawSrc = $attrs['src'] ?? '';
+        // Encoder les espaces et caracteres speciaux dans le chemin (le sanitizer rejette les URLs invalides)
+        $dir = dirname($rawSrc);
+        $file = basename($rawSrc);
+        $encodedSrc = $dir . '/' . rawurlencode($file);
+        $src = htmlspecialchars($encodedSrc, ENT_QUOTES, 'UTF-8');
         $alt = htmlspecialchars($attrs['alt'] ?? '', ENT_QUOTES, 'UTF-8');
         $title = htmlspecialchars($attrs['title'] ?? '', ENT_QUOTES, 'UTF-8');
 
