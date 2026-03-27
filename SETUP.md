@@ -10,10 +10,10 @@
 ## Process rapide
 
 ```bash
-# 1. Creer la branche client depuis master
+# 1. Creer la branche client depuis main
 cd ~/projects/blog_web
-git checkout master
-git checkout -b client/nom-du-client
+git checkout main
+git checkout -b bw_nom-du-client
 
 # 2. Configurer l'environnement
 cp .env.local.example .env.local
@@ -46,22 +46,22 @@ Le site est pret sur http://localhost:8080/admin
 
 ### 1. Creer la branche client
 
-Chaque client a sa propre branche git, creee depuis `master`. Cela permet de personnaliser librement les templates, le CSS et la structure tout en recevant les mises a jour du CMS via `git merge master`.
+Chaque client a sa propre branche git, creee depuis `main`. Cela permet de personnaliser librement les templates, le CSS et la structure tout en recevant les mises a jour du CMS via `git rebase main`.
 
 ```bash
 cd ~/projects/blog_web
-git checkout master
-git pull origin master
-git checkout -b client/nom-du-client
+git checkout main
+git pull origin main
+git checkout -b bw_nom-du-client
 ```
 
-Convention de nommage : `client/nom-du-client` (ex: `client/boulangerie-martin`, `client/garage-dupont`).
+Convention de nommage : `bw_nom-du-client` (ex: `bw_boulangerie-martin`, `bw_garage-dupont`).
 
 > **Pour le deploiement en production**, cloner le repo et checkout la branche client :
 > ```bash
 > git clone git@github.com:laigneletdavid/blog_web.git /var/www/clients/client-x
 > cd /var/www/clients/client-x
-> git checkout client/nom-du-client
+> git checkout bw_nom-du-client
 > ```
 
 ### 2. Configurer l'environnement
@@ -215,21 +215,20 @@ docker compose exec php php bin/console app:menu:sync
 
 ### Principe
 
-Chaque client a sa propre branche git creee depuis `master`. Le CMS commun vit sur `develop` / `master`, les personnalisations client (templates custom, CSS, structure de home) vivent sur la branche client.
+Chaque client a sa propre branche git creee depuis `main`. Le CMS commun vit sur `main`, les personnalisations client (templates custom, CSS, structure de home) vivent sur la branche client. Quand une nouvelle feature arrive sur `main`, chaque branche client est **rebasee** sur `main`.
 
 ```
-master                          ← CMS stable, reference pour tous les clients
+main                          ← CMS stable, reference pour tous les clients
   │
-  ├── develop                   ← Dev en cours des features CMS
-  │
-  ├── client/boulangerie-martin ← Branche client (home custom, CSS, contenu)
-  ├── client/garage-dupont      ← Branche client
-  └── client/cabinet-avocat     ← Branche client
+  ├── bw_front                  ← Site vitrine BlogWeb
+  ├── bw_boulangerie-martin     ← Branche client (home custom, CSS, contenu)
+  ├── bw_garage-dupont          ← Branche client
+  └── bw_cabinet-avocat         ← Branche client
 ```
 
-| Element | Ou ca vit | Touche par merge master ? |
+| Element | Ou ca vit | Touche par rebase main ? |
 |---------|-----------|--------------------------|
-| Code CMS (controllers, entities, services) | master | **Oui** — c'est le but |
+| Code CMS (controllers, entities, services) | main | **Oui** — c'est le but |
 | Templates custom du client | branche client | **Non** — fichiers differents |
 | CSS custom du client | branche client | **Non** — fichiers differents |
 | Contenu (articles, pages) | BDD MariaDB | **Non** |
@@ -240,19 +239,14 @@ master                          ← CMS stable, reference pour tous les clients
 ### Workflow : ajouter une feature au CMS
 
 ```bash
-# 1. Revenir sur develop
-git checkout develop
-
-# 2. Coder, tester, commit
+# 1. Developper sur main (ou une branche feature mergee dans main)
+git checkout main
 # ... ajouter la feature ...
 git add ... && git commit -m "feat: description" && git push
 
-# 3. Merger dans master quand c'est stable
-git checkout master && git merge develop && git push
-
-# 4. Propager vers la branche client
-git checkout client/boulangerie-martin
-git merge master
+# 2. Rebaser chaque branche client sur le nouveau main
+git checkout bw_boulangerie-martin
+git rebase main
 # Resoudre les conflits si besoin (rare)
 make update
 ```
@@ -260,17 +254,16 @@ make update
 ### Workflow : corriger un bug
 
 ```bash
-# 1. Corriger sur develop, merger dans master
+# 1. Corriger sur main
 cd ~/projects/blog_web
-git checkout develop
+git checkout main
 # ... fix ...
 git add ... && git commit -m "fix: description" && git push
-git checkout master && git merge develop && git push
 
-# 2. Propager vers chaque branche client
-for branch in $(git branch --list 'client/*'); do
+# 2. Rebaser chaque branche client
+for branch in $(git branch --list 'bw_*'); do
     echo "=== Mise a jour: $branch ==="
-    git checkout "$branch" && git merge master && make update
+    git checkout "$branch" && git rebase main && make update
 done
 ```
 
@@ -278,17 +271,16 @@ done
 
 ```bash
 cd /var/www/clients/client-x
-git pull origin client/nom-du-client
+git pull origin bw_nom-du-client
 make deploy    # = scripts/deploy.sh (assets build en mode prod, --no-dev, restart services)
 ```
 
 ### Regles importantes
 
-- **Features CMS** : toujours sur `develop`, jamais directement sur une branche client
-- **Personnalisations client** (home custom, CSS, images) : uniquement sur la branche `client/xxx`
-- **Ne jamais modifier le core CMS** sur une branche client — sinon merge conflicts garantis
-- **Tester d'abord** sur `develop` avant de merger dans `master`
-- **Merger `master` dans la branche client** apres chaque release pour garder le CMS a jour
+- **Features CMS** : toujours sur `main`, jamais directement sur une branche client
+- **Personnalisations client** (home custom, CSS, images) : uniquement sur la branche `bw_xxx`
+- **Ne jamais modifier le core CMS** sur une branche client — sinon conflits au rebase garantis
+- **Rebaser la branche client sur `main`** apres chaque release pour garder le CMS a jour
 - **Si une migration echoue** : `deploy.sh` rollback automatiquement la derniere migration
 
 ### Ce qui conflicte (ou pas)
@@ -299,16 +291,16 @@ make deploy    # = scripts/deploy.sh (assets build en mode prod, --no-dev, resta
 | `src/Controller/`, `src/Entity/`, `src/Service/` | **Non** — pas touches cote client |
 | Templates de base des themes | **Rare** — le client a ses propres fichiers |
 | `config/`, `docker/`, `Makefile` | **Non** — partage, pas modifie cote client |
-| Un template modifie des deux cotes | **Oui** — seul cas, merge manuel |
+| Un template modifie des deux cotes | **Oui** — seul cas, resolution manuelle au rebase |
 
 ### Cas particuliers
 
-**Ajout d'un nouveau module :** apres `git merge master`, activer le module si besoin :
+**Ajout d'un nouveau module :** apres `git rebase main`, activer le module si besoin :
 ```bash
 docker compose exec php php bin/console app:module:enable <module>
 ```
 
-**Changement de theme :** apres `git merge master`, resync les menus si le theme a change :
+**Changement de theme :** apres `git rebase main`, resync les menus si le theme a change :
 ```bash
 docker compose exec php php bin/console app:menu:sync
 ```
@@ -347,14 +339,14 @@ Le repo contient des fichiers de documentation technique (specs, audit, roadmap)
 Ce projet est prevu pour etre installe et personnalise via Claude Code. Voici le workflow type :
 
 1. **L'utilisateur fournit** : la fiche de reference client (voir `client_reference_template.md`)
-2. **L'agent cree la branche** `client/nom-du-client` depuis `master`
+2. **L'agent cree la branche** `bw_nom-du-client` depuis `main`
 3. **L'agent execute** le setup : `.env.local`, `make up`, `make db`, `make assets`, `app:client:setup`
 4. **L'agent active les modules** selon la fiche
 5. **L'utilisateur fournit** les cles reCAPTCHA (creees manuellement sur Google)
 6. **L'agent configure** le reCAPTCHA via `app:recaptcha:setup --site-key=... --secret-key=...`
 7. **L'agent personnalise** le site dans l'admin (theme, couleurs, contenu) via le navigateur
 8. **L'agent customise** les templates et le CSS sur la branche client (home, hero, sections)
-9. **L'agent commit** les personnalisations sur la branche `client/nom-du-client`
+9. **L'agent commit** les personnalisations sur la branche `bw_nom-du-client`
 10. **L'utilisateur valide** le rendu et le contenu
 11. **Push en prod** quand c'est valide
 
