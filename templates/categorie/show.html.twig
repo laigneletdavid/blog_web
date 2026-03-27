@@ -1,6 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ categorie.name }}{% endblock %}
+{% block jsonld %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "{{ absolute_url(path('app_home')) }}"},
+        {"@type": "ListItem", "position": 2, "name": {{ categorie.name|json_encode|raw }}}
+    ]
+}
+</script>
+{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -19,7 +30,7 @@
             <div class="col-lg-4">
                 <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
                     {% include 'widgets/subscribe.html.twig' %}
-                    {% include 'widgets/caterogires.html.twig' %}
+                    {% include 'widgets/categories.html.twig' %}
                     {% include 'widgets/last_article.html.twig' %}
                     {% include 'widgets/archives.html.twig' %}
                 </div>

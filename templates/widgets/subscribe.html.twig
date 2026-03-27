@@ -1,7 +1,16 @@
 <div class="p-4 widget_register">
-    <h4>Restez informés</h4>
-    <p>Recevez directement tous les articles et parution et restez informés de toutes nos actualités.</p>
-    <div class="d-flex justify-content-center p-3">
-        <a class="btn-font btn btn-primary shadow-sm" href="{{ path('app_register')}}"><span>Créer un compte</span></a>
-    </div>
+    <h4>Restez informes</h4>
+    {% if is_granted('ROLE_USER') %}
+        <p>Gerez vos preferences de notification depuis votre profil.</p>
+        <div class="d-flex justify-content-center p-3">
+            <a class="btn-font btn btn-outline-primary btn-sm shadow-sm" href="{{ path('app_user_show', { id: app.user.id }) }}">
+                <i class="fas fa-bell"></i> Mes preferences
+            </a>
+        </div>
+    {% else %}
+        <p>Recevez directement tous les articles et restez informes de toutes nos actualites.</p>
+        <div class="d-flex justify-content-center p-3">
+            <a class="btn-font btn btn-primary shadow-sm" href="{{ path('app_register') }}"><span>Creer un compte</span></a>
+        </div>
+    {% endif %}
 </div>

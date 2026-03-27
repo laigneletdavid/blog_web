@@ -1,26 +1,61 @@
+// =============================================================================
+// Static Pages — Hero, Detail, Content
+// =============================================================================
 
-.page_galerie {
-  height: 20rem;
+// --- Page hero (featured image with overlay) ---
+.page-hero {
+  position: relative;
+  margin-bottom: 2rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+
+  &__img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 3rem 2rem 2rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+
+    @media (max-width: 767.98px) {
+      padding: 2rem 1.25rem 1.25rem;
+    }
+  }
+
+  &__title {
+    color: #fff;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
 }
 
-.top_page {
-  margin-bottom: -5rem;
-  .img_top{
-    width: 100%;
+// --- Page detail ---
+.page-detail {
+  padding-top: 1rem;
+  padding-bottom: 2rem;
 
-    img {
-      max-width: 100%;
-    }
+  &__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
   }
-  .title {
-    @media (max-width: 991.98px) {
-      position: relative;
-      top: -6rem;
-      left: 1rem;
-    }
-    position: relative;
-    top: -10rem;
-    left: 5rem;
 
-  }
+  // Content styles are inherited from .article-detail__content
+  // applied as a second class on the content div
 }

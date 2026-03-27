@@ -1,0 +1,365 @@
+/* ====== Vitrine Theme ====== */
+/* Professions liberales, coachs, consultants — Elegant, epure */
+
+/* --- HERO SPLIT --- */
+.theme-vitrine .vit-hero { padding: 6rem 0 4rem; background: var(--bg); }
+.theme-vitrine .vit-hero__title {
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+}
+.theme-vitrine .vit-hero__desc {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+.theme-vitrine .vit-hero__actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.theme-vitrine .vit-hero__img {
+    width: 100%;
+    border-radius: var(--radius);
+    object-fit: cover;
+    aspect-ratio: 4/3;
+}
+.theme-vitrine .vit-hero__placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    opacity: 0.15;
+}
+
+/* --- FEATURES --- */
+.theme-vitrine .vit-features {
+    padding: 4rem 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.theme-vitrine .vit-feature { text-align: center; padding: 1.5rem 1rem; }
+.theme-vitrine .vit-feature__icon {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+.theme-vitrine .vit-feature__title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.theme-vitrine .vit-feature__link {
+    color: var(--primary);
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- ABOUT --- */
+.theme-vitrine .vit-about { padding: 5rem 0; background: var(--bg); }
+.theme-vitrine .vit-about__img {
+    max-width: 320px;
+    width: 100%;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+.theme-vitrine .vit-about__overtitle {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.theme-vitrine .vit-about__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.theme-vitrine .vit-about__text {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+/* --- SECTION TITLE --- */
+.theme-vitrine .vit-section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+/* --- TESTIMONIALS --- */
+.theme-vitrine .vit-testimonials { padding: 5rem 0; background: var(--surface); }
+.theme-vitrine .vit-testimonial {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    height: 100%;
+}
+.theme-vitrine .vit-testimonial__stars {
+    color: var(--secondary);
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+.theme-vitrine .vit-testimonial__text {
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* --- ARTICLES --- */
+.theme-vitrine .vit-articles { padding: 5rem 0; background: var(--bg); }
+
+/* --- CTA --- */
+.theme-vitrine .vit-cta { padding: 4rem 0; background: var(--bg); }
+.theme-vitrine .vit-cta__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3rem;
+}
+.theme-vitrine .vit-cta__title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.theme-vitrine .vit-cta__desc { color: var(--text-muted); margin: 0; }
+
+/* --- BLOG --- */
+.theme-vitrine .vit-blog__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+.theme-vitrine .vit-blog-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.theme-vitrine .vit-blog-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+.theme-vitrine .vit-blog-card__img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+.theme-vitrine .vit-blog-card__body { padding: 1.5rem; }
+.theme-vitrine .vit-blog-card__cat {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+.theme-vitrine .vit-blog-card__title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.theme-vitrine .vit-blog-card__title a { color: var(--text); text-decoration: none; }
+.theme-vitrine .vit-blog-card__title a:hover { color: var(--primary); }
+.theme-vitrine .vit-blog-card__excerpt { font-size: 0.9rem; color: var(--text-muted); }
+.theme-vitrine .vit-blog-card__meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; display: flex; gap: 1rem; }
+
+/* --- CONTACT --- */
+.theme-vitrine .vit-contact { padding: 2rem 0 4rem; }
+.theme-vitrine .vit-contact__title { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+.theme-vitrine .vit-contact__desc { color: var(--text-muted); margin-bottom: 2rem; }
+.theme-vitrine .vit-contact__form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+}
+.theme-vitrine .vit-contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem 1.5rem;
+}
+.theme-vitrine .vit-contact-card svg { color: var(--primary); margin-bottom: 0.75rem; }
+.theme-vitrine .vit-contact-card__title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
+.theme-vitrine .vit-contact-card a { color: var(--text); text-decoration: none; }
+.theme-vitrine .vit-contact-card a:hover { color: var(--primary); }
+
+/* ====== ARTICLE SHOW OVERRIDES ====== */
+
+/* Titre DM Sans bold, letter-spacing serre */
+.theme-vitrine .article-detail__title {
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+/* Espacements genereux */
+.theme-vitrine .article-detail__lead {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+/* Contenu epure */
+.theme-vitrine .article-detail__content {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+}
+
+/* Blockquote indigo */
+.theme-vitrine .article-detail__content blockquote {
+    border-left-color: var(--primary);
+}
+
+/* Tags outline */
+.theme-vitrine .tag-pill {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+.theme-vitrine .tag-pill:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* Share clean */
+.theme-vitrine .share-sticky__btn {
+    border-radius: var(--radius);
+}
+
+/* Author card */
+.theme-vitrine .author-card {
+    border-radius: var(--radius);
+}
+
+/* Related title */
+.theme-vitrine .article-related__title,
+.theme-vitrine .article-comments__title {
+    letter-spacing: -0.01em;
+}
+
+/* ====== BLOG LISTING OVERRIDES ====== */
+
+/* Cards vitrine */
+.theme-vitrine .blog-card__body {
+    padding: 1.5rem;
+}
+.theme-vitrine .blog-card__badge {
+    background: transparent;
+    color: var(--primary);
+    font-weight: 700;
+    padding: 0;
+    position: static;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+.theme-vitrine .blog-card__img .blog-card__badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: var(--primary);
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+}
+.theme-vitrine .blog-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+}
+
+/* Blog header */
+.theme-vitrine .blog-header__title {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* ====== HOME ARTICLES OVERRIDES ====== */
+
+.theme-vitrine .vit-articles .blog-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+}
+
+/* ====== PAGE SHOW OVERRIDES ====== */
+
+.theme-vitrine .page-hero {
+    border-radius: var(--radius);
+}
+.theme-vitrine .page-hero__title {
+    letter-spacing: -0.03em;
+    font-weight: 700;
+}
+.theme-vitrine .page-detail__title {
+    letter-spacing: -0.03em;
+    font-weight: 700;
+}
+.theme-vitrine .page-detail__content blockquote {
+    border-left: 3px solid var(--primary);
+    background: var(--surface);
+}
+
+/* ====== WIDGETS OVERRIDES ====== */
+
+.theme-vitrine .widget > div,
+.theme-vitrine .widget-card {
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.theme-vitrine .widget h4,
+.theme-vitrine .widget-card__title {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    border-bottom: 2px solid var(--primary);
+}
+.theme-vitrine .tag-pill {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 500;
+}
+.theme-vitrine .tag-pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ====== FAQ OVERRIDES ====== */
+.theme-vitrine .faq-category__title {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+.theme-vitrine .faq-accordion .accordion-item {
+    border-radius: 0.625rem;
+}
+.theme-vitrine .faq-accordion .accordion-button:not(.collapsed) {
+    color: var(--primary);
+}
+
+/* ====== PORTFOLIO OVERRIDES ====== */
+.theme-vitrine .portfolio-card {
+    border-radius: 0.625rem;
+}
+.theme-vitrine .portfolio-card:hover {
+    border-color: var(--primary);
+}
+.theme-vitrine .portfolio-detail__title {
+    letter-spacing: -0.03em;
+}
+
+/* --- FOOTER --- */
+.theme-vitrine .footer--vitrine {
+    background: var(--text);
+    color: rgba(255,255,255,0.7);
+    border-top: 3px solid var(--primary);
+}
+.theme-vitrine .footer--vitrine .footer-logo img { max-height: 36px; filter: brightness(0) invert(1); }
+.theme-vitrine .footer--vitrine .nav-link { color: rgba(255,255,255,0.7); font-size: 0.875rem; }
+.theme-vitrine .footer--vitrine .nav-link:hover { color: #fff; }
+.theme-vitrine .footer--vitrine .footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.5); }

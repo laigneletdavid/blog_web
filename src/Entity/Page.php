@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\SeoTrait;
 use App\Model\TimestampedInterface;
 use App\Repository\PageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,10 +13,15 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 class Page implements TimestampedInterface
 {
+    use SeoTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'public'])]
+    private string $visibility = 'public';
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
@@ -23,7 +29,7 @@ class Page implements TimestampedInterface
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column]
@@ -37,6 +43,21 @@ class Page implements TimestampedInterface
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updated_at = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $blocks = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $draftBlocks = null;
+
+    #[ORM\Column(length: 30, options: ['default' => 'default'])]
+    private string $template = 'default';
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $is_system = false;
+
+    #[ORM\Column(length: 50, nullable: true, unique: true)]
+    private ?string $system_key = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
     private Collection $tag;
@@ -164,5 +185,93 @@ class Page implements TimestampedInterface
     public function __toString(): string
     {
         return $this->title;
+    }
+
+    public function getBlocks(): ?array
+    {
+        return $this->blocks;
+    }
+
+    public function setBlocks(?array $blocks): self
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    public function getDraftBlocks(): ?array
+    {
+        return $this->draftBlocks;
+    }
+
+    public function setDraftBlocks(?array $draftBlocks): self
+    {
+        $this->draftBlocks = $draftBlocks;
+
+        return $this;
+    }
+
+    /**
+     * Propriete virtuelle pour le formulaire EasyAdmin.
+     * Serialise/deserialise le JSON TipTap pour le champ textarea.
+     */
+    public function getBlocksJson(): ?string
+    {
+        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+    }
+
+    public function setBlocksJson(?string $json): self
+    {
+        $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
+
+        return $this;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(string $template): self
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    public function isSystem(): bool
+    {
+        return $this->is_system;
+    }
+
+    public function setIsSystem(bool $is_system): self
+    {
+        $this->is_system = $is_system;
+
+        return $this;
+    }
+
+    public function getSystemKey(): ?string
+    {
+        return $this->system_key;
+    }
+
+    public function setSystemKey(?string $system_key): self
+    {
+        $this->system_key = $system_key;
+
+        return $this;
     }
 }

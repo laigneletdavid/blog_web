@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ seo.title ?? 'Recherche' }}{% endblock %}
+{% block meta_description %}{{ seo.description ?? '' }}{% endblock %}
+
+{% block body %}
+<div class="container search-results-page py-5">
+
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Recherche</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">
+        {% if keyword %}
+            Recherche : &laquo; {{ keyword }} &raquo;
+        {% else %}
+            Recherche
+        {% endif %}
+    </h1>
+
+    {# Formulaire de recherche #}
+    <form action="{{ path('app_search_results') }}" method="get" class="mb-5">
+        <div class="input-group" style="max-width: 500px;">
+            <input type="text" name="q" value="{{ keyword }}" class="form-control" placeholder="Rechercher..." minlength="2" required>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Rechercher
+            </button>
+        </div>
+    </form>
+
+    {% if keyword|length < 2 %}
+        <p class="text-muted">Veuillez entrer au moins 2 caracteres.</p>
+    {% else %}
+
+        {# --- Categories --- #}
+        {% if categories|length > 0 %}
+        <section class="search-section mb-4">
+            <h2 class="search-section-title">Categories</h2>
+            <div class="d-flex flex-wrap gap-2">
+                {% for cat in categories %}
+                    <a href="{{ path('app_categorie_show', { slug: cat.slug }) }}" class="search-result-badge">
+                        {{ cat.name|highlight(keyword) }}
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {# --- Pages --- #}
+        {% if pages|length > 0 %}
+        <section class="search-section mb-4">
+            <h2 class="search-section-title">Pages</h2>
+            {% for page in pages %}
+                <div class="search-result-card">
+                    <span class="search-result-type">Page</span>
+                    <h3><a href="{{ path('app_page_show', { slug: page.slug }) }}">{{ page.title|highlight(keyword) }}</a></h3>
+                    <p class="text-muted mb-0">{{ page.content|striptags|slice(0, 200)|highlight(keyword) }}</p>
+                </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        {# --- Produits --- #}
+        {% if products|default([])|length > 0 %}
+        <section class="search-section mb-4">
+            <h2 class="search-section-title">Produits ({{ products|length }})</h2>
+            {% for product in products %}
+                <div class="search-result-card d-flex">
+                    {% if product.image %}
+                        <div class="search-result-thumb-wrapper flex-shrink-0">
+                            <img src="{{ asset('documents/medias/' ~ product.image.fileName) }}"
+                                 alt="{{ product.title }}" class="search-result-thumb" loading="lazy">
+                        </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="search-result-meta mb-1">
+                            <span class="search-result-type">Produit</span>
+                            {% if product.category %}
+                                <span class="badge" style="background: var(--secondary); color: #fff;">{{ product.category.name }}</span>
+                            {% endif %}
+                            {% if product.priceHT is not null %}
+                                <span class="fw-bold" style="color: var(--primary);">{{ product.priceTTC|number_format(2, ',', ' ') }} €</span>
+                            {% endif %}
+                        </div>
+                        <h3><a href="{{ path('app_product_show', { slug: product.slug }) }}">{{ product.title|highlight(keyword) }}</a></h3>
+                        {% if product.shortDescription %}
+                            <p class="text-muted mb-0">{{ product.shortDescription|highlight(keyword) }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        {# --- Articles --- #}
+        <section class="search-section mb-4">
+            <h2 class="search-section-title">Articles ({{ totalArticles }})</h2>
+
+            {% for article in articles %}
+                <div class="search-result-card d-flex">
+                    {% if article.featuredMedia %}
+                        <div class="search-result-thumb-wrapper flex-shrink-0">
+                            {{ responsive_img(article.featuredMedia, '120px', 'search-result-thumb', article.title) }}
+                        </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="search-result-meta mb-1">
+                            <span class="search-result-type">Article</span>
+                            <span class="search-result-date">{{ article.createdAt|date('d/m/Y') }}</span>
+                            {% for cat in article.categories %}
+                                <span class="badge" style="background: var(--primary); color: #fff;">{{ cat.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <h3><a href="{{ path('app_article_show', { slug: article.slug }) }}">{{ article.title|highlight(keyword) }}</a></h3>
+                        <p class="text-muted mb-0">
+                            {{ (article.featuredText ?: article.content|striptags|slice(0, 200))|highlight(keyword) }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% if totalArticles == 0 and pages|length == 0 and categories|length == 0 and products|default([])|length == 0 %}
+                <div class="search-no-results text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <p class="fs-5">Aucun resultat pour &laquo; {{ keyword }} &raquo;</p>
+                    <p class="text-muted">Verifiez l'orthographe ou essayez des termes plus generaux.</p>
+                </div>
+            {% endif %}
+
+            {# --- Pagination --- #}
+            {% if totalPages > 1 %}
+                <nav aria-label="Pagination des resultats" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if currentPage > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_search_results', { q: keyword, page: currentPage - 1 }) }}">&laquo; Precedent</a>
+                            </li>
+                        {% endif %}
+
+                        {% for p in range(max(1, currentPage - 2), min(totalPages, currentPage + 2)) %}
+                            <li class="page-item {{ p == currentPage ? 'active' : '' }}">
+                                <a class="page-link" href="{{ path('app_search_results', { q: keyword, page: p }) }}">{{ p }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_search_results', { q: keyword, page: currentPage + 1 }) }}">Suivant &raquo;</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </section>
+
+    {% endif %}
+</div>
+{% endblock %}

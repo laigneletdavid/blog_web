@@ -2,65 +2,116 @@
 
 namespace App\Controller;
 
-use App\Form\FindUserType;
+use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
-use App\Repository\MenuRepository;
-use App\Repository\UserRepository;
+use App\Repository\EventRepository;
+use App\Repository\FaqRepository;
+use App\Repository\PortfolioItemRepository;
+use App\Repository\ProductRepository;
+use App\Repository\ServiceRepository;
+use App\Service\RecaptchaValidator;
+use App\Service\SeoService;
+use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
-    public function index(ArticleRepository $articleRepository): Response
-    {
+    public function __construct(
+        private readonly SeoService $seoService,
+    ) {
+    }
 
+    #[Route('/', name: 'app_home')]
+    public function index(ArticleRepository $articleRepository, ServiceRepository $serviceRepository, EventRepository $eventRepository, ProductRepository $productRepository, FaqRepository $faqRepository, PortfolioItemRepository $portfolioItemRepository, SiteContext $siteContext): Response
+    {
         return $this->render('home/index.html.twig', [
             'title_page' => 'Blog & Web',
             'text_page' => 'Un CMS proche de vous !',
             'articles' => $articleRepository->homeArticles(),
+            'services' => $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [],
+            'upcomingEvents' => $siteContext->hasModule('events') ? $eventRepository->findUpcoming(3) : [],
+            'featuredProducts' => $siteContext->hasModule('catalogue') ? $productRepository->findFeatured(4) : [],
+            'faqs' => $siteContext->hasModule('faq') ? $faqRepository->findAllActive() : [],
+            'featuredPortfolio' => $siteContext->hasModule('portfolio') ? $portfolioItemRepository->findFeatured(6) : [],
+            'seo' => $this->seoService->resolveForHome(),
         ]);
-
     }
 
     #[Route('/contact', name: 'app_contact')]
-    public function contact(): Response
-    {
+    public function contact(
+        Request $request,
+        MailerInterface $mailer,
+        SiteContext $siteContext,
+        RecaptchaValidator $recaptchaValidator,
+        #[Autowire(service: 'limiter.contact_limiter')] RateLimiterFactory $contactLimiter,
+    ): Response {
+        $form = $this->createForm(ContactType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Honeypot check — bots fill the hidden field
+            if ($form->get('website')->getData()) {
+                $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
+
+                return $this->redirectToRoute('app_contact');
+            }
+
+            // reCAPTCHA v3 validation
+            $recaptchaToken = $request->request->get('g-recaptcha-response');
+            if (!$recaptchaValidator->validate($recaptchaToken, 'contact')) {
+                $this->addFlash('error', 'La verification anti-spam a echoue. Veuillez reessayer.');
+
+                return $this->redirectToRoute('app_contact');
+            }
+
+            // Rate limiting
+            $limiter = $contactLimiter->create($request->getClientIp());
+            if (!$limiter->consume()->isAccepted()) {
+                $this->addFlash('error', 'Trop de messages envoyés. Veuillez réessayer dans quelques minutes.');
+
+                return $this->redirectToRoute('app_contact');
+            }
+
+            $data = $form->getData();
+
+            $site = $siteContext->getCurrentSite();
+            $recipientEmail = $site?->getEmail() ?? 'contact@blogweb.fr';
+            $siteName = $site?->getName() ?? 'Blog & Web';
+
+            $email = (new Email())
+                ->from('noreply@blogweb.fr')
+                ->replyTo($data['email'])
+                ->to($recipientEmail)
+                ->subject("[{$siteName}] Contact : {$data['subject']}")
+                ->html(sprintf(
+                    '<p><strong>De :</strong> %s %s (%s)</p><p><strong>Sujet :</strong> %s</p><hr><p>%s</p>',
+                    htmlspecialchars($data['firstname'], ENT_QUOTES, 'UTF-8'),
+                    htmlspecialchars($data['name'], ENT_QUOTES, 'UTF-8'),
+                    htmlspecialchars($data['email'], ENT_QUOTES, 'UTF-8'),
+                    htmlspecialchars($data['subject'], ENT_QUOTES, 'UTF-8'),
+                    nl2br(htmlspecialchars($data['message'], ENT_QUOTES, 'UTF-8'))
+                ));
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
+
+            return $this->redirectToRoute('app_contact');
+        }
+
         return $this->render('home/contact.html.twig', [
             'title_page' => 'Formulaire de contact',
             'text_page' => 'Envoyez-moi un message',
-        ]);
-    }
-
-    #[Route('/find', name: 'app_home_find', methods: ['GET', 'POST'])]
-    public function find(Request $request, UserRepository $userRepository): Response
-    {
-        $email = null;
-        $user = null;
-        $form = $this->createForm(FindUserType::class);
-        $catch = $form->handleRequest($request);
-
-        // Je dois ici aller voir si l'email existe dans la base, s'il existe je renvoie vers le formulaire de password sinon je reste là avec message d'erreur
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $email = $catch->getData()['email'];
-            $user = $userRepository->findOneBy( ['email' => $email,]);
-            if ($user !== null){
-
-                return $this->redirectToRoute('app_user_edit_pass', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
-            }
-            else {
-                $this->addFlash(
-                    'warning',
-                    'Nous ne trouvons pas votre adresse e-mail, veuillez recommencer ou créer un compte.'
-                );
-            }
-        }
-
-        return $this->render('user/find.html.twig', [
-            'form' => $form->createView(),
+            'contactForm' => $form,
+            'seo' => $this->seoService->resolveForPage('Contact'),
+            'recaptcha_site_key' => $recaptchaValidator->isEnabled() ? $recaptchaValidator->getSiteKey() : null,
         ]);
     }
 }

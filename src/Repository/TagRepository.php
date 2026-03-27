@@ -39,28 +39,18 @@ class TagRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Tag[] Returns an array of Tag objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Tag
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return array<array{0: Tag, articleCount: int}>
+     */
+    public function findAllWithArticleCount(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t', 'COUNT(a.id) AS articleCount')
+            ->leftJoin('t.article', 'a', 'WITH', 'a.published = true')
+            ->groupBy('t.id')
+            ->having('COUNT(a.id) > 0')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

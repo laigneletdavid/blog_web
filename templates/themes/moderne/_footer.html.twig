@@ -1,0 +1,43 @@
+{# ====== FOOTER — Theme Moderne ====== #}
+<footer class="footer footer--moderne">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
+                    {% if site is not null and site.logo is not null %}
+                        <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                    {% else %}
+                        <img src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
+                    {% endif %}
+                </a>
+                <p class="mod-footer-tagline">{{ site.defaultSeoDescription|default('') }}</p>
+            </div>
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h6 class="mod-footer-heading">Navigation</h6>
+                <ul class="nav flex-column">
+                    {% for menu in footer_nav_menus %}
+                        <li><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-lg-2">
+                <h6 class="mod-footer-heading">Contact</h6>
+                <ul class="nav flex-column">
+                    {% if site.email %}<li><a href="mailto:{{ site.email }}" class="nav-link">{{ site.email }}</a></li>{% endif %}
+                    {% if site.phone %}<li><a href="tel:{{ site.phone }}" class="nav-link">{{ site.phone }}</a></li>{% endif %}
+                </ul>
+            </div>
+            <div class="col-lg-2">
+                <h6 class="mod-footer-heading">Informations</h6>
+                <ul class="nav flex-column">
+                    {% for menu in footer_legal_menus %}
+                        <li><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="mod-footer-bottom pt-4 mt-4">
+            <span>&copy; {{ "now"|date("Y") }} {{ site.name|default('') }}</span>
+        </div>
+    </div>
+</footer>

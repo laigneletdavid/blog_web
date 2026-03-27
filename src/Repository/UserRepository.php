@@ -56,28 +56,31 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return User[]
+     */
+    public function findDirectoryMembers(string $search = ''): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.isDirectoryVisible = true')
+            ->orderBy('u.name', 'ASC');
 
-//    public function findOneBySomeField($value): ?User
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($search !== '') {
+            $qb->andWhere('u.name LIKE :search OR u.first_name LIKE :search OR u.company LIKE :search OR u.jobTitle LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findSubscribersForEvents(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.subscribeEvents = true')
+            ->getQuery()
+            ->getResult();
+    }
 }

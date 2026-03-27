@@ -1,27 +1,34 @@
-<article class="col-lg-6 article mb-5 mb-lg-0">
-    <a href="{{ path('app_article_show', { 'slug': article.slug}) }}" class="article_link d-flex flex-column">
-        <div class="article_block_img" >
+{# Card article standard — utilisée dans la grille blog #}
+<article class="blog-card">
+    <a href="{{ path('app_article_show', { 'slug': article.slug }) }}" class="blog-card__link">
+        <div class="blog-card__img">
             {% if article.featuredMedia %}
-                <img class="article_img" src="{{ asset('documents/medias/' ~ article.featuredMedia.fileName) }}" alt="{{ article.featuredMedia.name}}">
+                {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px', 'blog-card__image') }}
             {% else %}
+                <div class="blog-card__placeholder">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                </div>
+            {% endif %}
+            {% set firstCat = article.categories|first %}
+            {% if firstCat %}
+                <span class="blog-card__badge">{{ firstCat.name }}</span>
             {% endif %}
         </div>
-
-        <div class="article_block">
-            <h2 class="article_title">{{ article.title }}</h2>
-            <div class="article_categories d-flex flex-row justify-content-between">
-                <div>
-                {% for cat in article.categories %}
-                    <strong class="d-inline-block mb-2 me-3" style="color: {{ cat.color }};">{{ cat.name }}</strong>
-                {% endfor %}
-                </div>
-                <p class="article_credit">{{ article.createdAt|date('d M Y') }}</p>
+        <div class="blog-card__body">
+            <h2 class="blog-card__title">{{ article.title }}</h2>
+            <p class="blog-card__excerpt">{{ article.featuredText ?: article.content|striptags|slice(0, 150) ~ '...' }}</p>
+            <div class="blog-card__meta">
+                <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|date('d M Y') }}</time>
+                <span class="blog-card__dot"></span>
+                <span>{{ article.content|readingTime }} min de lecture</span>
             </div>
-
-            <p class="article_text">{{ article.featuredText ?: article.content|striptags|slice(0, 130) ~ '...' }}</p>
+            {% if article.tag|length > 0 %}
+            <div class="blog-card__tags">
+                {% for tag in article.tag|slice(0, 3) %}
+                    <span class="tag-pill tag-pill-sm">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
-
-
-
     </a>
 </article>

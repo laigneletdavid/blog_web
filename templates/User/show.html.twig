@@ -22,14 +22,18 @@
                 <th>Prénom</th>
                 <td>{{ user.firstName ? user.firstName : '' }}</td>
             </tr>
-            <tr>
-                <th>Abonnement newsletter</th>
-                <td>{{ user.news != 0 ? 'Oui' : 'Non' }}</td>
-            </tr>
+            {% if site_context.hasModule('blog') %}
             <tr>
                 <th>Abonnement nouveaux articles</th>
-                <td>{{ user.articles != 0 ? 'Oui' : 'Non' }}</td>
+                <td>{{ user.subscribeArticles ? 'Oui' : 'Non' }}</td>
             </tr>
+            {% endif %}
+            {% if site_context.hasModule('events') %}
+            <tr>
+                <th>Abonnement événements</th>
+                <td>{{ user.subscribeEvents ? 'Oui' : 'Non' }}</td>
+            </tr>
+            {% endif %}
             </tbody>
         </table>
     </div>

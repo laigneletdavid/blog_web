@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\SeoTrait;
 use App\Model\TimestampedInterface;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,8 +11,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[ORM\Index(columns: ['published'], name: 'idx_article_published')]
 class Article implements TimestampedInterface
 {
+    use SeoTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,7 +36,7 @@ class Article implements TimestampedInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $published_at = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column]
@@ -51,12 +55,23 @@ class Article implements TimestampedInterface
 
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'article')]
-    #[ORM\OrderBy(['tag' => 'ASC'])]
+    #[ORM\OrderBy(['name' => 'ASC'])]
     private Collection $tag;
 
     #[ORM\ManyToOne]
     private ?Media $featured_media = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isFeatured = false;
+
+    #[ORM\Column(length: 20, options: ['default' => 'public'])]
+    private string $visibility = 'public';
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $blocks = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $draftBlocks = null;
 
     public function __construct()
     {
@@ -269,4 +284,67 @@ class Article implements TimestampedInterface
         return $this;
     }
 
+    public function isFeatured(): bool
+    {
+        return $this->isFeatured;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    public function setIsFeatured(bool $isFeatured): self
+    {
+        $this->isFeatured = $isFeatured;
+
+        return $this;
+    }
+
+    public function getBlocks(): ?array
+    {
+        return $this->blocks;
+    }
+
+    public function setBlocks(?array $blocks): self
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    public function getDraftBlocks(): ?array
+    {
+        return $this->draftBlocks;
+    }
+
+    public function setDraftBlocks(?array $draftBlocks): self
+    {
+        $this->draftBlocks = $draftBlocks;
+
+        return $this;
+    }
+
+    /**
+     * Propriete virtuelle pour le formulaire EasyAdmin.
+     * Serialise/deserialise le JSON TipTap pour le champ textarea.
+     */
+    public function getBlocksJson(): ?string
+    {
+        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+    }
+
+    public function setBlocksJson(?string $json): self
+    {
+        $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
+
+        return $this;
+    }
 }

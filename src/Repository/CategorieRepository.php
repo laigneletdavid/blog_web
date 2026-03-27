@@ -8,11 +8,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Categorie>
- *
- * @method Categorie|null find($id, $lockMode = null, $lockVersion = null)
- * @method Categorie|null findOneBy(array $criteria, array $orderBy = null)
- * @method Categorie[]    findAll()
- * @method Categorie[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CategorieRepository extends ServiceEntityRepository
 {
@@ -40,26 +35,34 @@ class CategorieRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Categorie[] Returns an array of Categorie objects
+     * Categories ayant au moins un article publie, avec compteur.
+     *
+     * @return array<array{categorie: Categorie, articleCount: int}>
      */
-    public function findByArticle($article): array
+    public function findAllWithPublishedArticleCount(): array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.articles = :val')
-            ->setParameter('val', $article)
-            ->orderBy('c.id', 'ASC')
+            ->innerJoin('c.articles', 'a')
+            ->addSelect('COUNT(a.id) AS articleCount')
+            ->andWhere('a.published = TRUE')
+            ->groupBy('c.id')
+            ->having('COUNT(a.id) > 0')
+            ->orderBy('c.name', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
-//    public function findOneBySomeField($value): ?Categorie
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Categorie[]
+     */
+    public function findByArticle(int $articleId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.articles', 'a')
+            ->andWhere('a.id = :articleId')
+            ->setParameter('articleId', $articleId)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

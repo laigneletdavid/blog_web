@@ -18,7 +18,7 @@ class Tag
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\ManyToMany(targetEntity: Article::class, inversedBy: 'tag')]
@@ -33,12 +33,20 @@ class Tag
     #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'tag')]
     private Collection $media;
 
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'tags')]
+    private Collection $product;
+
+    #[ORM\ManyToMany(targetEntity: PortfolioItem::class, mappedBy: 'tags')]
+    private Collection $portfolioItem;
+
     public function __construct()
     {
         $this->article = new ArrayCollection();
         $this->page = new ArrayCollection();
         $this->categorie = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->product = new ArrayCollection();
+        $this->portfolioItem = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,5 +172,60 @@ class Tag
         $this->media->removeElement($medium);
 
         return $this;
+    }
+
+    /** @return Collection<int, Product> */
+    public function getProduct(): Collection
+    {
+        return $this->product;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->product->contains($product)) {
+            $this->product->add($product);
+            $product->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->product->removeElement($product)) {
+            $product->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, PortfolioItem> */
+    public function getPortfolioItem(): Collection
+    {
+        return $this->portfolioItem;
+    }
+
+    public function addPortfolioItem(PortfolioItem $portfolioItem): self
+    {
+        if (!$this->portfolioItem->contains($portfolioItem)) {
+            $this->portfolioItem->add($portfolioItem);
+            $portfolioItem->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioItem(PortfolioItem $portfolioItem): self
+    {
+        if ($this->portfolioItem->removeElement($portfolioItem)) {
+            $portfolioItem->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 }

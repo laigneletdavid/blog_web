@@ -1,276 +1,190 @@
-{% set menus = menu_service.findMenuTwig %}
-{% set widget_article = widget_service.findLastArticle['0'] %}
+{% set header_menus = menu_service.findByLocation('header') %}
+{% set footer_nav_menus = menu_service.findByLocation('footer_nav') %}
+{% set footer_legal_menus = menu_service.findByLocation('footer_legal') %}
+{% set menus = header_menus %}
+{% set widget_articles = widget_service.findLastArticle %}
+{% set widget_article = widget_articles['0'] | default(null) %}
 {% set categories = widget_service.findCategories %}
+{% set site = seo_service.currentSite %}
+{% set _preview_theme = app.request.query.get('_preview_theme') %}
+{% set _is_preview = _preview_theme and is_granted('ROLE_ADMIN') and theme_service.getTheme(_preview_theme) is not null %}
+{% set _theme = _is_preview ? _preview_theme : site.template|default('default') %}
+{% set _theme_config = theme_service.getConfig(_theme) %}
+{% set _theme_vars = theme_service.getThemeVars(_theme) %}
+{% set _appearance = _is_preview ? theme_service.resolveAppearanceForTheme(_theme) : theme_service.resolveAppearance() %}
 
 
 <!DOCTYPE html>
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>Blog&Web</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {# ====== SEO ====== #}
+        {% block seo %}
+        <title>{{ seo.title|default(site.defaultSeoTitle|default(site.name|default('Blog&Web'))) }}</title>
+        {% if seo.description|default(site.defaultSeoDescription|default('')) is not empty %}
+        <meta name="description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        {% endif %}
+        {% if seo.keywords|default('') is not empty %}
+        <meta name="keywords" content="{{ seo.keywords }}">
+        {% endif %}
+        {% if seo.noIndex|default(false) %}
+        <meta name="robots" content="noindex, nofollow">
+        {% endif %}
+        {% if seo.canonicalUrl|default('') is not empty %}
+        <link rel="canonical" href="{{ seo.canonicalUrl }}">
+        {% endif %}
+
+        {# Open Graph #}
+        <meta property="og:title" content="{{ seo.title|default(site.name|default('Blog&Web')) }}">
+        <meta property="og:description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        <meta property="og:type" content="{{ seo.type|default('website') }}">
+        <meta property="og:url" content="{{ app.request.uri }}">
+        <meta property="og:site_name" content="{{ site.name|default('Blog&Web') }}">
+        <meta property="og:locale" content="fr_FR">
+        {% if seo.image|default('') is not empty %}
+        <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% endif %}
+
+        {# Twitter Cards #}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ seo.title|default(site.name|default('Blog&Web')) }}">
+        <meta name="twitter:description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        {% if seo.image|default('') is not empty %}
+        <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% endif %}
+
+        {# Google Search Console #}
+        {% if site.googleSearchConsole|default('') is not empty %}
+        <meta name="google-site-verification" content="{{ site.googleSearchConsole }}">
+        {% endif %}
+        {% endblock %}
+
+        {# ====== JSON-LD Schema.org ====== #}
+        {% block jsonld %}{% endblock %}
+
+        {# ====== Favicon ====== #}
+        {% if site is not null and site.favicon is not null %}
+        <link rel="icon" type="image/png" href="{{ asset('documents/medias/' ~ site.favicon.fileName) }}">
+        {% else %}
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
-        <link rel="manifest" href="{{ asset('images/site.webmanifest') }}"><link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="manifest" href="{{ asset('images/site.webmanifest') }}">
+        {% endif %}
+
+        {# ====== CSS Custom Properties ====== #}
+        <style>:root {
+            {# Resolved colors: site override ?? theme default ?? hardcoded fallback #}
+            --primary: {{ _appearance.primaryColor }};
+            --secondary: {{ _appearance.secondaryColor }};
+            --accent: {{ _appearance.accentColor }};
+            --font-family: {{ _appearance.fontFamily|raw }};
+            {% if _appearance.fontFamilySecondary is not null %}
+            --font-family-secondary: {{ _appearance.fontFamilySecondary|raw }};
+            {% endif %}
+            {# Theme variables (fixed per theme, from theme.yaml) #}
+            {% for varName, varValue in _theme_vars %}
+            {% if varName starts with '--' %}{{ varName }}{% else %}--{{ varName }}{% endif %}: {{ varValue }};
+            {% endfor %}
+        }</style>
+
+        {# ====== Google Fonts (dynamic from resolved fonts) ====== #}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Expletus+Sans:ital@0;1&family=Open+Sans:ital@0;1&family=Titillium+Web:ital@0;1&display=swap" rel="stylesheet">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        <link href="{{ font_service.buildGoogleFontsUrl([_appearance.fontFamily, _appearance.fontFamilySecondary]) }}" rel="stylesheet">
+
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
+        {# ====== Theme CSS (conditionally loaded) ====== #}
+        {% if _theme != 'default' and theme_service.hasTemplate(_theme, 'theme.css') %}
+        <link rel="stylesheet" href="{{ path('app_theme_css', { slug: _theme }) }}">
+        {% endif %}
+
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+        {# Google Analytics is loaded by cookie consent controller #}
     </head>
-    <body>
+    <body class="theme-{{ _theme }}{% if _is_preview %} is-preview{% endif %}">
+        {% if _is_preview %}
+        <style>.admin-bar { display: none !important; }</style>
+        {% endif %}
 
-        <div class="header mb-lg-5 mb-3">
-            <div class="desk">
-                {% if is_granted('ROLE_CORRECTOR') %}
-                <div class="header-admin bg-dark ps-5">
-                    <div class="d-flex flex-row">
-                        <nav class="navbar">
-                            <ul class="nav d-flex flex-row align-items-center">
-                                <img src="{{ asset('images/logo xlight- b&w-50px.png') }}" alt="Administartion"/>
-                                <li class="nav-item p-2"><a href="{{ path('admin') }}" class="nav-link text-decoration-none  text-light">Administration</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-                {% endif %}
-                <div class="header_info">
-                    <div class="container d-flex flex-row justify-content-between pt-3 pb-3">
-                        <div class="header_logo">
-                            <a href="{{ path('app_home') }}">
-                             <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo"/>
-                            </a>
-                        </div>
-                        <div class="header_action d-flex flex-column justify-content-between">
-                            <div class="header_social">
-                                <ul class="d-flex flex-row-reverse list-unstyled m-0 justify-content-center">
-                                    <li class="social-icon p-2"><a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
-                                            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
-                                        </svg></a>
-                                    </li>
-                                    <li class="social-icon p-2"><a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-                                            <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
-                                        </svg></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="header_user">
-                                {% if app.user != null %}
-                                    <div class="d-flex flex-column justify-content-center align-items-center">
-                                        <span class="hello">Bonjour {{ app.user.email }}</span>
-                                        <ul class="nav d-flex flex-row">
-                                            <li class="nav-item d-flex flex-row align-items-center p-2"><a class="btn-font btn btn-primary" href="{{ path('app_user_show', { 'id': app.user.id}) }}">
-                                                    Mon compte</a>
-                                            </li>
-                                            <li class="nav-item d-flex flex-row align-items-center p-2"><a class="btn-font btn btn-outline-secondary" href="{{ path('app_logout')}}">
-                                                    Se deconnecter</a>
-                                            </li>
-                                    </ul>
-                                    </div>
-                                {% else %}
-                                    <ul class="nav d-flex flex-row-reverse justify-content-evenly">
-                                        <li class="nav-item d-flex flex-row align-items-center">
-                                            <a class="btn-font btn btn-outline-secondary shadow-sm" href="{{ path('app_register')}}"><span>Créer un compte</span></a>
-                                        </li>
-                                        <li class="nav-item d-flex flex-row align-items-center">
-                                            <a class="btn-font btn btn-primary shadow-sm" href="{{ path('app_login')}}"><span>Se connecter</span></a>
-                                        </li>
-                                    </ul>
-                                {% endif %}
-                            </div>
-                            <div class="header_search dropdown" data-controller="search">
-                                <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
-                                    <input type="search" name="q" class="search form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
-                                    <button class="btn-font btn btn-outline-primary shadow-sm" type="submit">Chercher</button>
-                                </form>
-                                <div class="dropdown-menu" data-search-target="results">
-                                    <a class="dropdown-item" href="#">Contenu</a>
-                                </div><!-- c'est ma div qui va gérer l'affichage de la recherche en Dropdown -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="header_nav">
-                    <div class="container d-flex flex-row justify-content-between align-items-center">
-                        <nav class="navbar">
-                            <ul class="nav d-flex flex-row">
-                                <li class="nav-item mr-2"><a href="{{ path('app_home') }}" class="nav-link p-3">Accueil</a></li>
-
-                                {% for menu in menus %}
-                                    {% set sub_menus = menu.getSubMenu() %}
-                                    {% if sub_menus.count > 0 %}
-                                        <div class="dropdown">
-                                            <a class="nav-link dropdown-toggle p-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                {{ menu.name }}
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                {% for sub in sub_menus %}
-                                                <li><a class="dropdown-item" href="{{ sub|menuLink }}">{{ sub.name }}</a></li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    {% else %}
-                                        <li class="nav-item mr-2"><a href="{{ menu|menuLink }}" class="nav-link p-3">{{ menu.name }}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-
-                                <li class="nav-item mr-2"><a href="{{ path('app_contact') }}" class="nav-link p-3">Contact</a></li>
-                            </ul>
-                        </nav>
-
-                    </div>
-                </div>
-            </div>
-            <div class="smart pb-3">
-                <nav class="navbar">
-                    <div class="container-fluid header_cont ms-3 me-3">
-                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                            <span class="navbar-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                                  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-                                </svg>
-                            </span>
-                        </button>
-                        <a href="{{ path('app_home') }}">
-                            <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="votre-logo" class="smart_header_logo"/>
-                        </a>
-
-                        <div class="offcanvas offcanvas-start" tabindex="+1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                            <div class="offcanvas-header">
-                                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web">
-                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <div class="header_search dropdown" data-controller="search">
-                                    <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
-                                        <input type="search" name="q" class="search form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
-                                        <button class="btn-font btn btn-outline-primary shadow-sm ms-2" type="submit">Chercher</button>
-                                    </form>
-                                    <div class="dropdown-menu" data-search-target="results">
-                                        <a class="dropdown-item" href="#">Contenu</a>
-                                    </div><!-- c'est ma div qui va gérer l'affichage de la recherche en Dropdown -->
-                                </div>
-
-                                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 mb-5">
-                                    <li class="nav-item p-2"><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
-
-                                    {% for menu in menus %}
-                                        {% set sub_menus = menu.getSubMenu() %}
-                                        {% if sub_menus.count > 0 %}
-                                            <div class="dropdown p-2">
-                                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    {{ menu.name }}
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    {% for sub in sub_menus %}
-                                                        <li><a class="dropdown-item" href="{{ sub|menuLink }}">{{ sub.name }}</a></li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        {% else %}
-                                            <li class="nav-item p-2"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    <li class="nav-item p-2"><a href="{{ path('app_contact') }}" class="nav-link">Contact</a></li>
-
-                                </ul>
-
-
-
-                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                    <div class="text-end d-flex flex-column justify-content-evenly align-items-center">
-                                        <p>Bonjour {{ app.user.email }} !</p>
-                                        <div class="d-flex flex-row">
-                                            <a href="{{ path('app_user_show', {'id': app.user.id}) }}" type="button" class="btn-font btn btn-primary me-2 qa_up text-light">Mon profil</a>
-                                            <a href="{{ path('app_logout') }}" type="button" class="btn-font btn btn-outline-warning me-2 qa_up">Se déconnecter</a>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="d-flex flex-column">
-                                        <a href="{{ path('app_login') }}" type="button" class="btn-font btn btn-primary mb-3 qa_up text-light">Se connecter</a>
-                                        <a href="{{ path('app_register') }}" type="button" class="btn-font btn btn-outline-secondary qa_up">Créer un compte</a>
-                                    </div>
-                                {% endif %}
-
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </div>
+        {# ====== PREVIEW BANNER (hidden when inside iframe — overlay has its own bar) ====== #}
+        {% if _is_preview %}
+        <div id="previewBanner" class="preview-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:0.6rem 1rem;align-items:center;justify-content:space-between;font-size:0.875rem;box-shadow:0 2px 12px rgba(0,0,0,0.3);">
+            <span style="display:flex;align-items:center;gap:0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
+                <strong>{{ theme_service.getTheme(_theme).name|default(_theme) }}</strong>
+            </span>
+            <span style="display:flex;align-items:center;gap:0.5rem;">
+                <form method="post" action="{{ path('admin_theme_activate', { slug: _theme }) }}" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('theme_activate_' ~ _theme) }}">
+                    <button type="submit" style="background:#22c55e;color:#fff;border:none;padding:0.35rem 1rem;border-radius:0.375rem;font-size:0.8rem;font-weight:600;cursor:pointer;">Activer ce theme</button>
+                </form>
+                <a href="{{ app.request.pathinfo }}" style="color:#94a3b8;text-decoration:none;font-size:0.8rem;padding:0.35rem 0.75rem;border:1px solid #475569;border-radius:0.375rem;">Fermer</a>
+            </span>
         </div>
+        <div id="previewSpacer" style="display:none;height:48px;"></div>
+        <script>
+        if (window === window.top) {
+            document.getElementById('previewBanner').style.display = 'flex';
+            document.getElementById('previewSpacer').style.display = 'block';
+        }
+        </script>
+        {% endif %}
 
+        {# ====== HEADER (theme-aware) ====== #}
+        {% include [
+            'themes/' ~ _theme ~ '/_header.html.twig',
+            'themes/default/_header.html.twig'
+        ] %}
 
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="container">
-                    <div class="toast-body bg-{{ label }}">
+                <div class="container mt-3">
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
                         {{ message }}
-
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                     </div>
                 </div>
-
             {% endfor %}
         {% endfor %}
+
         {% block body %}{% endblock %}
 
-        <div class="footer">
-            <div class="container pt-5 pb-3">
-                <div class="footer_info row d-flex flex-column flex-lg-row align-items-center">
-                    <div class="footer_logo col-lg-4 mb-5">
-                        <div class="footer_mentions d-flex flex-column align-items-center">
-                            <a href="{{ path('app_home') }}">
-                                <img class="footer_logo" src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
-                            </a>
-                            <span class="mentions">© Tous droits réservés {% block title_page %}Blog&Web{% endblock %}</span>
-                        </div>
-                    </div>
-                    <div class="footer_contact d-flex flex-column col-lg-4 mb-5 ps-lg-5 align-items-center align-content-lg-start">
-                        <span class="footer_section mb-3">Service client</span>
-                        <ul class="nav flex-column align-items-center align-content-lg-start">
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Contact</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Aide & assistance</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Mentions légales</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Confidentialité & Cookies</a></li>
-                        </ul>
-                    </div>
+        {# ====== FOOTER (theme-aware) ====== #}
+        {% include [
+            'themes/' ~ _theme ~ '/_footer.html.twig',
+            'themes/default/_footer.html.twig'
+        ] %}
 
-                    <div class="footer_search  d-flex flex-column justify-content-evenly align-items-center col-lg-4 mb-5">
-                        <div class="footer_search dropdown" data-controller="search">
-                            <form class="mb-3 mt-3 d-flex flex-row" action="{{ path('app_search') }}" method="get" data-search-target="form" data-action="search#doSearch:prevent"><!-- c'est data action qui s'enclenche au Submit, et le formulaire ne part pas grâce au "prevent" -->
-                                <input type="search" name="q" class="form-control" placeholder="Rechercher..." aria-label="Search" data-search-target="q" autocomplete="off">
-                                <button class="btn btn-primary" type="submit">Chercher</button>
-                            </form>
-                            <div class="dropdown-menu" data-search-target="results">
-                                <a class="dropdown-item" href="#">Contenu</a>
-                            </div>
-                        </div>
-                        <ul class="d-flex flex-row-reverse list-unstyled m-0 footer_social">
-                            <li class="p-2"><a href="#" class="social-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
-                                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
-                                    </svg></a>
-                            </li>
-                            <li class="p-2"><a href="#" class="social-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-                                        <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
-                                    </svg></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="footer_bw pt-3">
-                    <span class="mentions mt-3">Site imaginé et créé avec <a href="#" target="_blank" class="cookies">Blog&Web</a> !</span>
-                </div>
-            </div>
+        {# ====== PREVIEW: rewrite all internal links to keep ?_preview_theme ====== #}
+        {% if _is_preview %}
+        <script>
+        (function(){
+            var theme = '{{ _preview_theme|e('js') }}';
+            document.addEventListener('click', function(e) {
+                var a = e.target.closest('a[href]');
+                if (!a) return;
+                var href = a.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript:') || href.startsWith('http')) return;
+                if (href.indexOf('_preview_theme') !== -1 || href.indexOf('/admin') === 0) return;
+                e.preventDefault();
+                var sep = href.indexOf('?') === -1 ? '?' : '&';
+                window.location.href = href + sep + '_preview_theme=' + theme;
+            });
+        })();
+        </script>
+        {% endif %}
 
-        </div>
+        {# ====== COOKIE CONSENT ====== #}
+        {% include '_partials/_cookie_consent.html.twig' %}
+
     </body>
 </html>

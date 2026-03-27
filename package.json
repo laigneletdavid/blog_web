@@ -7,7 +7,7 @@
         "@symfony/stimulus-bundle": "file:vendor/symfony/stimulus-bundle/assets",
         "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/assets",
         "@symfony/webpack-encore": "^4.0.0",
-        "chart.js": "^3.4.1",
+        "chart.js": "^3.9.1",
         "core-js": "^3.23.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.62.0",
@@ -25,6 +25,20 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "bootstrap": "^5.3.0"
+        "@tiptap/core": "^2.6.0",
+        "@tiptap/extension-character-count": "^2.27.2",
+        "@tiptap/extension-highlight": "^2.27.2",
+        "@tiptap/extension-image": "^2.6.0",
+        "@tiptap/extension-link": "^2.6.0",
+        "@tiptap/extension-placeholder": "^2.6.0",
+        "@tiptap/extension-text-align": "^2.27.2",
+        "@tiptap/extension-typography": "^2.6.0",
+        "@tiptap/extension-underline": "^2.27.2",
+        "@tiptap/extension-youtube": "^2.6.0",
+        "@tiptap/pm": "^2.6.0",
+        "@tiptap/starter-kit": "^2.6.0",
+        "@tiptap/suggestion": "^2.27.2",
+        "bootstrap": "^5.3.0",
+        "sortablejs": "^1.15.0"
     }
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{{ absolute_url(path('app_home')) }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    {% for article in articles %}
+    <url>
+        <loc>{{ absolute_url(path('app_article_show', {slug: article.slug})) }}</loc>
+        {% if article.updatedAt %}
+        <lastmod>{{ article.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif article.createdAt %}
+        <lastmod>{{ article.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    {% endfor %}
+
+    {% for page in pages %}
+    <url>
+        <loc>{{ absolute_url(path('app_page_show', {slug: page.slug})) }}</loc>
+        {% if page.updatedAt %}
+        <lastmod>{{ page.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif page.createdAt %}
+        <lastmod>{{ page.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
+    {% for categorie in categories %}
+    <url>
+        <loc>{{ absolute_url(path('app_categorie_show', {slug: categorie.slug})) }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endfor %}
+
+    {% for service in services %}
+    <url>
+        <loc>{{ absolute_url(path('app_service_show', {slug: service.slug})) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
+    {% for product in products|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_product_show', {slug: product.slug})) }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    {% endfor %}
+
+    {% for event in events|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_event_show', {slug: event.slug})) }}</loc>
+        <lastmod>{{ event.dateStart|date('Y-m-d') }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
+    {% if hasFaq|default(false) %}
+    <url>
+        <loc>{{ absolute_url(path('app_faq_index')) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endif %}
+
+    {% for item in portfolioItems|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_portfolio_show', {slug: item.slug})) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
+    <url>
+        <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>{{ absolute_url(path('app_contact')) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    {% for legalPage in legalPages|default([]) %}
+    <url>
+        <loc>{{ absolute_url('/' ~ legalPage.slug) }}</loc>
+        {% if legalPage.updatedAt %}
+        <lastmod>{{ legalPage.updatedAt|date('Y-m-d') }}</lastmod>
+        {% elseif legalPage.createdAt %}
+        <lastmod>{{ legalPage.createdAt|date('Y-m-d') }}</lastmod>
+        {% endif %}
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    {% endfor %}
+</urlset>

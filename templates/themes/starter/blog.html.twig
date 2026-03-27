@@ -1,0 +1,89 @@
+{# ====== BLOG — Theme Starter ====== #}
+{# Layout: Liste minimaliste, pas de sidebar #}
+
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active">{{ title_page }}</li>
+        </ol>
+    </nav>
+
+    <div class="blog-header mb-4">
+        <h1 class="blog-header__title">{{ title_page }}</h1>
+        {% if totalArticles is defined and totalArticles > 0 %}
+            <p class="blog-header__count">{{ totalArticles }} article{{ totalArticles > 1 ? 's' : '' }}</p>
+        {% endif %}
+    </div>
+
+    {# --- Filtre actif --- #}
+    {% if filterMonth is defined and filterMonth %}
+        <div class="mb-3">
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-dark btn-sm">&times; Tous les articles</a>
+        </div>
+    {% endif %}
+
+    {# --- Pills categories --- #}
+    {% if blogCategories is defined and blogCategories|length > 0 %}
+        <div class="blog-filters mb-4">
+            <a href="{{ path('app_article_show_all') }}"
+               class="blog-filters__pill {{ filterCategorie is not defined or not filterCategorie ? 'blog-filters__pill--active' : '' }}">
+                Tous
+            </a>
+            {% for row in blogCategories %}
+                {% set cat = row[0] is defined ? row[0] : row %}
+                <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}"
+                   class="blog-filters__pill {{ filterCategorie is defined and filterCategorie == cat.slug ? 'blog-filters__pill--active' : '' }}">
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% set baseParams = {} %}
+    {% if filterMonth is defined and filterMonth %}
+        {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
+    {% endif %}
+    {% if filterCategorie is defined and filterCategorie %}
+        {% set baseParams = baseParams|merge({ categorie: filterCategorie }) %}
+    {% endif %}
+</div>
+
+{# --- Article featured --- #}
+{% if featuredArticle is defined and featuredArticle %}
+    <div class="container mb-4">
+        {% include 'article/article_liste_large.html.twig' with { article: featuredArticle } %}
+    </div>
+{% endif %}
+
+<div class="container">
+    {% if articles|length > 0 %}
+        <div class="blog-grid blog-grid--1col mb-5">
+            {% for article in articles %}
+                {% include 'article/item.html.twig' %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="blog-empty">
+            <p>Aucun article.</p>
+        </div>
+    {% endif %}
+
+    {% if totalPages > 1 %}
+    <nav aria-label="Pagination" class="mb-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {{ currentPage <= 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}">&laquo;</a>
+            </li>
+            {% for p in 1..totalPages %}
+            <li class="page-item {{ p == currentPage ? 'active' : '' }}">
+                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+            <li class="page-item {{ currentPage >= totalPages ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>

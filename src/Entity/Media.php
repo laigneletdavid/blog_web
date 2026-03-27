@@ -21,6 +21,8 @@ class Media
     #[ORM\Column(length: 255)]
     private ?string $file_name = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $webpFileName = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'media')]
     private Collection $tag;
@@ -87,9 +89,20 @@ class Media
         return $this;
     }
 
+    public function getWebpFileName(): ?string
+    {
+        return $this->webpFileName;
+    }
+
+    public function setWebpFileName(?string $webpFileName): self
+    {
+        $this->webpFileName = $webpFileName;
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return  $this->getName();
     }
-
 }

@@ -3,32 +3,8 @@
 {% block title %}{{ title_page }}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="breadcrum mb-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Blog - {{ article.title }}</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-4">
-                <div class="widget d-flex flex-column position-sticky" style="top: 1rem;">
-                    {% include 'widgets/subscribe.html.twig' %}
-                    {% include 'widgets/caterogires.html.twig' %}
-                    {% include 'widgets/last_article.html.twig' %}
-                    {% include 'widgets/archives.html.twig' %}
-                </div>
-            </div>
-            <div class="col-8">
-                <div class="articles_list d-flex flex-column">
-                    <p>Je suis là</p>
-                        {% include 'article/article_liste_large.html.twig' with { articles } %}
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include [
+        'themes/' ~ _theme ~ '/blog.html.twig',
+        'themes/default/blog.html.twig'
+    ] %}
 {% endblock %}

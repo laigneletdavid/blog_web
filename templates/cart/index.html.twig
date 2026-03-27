@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section class="cart-page py-5">
+    <div class="container">
+
+        {# Breadcrumbs #}
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_product_index') }}">Catalogue</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Panier</li>
+            </ol>
+        </nav>
+
+        <h1 class="cart-title mb-4">Panier</h1>
+
+        {% if items|length == 0 %}
+            {# Etat vide #}
+            <div class="cart-empty text-center py-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="cart-empty__icon mb-3">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <h2 class="cart-empty__title">Votre panier est vide</h2>
+                <p class="cart-empty__text text-muted">Parcourez notre catalogue pour trouver ce qu'il vous faut.</p>
+                <a href="{{ path('app_product_index') }}" class="btn btn-primary mt-3">Voir le catalogue</a>
+            </div>
+        {% else %}
+
+            {# Desktop: tableau #}
+            <div class="cart-table-wrapper d-none d-md-block">
+                <table class="cart-table table">
+                    <thead>
+                        <tr>
+                            <th class="cart-table__th-product">Produit</th>
+                            <th class="cart-table__th-price text-end">Prix unitaire</th>
+                            <th class="cart-table__th-qty text-center">Quantite</th>
+                            <th class="cart-table__th-total text-end">Sous-total</th>
+                            <th class="cart-table__th-action"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr class="cart-table__row">
+                            <td class="cart-table__product">
+                                <div class="d-flex align-items-center gap-3">
+                                    {% set imgMedia = item.product.image ?? (item.product.galleryImages|length > 0 ? item.product.galleryImages|first.media : null) %}
+                                    {% if imgMedia %}
+                                        <img src="{{ asset('documents/medias/' ~ imgMedia.fileName) }}"
+                                             alt="{{ item.product.title }}"
+                                             class="cart-table__thumb" loading="lazy">
+                                    {% else %}
+                                        <div class="cart-table__thumb-placeholder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <a href="{{ path('app_product_show', { slug: item.product.slug }) }}" class="cart-table__product-title">
+                                            {{ item.product.title }}
+                                        </a>
+                                        {% if item.variant %}
+                                            <span class="cart-table__variant text-muted d-block">{{ item.variant.label }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cart-table__price text-end">
+                                {% if displayHT %}
+                                    {{ item.unitPriceHT|number_format(2, ',', ' ') }} &euro; HT
+                                {% else %}
+                                    {{ (item.unitPriceHT * (1 + item.vatRate / 100))|number_format(2, ',', ' ') }} &euro;
+                                {% endif %}
+                            </td>
+                            <td class="cart-table__qty text-center">
+                                <form action="{{ path('app_cart_update') }}" method="post" class="cart-qty-form d-inline-flex align-items-center gap-1">
+                                    <input type="hidden" name="key" value="{{ item.key }}">
+                                    <button type="submit" name="qty" value="{{ item.qty - 1 }}" class="btn btn-sm btn-outline-secondary cart-qty-btn">-</button>
+                                    <span class="cart-qty-value">{{ item.qty }}</span>
+                                    <button type="submit" name="qty" value="{{ item.qty + 1 }}" class="btn btn-sm btn-outline-secondary cart-qty-btn">+</button>
+                                </form>
+                            </td>
+                            <td class="cart-table__total text-end fw-semibold">
+                                {% if displayHT %}
+                                    {{ item.lineTotalHT|number_format(2, ',', ' ') }} &euro; HT
+                                {% else %}
+                                    {{ item.lineTotalTTC|number_format(2, ',', ' ') }} &euro;
+                                {% endif %}
+                            </td>
+                            <td class="cart-table__action text-center">
+                                <form action="{{ path('app_cart_remove') }}" method="post">
+                                    <input type="hidden" name="key" value="{{ item.key }}">
+                                    <button type="submit" class="btn btn-sm btn-link text-danger cart-remove-btn" title="Supprimer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {# Mobile: cards #}
+            <div class="cart-cards d-md-none">
+                {% for item in items %}
+                <div class="cart-card mb-3">
+                    <div class="d-flex gap-3">
+                        {% set imgMedia = item.product.image ?? (item.product.galleryImages|length > 0 ? item.product.galleryImages|first.media : null) %}
+                        {% if imgMedia %}
+                            <img src="{{ asset('documents/medias/' ~ imgMedia.fileName) }}"
+                                 alt="{{ item.product.title }}"
+                                 class="cart-card__thumb" loading="lazy">
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <a href="{{ path('app_product_show', { slug: item.product.slug }) }}" class="cart-card__title">
+                                {{ item.product.title }}
+                            </a>
+                            {% if item.variant %}
+                                <span class="cart-card__variant text-muted d-block">{{ item.variant.label }}</span>
+                            {% endif %}
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <form action="{{ path('app_cart_update') }}" method="post" class="cart-qty-form d-inline-flex align-items-center gap-1">
+                                    <input type="hidden" name="key" value="{{ item.key }}">
+                                    <button type="submit" name="qty" value="{{ item.qty - 1 }}" class="btn btn-sm btn-outline-secondary cart-qty-btn">-</button>
+                                    <span class="cart-qty-value">{{ item.qty }}</span>
+                                    <button type="submit" name="qty" value="{{ item.qty + 1 }}" class="btn btn-sm btn-outline-secondary cart-qty-btn">+</button>
+                                </form>
+                                <span class="cart-card__price fw-semibold">
+                                    {% if displayHT %}
+                                        {{ item.lineTotalHT|number_format(2, ',', ' ') }} &euro; HT
+                                    {% else %}
+                                        {{ item.lineTotalTTC|number_format(2, ',', ' ') }} &euro;
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <form action="{{ path('app_cart_remove') }}" method="post">
+                            <input type="hidden" name="key" value="{{ item.key }}">
+                            <button type="submit" class="btn btn-sm btn-link text-danger" title="Supprimer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {# Totaux + actions #}
+            <div class="cart-summary">
+                <div class="cart-summary__totals">
+                    {% if displayHT %}
+                        <div class="cart-summary__line">
+                            <span>Total HT</span>
+                            <span class="fw-semibold">{{ totalHT|number_format(2, ',', ' ') }} &euro;</span>
+                        </div>
+                        <div class="cart-summary__line">
+                            <span>TVA</span>
+                            <span>{{ totalVAT|number_format(2, ',', ' ') }} &euro;</span>
+                        </div>
+                    {% endif %}
+                    <div class="cart-summary__line cart-summary__line--total">
+                        <span>Total TTC</span>
+                        <span class="cart-summary__total-price">{{ totalTTC|number_format(2, ',', ' ') }} &euro;</span>
+                    </div>
+                </div>
+                <div class="cart-summary__actions">
+                    <a href="{{ path('app_product_index') }}" class="btn btn-outline-secondary">
+                        Continuer mes achats
+                    </a>
+                    <a href="{{ path('app_checkout') }}" class="btn btn-primary btn-lg">
+                        Commander
+                    </a>
+                </div>
+            </div>
+
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

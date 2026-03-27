@@ -1,83 +1,142 @@
-.header {
+// =============================================================================
+// Header & Navigation
+// =============================================================================
 
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow var(--transition-base);
+
+  // Admin bar
+  .admin-bar {
+    background: var(--text);
+    font-size: 0.8125rem;
+
+    a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        color: var(--white);
+      }
+    }
+
+    &__user {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+
+      svg {
+        opacity: 0.7;
+      }
+    }
+
+    &__logout {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm, 4px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .admin-bar__user span,
+      .admin-bar__logout span {
+        display: none;
+      }
+    }
+  }
+
+  // Desktop
   .desk {
     display: block;
     @media (max-width: 991.98px) {
       display: none;
     }
-    .header_info {
-      .btn-font {
-        @include btn-font;
+  }
 
-        &:hover{
-          color: #FFFFFF;
-        }
+  .header-main {
+    padding: 0.75rem 0;
+  }
+
+  .header-logo img {
+    height: 42px;
+    width: auto;
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .header-nav {
+    .nav-link {
+      @include link-menu;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+
+      &:hover {
+        color: var(--primary);
+        background: var(--primary-light);
       }
-      .header_logo img {
-        height: 8.75rem;
-      }
-
-      .search {
-        margin-right: 0.75rem;
-        border-color: $primary;
-      }
-
-
     }
 
-    .header_nav, .header-admin {
-      background-color: $primary;
-      font-size: 1.25rem;
+    .dropdown-toggle::after {
+      margin-left: 0.375rem;
+    }
+  }
 
-      .nav-link {
-        @include link-menu;
-        transition: all 1s 0.2s;
-        border-radius: 0.5rem;
+  .header-actions {
+    .search-input {
+      width: 160px;
+      transition: width var(--transition-base);
 
-        &:hover {
-          color: $secondary;
-          text-decoration: underline;
-          transition: color, text-decoration 0.8s 0.2s;
-        }
+      &:focus {
+        width: 220px;
       }
     }
   }
 
+  // Mobile
   .smart {
     display: none;
     @media (max-width: 991.98px) {
       display: block;
     }
+  }
 
-    .header_cont {
-      border-bottom: solid 1px $primary;
-
-      .smart_header_logo {
-        max-height: 5rem;
-      }
-
-      .navbar-toggler {
-        border: none;
-
-        &:hover {
-          border: none;
-        }
-
-        .navbar-icon {
-          color: $primary;
-          svg {
-            height: 2.5rem;
-            width: 2.5rem;
-          }
-        }
-      }
-
+  .header-mobile {
+    .header-logo img {
+      height: 36px;
     }
 
-    .offcanvas-body {
-      display:block;
+    .navbar-toggler {
+      color: var(--text);
+      padding: 0.5rem;
+      min-width: 44px;
+      min-height: 44px;
+
+      &:focus {
+        box-shadow: none;
+      }
     }
   }
 }
-
-

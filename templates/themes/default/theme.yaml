@@ -1,0 +1,54 @@
+name: "Default"
+description: "Template standard blog/vitrine — design moderne et polyvalent"
+version: "1.0"
+author: "Blog & Web"
+
+# Google Fonts (chargees dans le <head>)
+google_fonts: "Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500"
+
+# Meta-config (influence le HTML, pas le CSS)
+buttonStyle: filled      # filled | outline | gradient | pill
+headerStyle: sticky-white # sticky-white | sticky-transparent | static
+
+# Variables CSS fixees par le theme (non modifiables par le client)
+variables:
+  --bg: "#FFFFFF"
+  --surface: "#F8FAFC"
+  --border: "#E2E8F0"
+  --text: "#0F172A"
+  --text-muted: "#64748B"
+  --radius: "0.75rem"
+
+# Couleurs/polices suggerees quand on active ce theme
+defaults:
+  primaryColor: "#2563EB"
+  secondaryColor: "#F59E0B"
+  accentColor: "#8B5CF6"
+  fontFamily: "'Inter', sans-serif"
+  fontFamilySecondary: null
+
+# Zones de menu (heritees par les themes sans section menus)
+menus:
+  header:
+    label: "Navigation principale"
+    items:
+      - { system_key: "home", name: "Accueil", route: "app_home" }
+      - { system_key: "blog", name: "Blog", route: "app_article_show_all", module: "blog" }
+      - { system_key: "services", name: "Services", route: "app_service_index", module: "services" }
+      - { system_key: "catalogue", name: "Catalogue", route: "app_product_index", module: "catalogue" }
+      - { system_key: "events", name: "Evenements", route: "app_event_index", module: "events" }
+      - { system_key: "annuaire", name: "Annuaire", route: "app_directory", module: "directory" }
+      - { system_key: "contact", name: "Contact", route: "app_contact" }
+  footer_nav:
+    label: "Navigation footer"
+    items:
+      - { system_key: "home", name: "Accueil", route: "app_home" }
+      - { system_key: "blog", name: "Blog", route: "app_article_show_all", module: "blog" }
+      - { system_key: "contact", name: "Contact", route: "app_contact" }
+  footer_legal:
+    label: "Liens legaux"
+    items:
+      - { system_key: "mentions-legales", name: "Mentions legales", route: "app_legal_page", route_params: { type: "mentions-legales" } }
+      - { system_key: "politique-confidentialite", name: "Politique de confidentialite", route: "app_legal_page", route_params: { type: "politique-de-confidentialite" } }
+      - { system_key: "cgv", name: "CGV", route: "app_legal_page", route_params: { type: "conditions-generales-de-vente" }, module: "ecommerce" }
+      - { system_key: "cgu", name: "CGU", route: "app_legal_page", route_params: { type: "conditions-generales-utilisation" }, module: "services" }

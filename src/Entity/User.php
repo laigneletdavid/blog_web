@@ -31,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Comment::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
     private Collection $comments;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -41,10 +41,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $first_name = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $news = null;
+    private ?bool $subscribeNews = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $articles = null;
+    private ?bool $subscribeArticles = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $subscribeEvents = false;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isVerified = false;
+
+    #[ORM\ManyToOne]
+    private ?Media $avatar = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $bio = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $company = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $jobTitle = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $phone = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isDirectoryVisible = false;
 
     public function __construct()
     {
@@ -115,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -175,28 +199,133 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isNews(): ?bool
+    public function isSubscribeNews(): ?bool
     {
-        return $this->news;
+        return $this->subscribeNews;
     }
 
-    public function setNews(?bool $news): self
+    public function setSubscribeNews(?bool $subscribeNews): self
     {
-        $this->news = $news;
+        $this->subscribeNews = $subscribeNews;
 
         return $this;
     }
 
-    public function isArticles(): ?bool
+    public function isSubscribeArticles(): ?bool
     {
-        return $this->articles;
+        return $this->subscribeArticles;
     }
 
-    public function setArticles(?bool $articles): self
+    public function setSubscribeArticles(?bool $subscribeArticles): self
     {
-        $this->articles = $articles;
+        $this->subscribeArticles = $subscribeArticles;
 
         return $this;
+    }
+
+    public function isSubscribeEvents(): bool
+    {
+        return $this->subscribeEvents;
+    }
+
+    public function setSubscribeEvents(bool $subscribeEvents): self
+    {
+        $this->subscribeEvents = $subscribeEvents;
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?Media
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Media $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): self
+    {
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?string $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    public function getJobTitle(): ?string
+    {
+        return $this->jobTitle;
+    }
+
+    public function setJobTitle(?string $jobTitle): self
+    {
+        $this->jobTitle = $jobTitle;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function isDirectoryVisible(): bool
+    {
+        return $this->isDirectoryVisible;
+    }
+
+    public function setIsDirectoryVisible(bool $isDirectoryVisible): self
+    {
+        $this->isDirectoryVisible = $isDirectoryVisible;
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        if ($this->first_name && $this->name) {
+            return $this->first_name . ' ' . $this->name;
+        }
+
+        return $this->first_name ?? $this->name ?? $this->email;
     }
 
     public function __toString(): string

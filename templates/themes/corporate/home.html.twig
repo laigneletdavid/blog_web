@@ -1,0 +1,178 @@
+{# ====== HOME — Theme Corporate ====== #}
+{# Layout: Hero plein ecran avec image de fond, services en grille, temoignages, logos clients, stats, CTA #}
+
+{# ====== HERO FULLWIDTH ====== #}
+<section class="corp-hero" style="background-image: url('{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}');">
+    <div class="corp-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="row min-vh-75 align-items-center">
+            <div class="col-lg-7 corp-hero__content">
+                <p class="corp-hero__tagline">{{ site.title|default('') }}</p>
+                <h1 class="corp-hero__title">{{ site.name|default('Votre entreprise') }}</h1>
+                <p class="corp-hero__desc">{{ site.defaultSeoDescription|default('Solutions professionnelles pour developper votre activite.') }}</p>
+                <div class="corp-hero__actions">
+                    <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Demander un devis</a>
+                    <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-light btn-lg">Nos actualites</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== SERVICES GRID ====== #}
+<section class="corp-services">
+    <div class="container">
+        <div class="corp-services__header text-center">
+            <h2 class="corp-section-title">Nos services</h2>
+            <p class="corp-section-subtitle">Un accompagnement complet pour votre presence en ligne</p>
+        </div>
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
+        <div class="row g-4">
+            {% for menu in menus[:6] %}
+            <div class="col-md-6 col-lg-4">
+                <div class="corp-service-card">
+                    <div class="corp-service-card__icon">
+                        <span>{{ loop.index }}</span>
+                    </div>
+                    <h3 class="corp-service-card__title">{{ menu.name }}</h3>
+                    <p class="corp-service-card__text">Decouvrez notre offre {{ menu.name|lower }} et comment nous pouvons vous accompagner.</p>
+                    <a href="{{ menu|menuLink }}" class="corp-service-card__link">En savoir plus &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
+{# ====== PORTFOLIO (si module actif + realisations mises en avant) ====== #}
+{% if featuredPortfolio|default([])|length > 0 %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="corp-section-title text-center">Nos realisations</h2>
+        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ (si module actif) ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="py-5" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="corp-section-title text-center">Questions frequentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== ABOUT / A PROPOS ====== #}
+<section class="corp-about">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="corp-about__img" loading="lazy"/>
+            </div>
+            <div class="col-lg-7">
+                <h2 class="corp-section-title">A propos</h2>
+                <p class="corp-about__text">{{ site.defaultSeoDescription|default('') }}</p>
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">En savoir plus</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== STATS / CHIFFRES CLES ====== #}
+<section class="corp-stats">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-6 col-lg-3 corp-stat">
+                <div class="corp-stat__value">30</div>
+                <div class="corp-stat__label">minutes d'installation</div>
+            </div>
+            <div class="col-6 col-lg-3 corp-stat">
+                <div class="corp-stat__value">100%</div>
+                <div class="corp-stat__label">personnalisable</div>
+            </div>
+            <div class="col-6 col-lg-3 corp-stat">
+                <div class="corp-stat__value">0</div>
+                <div class="corp-stat__label">competence requise</div>
+            </div>
+            <div class="col-6 col-lg-3 corp-stat">
+                <div class="corp-stat__value">1</div>
+                <div class="corp-stat__label">interlocuteur dedie</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== TEMOIGNAGES ====== #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length > 0 %}
+<section class="corp-testimonials">
+    <div class="container">
+        <h2 class="corp-section-title text-center">Ce que disent nos clients</h2>
+        <div class="row g-4 mt-3">
+            {% for item in testimonials[:3] %}
+            <div class="col-md-4">
+                <div class="corp-testimonial-card">
+                    <div class="corp-testimonial-card__quote">&ldquo;</div>
+                    <p class="corp-testimonial-card__text">{{ item.content }}</p>
+                    <div class="corp-testimonial-card__author">
+                        {% if item.media %}
+                        <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}" alt="{{ item.title|default('') }}" class="corp-testimonial-card__avatar" loading="lazy"/>
+                        {% endif %}
+                        <strong>{{ item.title|default('Client') }}</strong>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== LOGOS CLIENTS ====== #}
+{% set logos = site.getGalleryBySlot('logo') %}
+{% if logos|length > 0 %}
+<section class="corp-logos">
+    <div class="container">
+        <p class="corp-logos__title text-center">Ils nous font confiance</p>
+        <div class="corp-logos__grid">
+            {% for item in logos %}
+            <div class="corp-logos__item">
+                <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}" alt="{{ item.title|default('') }}" loading="lazy"/>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== DERNIERS ARTICLES ====== #}
+<section class="corp-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="corp-section-title mb-0">Actualites</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+
+{# ====== CTA FINAL ====== #}
+<section class="corp-cta">
+    <div class="container text-center">
+        <h2 class="corp-cta__title">Pret a developper votre presence en ligne ?</h2>
+        <p class="corp-cta__desc">Contactez-nous pour une etude personnalisee de votre projet.</p>
+        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous contacter</a>
+    </div>
+</section>

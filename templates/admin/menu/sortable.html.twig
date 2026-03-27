@@ -1,0 +1,264 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    <h1 class="title"><i class="fas fa-bars me-2"></i>Navigation</h1>
+{% endblock %}
+
+{% block main %}
+<div class="menu-manager"
+     data-csrf-token="{{ csrf_token }}"
+     data-url-reorder="{{ path('admin_api_menu_reorder') }}"
+     data-url-toggle="{{ path('admin_api_menu_toggle_visibility', {id: 0}) }}"
+     data-url-add="{{ path('admin_api_menu_add') }}"
+     data-url-delete="{{ path('admin_api_menu_delete', {id: 0}) }}"
+     data-url-rename="{{ path('admin_api_menu_rename', {id: 0}) }}">
+
+    <div class="menu-manager-layout">
+        {# ===== LEFT PANEL: Sources ===== #}
+        <div class="menu-sources">
+            <h6 class="menu-sources-title">
+                <i class="fas fa-plus-circle me-1"></i>Ajouter au menu
+            </h6>
+
+            {# System pages #}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcSystemPages">
+                    <i class="fas fa-file-shield me-1"></i>Pages système
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse show" id="srcSystemPages">
+                    <div class="source-items">
+                        {% for sp in sources.system_pages %}
+                        <label class="source-item">
+                            <input type="checkbox" value="{{ sp.name }}"
+                                   data-route="{{ sp.route|default('') }}"
+                                   data-page-id="{{ sp.pageId|default('') }}"
+                                   data-target="{{ sp.target|default('route') }}">
+                            <span>{{ sp.name }}</span>
+                        </label>
+                        {% endfor %}
+                        <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2 source-add-btn" data-source="system_pages">
+                            <i class="fas fa-plus me-1"></i>Ajouter la sélection
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {# Custom pages #}
+            {% if sources.custom_pages|length > 0 %}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcCustomPages">
+                    <i class="fas fa-file me-1"></i>Pages
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse" id="srcCustomPages">
+                    <div class="source-items">
+                        {% for page in sources.custom_pages %}
+                        <label class="source-item">
+                            <input type="checkbox" value="{{ page.title }}" data-page-id="{{ page.id }}" data-target="page">
+                            <span>{{ page.title }}</span>
+                        </label>
+                        {% endfor %}
+                        <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2 source-add-btn" data-source="custom_pages">
+                            <i class="fas fa-plus me-1"></i>Ajouter la sélection
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Categories #}
+            {% if sources.categories|length > 0 %}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcCategories">
+                    <i class="fas fa-folder me-1"></i>Catégories
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse" id="srcCategories">
+                    <div class="source-items">
+                        {% for cat in sources.categories %}
+                        <label class="source-item">
+                            <input type="checkbox" value="{{ cat.name }}" data-categorie-id="{{ cat.id }}" data-target="categorie">
+                            <span>{{ cat.name }}</span>
+                        </label>
+                        {% endfor %}
+                        <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2 source-add-btn" data-source="categories">
+                            <i class="fas fa-plus me-1"></i>Ajouter la sélection
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Modules #}
+            {% if sources.modules|length > 0 %}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcModules">
+                    <i class="fas fa-puzzle-piece me-1"></i>Modules
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse" id="srcModules">
+                    <div class="source-items">
+                        {% for mod in sources.modules %}
+                        <label class="source-item">
+                            <input type="checkbox" value="{{ mod.name }}" data-route="{{ mod.route }}" data-target="route">
+                            <span>{{ mod.name }}</span>
+                        </label>
+                        {% endfor %}
+                        <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2 source-add-btn" data-source="modules">
+                            <i class="fas fa-plus me-1"></i>Ajouter la sélection
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Custom link #}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcCustomLink">
+                    <i class="fas fa-link me-1"></i>Lien personnalisé
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse" id="srcCustomLink">
+                    <div class="source-items">
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm" id="customLinkName" placeholder="Titre du lien">
+                        </div>
+                        <div class="mb-2">
+                            <input type="url" class="form-control form-control-sm" id="customLinkUrl" placeholder="https://...">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary w-100" id="addCustomLink">
+                            <i class="fas fa-plus me-1"></i>Ajouter le lien
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {# Empty parent #}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcParent">
+                    <i class="fas fa-sitemap me-1"></i>Parent / Sous-menu
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse" id="srcParent">
+                    <div class="source-items">
+                        <p class="text-muted small mb-2">Crée un élément vide pour regrouper des sous-menus.</p>
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm" id="parentName" placeholder="Nom du parent">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="addParent">
+                            <i class="fas fa-plus me-1"></i>Créer un parent
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ===== RIGHT PANEL: Menu Zones ===== #}
+        <div class="menu-zones">
+            <ul class="nav nav-tabs menu-zone-tabs" role="tablist">
+                {% set loc_icons = {header: 'fa-desktop', footer_nav: 'fa-arrow-down', footer_legal: 'fa-gavel'} %}
+                {% for label, value in locations %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ loop.first ? 'active' : '' }}"
+                            id="tab-{{ value }}"
+                            data-bs-toggle="tab"
+                            data-bs-target="#zone-{{ value }}"
+                            data-location="{{ value }}"
+                            type="button" role="tab">
+                        <i class="fas {{ loc_icons[value]|default('fa-bars') }} me-1"></i>
+                        {{ label }}
+                        <span class="badge bg-secondary ms-1 menu-count" data-location="{{ value }}">
+                            {{ menus[value]|length }}
+                        </span>
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="tab-content">
+                {% for label, value in locations %}
+                <div class="tab-pane {{ loop.first ? 'show active' : '' }}"
+                     id="zone-{{ value }}" role="tabpanel">
+
+                    <div class="menu-zone-list" data-sortable-zone="{{ value }}">
+                        {% for menu in menus[value] %}
+                        <div class="menu-sortable-item {{ menu.isSystem ? 'is-system' : '' }} {{ not menu.isIsVisible ? 'is-hidden' : '' }}"
+                             data-id="{{ menu.id }}" data-system="{{ menu.isSystem ? '1' : '0' }}">
+                            <div class="menu-item-row">
+                                <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                                <span class="menu-item-name" data-id="{{ menu.id }}">{{ menu.name }}</span>
+                                {% if menu.isSystem %}
+                                    <span class="badge bg-info badge-type">Système</span>
+                                {% elseif menu.target == 'page' %}
+                                    <span class="badge bg-success badge-type">Page</span>
+                                {% elseif menu.target == 'categorie' %}
+                                    <span class="badge bg-warning badge-type">Catégorie</span>
+                                {% elseif menu.route %}
+                                    <span class="badge bg-primary badge-type">Module</span>
+                                {% else %}
+                                    <span class="badge bg-secondary badge-type">Lien</span>
+                                {% endif %}
+                                <div class="menu-item-actions">
+                                    <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ menu.id }}" title="{{ menu.isIsVisible ? 'Masquer' : 'Afficher' }}">
+                                        <i class="fas {{ menu.isIsVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                    </button>
+                                    {% if not menu.isSystem %}
+                                    <button type="button" class="btn btn-sm btn-delete-item" data-id="{{ menu.id }}" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="menu-sortable-children" data-sortable-children="{{ menu.id }}">
+                                {% for child in menu.children %}
+                                <div class="menu-sortable-item {{ child.isSystem ? 'is-system' : '' }} {{ not child.isIsVisible ? 'is-hidden' : '' }}"
+                                     data-id="{{ child.id }}" data-system="{{ child.isSystem ? '1' : '0' }}">
+                                    <div class="menu-item-row">
+                                        <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                                        <span class="menu-item-name" data-id="{{ child.id }}">{{ child.name }}</span>
+                                        {% if child.isSystem %}
+                                            <span class="badge bg-info badge-type">Système</span>
+                                        {% elseif child.target == 'page' %}
+                                            <span class="badge bg-success badge-type">Page</span>
+                                        {% elseif child.target == 'categorie' %}
+                                            <span class="badge bg-warning badge-type">Catégorie</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary badge-type">Lien</span>
+                                        {% endif %}
+                                        <div class="menu-item-actions">
+                                            <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ child.id }}">
+                                                <i class="fas {{ child.isIsVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                            </button>
+                                            {% if not child.isSystem %}
+                                            <button type="button" class="btn btn-sm btn-delete-item" data-id="{{ child.id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if menus[value]|length == 0 %}
+                    <div class="menu-empty-state">
+                        <i class="fas fa-inbox fa-2x mb-2 text-muted"></i>
+                        <p class="text-muted mb-0">Aucun élément. Ajoutez-en depuis le panneau de gauche.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <p class="text-muted small mt-3">
+                <i class="fas fa-info-circle me-1"></i>
+                Glissez-déposez pour réorganiser. Imbriquez pour créer des sous-menus (2 niveaux max). Double-cliquez un nom pour le modifier.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

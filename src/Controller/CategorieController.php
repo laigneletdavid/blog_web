@@ -2,35 +2,40 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Categorie;
-use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
+use App\Service\SeoService;
+use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/categorie', name: 'app_categorie_')]
 class CategorieController extends AbstractController
 {
+    public function __construct(
+        private readonly SeoService $seoService,
+        private readonly SiteContext $siteContext,
+    ) {
+    }
+
     #[Route('/{slug}', name: 'show')]
-    public function show(?Categorie $categorie, CategorieRepository $categorieRepository, ArticleRepository $articleRepository): Response
+    public function show(?Categorie $categorie, CategorieRepository $categorieRepository): Response
     {
-        if (!$categorie) {
-            return $this->redirectToRoute('app_home');
-        }
-        $lastArticle = $articleRepository->lastArticle()['0'];
-        $catLast = $lastArticle->getCategories()->toArray();
-        $articles = $categorie->getArticles()->toArray();
-        foreach ( $articles as $article) {
-            $cat = $article->getCategories()->toArray();
+        if (!$this->siteContext->hasModule('blog')) {
+            throw $this->createNotFoundException();
         }
 
-       return $this->render('categorie/show.html.twig', [
+        if (!$categorie) {
+            throw $this->createNotFoundException('Catégorie introuvable.');
+        }
+
+        return $this->render('categorie/show.html.twig', [
             'categorie' => $categorie,
-            'articles' => $articles,
+            'articles' => $categorie->getArticles()->toArray(),
             'categories' => $categorieRepository->findAll(),
-            'title_page' => 'Catégories',
+            'title_page' => $categorie->getName(),
+            'seo' => $this->seoService->resolve($categorie),
         ]);
     }
 }

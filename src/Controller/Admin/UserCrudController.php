@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\User;
 use App\Enum\RoleEnum;
+use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -16,19 +17,51 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class UserCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
 
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher,
-    )
-    {
+        private SiteContext $siteContext,
+    ) {
     }
 
     public static function getEntityFqcn(): string
     {
         return User::class;
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Utilisateurs',
+            'sections' => [
+                [
+                    'title' => 'Les roles',
+                    'content' => '<ul>
+                        <li><strong>Utilisateur</strong> — Visiteur inscrit. Peut lire, commenter et gerer son profil.</li>
+                        <li><strong>Auteur</strong> — Redacteur. Peut creer et editer des articles, pages et medias.</li>
+                        <li><strong>Admin</strong> — Administrateur. Acces complet a la gestion du site.</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Creer un utilisateur',
+                    'content' => '<p>Renseignez l\'email, le prenom, le nom et un mot de passe temporaire. L\'utilisateur pourra le changer depuis son profil.</p>
+                    <p>Le mot de passe doit faire au moins <strong>12 caracteres</strong>.</p>',
+                ],
+                [
+                    'title' => 'Annuaire',
+                    'content' => '<p>Si le module annuaire est actif, cochez <em>Visible dans l\'annuaire</em> pour que l\'utilisateur apparaisse dans l\'annuaire public du site.</p>',
+                ],
+            ],
+            'tips' => [
+                'Creez un compte Auteur pour vos redacteurs. Ils pourront ecrire sans acceder aux reglages sensibles.',
+            ],
+        ];
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -63,26 +96,50 @@ class UserCrudController extends AbstractCrudController
             ->setLabel('Rôle de l\'utilisateur')
             ->renderAsBadges([
                 'ROLE_USER' => 'success',
-                'ROLE_CORRECTOR' => 'primary',
                 'ROLE_AUTHOR' => 'warning',
                 'ROLE_ADMIN' => 'danger',
+                'ROLE_FREELANCE' => 'info',
+                'ROLE_SUPER_ADMIN' => 'dark',
             ])
             ->setChoices(RoleEnum::choices());
         yield BooleanField::new('news');
         yield BooleanField::new('articles');
+
+        if ($this->siteContext->hasModule('directory')) {
+            yield BooleanField::new('isDirectoryVisible', 'Visible dans l\'annuaire')
+                ->setHelp('Rend ce membre visible dans l\'annuaire public du site');
+            yield TextField::new('company', 'Entreprise')
+                ->hideOnIndex();
+            yield TextField::new('jobTitle', 'Poste')
+                ->hideOnIndex();
+            yield TextField::new('phone', 'Telephone')
+                ->hideOnIndex();
+        }
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        /** @var $user */
-        $user = $entityInstance;
-
-        $plainPassword = $user->getPAssword();
-        $hashedPassword = $this->userPasswordHasher->hashPassword($user, $plainPassword);
-
-        $user->setPassword($hashedPassword);
-
+        $this->hashPassword($entityInstance);
         parent::persistEntity($entityManager, $entityInstance);
     }
 
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->hashPassword($entityInstance);
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    private function hashPassword(object $user): void
+    {
+        if (!$user instanceof User) {
+            return;
+        }
+
+        $plainPassword = $user->getPassword();
+        if ($plainPassword) {
+            $user->setPassword(
+                $this->userPasswordHasher->hashPassword($user, $plainPassword)
+            );
+        }
+    }
 }

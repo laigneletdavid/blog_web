@@ -1,42 +1,118 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ title_page }}{% endblock %}
+{% block jsonld %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": {{ page.title|json_encode|raw }},
+    "url": "{{ app.request.uri }}",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ app.request.uri }}"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "{{ absolute_url(path('app_home')) }}"},
+        {"@type": "ListItem", "position": 2, "name": {{ page.title|json_encode|raw }}}
+    ]
+}
+</script>
+{% endblock %}
 
 {% block body %}
+
+{# --- Breadcrumbs --- #}
 <div class="container">
-    <div class="breadcrum">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
-            </ol>
-        </nav>
-    </div>
-    <div class=" top_page">
-        <div class="img_top">
-            <img class="img_top" src="{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}" alt="{{ page.title }}"/>
+    <nav aria-label="breadcrumb" class="mt-3 mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+        </ol>
+    </nav>
+</div>
+
+{# --- Featured image hero --- #}
+{% if page.featuredMedia %}
+<div class="container">
+    <div class="page-hero">
+        {{ responsive_img(page.featuredMedia, '(max-width: 768px) 100vw, 900px', 'page-hero__img') }}
+        <div class="page-hero__overlay">
+            <h1 class="page-hero__title">{{ page.title }}</h1>
         </div>
-        <div class="title">
-            <h1 class="title-one text-light">{{ page.title }}</h1>
-            <h2 class="title-two">{{ text_page }}</h2>
-        </div>
     </div>
-    <div class="d-flex flex-lg-row flex-column">
-         <div class="col-lg-8">
-             <div class="container container-page mt-3">
-                 <div class="d-flex flex-column m-2">
-                     <div class="content_page">{{ page.content|raw }}</div>
-                 </div>
-             </div>
-         </div>
-        <div class="col-lg-4">
-            <div class="widget d-flex flex-column position-sticky pt-3" style="top: 1rem;">
-                {% include 'widgets/subscribe.html.twig' %}
-                {% include 'widgets/caterogires.html.twig' %}
-                {% include 'widgets/last_article.html.twig' %}
-                {% include 'widgets/archives.html.twig' %}
+</div>
+{% endif %}
+
+<div class="container">
+    {% if page.template == 'full-width' %}
+        {# ── Pleine largeur : pas de sidebar ── #}
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="page-detail">
+                    {% if not page.featuredMedia %}
+                        <h1 class="page-detail__title">{{ page.title }}</h1>
+                    {% endif %}
+
+                    <div class="page-detail__content article-detail__content">
+                        {{ page.content|raw }}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+
+    {% elseif page.template == 'sidebar-left' %}
+        {# ── Sidebar gauche ── #}
+        <div class="row">
+            <div class="col-lg-4">
+                <aside class="blog-sidebar">
+                    {% include 'widgets/subscribe.html.twig' %}
+                    {% include 'widgets/categories.html.twig' %}
+                    {% include 'widgets/last_article.html.twig' %}
+                    {% include 'widgets/archives.html.twig' %}
+                </aside>
+            </div>
+            <div class="col-lg-8">
+                <div class="page-detail">
+                    {% if not page.featuredMedia %}
+                        <h1 class="page-detail__title">{{ page.title }}</h1>
+                    {% endif %}
+
+                    <div class="page-detail__content article-detail__content">
+                        {{ page.content|raw }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        {# ── Par défaut : contenu + sidebar droite ── #}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="page-detail">
+                    {% if not page.featuredMedia %}
+                        <h1 class="page-detail__title">{{ page.title }}</h1>
+                    {% endif %}
+
+                    <div class="page-detail__content article-detail__content">
+                        {{ page.content|raw }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <aside class="blog-sidebar">
+                    {% include 'widgets/subscribe.html.twig' %}
+                    {% include 'widgets/categories.html.twig' %}
+                    {% include 'widgets/last_article.html.twig' %}
+                    {% include 'widgets/archives.html.twig' %}
+                </aside>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

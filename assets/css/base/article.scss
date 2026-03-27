@@ -1,70 +1,384 @@
-.article_content {
+// =============================================================================
+// Article Detail Page
+// =============================================================================
 
-  .title_article_groupe {
-    .article_title{
-      .title-one {
-        @include title-one;
-      }
-      .title-two {
-        @include title-two;
-        margin-bottom: 0;
-      }
-    }
-    .article_data {
-      .date {
-        margin-bottom: 0;
-      }
-    }
+// --- Hero image ---
+.article-hero {
+  margin-bottom: 2rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+
+  &__img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
   }
-
-  .img_article {
-    img{
-      width: 100%;
-    }
-  }
-
-  .content {
-    border-bottom: solid 2px $primary;
-  }
-
 }
 
-.article_comment {
-  .accordion {
-    .title-accordion {
-      font-family: 'Expletus Sans', cursive;
-      color: $bw-orange !important;
+// --- Article detail ---
+.article-detail {
+  &__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 0.2rem 0.625rem;
+    border-radius: var(--radius-xl);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+
+    &:hover {
+      opacity: 0.85;
+      color: #fff;
+    }
+  }
+
+  &__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  &__lead {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  // --- Content area (reading optimized) ---
+  &__content {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--text);
+    padding-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+
+    h2, h3, h4 {
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: var(--radius-md);
+      margin: 1.5rem 0;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      background: var(--surface);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    pre {
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    a {
+      color: var(--primary);
       text-decoration: underline;
+      text-underline-offset: 2px;
 
-      .accordion-button {
-        color: $bw-orange;
-        font-size: 1.5rem;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.25rem;
+
+      li {
+        margin-bottom: 0.5rem;
       }
     }
   }
-  .comment-list {
-    .comment {
-      .card {
-        border: none;
 
-        .card-body {
-          .card-title {
-            .author {
-              font-family: 'Expletus Sans', cursive;
-              color: $bw-red !important;
-              text-decoration: underline;
-            }
-          }
-          .card-text {
-            background-color: $bw-blue-light;
-            border-radius: 1rem;
-          }
-        }
-      }
-    }
-
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
   }
 }
-.breadcrum {
-  margin-top: -2rem;
+
+// --- Share sticky (desktop, colonne gauche) ---
+.share-sticky {
+  position: sticky;
+  top: 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white, #fff);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    &--facebook:hover {
+      color: #1877F2;
+      border-color: #1877F2;
+    }
+
+    &--twitter:hover {
+      color: #000;
+      border-color: #000;
+    }
+
+    &--linkedin:hover {
+      color: #0A66C2;
+      border-color: #0A66C2;
+    }
+
+    &--copy:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    &--copy.copied {
+      color: #10B981;
+      border-color: #10B981;
+      background: #ECFDF5;
+    }
+  }
+}
+
+// --- Share mobile (barre fixe en bas) ---
+.share-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--white, #fff);
+  border-top: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    &:hover, &:active {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    &.copied {
+      color: #10B981;
+      border-color: #10B981;
+    }
+  }
+}
+
+// --- Author card ---
+.author-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+
+  &__avatar {
+    flex-shrink: 0;
+  }
+
+  &__img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  &__placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__name {
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  &__bio {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0;
+    line-height: 1.5;
+  }
+}
+
+// --- Comments ---
+.article-comments {
+  margin-bottom: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  &__form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+.comment-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  transition: box-shadow var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-xs);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  &__author {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  &__date {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  &__body {
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+}
+
+// --- Related articles ---
+.article-related {
+  margin-bottom: 3rem;
+  padding-top: 1.5rem;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+}
+
+// --- Reading time badge ---
+.reading-time {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
 }

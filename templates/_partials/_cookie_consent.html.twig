@@ -1,0 +1,21 @@
+{# Cookie consent banner — only shown if Google Analytics is configured #}
+{% if site is not null and site.googleAnalyticsId is not null and site.googleAnalyticsId is not empty %}
+<div class="cookie-consent d-none"
+     data-controller="cookie-consent"
+     data-cookie-consent-target="banner"
+     data-cookie-consent-ga-id-value="{{ site.googleAnalyticsId }}">
+    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 py-3">
+        <p class="mb-0 small">
+            Ce site utilise des cookies pour mesurer l'audience.
+            {% set privacy_page = footer_legal_menus|filter(m => m.systemKey == 'politique-confidentialite')|first %}
+            {% if privacy_page %}
+                <a href="{{ privacy_page|menuLink }}">En savoir plus</a>.
+            {% endif %}
+        </p>
+        <div class="d-flex gap-2 flex-shrink-0">
+            <button class="btn btn-sm btn-primary" data-action="cookie-consent#accept">Accepter</button>
+            <button class="btn btn-sm btn-outline-secondary" data-action="cookie-consent#refuse">Refuser</button>
+        </div>
+    </div>
+</div>
+{% endif %}

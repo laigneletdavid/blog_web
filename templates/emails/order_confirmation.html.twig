@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+    <h1 style="color: #2563EB; font-size: 24px;">Confirmation de commande</h1>
+
+    <p>Bonjour {{ order.customerFirstName }},</p>
+    <p>Merci pour votre commande ! Voici le recapitulatif :</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr style="background: #f8f9fa;">
+            <th style="text-align: left; padding: 10px; border-bottom: 2px solid #dee2e6;">Produit</th>
+            <th style="text-align: center; padding: 10px; border-bottom: 2px solid #dee2e6;">Qte</th>
+            <th style="text-align: right; padding: 10px; border-bottom: 2px solid #dee2e6;">Montant</th>
+        </tr>
+        {% for item in order.items %}
+        <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
+                {{ item.title }}
+                {% if item.variant %}<br><small style="color: #6c757d;">{{ item.variant }}</small>{% endif %}
+            </td>
+            <td style="text-align: center; padding: 10px; border-bottom: 1px solid #dee2e6;">{{ item.qty }}</td>
+            <td style="text-align: right; padding: 10px; border-bottom: 1px solid #dee2e6;">{{ item.lineTotalTTC|number_format(2, ',', ' ') }} &euro;</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p style="text-align: right; font-size: 18px; font-weight: bold;">
+        Total : {{ order.totalTTC|number_format(2, ',', ' ') }} &euro; TTC
+    </p>
+
+    <p><strong>Reference :</strong> {{ order.reference }}</p>
+    <p><strong>Paiement :</strong> {{ order.paymentMethod.label }}</p>
+
+    {% if order.paymentMethod.value == 'manual' %}
+    <p style="background: #fff3cd; padding: 15px; border-radius: 8px;">
+        Votre commande est en attente de paiement. Nous vous contacterons pour convenir du mode de reglement.
+    </p>
+    {% endif %}
+
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #dee2e6;">
+    <p style="color: #6c757d; font-size: 12px;">{{ siteName }}</p>
+</body>
+</html>

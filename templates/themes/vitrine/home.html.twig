@@ -1,0 +1,137 @@
+{# ====== HOME — Theme Vitrine ====== #}
+{# Layout: Hero split (texte gauche + image droite), features en rangee horizontale, portrait + bio, articles, contact CTA #}
+
+{# ====== HERO SPLIT ====== #}
+<section class="vit-hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h1 class="vit-hero__title">{{ site.name|default('Bienvenue') }}</h1>
+                <p class="vit-hero__desc">{{ site.defaultSeoDescription|default('Votre partenaire de confiance.') }}</p>
+                <div class="vit-hero__actions">
+                    <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Prendre contact</a>
+                    <a href="#vit-about" class="btn btn-outline-secondary btn-lg">En savoir plus</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{{ site.heroImage ? asset('documents/medias/' ~ site.heroImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="vit-hero__img" loading="lazy"/>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== FEATURES / SERVICES ====== #}
+<section class="vit-features">
+    <div class="container">
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
+        <div class="row g-4">
+            {% for menu in menus[:4] %}
+            <div class="col-sm-6 col-lg-3">
+                <div class="vit-feature">
+                    <div class="vit-feature__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h3 class="vit-feature__title">{{ menu.name }}</h3>
+                    <a href="{{ menu|menuLink }}" class="vit-feature__link">Decouvrir</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{# ====== PRODUITS (si module actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
+{# ====== PORTFOLIO (si module actif + realisations mises en avant) ====== #}
+{% if featuredPortfolio|default([])|length > 0 %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="vit-section-title text-center">Nos realisations</h2>
+        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ (si module actif) ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="py-5" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="vit-section-title text-center">Nos questions frequentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== A PROPOS ====== #}
+<section class="vit-about" id="vit-about">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5 text-center">
+                <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" class="vit-about__img" loading="lazy"/>
+            </div>
+            <div class="col-lg-7">
+                <span class="vit-about__overtitle">A propos</span>
+                <h2 class="vit-about__title">{{ site.title|default(site.name|default('')) }}</h2>
+                <p class="vit-about__text">{{ site.defaultSeoDescription|default('') }}</p>
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">Me contacter</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== TEMOIGNAGES ====== #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length > 0 %}
+<section class="vit-testimonials">
+    <div class="container">
+        <h2 class="vit-section-title text-center">Temoignages</h2>
+        <div class="row g-4 justify-content-center">
+            {% for item in testimonials[:3] %}
+            <div class="col-md-4">
+                <div class="vit-testimonial">
+                    <div class="vit-testimonial__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="vit-testimonial__text">{{ item.content }}</p>
+                    <strong>{{ item.title|default('') }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== DERNIERS ARTICLES ====== #}
+<section class="vit-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="vit-section-title mb-0">Actualites</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+
+{# ====== CTA CONTACT ====== #}
+<section class="vit-cta">
+    <div class="container">
+        <div class="vit-cta__card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="vit-cta__title">Besoin d'un accompagnement ?</h2>
+                    <p class="vit-cta__desc">Prenez rendez-vous pour discuter de votre projet.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

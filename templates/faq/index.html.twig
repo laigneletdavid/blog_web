@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{{ seo.title|default('FAQ') }}</title>
+    <meta name="description" content="{{ seo.description|default('Foire aux questions') }}">
+{% endblock %}
+
+{% block structured_data %}
+{% if groups|length > 0 %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% set allFaqs = [] %}
+        {% for group in groups %}
+            {% for faq in group.faqs %}
+                {% set allFaqs = allFaqs|merge([faq]) %}
+            {% endfor %}
+        {% endfor %}
+        {% for faq in allFaqs %}
+        {
+            "@type": "Question",
+            "name": {{ faq.question|json_encode|raw }},
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ faq.content|striptags|json_encode|raw }}
+            }
+        }{% if not loop.last %},{% endif %}
+
+        {% endfor %}
+    ]
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+        </ol>
+    </nav>
+
+    <div class="faq-section">
+        <h1 class="title-one mb-4">{{ title_page }}</h1>
+
+        {% if groups|length == 0 %}
+            <p class="text-muted text-center py-5">Aucune question pour le moment.</p>
+        {% else %}
+            {% for group in groups %}
+                {% if group.category %}
+                    <h2 class="faq-category__title">{{ group.category.name }}</h2>
+                {% endif %}
+
+                <div class="accordion faq-accordion mb-4" id="faq-{{ group.category ? group.category.slug : 'general' }}">
+                    {% for faq in group.faqs %}
+                    <div class="accordion-item" id="{{ faq.slug }}">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#faq-answer-{{ faq.id }}"
+                                    aria-expanded="false"
+                                    aria-controls="faq-answer-{{ faq.id }}">
+                                {% if faq.icon %}<i class="{{ faq.icon }} me-2"></i>{% endif %}
+                                {{ faq.question }}
+                            </button>
+                        </h3>
+                        <div id="faq-answer-{{ faq.id }}" class="accordion-collapse collapse"
+                             data-bs-parent="#faq-{{ group.category ? group.category.slug : 'general' }}">
+                            <div class="accordion-body content-body">
+                                {{ faq.content|raw }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

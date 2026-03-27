@@ -39,28 +39,87 @@ class PageRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Page[] Returns an array of Page objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Page[]
+     */
+    public function findAllPublishedForSitemap(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->andWhere('p.noIndex = false')
+            ->andWhere('p.visibility = :public')
+            ->setParameter('public', 'public')
+            ->orderBy('p.updated_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Page
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Page[]
+     */
+    public function findAllPublished(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSystemPage(string $systemKey): ?Page
+    {
+        return $this->findOneBy(['system_key' => $systemKey]);
+    }
+
+    /**
+     * @return Page[]
+     */
+    public function findAllSystemPages(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.is_system = true')
+            ->andWhere('p.published = true')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Published non-system pages (for menu sources panel).
+     *
+     * @return Page[]
+     */
+    public function findCustomPages(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->andWhere('p.is_system = false')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countPublished(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.published = true')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param string[] $allowedVisibilities
+     * @return Page[]
+     */
+    public function findPublishedByVisibility(array $allowedVisibilities): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.published = true')
+            ->andWhere('p.visibility IN (:visibilities)')
+            ->setParameter('visibilities', $allowedVisibilities)
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,56 +1,77 @@
+// =============================================================================
+// Contact Page
+// =============================================================================
+
+.contact {
+  .form-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+}
+
 .contact_list {
   @media (max-width: 991.98px) {
     padding: 0;
   }
-  .contact_list_item {
 
-    background-color: $bw-blue-light;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    margin: 1.5rem;
+  .contact_list_item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.75rem;
+    transition: box-shadow var(--transition-fast);
+
+    &:hover {
+      box-shadow: var(--shadow-sm);
+    }
 
     a {
       text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
 
       svg {
-        margin-right: 1rem;
+        color: var(--primary);
+        flex-shrink: 0;
       }
     }
   }
 }
+
 .logo {
   img {
     max-width: 75%;
   }
 }
+
 .maps {
   @media (max-width: 991.98px) {
     padding: 0;
-    margin:1.5rem;
+    margin: 1.5rem 0;
   }
   max-width: 100%;
-  padding-left: 2rem;
-  margin:1.5rem;
+  padding-left: 0;
+  margin: 1.5rem 0;
 
   iframe {
     width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
   }
 }
 
 .contact_widgets {
+  border-left: 2px solid var(--primary);
+  margin-bottom: 2rem;
+
   @media (max-width: 991.98px) {
     border-left: none;
-  }
-  border-left: solid 1px $secondary;
-  margin-bottom: 2rem;
-}
-
-.contact {
-  .form-label {
-    font-family: 'Titillium Web', sans-serif;
-    font-weight: 600;
-  }
-  .form-control {
-    border-color: $primary;
+    border-top: 2px solid var(--primary);
+    padding-top: 2rem;
   }
 }

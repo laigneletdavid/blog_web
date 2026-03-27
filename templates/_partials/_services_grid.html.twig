@@ -1,0 +1,40 @@
+{# ====== SERVICES GRID — Partial réutilisable ====== #}
+{# Utilisé par les templates home des thèmes et la page /services #}
+{% if services is defined and services|length > 0 %}
+<div class="services-grid">
+    <div class="row g-4">
+        {% for service in services %}
+        <div class="col-md-6 col-lg-4">
+            <div class="service-card h-100">
+                {% if service.icon %}
+                <div class="service-card__icon">
+                    <i class="{{ service.icon }}"></i>
+                </div>
+                {% elseif service.image %}
+                <div class="service-card__image">
+                    <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}" alt="{{ service.title }}" loading="lazy">
+                </div>
+                {% endif %}
+                <h3 class="service-card__title">{{ service.title }}</h3>
+                {% if service.shortDescription %}
+                <p class="service-card__text">{{ service.shortDescription }}</p>
+                {% endif %}
+                {% if service.blocks is not empty %}
+                <a href="{{ path('app_service_show', {slug: service.slug}) }}" class="service-card__link">
+                    En savoir plus &rarr;
+                </a>
+                {% elseif service.linkedPage %}
+                <a href="{{ path('app_page_show', {slug: service.linkedPage.slug}) }}" class="service-card__link">
+                    En savoir plus &rarr;
+                </a>
+                {% elseif service.link %}
+                <a href="{{ service.link }}" class="service-card__link" target="_blank" rel="noopener">
+                    En savoir plus &rarr;
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

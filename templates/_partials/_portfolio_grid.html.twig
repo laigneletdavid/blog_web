@@ -1,0 +1,14 @@
+{# ====== Portfolio Grid — Partial reutilisable pour homepage ====== #}
+{# Variables attendues : portfolioItems (tableau de PortfolioItem) #}
+{% if portfolioItems is defined and portfolioItems|length > 0 %}
+<div class="portfolio-home-section">
+    <div class="portfolio-grid portfolio-grid--home">
+        {% for item in portfolioItems|slice(0, 6) %}
+            {% include '_partials/_portfolio_card.html.twig' with { item: item } %}
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ path('app_portfolio_index') }}" class="btn btn-outline-primary">Voir toutes les realisations &rarr;</a>
+    </div>
+</div>
+{% endif %}
