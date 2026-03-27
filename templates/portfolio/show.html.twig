@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{{ seo.title|default(item.title) }} — {{ site.name|default('') }}</title>
+    <meta name="description" content="{{ seo.description|default(item.shortDescription|default('')) }}">
+    {% if item.noIndex %}<meta name="robots" content="noindex">{% endif %}
+    {% if item.canonicalUrl %}<link rel="canonical" href="{{ item.canonicalUrl }}">{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_portfolio_index') }}">Realisations</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ item.title }}</li>
+        </ol>
+    </nav>
+
+    <article class="portfolio-detail">
+        {# --- Header --- #}
+        <div class="portfolio-detail__header">
+            <h1 class="portfolio-detail__title">{{ item.title }}</h1>
+
+            <div class="portfolio-detail__meta">
+                {% if item.category %}
+                <span class="portfolio-detail__meta-item">
+                    <i class="bi bi-folder2 me-1"></i>{{ item.category.name }}
+                </span>
+                {% endif %}
+                {% if item.client %}
+                <span class="portfolio-detail__meta-item">
+                    <i class="bi bi-person me-1"></i>{{ item.client }}
+                </span>
+                {% endif %}
+                {% if item.projectDate %}
+                <span class="portfolio-detail__meta-item">
+                    <i class="bi bi-calendar3 me-1"></i>{{ item.projectDate|date('F Y') }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {# --- Image principale --- #}
+        {% if item.image %}
+        <div class="portfolio-detail__image mb-4">
+            <img src="{{ asset('documents/medias/' ~ item.image.fileName) }}"
+                 alt="{{ item.title }}"
+                 class="img-fluid rounded"
+                 loading="lazy">
+        </div>
+        {% endif %}
+
+        {# --- Lead --- #}
+        {% if item.shortDescription %}
+        <p class="portfolio-detail__lead">{{ item.shortDescription }}</p>
+        {% endif %}
+
+        {# --- Contenu TipTap --- #}
+        {% if item.content %}
+        <div class="portfolio-detail__content content-body">
+            {{ item.content|raw }}
+        </div>
+        {% endif %}
+
+        {# --- Tags --- #}
+        {% if item.tags|length > 0 %}
+        <div class="portfolio-detail__tags mb-4">
+            {% for tag in item.tags %}
+            <span class="portfolio-detail__tag">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# --- Lien projet --- #}
+        {% if item.projectUrl %}
+        <div class="portfolio-detail__cta mb-4">
+            <a href="{{ item.projectUrl }}" target="_blank" rel="noopener" class="btn btn-primary">
+                <i class="bi bi-box-arrow-up-right me-1"></i>Voir le projet
+            </a>
+        </div>
+        {% endif %}
+
+        {# --- Retour --- #}
+        <div class="portfolio-detail__back">
+            <a href="{{ path('app_portfolio_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Toutes les realisations
+            </a>
+        </div>
+    </article>
+</div>
+{% endblock %}

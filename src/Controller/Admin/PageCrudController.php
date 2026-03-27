@@ -100,6 +100,7 @@ class PageCrudController extends AbstractCrudController
                     'style' => 'display: none',
                 ],
             ])
+            ->setHelp('Editeur visuel : mise en forme, images, videos, encarts, colonnes. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
             ->hideOnIndex();
 
         // --- Panel Paramètres ---

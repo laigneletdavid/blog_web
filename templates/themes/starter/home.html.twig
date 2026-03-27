@@ -28,6 +28,26 @@
     {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
 {% endif %}
 
+{# ====== PORTFOLIO (si module actif + realisations mises en avant) ====== #}
+{% if featuredPortfolio|default([])|length > 0 %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="start-section-title">Nos realisations</h2>
+        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ (si module actif) ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="py-5" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="start-section-title">Questions frequentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
 {# ====== DERNIERS ARTICLES — liste simple ====== #}
 <section class="start-articles">
     <div class="container">

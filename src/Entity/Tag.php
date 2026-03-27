@@ -36,6 +36,9 @@ class Tag
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'tags')]
     private Collection $product;
 
+    #[ORM\ManyToMany(targetEntity: PortfolioItem::class, mappedBy: 'tags')]
+    private Collection $portfolioItem;
+
     public function __construct()
     {
         $this->article = new ArrayCollection();
@@ -43,6 +46,7 @@ class Tag
         $this->categorie = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->product = new ArrayCollection();
+        $this->portfolioItem = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -190,6 +194,31 @@ class Tag
     {
         if ($this->product->removeElement($product)) {
             $product->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, PortfolioItem> */
+    public function getPortfolioItem(): Collection
+    {
+        return $this->portfolioItem;
+    }
+
+    public function addPortfolioItem(PortfolioItem $portfolioItem): self
+    {
+        if (!$this->portfolioItem->contains($portfolioItem)) {
+            $this->portfolioItem->add($portfolioItem);
+            $portfolioItem->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioItem(PortfolioItem $portfolioItem): self
+    {
+        if ($this->portfolioItem->removeElement($portfolioItem)) {
+            $portfolioItem->removeTag($this);
         }
 
         return $this;

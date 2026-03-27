@@ -614,3 +614,71 @@
 .theme-moderne .mod-articles .blog-card__title {
     color: var(--text);
 }
+
+/* ====== FAQ OVERRIDES ====== */
+.theme-moderne .faq-category__title {
+    border-bottom-color: var(--primary);
+}
+.theme-moderne .faq-accordion .accordion-item {
+    background: var(--surface);
+    border-color: var(--border);
+}
+.theme-moderne .faq-accordion .accordion-button {
+    background: var(--surface);
+    color: var(--text);
+}
+.theme-moderne .faq-accordion .accordion-button:not(.collapsed) {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--primary);
+}
+.theme-moderne .faq-accordion .accordion-button::after {
+    border-color: var(--text-muted);
+}
+.theme-moderne .faq-accordion .accordion-button:not(.collapsed)::after {
+    border-color: var(--primary);
+}
+.theme-moderne .faq-accordion .accordion-body {
+    border-top-color: var(--border);
+    color: var(--text);
+}
+.theme-moderne .faq-accordion .accordion-body a {
+    color: var(--accent);
+}
+
+/* ====== PORTFOLIO OVERRIDES ====== */
+.theme-moderne .portfolio-card {
+    background: var(--surface);
+    border-color: var(--border);
+}
+.theme-moderne .portfolio-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+}
+.theme-moderne .portfolio-card__title {
+    color: var(--text);
+}
+.theme-moderne .portfolio-card__badge {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+.theme-moderne .portfolio-detail__title {
+    color: var(--text);
+}
+.theme-moderne .portfolio-detail__tag {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+.theme-moderne .portfolio-filters__pill {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+.theme-moderne .portfolio-filters__pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+.theme-moderne .portfolio-filters__pill--active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}

@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
 use App\Repository\EventRepository;
+use App\Repository\FaqRepository;
+use App\Repository\PortfolioItemRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
 use App\Service\RecaptchaValidator;
@@ -27,7 +29,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/', name: 'app_home')]
-    public function index(ArticleRepository $articleRepository, ServiceRepository $serviceRepository, EventRepository $eventRepository, ProductRepository $productRepository, SiteContext $siteContext): Response
+    public function index(ArticleRepository $articleRepository, ServiceRepository $serviceRepository, EventRepository $eventRepository, ProductRepository $productRepository, FaqRepository $faqRepository, PortfolioItemRepository $portfolioItemRepository, SiteContext $siteContext): Response
     {
         return $this->render('home/index.html.twig', [
             'title_page' => 'Blog & Web',
@@ -36,6 +38,8 @@ class HomeController extends AbstractController
             'services' => $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [],
             'upcomingEvents' => $siteContext->hasModule('events') ? $eventRepository->findUpcoming(3) : [],
             'featuredProducts' => $siteContext->hasModule('catalogue') ? $productRepository->findFeatured(4) : [],
+            'faqs' => $siteContext->hasModule('faq') ? $faqRepository->findAllActive() : [],
+            'featuredPortfolio' => $siteContext->hasModule('portfolio') ? $portfolioItemRepository->findFeatured(6) : [],
             'seo' => $this->seoService->resolveForHome(),
         ]);
     }

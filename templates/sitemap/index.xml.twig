@@ -65,6 +65,22 @@
     </url>
     {% endfor %}
 
+    {% if hasFaq|default(false) %}
+    <url>
+        <loc>{{ absolute_url(path('app_faq_index')) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endif %}
+
+    {% for item in portfolioItems|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_portfolio_show', {slug: item.slug})) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+
     <url>
         <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
         <changefreq>daily</changefreq>

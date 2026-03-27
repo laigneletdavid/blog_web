@@ -27,6 +27,8 @@ Chaque module s'active independamment selon les besoins du client :
 | **E-commerce** | Panier, commandes, paiement Stripe, suivi commandes |
 | **Evenements** | Agenda avec evenements a venir, evenements passes, evenements vedettes |
 | **Annuaire** | Annuaire des membres avec recherche (entreprise, poste, telephone) |
+| **FAQ** | Foire aux questions en accordeon, categories, schema.org FAQPage pour le SEO |
+| **Portfolio** | Realisations/projets clients avec galerie, filtres par categorie, page detail |
 | **Pages privees** | Visibilite par role (public, membres, admin) sur les articles et pages |
 
 ### SEO integre
@@ -35,7 +37,7 @@ Chaque module s'active independamment selon les besoins du client :
 - **Sitemap XML** automatique (`/sitemap.xml`) avec priorites et dates de modification
 - **robots.txt** dynamique
 - **Open Graph** (Facebook, LinkedIn) et **Twitter Cards** automatiques
-- **Schema.org JSON-LD** (Article + BreadcrumbList)
+- **Schema.org JSON-LD** (Article, BreadcrumbList, FAQPage)
 - **Fallback chain** : champs SEO de l'entite > titre/description du contenu > valeurs par defaut du site
 - **Google Analytics** et **Google Search Console** configurables dans l'admin
 - **Images WebP** + **lazy-loading** natif pour la performance

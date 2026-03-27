@@ -330,6 +330,29 @@
     color: var(--primary);
 }
 
+/* ====== FAQ OVERRIDES ====== */
+.theme-vitrine .faq-category__title {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+.theme-vitrine .faq-accordion .accordion-item {
+    border-radius: 0.625rem;
+}
+.theme-vitrine .faq-accordion .accordion-button:not(.collapsed) {
+    color: var(--primary);
+}
+
+/* ====== PORTFOLIO OVERRIDES ====== */
+.theme-vitrine .portfolio-card {
+    border-radius: 0.625rem;
+}
+.theme-vitrine .portfolio-card:hover {
+    border-color: var(--primary);
+}
+.theme-vitrine .portfolio-detail__title {
+    letter-spacing: -0.03em;
+}
+
 /* --- FOOTER --- */
 .theme-vitrine .footer--vitrine {
     background: var(--text);

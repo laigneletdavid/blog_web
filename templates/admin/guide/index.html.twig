@@ -67,14 +67,7 @@
                     <p>Depuis <strong>Contenu &rarr; Blog &rarr; Articles</strong>, cliquez sur <em>Creer un article</em>.</p>
 
                     <h5>L'editeur de contenu</h5>
-                    <p>BlogWeb utilise un editeur visuel (TipTap) qui vous permet de :</p>
-                    <ul>
-                        <li>Mettre en forme votre texte (gras, italique, titres, listes)</li>
-                        <li>Inserer des <strong>images</strong> depuis votre bibliotheque de medias</li>
-                        <li>Integrer des <strong>videos YouTube</strong></li>
-                        <li>Ajouter des <strong>citations</strong>, du <strong>code</strong>, des <strong>separateurs</strong></li>
-                    </ul>
-                    <p>L'editeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur.</p>
+                    <p>BlogWeb integre un editeur visuel complet pour rediger vos contenus. Consultez la section <strong>Editeur de contenu</strong> ci-dessous pour decouvrir toutes ses fonctionnalites.</p>
 
                     <h5>Publier un article</h5>
                     <p>Par defaut, un article est en <strong>brouillon</strong> (non visible). Pour le publier :</p>
@@ -96,6 +89,61 @@
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
                         <strong>Astuce :</strong> Ajoutez toujours une image mise en avant et un texte d'accroche. Vos articles seront plus attractifs dans les listes et sur les reseaux sociaux.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 2b. Editeur de contenu ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-editor">
+                    <i class="fas fa-pen-fancy me-2 text-primary"></i> Editeur de contenu
+                </button>
+            </h2>
+            <div id="guide-editor" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Presentation</h5>
+                    <p>L'editeur visuel vous permet de rediger vos articles, pages et fiches sans toucher au code HTML. Il est utilise partout ou vous voyez une barre d'outils de mise en forme.</p>
+
+                    <h5>Mise en forme du texte</h5>
+                    <p>La barre d'outils propose les options suivantes :</p>
+                    <ul>
+                        <li><strong>Gras</strong>, <strong>Italique</strong>, <strong>Souligne</strong>, <strong>Barre</strong> &mdash; Formatage de base</li>
+                        <li><strong>Surlignage</strong> &mdash; Met en evidence un mot ou une phrase avec un fond colore</li>
+                        <li><strong>Titres H2, H3, H4</strong> &mdash; Structurez votre contenu avec des sous-titres. Utilisez H2 pour les sections principales, H3 pour les sous-sections</li>
+                        <li><strong>Alignement</strong> &mdash; Gauche, centre ou droite</li>
+                        <li><strong>Listes</strong> &mdash; A puces ou numerotees</li>
+                    </ul>
+
+                    <h5>Blocs speciaux</h5>
+                    <ul>
+                        <li><strong>Citation</strong> &mdash; Met en valeur une phrase importante dans un encadre</li>
+                        <li><strong>Code</strong> &mdash; Bloc de code avec coloration syntaxique</li>
+                        <li><strong>Separateur</strong> &mdash; Ligne horizontale entre deux sections</li>
+                        <li><strong>Encart (Callout)</strong> &mdash; Encadre colore pour attirer l'attention. 4 types : <em>Info</em> (bleu), <em>Succes</em> (vert), <em>Attention</em> (orange), <em>Danger</em> (rouge). Cliquez sur l'icone pour changer le type</li>
+                        <li><strong>Colonnes</strong> &mdash; Disposez votre contenu sur 2 colonnes cote a cote (sur mobile, les colonnes s'empilent automatiquement)</li>
+                    </ul>
+
+                    <h5>Medias</h5>
+                    <ul>
+                        <li><strong>Images</strong> &mdash; Inserez une image depuis votre bibliotheque de medias. Le bouton ouvre un panneau de selection</li>
+                        <li><strong>Videos YouTube</strong> &mdash; Collez l'URL d'une video pour l'integrer directement</li>
+                        <li><strong>Liens</strong> &mdash; Selectionnez du texte puis cliquez sur l'icone lien pour ajouter une URL</li>
+                    </ul>
+
+                    <h5>Commande rapide /</h5>
+                    <p>Tapez <strong>/</strong> dans l'editeur pour ouvrir un menu contextuel. Vous pouvez inserer rapidement un titre, une image, une citation, un encart ou des colonnes sans utiliser la barre d'outils.</p>
+
+                    <h5>Sauvegarde automatique</h5>
+                    <p>L'editeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur. Si vous quittez la page sans sauvegarder, votre travail sera propose a la restauration a votre prochaine visite.</p>
+
+                    <h5>Compteur de caracteres</h5>
+                    <p>En bas de l'editeur, un compteur affiche le nombre de <strong>caracteres</strong> et de <strong>mots</strong>. Utile pour vos descriptions SEO et pour calibrer la longueur de vos textes.</p>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Utilisez la commande <strong>/</strong> pour gagner du temps ! Tapez / puis les premieres lettres de ce que vous cherchez (ex : /image, /citation, /colonnes).
                     </div>
                 </div>
             </div>
@@ -242,7 +290,115 @@
             </div>
         </div>
 
-        {# ── 7. Personnalisation ── #}
+        {# ── 7. FAQ ── #}
+        {% if site is defined and site and 'faq' in site.enabledModules %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-faq">
+                    <i class="fas fa-circle-question me-2 text-primary"></i> FAQ (Foire aux questions)
+                </button>
+            </h2>
+            <div id="guide-faq" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>A quoi sert le module FAQ ?</h5>
+                    <p>Le module FAQ vous permet de creer une page de <strong>questions/reponses</strong> en accordeon sur votre site. C'est ideal pour rassurer vos visiteurs et ameliorer votre referencement (Google affiche parfois les FAQ directement dans les resultats).</p>
+
+                    <h5>Categories (optionnelles)</h5>
+                    <p>Vous pouvez organiser vos questions par categories. Dans <strong>Modules &rarr; FAQ &rarr; Categories</strong> :</p>
+                    <ul>
+                        <li>Creez des categories thematiques (ex : "Livraison", "Paiement", "Technique")</li>
+                        <li>Ordonnez-les avec le champ <em>Ordre</em> (0 = en premier)</li>
+                        <li>Activez ou desactivez-les a tout moment</li>
+                    </ul>
+                    <p>Si vous n'avez que quelques questions, <strong>pas besoin de categories</strong> : les questions s'afficheront dans un seul groupe.</p>
+
+                    <h5>Creer une question</h5>
+                    <p>Dans <strong>Modules &rarr; FAQ &rarr; Questions</strong>, cliquez sur <em>Creer</em> :</p>
+                    <ul>
+                        <li><strong>Question</strong> &mdash; Le texte affiche dans le titre de l'accordeon</li>
+                        <li><strong>Reponse</strong> &mdash; Utilisez l'editeur visuel pour mettre en forme votre reponse (texte riche, liens, listes...)</li>
+                        <li><strong>Categorie</strong> &mdash; Rattachez la question a une categorie (optionnel)</li>
+                        <li><strong>Icone</strong> &mdash; Ajoutez une icone Bootstrap Icons (optionnel)</li>
+                        <li><strong>Ordre</strong> &mdash; Position dans sa categorie (0 = en premier)</li>
+                        <li><strong>Active</strong> &mdash; Desactivez une question sans la supprimer</li>
+                    </ul>
+
+                    <h5>Affichage sur le site</h5>
+                    <p>La page <strong>/faq</strong> affiche toutes les questions actives en accordeon, groupees par categorie. Le schema <strong>FAQ structuree</strong> (schema.org) est genere automatiquement pour le SEO.</p>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Redigez vos questions du point de vue du client ("Comment puis-je..." plutot que "Nous proposons..."). Google valorise les FAQ qui repondent aux vraies questions des internautes.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── 8. Portfolio ── #}
+        {% if site is defined and site and 'portfolio' in site.enabledModules %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-portfolio">
+                    <i class="fas fa-images me-2 text-primary"></i> Portfolio (Realisations)
+                </button>
+            </h2>
+            <div id="guide-portfolio" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>A quoi sert le module Portfolio ?</h5>
+                    <p>Le module Portfolio vous permet de presenter vos <strong>realisations</strong>, projets clients ou travaux dans une grille visuelle avec pages de detail. Ideal pour montrer votre savoir-faire a vos prospects.</p>
+
+                    <h5>Categories</h5>
+                    <p>Dans <strong>Modules &rarr; Portfolio &rarr; Categories</strong>, organisez vos realisations par type de projet :</p>
+                    <ul>
+                        <li>Creez des categories (ex : "Sites web", "Applications", "Design graphique")</li>
+                        <li>Ajoutez une icone Bootstrap Icons pour un rendu visuel dans les filtres</li>
+                        <li>Ordonnez-les avec le champ <em>Ordre</em></li>
+                    </ul>
+                    <p>Vos visiteurs pourront <strong>filtrer par categorie</strong> sur la page /realisations.</p>
+
+                    <h5>Creer une realisation</h5>
+                    <p>Dans <strong>Modules &rarr; Portfolio &rarr; Realisations</strong>, cliquez sur <em>Creer</em> :</p>
+
+                    <p><strong>Contenu :</strong></p>
+                    <ul>
+                        <li><strong>Titre</strong> &mdash; Nom du projet, affiche dans la grille et en titre de page</li>
+                        <li><strong>Description courte</strong> &mdash; Resume de 2-3 lignes affiche dans la grille</li>
+                        <li><strong>Contenu detaille</strong> &mdash; Description complete du projet (editeur visuel)</li>
+                        <li><strong>Image principale</strong> &mdash; Image de couverture, format 4:3 recommande</li>
+                    </ul>
+
+                    <p><strong>Projet :</strong></p>
+                    <ul>
+                        <li><strong>Client</strong> &mdash; Nom du client ou de l'entreprise</li>
+                        <li><strong>Date de realisation</strong> &mdash; Date de livraison du projet</li>
+                        <li><strong>Lien du projet</strong> &mdash; URL complete vers le projet en ligne (ex : https://www.client.fr). Un bouton "Voir le projet" sera affiche sur la page de detail</li>
+                        <li><strong>Tags</strong> &mdash; Technologies ou competences utilisees. Les tags sont partages avec le blog et le catalogue</li>
+                    </ul>
+
+                    <p><strong>Parametres :</strong></p>
+                    <ul>
+                        <li><strong>Categorie</strong> &mdash; Permet aux visiteurs de filtrer par type</li>
+                        <li><strong>Mis en avant</strong> &mdash; Les realisations mises en avant peuvent etre affichees sur la page d'accueil</li>
+                        <li><strong>Active</strong> &mdash; Masquer sans supprimer</li>
+                    </ul>
+
+                    <h5>Affichage sur le site</h5>
+                    <ul>
+                        <li><strong>/realisations</strong> &mdash; Grille de toutes les realisations avec filtres par categorie</li>
+                        <li><strong>/realisation/mon-projet</strong> &mdash; Page de detail avec image, description, infos projet, tags et bouton lien</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Privilegiez des images de qualite et un format homogene (4:3). Remplissez les champs SEO pour chaque realisation importante — cela aide votre site a apparaitre quand un prospect cherche vos competences.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── 9. Personnalisation ── #}
         {% if is_granted('ROLE_FREELANCE') %}
         <div class="accordion-item">
             <h2 class="accordion-header">

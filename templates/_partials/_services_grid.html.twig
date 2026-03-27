@@ -12,7 +12,7 @@
                 </div>
                 {% elseif service.image %}
                 <div class="service-card__image">
-                    <img src="{{ asset('uploads/medias/' ~ service.image.fileName) }}" alt="{{ service.title }}" loading="lazy">
+                    <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}" alt="{{ service.title }}" loading="lazy">
                 </div>
                 {% endif %}
                 <h3 class="service-card__title">{{ service.title }}</h3>

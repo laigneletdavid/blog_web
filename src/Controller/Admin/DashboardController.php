@@ -6,9 +6,13 @@ use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\Comment;
 use App\Entity\Event;
+use App\Entity\Faq;
+use App\Entity\FaqCategory;
 use App\Entity\Media;
 use App\Entity\Page;
 use App\Entity\Order;
+use App\Entity\PortfolioCategory;
+use App\Entity\PortfolioItem;
 use App\Entity\Product;
 use App\Entity\ProductCategory;
 use App\Entity\Service;
@@ -73,7 +77,9 @@ class DashboardController extends AbstractDashboardController
     #[IsGranted('ROLE_AUTHOR')]
     public function guide(): Response
     {
-        return $this->render('admin/guide/index.html.twig');
+        return $this->render('admin/guide/index.html.twig', [
+            'site' => $this->siteContext->getCurrentSite(),
+        ]);
     }
 
     #[Route('/admin/menu-manager', name: 'admin_menu_manager')]
@@ -110,6 +116,8 @@ class DashboardController extends AbstractDashboardController
             'catalogue' => ['name' => 'Catalogue', 'route' => 'app_product_index'],
             'events' => ['name' => 'Événements', 'route' => 'app_event_index'],
             'directory' => ['name' => 'Annuaire', 'route' => 'app_directory'],
+            'faq' => ['name' => 'FAQ', 'route' => 'app_faq_index'],
+            'portfolio' => ['name' => 'Portfolio', 'route' => 'app_portfolio_index'],
         ];
         foreach ($moduleMap as $module => $info) {
             if (in_array($module, $enabledModules, true)) {
@@ -256,6 +264,8 @@ class DashboardController extends AbstractDashboardController
             || $this->siteContext->hasModule('events')
             || $this->siteContext->hasModule('catalogue')
             || $this->siteContext->hasModule('ecommerce')
+            || $this->siteContext->hasModule('faq')
+            || $this->siteContext->hasModule('portfolio')
         );
 
         if ($hasModules) {
@@ -275,6 +285,18 @@ class DashboardController extends AbstractDashboardController
             }
             if ($this->siteContext->hasModule('ecommerce')) {
                 yield MenuItem::linkToCrud('Commandes', 'fas fa-shopping-bag', Order::class);
+            }
+            if ($this->siteContext->hasModule('faq')) {
+                yield MenuItem::subMenu('FAQ', 'fas fa-circle-question')->setSubItems([
+                    MenuItem::linkToCrud('Questions', 'fas fa-question', Faq::class),
+                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', FaqCategory::class),
+                ]);
+            }
+            if ($this->siteContext->hasModule('portfolio')) {
+                yield MenuItem::subMenu('Portfolio', 'fas fa-images')->setSubItems([
+                    MenuItem::linkToCrud('Realisations', 'fas fa-briefcase', PortfolioItem::class),
+                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', PortfolioCategory::class),
+                ]);
             }
         }
 

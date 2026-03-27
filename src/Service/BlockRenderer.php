@@ -57,7 +57,7 @@ class BlockRenderer
         $content = isset($node['content']) ? $this->renderNodes($node['content']) : '';
 
         return match ($type) {
-            'paragraph' => "<p>{$content}</p>",
+            'paragraph' => $this->renderParagraph($attrs, $content),
             'heading' => $this->renderHeading($attrs, $content),
             'text' => $this->renderText($node),
             'bulletList' => "<ul>{$content}</ul>",
@@ -68,17 +68,30 @@ class BlockRenderer
             'horizontalRule' => '<hr class="block-separator">',
             'image' => $this->renderImage($attrs),
             'youtube' => $this->renderYoutube($attrs),
+            'callout' => $this->renderCallout($attrs, $content),
+            'columns' => "<div class=\"block-columns\">{$content}</div>",
+            'column' => "<div class=\"block-column\">{$content}</div>",
             'hardBreak' => '<br>',
             default => $content,
         };
+    }
+
+    private function renderParagraph(array $attrs, string $content): string
+    {
+        $align = $attrs['textAlign'] ?? null;
+        $style = ($align && $align !== 'left') ? " style=\"text-align: {$align}\"" : '';
+
+        return "<p{$style}>{$content}</p>";
     }
 
     private function renderHeading(array $attrs, string $content): string
     {
         $level = $attrs['level'] ?? 2;
         $level = max(2, min(6, $level)); // H2-H6 (H1 réservé au titre de page)
+        $align = $attrs['textAlign'] ?? null;
+        $style = ($align && $align !== 'left') ? " style=\"text-align: {$align}\"" : '';
 
-        return "<h{$level}>{$content}</h{$level}>";
+        return "<h{$level}{$style}>{$content}</h{$level}>";
     }
 
     private function renderText(array $node): string
@@ -93,6 +106,7 @@ class BlockRenderer
                 'underline' => "<u>{$text}</u>",
                 'strike' => "<s>{$text}</s>",
                 'code' => "<code>{$text}</code>",
+                'highlight' => "<mark class=\"block-highlight\">{$text}</mark>",
                 'link' => $this->renderLink($mark['attrs'] ?? [], $text),
                 default => $text,
             };
@@ -111,7 +125,12 @@ class BlockRenderer
 
     private function renderImage(array $attrs): string
     {
-        $src = htmlspecialchars($attrs['src'] ?? '', ENT_QUOTES, 'UTF-8');
+        $rawSrc = $attrs['src'] ?? '';
+        // Encoder les espaces et caracteres speciaux dans le chemin (le sanitizer rejette les URLs invalides)
+        $dir = dirname($rawSrc);
+        $file = basename($rawSrc);
+        $encodedSrc = $dir . '/' . rawurlencode($file);
+        $src = htmlspecialchars($encodedSrc, ENT_QUOTES, 'UTF-8');
         $alt = htmlspecialchars($attrs['alt'] ?? '', ENT_QUOTES, 'UTF-8');
         $title = htmlspecialchars($attrs['title'] ?? '', ENT_QUOTES, 'UTF-8');
 
@@ -168,6 +187,26 @@ class BlockRenderer
         $langClass = $language ? " class=\"language-{$language}\"" : '';
 
         return "<pre class=\"block-code\"><code{$langClass}>{$content}</code></pre>";
+    }
+
+    private function renderCallout(array $attrs, string $content): string
+    {
+        $type = $attrs['type'] ?? 'info';
+        $allowedTypes = ['info', 'warning', 'success', 'danger'];
+        if (!in_array($type, $allowedTypes, true)) {
+            $type = 'info';
+        }
+
+        $icons = [
+            'info' => '&#9432;',     // ⓘ
+            'warning' => '&#9888;',  // ⚠
+            'success' => '&#10004;', // ✔
+            'danger' => '&#10006;',  // ✖
+        ];
+
+        $icon = $icons[$type];
+
+        return "<div class=\"block-callout block-callout--{$type}\"><span class=\"block-callout__icon\">{$icon}</span><div class=\"block-callout__content\">{$content}</div></div>";
     }
 
     private function toYoutubeEmbed(string $url): string

@@ -123,6 +123,8 @@ docker compose exec php php bin/console app:module:enable catalogue
 docker compose exec php php bin/console app:module:enable ecommerce    # cree aussi les CGV
 docker compose exec php php bin/console app:module:enable events
 docker compose exec php php bin/console app:module:enable directory
+docker compose exec php php bin/console app:module:enable faq
+docker compose exec php php bin/console app:module:enable portfolio
 ```
 
 Chaque module active ses routes, cree ses pages legales associees et met a jour les menus.
@@ -200,7 +202,7 @@ docker compose exec php php bin/console app:menu:sync
 | Commande | Role | Description |
 |----------|------|-------------|
 | `app:client:setup` | Setup initial | Cree site + admin + pages legales + menus (idempotent) |
-| `app:module:enable <module>` | Modules | Active un module (blog, services, catalogue, ecommerce, events, directory) |
+| `app:module:enable <module>` | Modules | Active un module (blog, services, catalogue, ecommerce, events, directory, faq, portfolio) |
 | `app:module:disable <module>` | Modules | Desactive un module |
 | `app:recaptcha:setup` | Securite | Configure les cles reCAPTCHA v3 dans .env.local |
 | `app:menu:sync` | Navigation | Resynchronise les menus systeme depuis le theme |
@@ -318,7 +320,7 @@ docker compose exec php php bin/console app:menu:sync
 Le repo contient des fichiers de documentation technique (specs, audit, roadmap) dans `.claude/docs/`. Ces fichiers sont **utiles pour le developpement** mais ne doivent **jamais** se retrouver chez un client.
 
 **Nettoyage automatique :** `app:client:setup` (etape 5) supprime automatiquement :
-- `CLAUDE.md`, `CLAUDE2.md`, `CLAUDE_FULL.md` (specs techniques)
+- `CLAUDE.md`, `CLAUDE2.md`, `CLAUDE3.md`, `CLAUDE_FULL.md` (specs techniques)
 - `PLAN.md`, `DESIGN_THEME.md` (plans de dev)
 - `audit_cms_claude_code.md` (audit securite)
 - `.claude/docs/` (documentation detaillee)
