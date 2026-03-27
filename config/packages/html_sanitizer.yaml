@@ -5,3 +5,9 @@ framework:
                 allow_safe_elements: true
                 allow_relative_links: true
                 allow_relative_medias: true
+                allow_elements:
+                    div: ['class', 'data-callout', 'data-columns', 'data-column']
+                    mark: ['class']
+                    span: ['class']
+                allow_attributes:
+                    style: ['p', 'h2', 'h3', 'h4', 'h5', 'h6']

@@ -43,7 +43,7 @@ class FaqCrudController extends AbstractCrudController
 
         yield TextareaField::new('blocksJson', 'Réponse')
             ->setFormTypeOptions(['attr' => ['data-tiptap-editor' => '', 'style' => 'display: none']])
-            ->setHelp('Reponse detaillee a la question. Utilisez l\'editeur visuel pour ajouter des liens, listes ou mise en forme.')
+            ->setHelp('Reponse detaillee a la question (editeur visuel). Tapez <strong>/</strong> pour inserer un bloc (image, liste, encart...).')
             ->hideOnIndex();
 
         yield TextField::new('icon', 'Icône')

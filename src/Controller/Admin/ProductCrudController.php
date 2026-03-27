@@ -104,7 +104,7 @@ class ProductCrudController extends AbstractCrudController
                     'style' => 'display: none',
                 ],
             ])
-            ->setHelp('Description longue avec mise en forme, images, videos. Utilisez l\'editeur visuel.')
+            ->setHelp('Description longue avec mise en forme, images, videos, encarts. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
             ->hideOnIndex();
 
         yield AssociationField::new('image', 'Image principale')

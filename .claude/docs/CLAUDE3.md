@@ -270,16 +270,66 @@ VITRINE, SERVICES, BLOG, CATALOGUE, ECOMMERCE, EVENTS, PRIVATE_PAGES, DIRECTORY,
 
 ---
 
-## Ordre d'implementation recommande
+## Phase 10.3 — Ameliorations editeur TipTap ✓ TERMINE
 
-1. **FAQ d'abord** — plus simple, moins de fichiers, pas de SeoTrait, pas de galerie
-2. **Portfolio ensuite** — plus complexe, galerie, SeoTrait, filtres categories, homepage integration
+> Implemente le 2026-03-27
+
+### Extensions ajoutees
+
+| Extension | Package npm | Usage |
+|-----------|-------------|-------|
+| Underline | `@tiptap/extension-underline` | Soulignement texte |
+| Highlight | `@tiptap/extension-highlight` | Surlignage colore |
+| TextAlign | `@tiptap/extension-text-align` | Alignement gauche/centre/droite |
+| CharacterCount | `@tiptap/extension-character-count` | Compteur caracteres/mots en bas |
+| Suggestion | `@tiptap/suggestion` | Installe (slash commands custom) |
+
+### Custom nodes crees
+
+| Fichier | Role |
+|---------|------|
+| `assets/admin/extensions/callout.js` | Node Callout avec 4 types : info (bleu), success (vert), warning (orange), danger (rouge) |
+| `assets/admin/extensions/columns.js` | Nodes Columns + Column pour layout 2 colonnes |
+
+### Fonctionnalites implementees dans tiptap-editor.js
+
+| Fonctionnalite | Description |
+|----------------|-------------|
+| **Toolbar enrichie** | B, I, U, S, Highlight, H2, H3, H4, Align L/C/R, Listes, Citation, Code, Callout, Colonnes, Lien, Image, Video, Separateur, Undo/Redo |
+| **Slash commands `/`** | Menu popup contextuel avec 15 options (titres, image, video, citation, listes, 4 types d'encarts, colonnes, code, separateur). Filtrage par texte, navigation clavier (fleches + Enter), fermeture Echap |
+| **Character count** | Barre de statut en bas avec compteur `X caracteres · Y mots` |
+| **Callout menu** | Menu popup pour choisir le type d'encart (info, succes, attention, danger) |
+
+### Fichiers modifies
+
+| Fichier | Modification |
+|---------|-------------|
+| `assets/admin/tiptap-editor.js` | Import extensions, toolbar enrichie, slash commands, callout menu, char count |
+| `assets/admin/tiptap-editor.scss` | CSS slash menu, callout menu, status bar, char count |
+| `assets/css/base/blocks.scss` | CSS front : `.block-callout` (4 variantes), `.block-columns`, `.block-highlight`, alignement |
+| `src/Service/BlockRenderer.php` | Rendu HTML callout, columns, column, highlight, textAlign |
+| `config/packages/html_sanitizer.yaml` | Autorisation `<div>` avec classes `block-callout*`, `block-column*`, `<mark>`, `style: text-align` |
+
+### Helps CRUD editeur
+
+Ajout d'un help mentionnant la commande `/` sur les 7 CRUDs utilisant l'editeur :
+- ArticleCrudController, PageCrudController, ProductCrudController
+- FaqCrudController, PortfolioItemCrudController, ServiceCrudController, EventCrudController
+
+### Guide admin
+
+Section **"Editeur de contenu"** ajoutee dans `templates/admin/guide/index.html.twig` :
+- Mise en forme, blocs speciaux, medias, commande `/`, sauvegarde auto, compteur caracteres
+- Sans mention du nom "TipTap" (transparent pour l'utilisateur)
 
 ---
 
 ## Decisions de design
 
-- **FAQ** : pas de page detail individuelle `/faq/{slug}` — tout est sur `/faq` en accordeon. Le slug sert d'ancre (`#slug`) pour les liens directs. Plus simple, meilleur UX, meilleur SEO (tout le JSON-LD sur une seule page).
-- **Portfolio gallery** : champ JSON (tableau d'IDs Media) plutot qu'une table de jointure — plus simple, suffisant pour 5-15 images par projet. Les images sont chargees via le MediaRepository.
+- **FAQ** : pas de page detail individuelle `/faq/{slug}` — tout est sur `/faq` en accordeon. Le slug sert d'ancre (`#slug`) pour les liens directs.
+- **Portfolio tags** : relies a la table `Tag` existante (ManyToMany) — partages avec blog et catalogue.
 - **Portfolio vs Catalogue** : modules separes, pas de reutilisation. Un client peut avoir les deux sans conflit.
 - **Nommage routes** : `/realisations` et `/realisation/{slug}` (francais, coherent avec `/evenements`, `/services`).
+- **Colonnes mobile** : stack vertical automatique (`1fr`) sous 768px.
+- **Slash commands** : implementation custom (pas `@tiptap/suggestion`) pour plus de simplicite et de controle.
+- **Chemin medias** : `documents/medias/` (corrige partout depuis `uploads/medias/`).

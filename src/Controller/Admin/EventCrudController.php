@@ -87,7 +87,7 @@ class EventCrudController extends AbstractCrudController
 
         yield TextareaField::new('blocksJson', 'Contenu détaillé')
             ->setFormTypeOptions(['attr' => ['data-tiptap-editor' => '', 'style' => 'display: none']])
-            ->setHelp('Description complète de l\'événement (éditeur visuel).')
+            ->setHelp('Description complete de l\'evenement (editeur visuel). Tapez <strong>/</strong> pour inserer un bloc (image, encart, colonnes...).')
             ->hideOnIndex();
 
         yield AssociationField::new('image', 'Image')

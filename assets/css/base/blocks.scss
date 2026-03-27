@@ -2,7 +2,8 @@
  * Blocks — Styles front pour le contenu rendu par TipTap/BlockRenderer.
  *
  * Classes generees par BlockRenderer.php :
- * .block-image, .block-video, .block-quote, .block-code, .block-separator
+ * .block-image, .block-video, .block-quote, .block-code, .block-separator,
+ * .block-callout, .block-columns, .block-column, .block-highlight
  */
 
 // ─── Images (figure > img + figcaption) ──────────────────────────────────────
@@ -94,6 +95,86 @@
     width: 60%;
 }
 
+// ─── Surlignage (mark) ──────────────────────────────────────────────────────
+
+.block-highlight {
+    background: color-mix(in srgb, var(--secondary) 30%, transparent);
+    padding: 0.1em 0.2em;
+    border-radius: 2px;
+}
+
+// ─── Callout / Encarts ──────────────────────────────────────────────────────
+
+.block-callout {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: var(--radius-md, 0.5rem);
+    border-left: 4px solid;
+
+    &__icon {
+        flex-shrink: 0;
+        font-size: 1.25rem;
+        line-height: 1.5;
+    }
+
+    &__content {
+        flex: 1;
+        min-width: 0;
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &--info {
+        background: color-mix(in srgb, #3b82f6 10%, var(--bg));
+        border-left-color: #3b82f6;
+
+        .block-callout__icon { color: #3b82f6; }
+    }
+
+    &--warning {
+        background: color-mix(in srgb, #f59e0b 10%, var(--bg));
+        border-left-color: #f59e0b;
+
+        .block-callout__icon { color: #f59e0b; }
+    }
+
+    &--success {
+        background: color-mix(in srgb, #22c55e 10%, var(--bg));
+        border-left-color: #22c55e;
+
+        .block-callout__icon { color: #22c55e; }
+    }
+
+    &--danger {
+        background: color-mix(in srgb, #ef4444 10%, var(--bg));
+        border-left-color: #ef4444;
+
+        .block-callout__icon { color: #ef4444; }
+    }
+}
+
+// ─── Colonnes (2 colonnes, responsive) ──────────────────────────────────────
+
+.block-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin: 1.5rem 0;
+
+    @media (max-width: 767.98px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.block-column {
+    min-width: 0; // prevent overflow
+}
+
 // ─── Contenu article — styles generiques ─────────────────────────────────────
 
 .content,
@@ -113,6 +194,15 @@
         font-size: 1.25rem;
         font-weight: 600;
         margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+    }
+
+    h4 {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-top: 1.25rem;
         margin-bottom: 0.5rem;
         color: var(--text);
     }
