@@ -47,9 +47,6 @@ class Page implements TimestampedInterface
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $blocks = null;
 
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $draftBlocks = null;
-
     #[ORM\Column(length: 30, options: ['default' => 'default'])]
     private string $template = 'default';
 
@@ -199,17 +196,6 @@ class Page implements TimestampedInterface
         return $this;
     }
 
-    public function getDraftBlocks(): ?array
-    {
-        return $this->draftBlocks;
-    }
-
-    public function setDraftBlocks(?array $draftBlocks): self
-    {
-        $this->draftBlocks = $draftBlocks;
-
-        return $this;
-    }
 
     /**
      * Propriete virtuelle pour le formulaire EasyAdmin.

@@ -47,6 +47,7 @@ class ServiceCrudController extends AbstractCrudController
 
         yield TextareaField::new('blocksJson', 'Contenu détaillé')
             ->setFormTypeOptions(['attr' => ['data-tiptap-editor' => '', 'style' => 'display: none']])
+            ->setColumns('col-12')
             ->setHelp('Page de detail du service (editeur visuel, optionnel). Tapez <strong>/</strong> pour inserer un bloc. Si vide, pas de page detail.')
             ->hideOnIndex();
 

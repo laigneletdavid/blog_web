@@ -494,3 +494,40 @@
     text-decoration: none;
 }
 .theme-starter .start-footer-link:hover { color: var(--text); }
+
+/* --- TABLES --- */
+.theme-starter .tiptap-table {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+.theme-starter .tiptap-table th {
+    background: transparent;
+    border-bottom: 2px solid var(--text);
+    text-transform: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    letter-spacing: 0;
+    padding: 0.6rem 0.75rem;
+}
+.theme-starter .tiptap-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+.theme-starter .tiptap-table tr:nth-child(even) td {
+    background: transparent;
+}
+.theme-starter .tiptap-table td a {
+    background: transparent;
+    color: var(--primary);
+    text-decoration: underline;
+    padding: 0;
+    font-weight: 500;
+    border-radius: 0;
+}
+.theme-starter .tiptap-table td a:hover {
+    color: var(--text);
+    background: transparent;
+    transform: none;
+}

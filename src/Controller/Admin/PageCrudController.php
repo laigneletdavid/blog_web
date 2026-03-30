@@ -8,7 +8,9 @@ use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -75,7 +77,14 @@ class PageCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        $viewOnSite = Action::new('viewOnSite', 'Voir sur le site', 'fa fa-external-link-alt')
+            ->linkToUrl(fn (Page $page) => $this->generateUrl('app_page_show', ['slug' => $page->getSlug()]))
+            ->setHtmlAttributes(['target' => '_blank'])
+            ->displayIf(fn (Page $page) => $page->isPublished());
+
         return $actions
+            ->add(Crud::PAGE_INDEX, $viewOnSite)
+            ->add(Crud::PAGE_EDIT, $viewOnSite)
             ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
                 return $action->displayIf(fn (Page $page) => !$page->isSystem());
             })
@@ -100,6 +109,7 @@ class PageCrudController extends AbstractCrudController
                     'style' => 'display: none',
                 ],
             ])
+            ->setColumns('col-12')
             ->setHelp('Editeur visuel : mise en forme, images, videos, encarts, colonnes. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
             ->hideOnIndex();
 

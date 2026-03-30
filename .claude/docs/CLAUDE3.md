@@ -401,3 +401,173 @@ Objectif : **un seul template de home** partage par tous les themes. Le contenu 
 - Les sections hardcodees (features, metrics, trust badges, CTA) sont destinees a etre personnalisees sur chaque branche client
 - Les sections dynamiques (services, produits, FAQ, portfolio, articles) s'affichent automatiquement si le module est actif et contient des donnees
 - Le hero utilise les champs `Site` (name, title, defaultSeoDescription, heroImage) — editables dans l'admin
+
+---
+
+## Phase 12 — Ameliorations UX Editeur + Tables TipTap
+
+> Implemente le 2026-03-30
+
+### 12.1 — Extension Tables TipTap ✓ TERMINE
+
+| Package npm | Role |
+|-------------|------|
+| `@tiptap/extension-table` | Gestion des tableaux |
+| `@tiptap/extension-table-row` | Lignes |
+| `@tiptap/extension-table-cell` | Cellules |
+| `@tiptap/extension-table-header` | En-tetes |
+
+**Fonctionnalites :**
+- Bouton toolbar `Inserer un tableau` (3x3 avec en-tete par defaut)
+- Slash command `/tableau`
+- **Barre contextuelle** sous la toolbar quand le curseur est dans un tableau : Col. avant/apres, Ligne avant/apres, En-tete, Fusionner, Scinder, Suppr. col./ligne/tableau
+- Redimensionnement des colonnes (drag)
+- Selection multi-cellules visuelle
+
+**Fichiers modifies :**
+
+| Fichier | Modification |
+|---------|-------------|
+| `assets/admin/tiptap-editor.js` | Import 4 extensions table, bouton toolbar, barre contextuelle, slash command, commandes table dans execCommand |
+| `assets/admin/tiptap-editor.scss` | CSS `.tableWrapper`, `table th/td`, `.selectedCell`, `.column-resize-handle`, `.tiptap-table-contextbar` |
+| `src/Service/BlockRenderer.php` | Rendu HTML nodes `table`, `tableRow`, `tableHeader`, `tableCell` avec `colspan`/`rowspan` |
+| `config/packages/html_sanitizer.yaml` | Autorisation `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>` avec `colspan`/`rowspan` |
+
+### 12.2 — Suppression systeme draftBlocks ✓ TERMINE
+
+Le champ `draftBlocks` (JSON, nullable) existait sur Article et Page mais n'etait **jamais utilise** — ni lu, ni ecrit. Le brouillon localStorage ("Brouillon trouve") a ete supprime aussi (source de confusion).
+
+**Fichiers modifies :**
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Entity/Article.php` | Suppression propriete `$draftBlocks` + getter/setter |
+| `src/Entity/Page.php` | Suppression propriete `$draftBlocks` + getter/setter |
+| `migrations/Version20260330175902.php` | `ALTER TABLE article DROP draft_blocks` + `ALTER TABLE page DROP draft_blocks` |
+| `assets/admin/tiptap-editor.js` | Suppression systeme localStorage (setupAutosave, saveDraft, checkDraft, clearDraft, bandeau "Brouillon trouve") |
+| `assets/admin/tiptap-editor.scss` | Suppression CSS `.tiptap-draft-banner` |
+
+### 12.3 — Ctrl+S Save + Dirty State ✓ TERMINE
+
+Remplace le systeme de draft par un save direct :
+
+- **Ctrl+S / Cmd+S** declenche le submit normal du formulaire EasyAdmin
+- **Indicateur** "Modifications non enregistrees" dans la barre de statut apres chaque edition
+- **Alerte beforeunload** si des modifications ne sont pas sauvegardees
+
+### 12.4 — Bouton "Voir sur le site" ✓ TERMINE
+
+Action EasyAdmin ajoutee sur les CRUDs Page et Article :
+- Visible sur les pages **INDEX** et **EDIT**
+- Ouvre la page front dans un **nouvel onglet**
+- Affiche uniquement si l'entite est **publiee**
+
+**Fichiers modifies :**
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Controller/Admin/PageCrudController.php` | Action `viewOnSite` avec `linkToUrl` + `target _blank` |
+| `src/Controller/Admin/ArticleCrudController.php` | Idem + ajout `configureActions` |
+
+### 12.5 — Picker de liens internes ✓ TERMINE
+
+Remplacement du `prompt()` basique par une modale complete de selection de liens :
+
+**Endpoint API :** `GET /admin/api/links?q=recherche`
+
+Retourne les liens internes groupes par type :
+- Pages publiees
+- Articles publies
+- Categories
+- Services (si module actif)
+
+**Modale TipTap :**
+- Champ de recherche avec filtrage temps reel (debounce 200ms)
+- Liste groupee par type (Pages, Articles, Categories, Services)
+- Selection par clic, insertion par double-clic
+- Support URL externe (detection auto `http`, `/`, `mailto:`)
+- Checkbox "Nouvel onglet"
+- Fermeture Echap / clic backdrop
+
+**Fichiers crees :**
+
+| Fichier | Role |
+|---------|------|
+| `src/Controller/Admin/Api/LinkApiController.php` | Endpoint API liens internes |
+
+**Fichiers modifies :**
+
+| Fichier | Modification |
+|---------|-------------|
+| `assets/admin/tiptap-editor.js` | Nouvelle methode `openLinkModal` + `loadInternalLinks` + `closeLinkModal` |
+| `assets/admin/tiptap-editor.scss` | CSS `.tiptap-link-item` |
+
+### 12.6 — Editeur pleine largeur ✓ TERMINE
+
+Ajout `->setColumns('col-12')` sur le champ `blocksJson` de tous les CRUDs utilisant TipTap :
+- ArticleCrudController, PageCrudController, ProductCrudController
+- FaqCrudController, PortfolioItemCrudController, ServiceCrudController, EventCrudController
+
+### 12.7 — Preview responsive dans l'editeur ✓ TERMINE
+
+3 boutons en fin de toolbar : Bureau / Tablette / Mobile
+
+| Mode | Largeur max | Details |
+|------|-------------|---------|
+| Desktop | 100% | Par defaut |
+| Tablette | 768px | Bordures pointillees, centre |
+| Mobile | 375px | Bordures pointillees, centre, font reduit |
+
+**CSS :** `.tiptap-preview-tablet`, `.tiptap-preview-mobile`
+
+### 12.8 — Fix slash command `/` ✓ TERMINE
+
+La detection du `/` etait dans un second listener `editor.on('update')` enregistre dans `setupSlashCommands`, en plus du `onUpdate` du constructeur Editor. Consolidation dans une methode `handleSlashDetection()` appelee depuis le callback principal `onUpdate`.
+
+---
+
+### 12.9 — CSS Tableaux front (par theme) ✓ TERMINE
+
+Styles CSS pour les tableaux TipTap rendus cote front. Deux couches :
+
+**Base** (`assets/css/base/blocks.scss`) — `.tiptap-table` :
+- `border-collapse: separate`, bordures `var(--border)`, `border-radius: var(--radius-md)`
+- En-tetes : fond `var(--surface)`, uppercase, `var(--text-muted)`
+- Zebra striping lignes paires (`color-mix` surface)
+- **Liens → boutons** : `display: inline-block`, fond `var(--primary)`, texte blanc, hover `var(--secondary)` + lift `translateY(-1px)`
+- Responsive : scroll horizontal sous 768px
+
+**Overrides par theme** (chaque `templates/themes/*/theme.css`) :
+
+| Theme | Personnalisation |
+|-------|-----------------|
+| `default` | Squelette commente (base client) |
+| `corporate` | En-tetes serif (font-family-secondary), border-bottom 2px primary, boutons uppercase 0.25rem radius |
+| `artisan` | Radius genereux 0.75rem, en-tetes teintes secondary, boutons pill (2rem radius), hover primary |
+| `vitrine` | Boutons outline (transparent + border primary), en-tetes uppercase primary, hover rempli |
+| `starter` | Minimaliste : pas de bordure table, pas de zebra, liens = texte souligne (pas de boutons) |
+| `moderne` | Fond surface dark, en-tetes teintes primary, boutons gradient (primary→accent) avec glow shadow |
+
+**Fichiers modifies :**
+
+| Fichier | Modification |
+|---------|-------------|
+| `assets/css/base/blocks.scss` | Section `.tiptap-table` complete (base, en-tetes, zebra, liens-boutons, responsive) |
+| `templates/themes/default/theme.css` | Commentaires squelette tables |
+| `templates/themes/corporate/theme.css` | Override tables corporate |
+| `templates/themes/artisan/theme.css` | Override tables artisan |
+| `templates/themes/vitrine/theme.css` | Override tables vitrine |
+| `templates/themes/starter/theme.css` | Override tables starter |
+| `templates/themes/moderne/theme.css` | Override tables moderne |
+
+---
+
+## Recap packages npm ajoutes (Phase 12)
+
+```
+@tiptap/extension-table@^2.27.2
+@tiptap/extension-table-row@^2.27.2
+@tiptap/extension-table-cell@^2.27.2
+@tiptap/extension-table-header@^2.27.2
+@popperjs/core (dependance Bootstrap)
+```

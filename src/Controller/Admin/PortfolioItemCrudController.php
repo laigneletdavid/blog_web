@@ -60,6 +60,7 @@ class PortfolioItemCrudController extends AbstractCrudController
 
         yield TextareaField::new('blocksJson', 'Contenu détaillé')
             ->setFormTypeOptions(['attr' => ['data-tiptap-editor' => '', 'style' => 'display: none']])
+            ->setColumns('col-12')
             ->setHelp('Description complete de la realisation (editeur visuel). Tapez <strong>/</strong> pour inserer un bloc (image, colonnes, encart...).')
             ->hideOnIndex();
 
