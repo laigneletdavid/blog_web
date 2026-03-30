@@ -1,7 +1,64 @@
 /* ====== Corporate Theme ====== */
 /* PME / Services B2B — Professionnel, sobre, confiance */
 
-/* --- HERO --- */
+/* ====== UNIFIED HOME OVERRIDES (home-* classes) ====== */
+
+/* Hero: background-image mode with overlay */
+.theme-corporate .home-hero {
+    background: var(--gradient-hero);
+    background-image: var(--hero-bg-image);
+    background-size: cover;
+    background-position: center;
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+.theme-corporate .home-hero::before,
+.theme-corporate .home-hero::after { display: none; }
+.theme-corporate .home-hero__overlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 0;
+}
+.theme-corporate .home-hero__content { z-index: 1; }
+.theme-corporate .home-hero__visual { display: none !important; }
+.theme-corporate .home-hero__badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+.theme-corporate .home-hero__row { min-height: 75vh; }
+
+/* Services */
+.theme-corporate .home-services__header { margin-bottom: 2rem; }
+
+/* About */
+.theme-corporate .home-about__img {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Testimonials */
+.theme-corporate .home-testimonial {
+    box-shadow: var(--shadow-sm);
+}
+
+/* Stats removed — not in generic template */
+
+/* CTA */
+.theme-corporate .home-cta {
+    background: var(--primary);
+}
+.theme-corporate .home-cta .btn-light:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/* ====== END UNIFIED HOME ====== */
+
+/* --- HERO (legacy) --- */
 .theme-corporate .corp-hero {
     position: relative;
     background: var(--primary);

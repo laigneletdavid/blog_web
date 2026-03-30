@@ -3,6 +3,108 @@
 
 /* --- GLOBAL --- */
 .theme-moderne { background: var(--bg); color: var(--text); }
+
+/* ====== UNIFIED HOME OVERRIDES (home-* classes) ====== */
+
+/* Hero dark mode */
+.theme-moderne .home-hero {
+    background: var(--bg);
+    padding: 6rem 0 4rem;
+    color: var(--text);
+}
+.theme-moderne .home-hero::before,
+.theme-moderne .home-hero::after { display: none; }
+.theme-moderne .home-hero__badge {
+    background: rgba(124, 58, 237, 0.15);
+    color: var(--primary);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+}
+.theme-moderne .home-hero__title { color: var(--text); }
+.theme-moderne .home-hero__desc { color: var(--text-muted); }
+.theme-moderne .home-hero__actions .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    color: #fff;
+}
+.theme-moderne .home-hero__actions .btn-outline-primary {
+    border-color: var(--border);
+    color: var(--text);
+}
+.theme-moderne .home-hero__actions .btn-outline-primary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+.theme-moderne .home-hero__img {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Section title dark */
+.theme-moderne .home-section-title { color: var(--text); }
+
+/* Services dark */
+.theme-moderne .home-services { background: transparent; }
+
+/* About dark */
+.theme-moderne .home-about__img {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.theme-moderne .home-about__overtitle { color: var(--primary); }
+.theme-moderne .home-about__title { color: var(--text); }
+.theme-moderne .home-about__text { color: var(--text-muted); }
+.theme-moderne .home-about .btn-outline-primary {
+    border-color: var(--border);
+    color: var(--text);
+}
+
+/* Gallery dark */
+.theme-moderne .home-gallery { background: transparent; }
+.theme-moderne .home-gallery__item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Testimonials dark */
+.theme-moderne .home-testimonial {
+    background: var(--surface);
+    border-color: var(--border);
+}
+.theme-moderne .home-testimonial__text { color: var(--text-muted); }
+.theme-moderne .home-testimonial__author strong { color: var(--text); }
+.theme-moderne .home-testimonial__author { border-top-color: var(--border); }
+
+/* FAQ dark surface */
+.theme-moderne .home-faq { background: var(--surface) !important; }
+
+/* Articles dark */
+.theme-moderne .home-articles .blog-card {
+    background: var(--surface);
+    border-color: var(--border);
+}
+.theme-moderne .home-articles .blog-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+}
+
+/* Logos dark */
+.theme-moderne .home-logos { background: var(--surface); }
+
+/* CTA dark */
+.theme-moderne .home-cta {
+    background: transparent;
+    border-top: 1px solid var(--border);
+}
+.theme-moderne .home-cta__title { color: var(--text); }
+.theme-moderne .home-cta__desc { color: var(--text-muted); opacity: 1; }
+.theme-moderne .home-cta .btn-light {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    border: none;
+}
+.theme-moderne .home-cta .btn-light:hover { opacity: 0.9; }
+
+/* ====== END UNIFIED HOME ====== */
 .theme-moderne a { color: var(--text); }
 .theme-moderne .mod-btn-gradient {
     background: linear-gradient(135deg, var(--primary), var(--accent));

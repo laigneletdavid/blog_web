@@ -1,6 +1,76 @@
 /* ====== Artisan Theme ====== */
 /* Commerces locaux, restaurants, artisans — Chaleureux, authentique */
 
+/* ====== UNIFIED HOME OVERRIDES (home-* classes) ====== */
+
+/* Hero: background-image mode, centered text */
+.theme-artisan .home-hero {
+    background: var(--gradient-hero);
+    background-image: var(--hero-bg-image);
+    background-size: cover;
+    background-position: center;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+}
+.theme-artisan .home-hero::before,
+.theme-artisan .home-hero::after { display: none; }
+.theme-artisan .home-hero__overlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 0;
+}
+.theme-artisan .home-hero__content {
+    z-index: 1;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+}
+.theme-artisan .home-hero__visual { display: none !important; }
+.theme-artisan .home-hero__desc { margin-left: auto; margin-right: auto; }
+.theme-artisan .home-hero__actions { justify-content: center; }
+
+/* About: warm styling */
+.theme-artisan .home-about__overtitle {
+    font-family: var(--font-family-secondary, inherit);
+    font-style: italic;
+}
+
+/* Gallery: masonry-style, first 2 items larger */
+.theme-artisan .home-gallery__grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+.theme-artisan .home-gallery__item:first-child,
+.theme-artisan .home-gallery__item:nth-child(2) {
+    grid-column: span 1;
+}
+.theme-artisan .home-gallery__item img {
+    height: 280px;
+}
+
+/* Testimonials: centered, simple */
+.theme-artisan .home-testimonial {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+.theme-artisan .home-testimonial__quote { font-size: 2.5rem; }
+.theme-artisan .home-testimonial__author {
+    justify-content: center;
+    border-top: none;
+}
+
+/* CTA: show address if available */
+.theme-artisan .home-cta {
+    background: var(--primary);
+}
+
+/* ====== END UNIFIED HOME ====== */
+
 /* --- HEADER --- */
 .theme-artisan .header--artisan { border-bottom: 2px solid var(--border); }
 .theme-artisan .art-nav {

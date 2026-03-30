@@ -1,0 +1,22 @@
+{# Grille de temoignages depuis site gallery slot 'testimonial' #}
+{# Variables attendues : testimonials (Collection de SiteGalleryItem) #}
+{% if testimonials|default([])|length > 0 %}
+<div class="row g-4 justify-content-center mt-3">
+    {% for item in testimonials|slice(0, 3) %}
+    <div class="col-md-4">
+        <div class="home-testimonial">
+            <div class="home-testimonial__quote">&ldquo;</div>
+            <p class="home-testimonial__text">{{ item.content }}</p>
+            <div class="home-testimonial__author">
+                {% if item.media %}
+                <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}"
+                     alt="{{ item.title|default('') }}"
+                     class="home-testimonial__avatar" loading="lazy"/>
+                {% endif %}
+                <strong>{{ item.title|default('Client') }}</strong>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

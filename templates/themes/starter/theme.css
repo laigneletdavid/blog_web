@@ -1,6 +1,61 @@
 /* ====== Starter Theme ====== */
 /* Minimaliste, noir/blanc, blog personnel — Pas de fioritures */
 
+/* ====== UNIFIED HOME OVERRIDES (home-* classes) ====== */
+
+/* Hero: minimal, centered text, no image, no decorative blurs */
+.theme-starter .home-hero {
+    background: var(--surface);
+    color: var(--text);
+    text-align: center;
+    padding: 6rem 0 4rem;
+}
+.theme-starter .home-hero::before,
+.theme-starter .home-hero::after { display: none; }
+.theme-starter .home-hero__content {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+}
+.theme-starter .home-hero__visual { display: none !important; }
+.theme-starter .home-hero__badge {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.theme-starter .home-hero__title { color: var(--text); }
+.theme-starter .home-hero__desc {
+    color: var(--text-muted);
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 1;
+}
+.theme-starter .home-hero__actions {
+    justify-content: center;
+}
+.theme-starter .home-hero__actions .btn-outline-primary {
+    border-color: var(--border);
+    color: var(--text);
+}
+
+/* Services: minimal */
+.theme-starter .home-services { background: var(--bg); }
+
+/* Section titles: clean */
+.theme-starter .home-section-title {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* CTA: subtle */
+.theme-starter .home-cta {
+    background: var(--text);
+    color: var(--bg);
+}
+.theme-starter .home-cta__title { color: inherit; }
+.theme-starter .home-cta__desc { color: inherit; opacity: 0.7; }
+
+/* ====== END UNIFIED HOME ====== */
+
 /* --- HEADER --- */
 .theme-starter .header--starter { border-bottom: 1px solid var(--border); }
 .theme-starter .start-logo { text-decoration: none; color: var(--text); }

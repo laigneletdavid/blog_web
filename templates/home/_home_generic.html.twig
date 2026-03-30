@@ -1,0 +1,253 @@
+{# ====== HOME GENERIQUE — S'adapte a tous les themes via CSS ====== #}
+{# Toutes les sections utilisent des classes unifiees "home-*" #}
+{# Chaque theme stylise via .theme-{name} .home-* dans son theme.css #}
+{# Contenu standard : a personnaliser sur chaque branche client #}
+
+{# ====== HERO ====== #}
+<section class="home-hero"
+    {% if site.heroImage %}
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ site.heroImage.fileName) }}')"
+    {% endif %}>
+    <div class="home-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center home-hero__row">
+            <div class="col-lg-7 home-hero__content">
+                {% if site.title %}
+                <span class="home-hero__badge">{{ site.title }}</span>
+                {% endif %}
+                <h1 class="home-hero__title">{{ site.name|default('Bienvenue') }}</h1>
+                {% if site.defaultSeoDescription %}
+                <p class="home-hero__desc">{{ site.defaultSeoDescription }}</p>
+                {% endif %}
+                <div class="home-hero__actions">
+                    <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Demarrer votre projet</a>
+                    <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-lg">Decouvrir le blog</a>
+                </div>
+                <div class="home-hero__badges">
+                    <span class="home-hero__trust-badge">&#9989; Installation en 30 min</span>
+                    <span class="home-hero__trust-badge">&#128274; Securise & RGPD</span>
+                    <span class="home-hero__trust-badge">&#127467;&#127479; Heberge en France</span>
+                </div>
+            </div>
+            {% if site.heroImage %}
+            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
+                <img src="{{ asset('documents/medias/' ~ site.heroImage.fileName) }}"
+                     alt="{{ site.name|default('') }}"
+                     class="home-hero__img" loading="lazy"/>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== FEATURES (presentation des fonctionnalites) ====== #}
+<section class="home-features">
+    <div class="container">
+        <h2 class="home-section-title text-center">Tout ce dont vous avez besoin</h2>
+        <div class="home-features__grid">
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <h3 class="home-features__title">Editeur visuel</h3>
+                <p class="home-features__desc">Redigez vos articles avec un editeur moderne. Texte, images, videos, code — tout en un.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <h3 class="home-features__title">Pages & Layouts</h3>
+                <p class="home-features__desc">Creez des pages vitrine avec differents layouts pour presenter vos services et votre activite.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </div>
+                <h3 class="home-features__title">Navigation flexible</h3>
+                <p class="home-features__desc">Organisez votre menu par glisser-deposer, avec sous-menus et liens personnalises.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3 class="home-features__title">SEO integre</h3>
+                <p class="home-features__desc">Meta tags, sitemap XML, Open Graph — votre site est optimise pour les moteurs de recherche.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 class="home-features__title">Contact & Notifications</h3>
+                <p class="home-features__desc">Formulaire de contact, commentaires et notifications email pour rester connecte a vos visiteurs.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3 class="home-features__title">Design personnalisable</h3>
+                <p class="home-features__desc">Couleurs, polices et logo — personnalisez votre site sans toucher au code.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== SERVICES (si module actif + donnees) ====== #}
+{% if services|default([])|length > 0 %}
+<section class="home-services">
+    <div class="container">
+        <div class="home-services__header text-center">
+            <h2 class="home-section-title">Nos services</h2>
+        </div>
+        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== PRODUITS (si module catalogue actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
+{# ====== EVENEMENTS (si module actif) ====== #}
+{% if upcomingEvents|default([])|length > 0 %}
+<section class="home-events py-5">
+    <div class="container">
+        <h2 class="home-section-title text-center">Evenements a venir</h2>
+        <div class="row g-4">
+            {% for event in upcomingEvents %}
+            <div class="col-md-4">
+                {% include '_partials/_event_card.html.twig' with { event: event } %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== PORTFOLIO (si module actif + realisations) ====== #}
+{% if featuredPortfolio|default([])|length > 0 %}
+<section class="home-portfolio py-5">
+    <div class="container">
+        <h2 class="home-section-title text-center">Nos realisations</h2>
+        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ (si module actif) ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="home-faq py-5" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="home-section-title text-center">Questions frequentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== METRICS ====== #}
+<section class="home-metrics">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">30</div>
+                <div class="home-metrics__label">minutes d'installation</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">100%</div>
+                <div class="home-metrics__label">personnalisable</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">0</div>
+                <div class="home-metrics__label">competence technique requise</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">1</div>
+                <div class="home-metrics__label">interlocuteur dedie</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== DERNIERS ARTICLES ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="home-section-title mb-0">Actualites</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== A PROPOS / TEAM ====== #}
+<section class="home-about" id="home-about">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
+            <div class="col-12 col-lg-3 home-about__img-wrapper d-flex justify-content-center">
+                {% if site.aboutImage %}
+                <img src="{{ asset('documents/medias/' ~ site.aboutImage.fileName) }}"
+                     alt="{{ site.name|default('') }}"
+                     class="home-about__img rounded-circle" loading="lazy"/>
+                {% else %}
+                <img src="{{ asset('images/profil.jpg') }}"
+                     alt="Votre interlocuteur"
+                     class="home-about__img rounded-circle" loading="lazy"/>
+                {% endif %}
+            </div>
+            <div class="col-12 col-lg-9 home-about__content d-flex flex-column justify-content-evenly align-items-center">
+                <span class="home-about__overtitle">A propos</span>
+                <h2 class="home-about__title">{{ site.title|default(site.name|default('')) }}</h2>
+                {% if site.defaultSeoDescription %}
+                <p class="home-about__text">{{ site.defaultSeoDescription }}</p>
+                {% endif %}
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">En savoir plus</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== GALERIE (si images gallery) ====== #}
+{% set gallery = site.getGalleryBySlot('gallery') %}
+{% if gallery|length > 0 %}
+<section class="home-gallery">
+    <div class="container">
+        <h2 class="home-section-title text-center">Galerie</h2>
+        {% include '_partials/_gallery_grid.html.twig' with { gallery: gallery } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== TEMOIGNAGES (si gallery slot testimonial) ====== #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length > 0 %}
+<section class="home-testimonials">
+    <div class="container">
+        <h2 class="home-section-title text-center">Ce que disent nos clients</h2>
+        {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== LOGOS CLIENTS (si gallery slot logo) ====== #}
+{% set logos = site.getGalleryBySlot('logo') %}
+{% if logos|length > 0 %}
+<section class="home-logos">
+    <div class="container">
+        <p class="home-logos__title text-center">Ils nous font confiance</p>
+        {% include '_partials/_logos_grid.html.twig' with { logos: logos } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== CTA FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center">
+        <h2 class="home-cta__title">Pret a lancer votre site ?</h2>
+        <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en quelques jours.</p>
+        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous contacter</a>
+    </div>
+</section>

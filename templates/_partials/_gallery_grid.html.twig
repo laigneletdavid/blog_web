@@ -1,0 +1,17 @@
+{# Grille d'images depuis site gallery slot 'gallery' #}
+{# Variables attendues : gallery (Collection de SiteGalleryItem) #}
+{% if gallery|default([])|length > 0 %}
+<div class="home-gallery__grid">
+    {% for item in gallery|slice(0, 6) %}
+    <div class="home-gallery__item">
+        {% if item.media %}
+        <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}"
+             alt="{{ item.title|default('') }}" loading="lazy"/>
+        {% endif %}
+        {% if item.title %}
+        <div class="home-gallery__caption">{{ item.title }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

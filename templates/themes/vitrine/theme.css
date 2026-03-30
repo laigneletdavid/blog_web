@@ -1,7 +1,80 @@
 /* ====== Vitrine Theme ====== */
 /* Professions liberales, coachs, consultants — Elegant, epure */
 
-/* --- HERO SPLIT --- */
+/* ====== UNIFIED HOME OVERRIDES (home-* classes) ====== */
+
+/* Hero: 2-column split, clean and elegant */
+.theme-vitrine .home-hero {
+    padding: 6rem 0 4rem;
+    background: var(--bg);
+    color: var(--text);
+}
+.theme-vitrine .home-hero::before,
+.theme-vitrine .home-hero::after { display: none; }
+.theme-vitrine .home-hero__badge { display: none; }
+.theme-vitrine .home-hero__title { color: var(--text); }
+.theme-vitrine .home-hero__desc { color: var(--text-muted); opacity: 1; }
+.theme-vitrine .home-hero__actions .btn-outline-primary {
+    border-color: var(--border);
+    color: var(--text);
+}
+.theme-vitrine .home-hero__img {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+/* Vitrine: hero shows both columns (text left + image right) — default layout works */
+
+/* Services: clean grid */
+.theme-vitrine .home-services { background: var(--surface); }
+
+/* About: image left, text right */
+.theme-vitrine .home-about__overtitle {
+    color: var(--primary);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+}
+.theme-vitrine .home-about__img {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+/* Testimonials: with stars */
+.theme-vitrine .home-testimonial::before {
+    content: "\2605\2605\2605\2605\2605";
+    display: block;
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+.theme-vitrine .home-testimonial__quote { display: none; }
+.theme-vitrine .home-testimonial {
+    text-align: center;
+}
+.theme-vitrine .home-testimonial__author {
+    justify-content: center;
+}
+
+/* CTA: card style */
+.theme-vitrine .home-cta {
+    background: var(--surface);
+    color: var(--text);
+    padding: 4rem 0;
+}
+.theme-vitrine .home-cta__title { color: var(--text); }
+.theme-vitrine .home-cta__desc { color: var(--text-muted); opacity: 1; }
+.theme-vitrine .home-cta .btn-light {
+    background: var(--primary);
+    color: var(--white);
+}
+.theme-vitrine .home-cta .btn-light:hover {
+    opacity: 0.9;
+}
+
+/* ====== END UNIFIED HOME ====== */
+
+/* --- HERO SPLIT (legacy) --- */
 .theme-vitrine .vit-hero { padding: 6rem 0 4rem; background: var(--bg); }
 .theme-vitrine .vit-hero__title {
     font-size: clamp(2.25rem, 4vw, 3.5rem);

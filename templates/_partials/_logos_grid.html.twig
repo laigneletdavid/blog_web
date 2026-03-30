@@ -1,0 +1,14 @@
+{# Grille de logos clients depuis site gallery slot 'logo' #}
+{# Variables attendues : logos (Collection de SiteGalleryItem) #}
+{% if logos|default([])|length > 0 %}
+<div class="home-logos__grid">
+    {% for item in logos %}
+    <div class="home-logos__item">
+        {% if item.media %}
+        <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}"
+             alt="{{ item.title|default('') }}" loading="lazy"/>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

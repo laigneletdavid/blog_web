@@ -333,3 +333,71 @@ Section **"Editeur de contenu"** ajoutee dans `templates/admin/guide/index.html.
 - **Colonnes mobile** : stack vertical automatique (`1fr`) sous 768px.
 - **Slash commands** : implementation custom (pas `@tiptap/suggestion`) pour plus de simplicite et de controle.
 - **Chemin medias** : `documents/medias/` (corrige partout depuis `uploads/medias/`).
+
+---
+
+## Phase 11 — Home generique + Fix build CSS
+
+> Implemente le 2026-03-30
+
+### Probleme resolu : home.scss non compile
+
+Le fichier `assets/css/base/home.scss` etait **silencieusement ignore** par Webpack a cause d'un `@include btn-font` dans la section legacy `.headband`. Le mixin `btn-font` est defini dans `variables.scss` mais Sass echouait silencieusement lors de la compilation via Webpack (pas d'erreur affichee, le fichier entier etait skip).
+
+**Fix** : remplacement de `@include btn-font` par le CSS equivalent inline (ligne ~541).
+
+### Home generique (`_home_generic.html.twig`)
+
+Objectif : **un seul template de home** partage par tous les themes. Le contenu est dans le template, le style vient du theme via CSS custom properties.
+
+**Avant** : chaque theme avait son propre `home.html.twig` avec du contenu different en dur → changer de theme = perdre la home personnalisee.
+
+**Apres** : `templates/home/_home_generic.html.twig` est utilise par tous les themes. Les fichiers `home.html.twig` par theme sont supprimes (sauf s'ils existent encore pour des raisons de compatibilite).
+
+### Sections de la home generique
+
+| Section | Source donnees | Condition d'affichage |
+|---------|---------------|----------------------|
+| Hero | `site.name`, `site.title`, `site.defaultSeoDescription`, `site.heroImage` | Toujours |
+| Trust badges | Hardcode dans template | Toujours |
+| Features (6 cards) | Hardcode dans template (icones SVG + textes) | Toujours |
+| Services | Entity `Service` via `services` | Module `services` actif + donnees |
+| Produits | Entity `Product` via `featuredProducts` | Module `catalogue` actif + donnees |
+| Evenements | Entity `Event` via `upcomingEvents` | Module `events` actif + donnees |
+| Portfolio | Entity `PortfolioItem` via `featuredPortfolio` | Module `portfolio` actif + donnees |
+| FAQ | Entity `Faq` via `faqs` | Module `faq` actif + donnees |
+| Metrics | Hardcode dans template | Toujours |
+| Articles | Entity `Article` via `articles` | Module `blog` actif + donnees |
+| A propos | `site.aboutImage`, `site.title`, `site.defaultSeoDescription` | Toujours |
+| Galerie | `site.getGalleryBySlot('gallery')` | Images presentes |
+| Temoignages | `site.getGalleryBySlot('testimonial')` | Temoignages presents |
+| Logos clients | `site.getGalleryBySlot('logo')` | Logos presents |
+| CTA final | Hardcode dans template | Toujours |
+
+### CSS ajoute dans `home.scss`
+
+| Classe | Role |
+|--------|------|
+| `.home-hero__badges` / `.home-hero__trust-badge` | Badges de confiance sous le hero |
+| `.home-features` / `__grid` / `__card` / `__icon` / `__title` / `__desc` | Grille 3 colonnes de features avec icones SVG |
+| `.home-metrics` / `__item` / `__value` / `__label` | Bande de chiffres cles (fond gradient) |
+
+### Fichiers modifies
+
+| Fichier | Modification |
+|---------|-------------|
+| `templates/home/_home_generic.html.twig` | Template home generique complet |
+| `templates/home/index.html.twig` | Include `_home_generic.html.twig` au lieu du template par theme |
+| `assets/css/base/home.scss` | Ajout features, metrics, trust badges + fix mixin btn-font |
+
+### Workflow client
+
+1. Sur `main` : la home generique est le modele de base avec du contenu standard (features BlogWeb, metrics, trust badges)
+2. Sur chaque branche `bw_*` : le contenu du template est personnalise (textes hero, features, metrics adaptees au client)
+3. Le theme ne change que l'apparence via CSS — changer de theme ne perd plus le contenu de la home
+
+### Important
+
+- Les sections hardcodees (features, metrics, trust badges, CTA) sont destinees a etre personnalisees sur chaque branche client
+- Les sections dynamiques (services, produits, FAQ, portfolio, articles) s'affichent automatiquement si le module est actif et contient des donnees
+- Le hero utilise les champs `Site` (name, title, defaultSeoDescription, heroImage) — editables dans l'admin
