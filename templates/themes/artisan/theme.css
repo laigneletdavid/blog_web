@@ -546,3 +546,28 @@
 .theme-artisan .footer--artisan .footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); font-size: 0.8rem; color: rgba(255,255,255,0.5); }
 .theme-artisan .footer--artisan .footer-tagline { color: rgba(255,255,255,0.6); font-size: 0.875rem; }
 .theme-artisan .footer--artisan .footer-logo img { max-height: 40px; filter: brightness(0) invert(1); }
+
+/* --- TABLES --- */
+.theme-artisan .tiptap-table {
+    border-radius: 0.75rem;
+    border-color: color-mix(in srgb, var(--border) 60%, transparent);
+}
+.theme-artisan .tiptap-table th {
+    background: color-mix(in srgb, var(--secondary) 12%, var(--surface));
+    color: var(--text);
+    text-transform: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0;
+}
+.theme-artisan .tiptap-table tr:nth-child(even) td {
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+.theme-artisan .tiptap-table td a {
+    border-radius: 2rem;
+    padding: 0.4rem 1.25rem;
+    background: var(--secondary);
+}
+.theme-artisan .tiptap-table td a:hover {
+    background: var(--primary);
+}

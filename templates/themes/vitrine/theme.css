@@ -436,3 +436,30 @@
 .theme-vitrine .footer--vitrine .nav-link { color: rgba(255,255,255,0.7); font-size: 0.875rem; }
 .theme-vitrine .footer--vitrine .nav-link:hover { color: #fff; }
 .theme-vitrine .footer--vitrine .footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+
+/* --- TABLES --- */
+.theme-vitrine .tiptap-table {
+    border-radius: 0.5rem;
+    border-color: var(--border);
+}
+.theme-vitrine .tiptap-table th {
+    background: var(--surface);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+.theme-vitrine .tiptap-table td a {
+    border-radius: 0.25rem;
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    font-weight: 600;
+    padding: 0.35rem 1rem;
+}
+.theme-vitrine .tiptap-table td a:hover {
+    background: var(--primary);
+    color: #fff;
+}

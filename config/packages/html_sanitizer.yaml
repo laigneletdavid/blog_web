@@ -9,5 +9,11 @@ framework:
                     div: ['class', 'data-callout', 'data-columns', 'data-column']
                     mark: ['class']
                     span: ['class']
+                    table: ['class']
+                    thead: []
+                    tbody: []
+                    tr: []
+                    th: ['colspan', 'rowspan']
+                    td: ['colspan', 'rowspan']
                 allow_attributes:
                     style: ['p', 'h2', 'h3', 'h4', 'h5', 'h6']

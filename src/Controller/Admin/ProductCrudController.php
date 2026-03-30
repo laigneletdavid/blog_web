@@ -104,6 +104,7 @@ class ProductCrudController extends AbstractCrudController
                     'style' => 'display: none',
                 ],
             ])
+            ->setColumns('col-12')
             ->setHelp('Description longue avec mise en forme, images, videos, encarts. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
             ->hideOnIndex();
 

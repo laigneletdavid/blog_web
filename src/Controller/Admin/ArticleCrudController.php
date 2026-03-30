@@ -6,6 +6,8 @@ use App\Entity\Article;
 use App\Enum\VisibilityEnum;
 use App\Service\ArticleNotificationService;
 use App\Service\SiteContext;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -78,6 +80,18 @@ class ArticleCrudController extends AbstractCrudController
             ->setDefaultSort(['created_at' => 'DESC']);
     }
 
+    public function configureActions(Actions $actions): Actions
+    {
+        $viewOnSite = Action::new('viewOnSite', 'Voir sur le site', 'fa fa-external-link-alt')
+            ->linkToUrl(fn (Article $article) => $this->generateUrl('app_article_show', ['slug' => $article->getSlug()]))
+            ->setHtmlAttributes(['target' => '_blank'])
+            ->displayIf(fn (Article $article) => $article->isPublished());
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, $viewOnSite)
+            ->add(Crud::PAGE_EDIT, $viewOnSite);
+    }
+
     public function configureFields(string $pageName): iterable
     {
         // --- Panel Contenu ---
@@ -94,6 +108,7 @@ class ArticleCrudController extends AbstractCrudController
                     'style' => 'display: none',
                 ],
             ])
+            ->setColumns('col-12')
             ->setHelp('Editeur visuel : mise en forme, images, videos, encarts, colonnes. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
             ->hideOnIndex();
 

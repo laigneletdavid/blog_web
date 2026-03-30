@@ -69,6 +69,10 @@ class BlockRenderer
             'image' => $this->renderImage($attrs),
             'youtube' => $this->renderYoutube($attrs),
             'callout' => $this->renderCallout($attrs, $content),
+            'table' => "<table class=\"tiptap-table\">{$content}</table>",
+            'tableRow' => "<tr>{$content}</tr>",
+            'tableHeader' => $this->renderTableCell('th', $attrs, $content),
+            'tableCell' => $this->renderTableCell('td', $attrs, $content),
             'columns' => "<div class=\"block-columns\">{$content}</div>",
             'column' => "<div class=\"block-column\">{$content}</div>",
             'hardBreak' => '<br>',
@@ -207,6 +211,22 @@ class BlockRenderer
         $icon = $icons[$type];
 
         return "<div class=\"block-callout block-callout--{$type}\"><span class=\"block-callout__icon\">{$icon}</span><div class=\"block-callout__content\">{$content}</div></div>";
+    }
+
+    private function renderTableCell(string $tag, array $attrs, string $content): string
+    {
+        $colspan = (int) ($attrs['colspan'] ?? 1);
+        $rowspan = (int) ($attrs['rowspan'] ?? 1);
+        $htmlAttrs = '';
+
+        if ($colspan > 1) {
+            $htmlAttrs .= " colspan=\"{$colspan}\"";
+        }
+        if ($rowspan > 1) {
+            $htmlAttrs .= " rowspan=\"{$rowspan}\"";
+        }
+
+        return "<{$tag}{$htmlAttrs}>{$content}</{$tag}>";
     }
 
     private function toYoutubeEmbed(string $url): string

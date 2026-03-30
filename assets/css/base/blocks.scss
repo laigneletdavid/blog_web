@@ -175,6 +175,72 @@
     min-width: 0; // prevent overflow
 }
 
+// ─── Tableau (table TipTap) ──────────────────────────────────────────────────
+
+.tiptap-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 0.5rem);
+    overflow: hidden;
+    font-size: 0.95rem;
+
+    th,
+    td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: middle;
+        color: var(--text);
+    }
+
+    th {
+        background: var(--surface);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--text-muted);
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+        background: color-mix(in srgb, var(--surface) 40%, transparent);
+    }
+
+    // Links inside tables → button style
+    td a,
+    th a {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: var(--primary);
+        color: #fff;
+        border-radius: var(--radius-sm, 0.25rem);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: background 0.2s, transform 0.15s;
+
+        &:hover {
+            background: var(--secondary);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+    }
+
+    // Responsive
+    @media (max-width: 767.98px) {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 // ─── Contenu article — styles generiques ─────────────────────────────────────
 
 .content,

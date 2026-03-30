@@ -18,6 +18,10 @@ import Underline from '@tiptap/extension-underline';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import CharacterCount from '@tiptap/extension-character-count';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
 import { Callout } from './extensions/callout';
 import { Columns, Column } from './extensions/columns';
 
@@ -45,10 +49,9 @@ class TiptapEditor {
         this.createWrapper();
         this.createToolbar();
         this.createEditorElement();
-        this.createAutosaveIndicator();
+        this.createStatusBar();
         this.createEditor();
-        this.checkDraft();
-        this.setupAutosave();
+        this.setupAjaxSave();
 
         this.textarea.style.display = 'none';
     }
@@ -107,6 +110,10 @@ class TiptapEditor {
                 { cmd: 'callout', icon: 'fa-info-circle', title: 'Encart (info, alerte...)' },
                 { cmd: 'columns', icon: 'fa-columns', title: '2 colonnes' },
             ],
+            // Table
+            [
+                { cmd: 'insertTable', icon: 'fa-table', title: 'Inserer un tableau' },
+            ],
             // Media
             [
                 { cmd: 'link', icon: 'fa-link', title: 'Lien' },
@@ -118,6 +125,12 @@ class TiptapEditor {
                 { cmd: 'horizontalRule', icon: 'fa-minus', title: 'Separateur' },
                 { cmd: 'undo', icon: 'fa-undo', title: 'Annuler (Ctrl+Z)' },
                 { cmd: 'redo', icon: 'fa-redo', title: 'Refaire (Ctrl+Y)' },
+            ],
+            // Responsive preview
+            [
+                { cmd: 'previewDesktop', icon: 'fa-desktop', title: 'Apercu bureau' },
+                { cmd: 'previewTablet', icon: 'fa-tablet-alt', title: 'Apercu tablette' },
+                { cmd: 'previewMobile', icon: 'fa-mobile-alt', title: 'Apercu mobile' },
             ],
         ];
 
@@ -159,7 +172,7 @@ class TiptapEditor {
         this.wrapper.appendChild(this.editorElement);
     }
 
-    createAutosaveIndicator() {
+    createStatusBar() {
         this.statusBar = document.createElement('div');
         this.statusBar.className = 'tiptap-status-bar';
 
@@ -215,6 +228,13 @@ class TiptapEditor {
                     types: ['heading', 'paragraph'],
                 }),
                 CharacterCount,
+                Table.configure({
+                    resizable: true,
+                    HTMLAttributes: { class: 'tiptap-table' },
+                }),
+                TableRow,
+                TableCell,
+                TableHeader,
                 Callout,
                 Columns,
                 Column,
@@ -224,7 +244,8 @@ class TiptapEditor {
                 this.syncToTextarea();
                 this.updateToolbarState();
                 this.updateCharCount();
-                this.scheduleDraftSave();
+                this.handleSlashDetection();
+                this.scheduleAjaxSave();
             },
             onSelectionUpdate: () => {
                 this.updateToolbarState();
@@ -254,6 +275,7 @@ class TiptapEditor {
             { label: 'Encart Attention', icon: 'fa-exclamation-triangle', action: () => this.editor.chain().focus().setCallout({ type: 'warning' }).run() },
             { label: 'Encart Danger', icon: 'fa-times-circle', action: () => this.editor.chain().focus().setCallout({ type: 'danger' }).run() },
             { label: '2 Colonnes', icon: 'fa-columns', action: () => this.editor.chain().focus().setColumns().run() },
+            { label: 'Tableau', icon: 'fa-table', action: () => this.editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() },
             { label: 'Code', icon: 'fa-code', action: () => this.editor.chain().focus().toggleCodeBlock().run() },
             { label: 'Separateur', icon: 'fa-minus', action: () => this.editor.chain().focus().setHorizontalRule().run() },
         ];
@@ -266,32 +288,30 @@ class TiptapEditor {
                 if (e.key === 'Enter') { e.preventDefault(); this.selectSlashItem(); return; }
             }
         });
+    }
 
-        // Listen for / character input
-        this.editor.on('update', () => {
-            const { state } = this.editor;
-            const { $from } = state.selection;
-            const textBefore = $from.parent.textContent.slice(0, $from.parentOffset);
+    // Called from onUpdate — detects / input and opens slash menu
+    handleSlashDetection() {
+        const { state } = this.editor;
+        const { $from } = state.selection;
+        const textBefore = $from.parent.textContent.slice(0, $from.parentOffset);
 
-            if (textBefore.endsWith('/')) {
-                // Check we're in an empty paragraph or the line starts with /
-                const lineText = $from.parent.textContent;
-                if (lineText === '/' || lineText.endsWith(' /')) {
-                    this.openSlashMenu();
-                    return;
-                }
+        if (textBefore.endsWith('/')) {
+            const lineText = $from.parent.textContent;
+            if (lineText === '/' || lineText.endsWith(' /')) {
+                this.openSlashMenu();
+                return;
             }
+        }
 
-            if (this.slashMenu) {
-                // Filter items based on text after /
-                const match = textBefore.match(/\/([a-zA-Z0-9\u00C0-\u024F ]*)$/);
-                if (match) {
-                    this.filterSlashMenu(match[1]);
-                } else {
-                    this.closeSlashMenu();
-                }
+        if (this.slashMenu) {
+            const match = textBefore.match(/\/([a-zA-Z0-9\u00C0-\u024F ]*)$/);
+            if (match) {
+                this.filterSlashMenu(match[1]);
+            } else {
+                this.closeSlashMenu();
             }
-        });
+        }
     }
 
     openSlashMenu() {
@@ -418,12 +438,27 @@ class TiptapEditor {
             case 'codeBlock':    chain.toggleCodeBlock().run(); break;
             case 'callout':      this.openCalloutMenu(); break;
             case 'columns':      this.editor.chain().focus().setColumns().run(); break;
+            case 'insertTable':  chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); break;
+            case 'addColumnBefore': chain.addColumnBefore().run(); break;
+            case 'addColumnAfter':  chain.addColumnAfter().run(); break;
+            case 'addRowBefore':    chain.addRowBefore().run(); break;
+            case 'addRowAfter':     chain.addRowAfter().run(); break;
+            case 'toggleHeaderRow': chain.toggleHeaderRow().run(); break;
+            case 'toggleHeaderColumn': chain.toggleHeaderColumn().run(); break;
+            case 'mergeCells':      chain.mergeCells().run(); break;
+            case 'splitCell':       chain.splitCell().run(); break;
+            case 'deleteColumn':    chain.deleteColumn().run(); break;
+            case 'deleteRow':       chain.deleteRow().run(); break;
+            case 'deleteTable':     chain.deleteTable().run(); break;
             case 'horizontalRule': chain.setHorizontalRule().run(); break;
             case 'undo':         chain.undo().run(); break;
             case 'redo':         chain.redo().run(); break;
             case 'link':         this.toggleLink(); break;
             case 'image':        this.openMediaModal(); break;
             case 'youtube':      this.insertVideo(); break;
+            case 'previewDesktop':  this.setPreviewMode('desktop'); break;
+            case 'previewTablet':   this.setPreviewMode('tablet'); break;
+            case 'previewMobile':   this.setPreviewMode('mobile'); break;
         }
     }
 
@@ -473,29 +508,188 @@ class TiptapEditor {
                 case 'codeBlock':   active = this.editor.isActive('codeBlock'); break;
                 case 'callout':     active = this.editor.isActive('callout'); break;
                 case 'columns':     active = this.editor.isActive('columns'); break;
+                case 'insertTable': active = this.editor.isActive('table'); break;
                 case 'link':        active = this.editor.isActive('link'); break;
             }
 
             btn.classList.toggle('is-active', active);
+        });
+
+        // Show/hide floating table context menu
+        this.updateTableFloatingMenu();
+    }
+
+    // ─── Preview Mode ────────────────────────────────────────────────────
+
+    setPreviewMode(mode) {
+        // Toggle: clicking same mode reverts to desktop
+        if (this.currentPreviewMode === mode && mode !== 'desktop') {
+            mode = 'desktop';
+        }
+        this.currentPreviewMode = mode;
+
+        // Remove all preview classes
+        this.editorElement.classList.remove('tiptap-preview-desktop', 'tiptap-preview-tablet', 'tiptap-preview-mobile');
+        this.editorElement.classList.add(`tiptap-preview-${mode}`);
+
+        // Update toolbar button states
+        this.toolbar.querySelectorAll('.tiptap-toolbar-btn').forEach(btn => {
+            if (['previewDesktop', 'previewTablet', 'previewMobile'].includes(btn.dataset.cmd)) {
+                btn.classList.toggle('is-active', btn.dataset.cmd === `preview${mode.charAt(0).toUpperCase() + mode.slice(1)}`);
+            }
         });
     }
 
     // ─── Link ────────────────────────────────────────────────────────────
 
     toggleLink() {
-        // If already a link, unset it
         if (this.editor.isActive('link')) {
             this.editor.chain().focus().unsetLink().run();
             return;
         }
+        this.openLinkModal();
+    }
 
-        const url = prompt('URL du lien :');
-        if (url && url.trim()) {
-            this.editor.chain().focus()
-                .extendMarkRange('link')
-                .setLink({ href: url.trim() })
-                .run();
+    openLinkModal() {
+        if (this.linkModal) return;
+
+        this.linkModal = document.createElement('div');
+        this.linkModal.className = 'tiptap-modal';
+        this.linkModal.innerHTML = `
+            <div class="tiptap-modal-backdrop"></div>
+            <div class="tiptap-modal-dialog" style="max-width:550px">
+                <div class="tiptap-modal-header">
+                    <h3>Inserer un lien</h3>
+                    <button type="button" class="tiptap-modal-close">&times;</button>
+                </div>
+                <div class="tiptap-modal-body" style="padding:0">
+                    <div style="padding:0.75rem 1.25rem;border-bottom:1px solid #dee2e6;">
+                        <input type="text" class="form-control form-control-sm tiptap-link-search" placeholder="Rechercher une page, un article... ou collez une URL">
+                    </div>
+                    <div class="tiptap-link-results" style="max-height:300px;overflow-y:auto;padding:0.5rem"></div>
+                </div>
+                <div class="tiptap-modal-footer" style="display:flex;gap:0.5rem;align-items:center">
+                    <label style="font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;margin:0;cursor:pointer">
+                        <input type="checkbox" class="tiptap-link-newtab"> Nouvel onglet
+                    </label>
+                    <div style="flex:1"></div>
+                    <button type="button" class="btn btn-sm btn-primary tiptap-link-insert">Inserer</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(this.linkModal);
+
+        const searchInput = this.linkModal.querySelector('.tiptap-link-search');
+        const resultsDiv = this.linkModal.querySelector('.tiptap-link-results');
+        const insertBtn = this.linkModal.querySelector('.tiptap-link-insert');
+        const newTabCheck = this.linkModal.querySelector('.tiptap-link-newtab');
+        this.selectedLinkUrl = '';
+
+        // Close
+        this.linkModal.querySelector('.tiptap-modal-backdrop').addEventListener('click', () => this.closeLinkModal());
+        this.linkModal.querySelector('.tiptap-modal-close').addEventListener('click', () => this.closeLinkModal());
+
+        // Escape
+        this._linkEscHandler = (e) => { if (e.key === 'Escape') this.closeLinkModal(); };
+        document.addEventListener('keydown', this._linkEscHandler);
+
+        // Insert button
+        insertBtn.addEventListener('click', () => {
+            const url = this.selectedLinkUrl || searchInput.value.trim();
+            if (url) {
+                const attrs = { href: url };
+                if (newTabCheck.checked) attrs.target = '_blank';
+                this.editor.chain().focus().extendMarkRange('link').setLink(attrs).run();
+                this.closeLinkModal();
+            }
+        });
+
+        // Enter to insert
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                insertBtn.click();
+            }
+        });
+
+        // Load internal links
+        this.loadInternalLinks(resultsDiv, searchInput);
+
+        // Search filter with debounce
+        let searchTimer = null;
+        searchInput.addEventListener('input', () => {
+            const val = searchInput.value.trim();
+            // If it looks like an URL, select it directly
+            if (val.startsWith('http') || val.startsWith('/') || val.startsWith('mailto:')) {
+                this.selectedLinkUrl = val;
+                resultsDiv.innerHTML = '<div style="padding:0.5rem;color:#6c757d;font-size:0.8rem">Appuyez sur Entree pour inserer ce lien externe</div>';
+                return;
+            }
+            this.selectedLinkUrl = '';
+            if (searchTimer) clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => this.loadInternalLinks(resultsDiv, searchInput), 200);
+        });
+
+        setTimeout(() => searchInput.focus(), 50);
+    }
+
+    async loadInternalLinks(resultsDiv, searchInput) {
+        const q = searchInput.value.trim();
+        const params = q ? `?q=${encodeURIComponent(q)}` : '';
+
+        try {
+            const response = await fetch(`/admin/api/links${params}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const links = await response.json();
+
+            resultsDiv.innerHTML = '';
+            if (links.length === 0) {
+                resultsDiv.innerHTML = '<div style="padding:1rem;color:#6c757d;text-align:center;font-size:0.85rem">Aucun resultat</div>';
+                return;
+            }
+
+            let currentType = '';
+            links.forEach(link => {
+                if (link.type !== currentType) {
+                    currentType = link.type;
+                    const header = document.createElement('div');
+                    header.style.cssText = 'padding:0.3rem 0.5rem;font-size:0.7rem;font-weight:600;color:#6c757d;text-transform:uppercase;letter-spacing:0.05em';
+                    header.textContent = currentType + 's';
+                    resultsDiv.appendChild(header);
+                }
+
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'tiptap-link-item';
+                item.innerHTML = `<span class="tiptap-link-item__title">${this.escapeHtml(link.title)}</span><span class="tiptap-link-item__url">${this.escapeHtml(link.url)}</span>`;
+                item.addEventListener('click', () => {
+                    resultsDiv.querySelectorAll('.tiptap-link-item').forEach(el => el.classList.remove('is-selected'));
+                    item.classList.add('is-selected');
+                    this.selectedLinkUrl = link.url;
+                    searchInput.value = link.title;
+                });
+                item.addEventListener('dblclick', () => {
+                    this.selectedLinkUrl = link.url;
+                    this.linkModal.querySelector('.tiptap-link-insert').click();
+                });
+                resultsDiv.appendChild(item);
+            });
+        } catch (err) {
+            resultsDiv.innerHTML = '<div style="padding:1rem;color:#dc3545;text-align:center;font-size:0.85rem">Erreur de chargement</div>';
         }
+    }
+
+    closeLinkModal() {
+        if (this.linkModal) {
+            this.linkModal.remove();
+            this.linkModal = null;
+        }
+        if (this._linkEscHandler) {
+            document.removeEventListener('keydown', this._linkEscHandler);
+            this._linkEscHandler = null;
+        }
+        this.editor.commands.focus();
     }
 
     // ─── Video ───────────────────────────────────────────────────────────
@@ -559,6 +753,75 @@ class TiptapEditor {
         };
         this._calloutMenuCleanup = () => document.removeEventListener('click', closeMenu);
         setTimeout(() => document.addEventListener('click', closeMenu), 0);
+    }
+
+    // ─── Table Floating Menu ─────────────────────────────────────────────
+
+    updateTableFloatingMenu() {
+        const inTable = this.editor.isActive('table');
+
+        if (!inTable) {
+            this.removeTableFloatingMenu();
+            return;
+        }
+
+        // Already showing — just reposition
+        if (this.tableFloatingMenu) {
+            this.positionTableMenu();
+            return;
+        }
+
+        this.createTableFloatingMenu();
+    }
+
+    createTableFloatingMenu() {
+        this.tableFloatingMenu = document.createElement('div');
+        this.tableFloatingMenu.className = 'tiptap-table-contextbar';
+
+        const actions = [
+            { cmd: 'addColumnBefore', icon: 'fa-arrow-left', label: 'Col. avant' },
+            { cmd: 'addColumnAfter', icon: 'fa-arrow-right', label: 'Col. apres' },
+            { cmd: 'addRowBefore', icon: 'fa-arrow-up', label: 'Ligne avant' },
+            { cmd: 'addRowAfter', icon: 'fa-arrow-down', label: 'Ligne apres' },
+            { cmd: 'divider' },
+            { cmd: 'toggleHeaderRow', icon: 'fa-heading', label: 'En-tete' },
+            { cmd: 'mergeCells', icon: 'fa-compress-alt', label: 'Fusionner' },
+            { cmd: 'splitCell', icon: 'fa-expand-alt', label: 'Scinder' },
+            { cmd: 'divider' },
+            { cmd: 'deleteColumn', icon: 'fa-times', label: 'Suppr. col.', danger: true },
+            { cmd: 'deleteRow', icon: 'fa-times', label: 'Suppr. ligne', danger: true },
+            { cmd: 'deleteTable', icon: 'fa-trash', label: 'Suppr. tableau', danger: true },
+        ];
+
+        actions.forEach(action => {
+            if (action.cmd === 'divider') {
+                const sep = document.createElement('span');
+                sep.className = 'tiptap-table-contextbar__sep';
+                this.tableFloatingMenu.appendChild(sep);
+                return;
+            }
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'tiptap-table-contextbar__btn' + (action.danger ? ' is-danger' : '');
+            btn.title = action.label;
+            btn.innerHTML = `<i class="fas ${action.icon}"></i><span>${action.label}</span>`;
+            btn.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                this.execCommand(action.cmd);
+            });
+            this.tableFloatingMenu.appendChild(btn);
+        });
+
+        // Insert between toolbar and editor content — fixed contextual bar
+        this.wrapper.insertBefore(this.tableFloatingMenu, this.editorElement);
+    }
+
+    removeTableFloatingMenu() {
+        if (this.tableFloatingMenu) {
+            this.tableFloatingMenu.remove();
+            this.tableFloatingMenu = null;
+        }
     }
 
     // ─── Media Modal ─────────────────────────────────────────────────────
@@ -677,94 +940,55 @@ class TiptapEditor {
         }
     }
 
-    // ─── Autosave ────────────────────────────────────────────────────────
+    // ─── Save Helpers ──────────────────────────────────────────────────
 
-    setupAutosave() {
-        // Periodic save every 30s
-        this.autosaveInterval = setInterval(() => this.saveDraft(), 30000);
+    setupAjaxSave() {
+        this.isDirty = false;
 
-        // Save on page unload
-        window.addEventListener('beforeunload', () => this.saveDraft());
+        // Ctrl+S / Cmd+S triggers form submit
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                this.saveForm();
+            }
+        });
 
-        // Clear draft on successful form submit
+        // Warn before leaving with unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            if (this.isDirty) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // On form submit, mark as clean
         const form = this.textarea.closest('form');
         if (form) {
-            form.addEventListener('submit', () => this.clearDraft());
+            form.addEventListener('submit', () => {
+                this.isDirty = false;
+            });
         }
     }
 
-    scheduleDraftSave() {
-        if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
-        this.autosaveTimer = setTimeout(() => this.saveDraft(), 5000);
+    scheduleAjaxSave() {
+        // Just track dirty state — no auto-submit
+        this.isDirty = true;
+        this.showIndicator('Modifications non enregistrees');
     }
 
-    saveDraft() {
-        try {
-            const json = this.editor.getJSON();
-            if (this.isEmptyDoc(json)) return; // Don't save empty drafts
-
-            localStorage.setItem(this.autosaveKey, JSON.stringify({
-                content: json,
-                savedAt: Date.now(),
-            }));
-            this.showIndicator('Brouillon sauvegarde');
-        } catch (e) {
-            // localStorage full or unavailable — fail silently
-        }
-    }
-
-    checkDraft() {
-        try {
-            const raw = localStorage.getItem(this.autosaveKey);
-            if (!raw) return;
-
-            const data = JSON.parse(raw);
-            if (!data.content || !data.savedAt) return;
-
-            // Discard drafts older than 24h
-            if (Date.now() - data.savedAt > 86400000) {
-                this.clearDraft();
-                return;
+    saveForm() {
+        this.syncToTextarea();
+        const form = this.textarea.closest('form');
+        if (form) {
+            this.isDirty = false;
+            // Click the EasyAdmin submit button
+            const submitBtn = form.querySelector('button[type="submit"], .action-saveAndReturn button, .btn-primary[type="submit"]');
+            if (submitBtn) {
+                submitBtn.click();
+            } else {
+                form.submit();
             }
-
-            // Show restore banner
-            const banner = document.createElement('div');
-            banner.className = 'tiptap-draft-banner';
-
-            const date = new Date(data.savedAt);
-            const timeStr = date.toLocaleString('fr-FR', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit',
-            });
-
-            banner.innerHTML = `
-                <span>Brouillon trouve (${timeStr})</span>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-primary tiptap-draft-restore">Restaurer</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary tiptap-draft-dismiss">Ignorer</button>
-                </div>
-            `;
-
-            this.wrapper.insertBefore(banner, this.toolbar);
-
-            banner.querySelector('.tiptap-draft-restore').addEventListener('click', () => {
-                this.editor.commands.setContent(data.content);
-                this.syncToTextarea();
-                banner.remove();
-                this.showIndicator('Brouillon restaure');
-            });
-
-            banner.querySelector('.tiptap-draft-dismiss').addEventListener('click', () => {
-                this.clearDraft();
-                banner.remove();
-            });
-        } catch (e) {
-            // Corrupt data — ignore
         }
-    }
-
-    clearDraft() {
-        localStorage.removeItem(this.autosaveKey);
     }
 
     showIndicator(text) {
@@ -782,9 +1006,9 @@ class TiptapEditor {
     }
 
     destroy() {
-        if (this.autosaveInterval) clearInterval(this.autosaveInterval);
-        if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+        if (this.ajaxSaveTimer) clearTimeout(this.ajaxSaveTimer);
         if (this.editor) this.editor.destroy();
+        this.removeTableFloatingMenu();
         this.closeMediaModal();
     }
 }

@@ -70,9 +70,6 @@ class Article implements TimestampedInterface
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $blocks = null;
 
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $draftBlocks = null;
-
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -316,18 +313,6 @@ class Article implements TimestampedInterface
     public function setBlocks(?array $blocks): self
     {
         $this->blocks = $blocks;
-
-        return $this;
-    }
-
-    public function getDraftBlocks(): ?array
-    {
-        return $this->draftBlocks;
-    }
-
-    public function setDraftBlocks(?array $draftBlocks): self
-    {
-        $this->draftBlocks = $draftBlocks;
 
         return $this;
     }
