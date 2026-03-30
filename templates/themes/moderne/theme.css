@@ -811,9 +811,9 @@
     color: #fff;
     font-weight: 600;
     padding: 0.45rem 1.2rem;
-    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 25%, transparent);
 }
 .theme-moderne .tiptap-table td a:hover {
-    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 40%, transparent);
     transform: translateY(-2px);
 }
