@@ -34,6 +34,7 @@
     background: var(--gradient-primary);
     color: var(--white);
     border: none;
+    border-radius: var(--radius, 0.75rem);
 
     h4 {
       color: var(--white);
@@ -42,6 +43,39 @@
 
     p {
       opacity: 0.9;
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--white);
+      border-radius: var(--radius, 0.375rem);
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      &:focus {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.6);
+        color: var(--white);
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    .form-check-label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.875rem;
+    }
+
+    .form-check-input {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+
+      &:checked {
+        background-color: var(--white);
+        border-color: var(--white);
+      }
     }
 
     .btn {

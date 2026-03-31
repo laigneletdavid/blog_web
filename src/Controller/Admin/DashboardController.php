@@ -19,6 +19,7 @@ use App\Entity\Service;
 use App\Entity\Site;
 use App\Entity\SiteGalleryItem;
 use App\Entity\Tag;
+use App\Entity\Subscriber;
 use App\Entity\User;
 use App\Repository\MenuRepository;
 use App\Service\AdminStatsService;
@@ -311,6 +312,7 @@ class DashboardController extends AbstractDashboardController
             if ($this->isGranted('ROLE_ADMIN')) {
                 yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
             }
+            yield MenuItem::linkToCrud('Abonnes', 'fas fa-envelope', Subscriber::class);
         }
 
         // --- Reglages (ROLE_ADMIN+) ---

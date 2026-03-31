@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil — {{ site.name|default('Blog&Web') }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Mon profil</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if user.avatar %}
+                            <img src="/documents/medias/{{ user.avatar.fileName }}"
+                                 alt="{{ user.firstName }} {{ user.name }}"
+                                 class="rounded-circle me-3"
+                                 style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                 style="width: 80px; height: 80px; background: var(--surface); color: var(--text-muted); font-size: 2rem; font-weight: 600;">
+                                {{ user.firstName|default('?')|first|upper }}
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h1 class="h3 mb-1">{{ user.firstName }} {{ user.name }}</h1>
+                            {% if user.jobTitle or user.company %}
+                                <p class="text-muted mb-0">
+                                    {{ user.jobTitle }}{% if user.jobTitle and user.company %} — {% endif %}{{ user.company }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">Email</dt>
+                        <dd class="col-sm-8">{{ user.email }}</dd>
+
+                        {% if user.phone %}
+                        <dt class="col-sm-4 text-muted">Telephone</dt>
+                        <dd class="col-sm-8">{{ user.phone }}</dd>
+                        {% endif %}
+
+                        {% if user.bio %}
+                        <dt class="col-sm-4 text-muted">Bio</dt>
+                        <dd class="col-sm-8">{{ user.bio }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                <div class="card-footer bg-transparent text-end">
+                    <a href="{{ path('app_user_edit', { id: user.id }) }}" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i> Modifier mon profil
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -40,15 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $first_name = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $subscribeNews = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $subscribeArticles = null;
-
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $subscribeEvents = false;
-
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isVerified = false;
 
@@ -195,42 +186,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(?string $first_name): self
     {
         $this->first_name = $first_name;
-
-        return $this;
-    }
-
-    public function isSubscribeNews(): ?bool
-    {
-        return $this->subscribeNews;
-    }
-
-    public function setSubscribeNews(?bool $subscribeNews): self
-    {
-        $this->subscribeNews = $subscribeNews;
-
-        return $this;
-    }
-
-    public function isSubscribeArticles(): ?bool
-    {
-        return $this->subscribeArticles;
-    }
-
-    public function setSubscribeArticles(?bool $subscribeArticles): self
-    {
-        $this->subscribeArticles = $subscribeArticles;
-
-        return $this;
-    }
-
-    public function isSubscribeEvents(): bool
-    {
-        return $this->subscribeEvents;
-    }
-
-    public function setSubscribeEvents(bool $subscribeEvents): self
-    {
-        $this->subscribeEvents = $subscribeEvents;
 
         return $this;
     }

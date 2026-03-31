@@ -452,6 +452,25 @@
 .theme-starter .widget .widget_register h4 {
     color: var(--text);
 }
+.theme-starter .widget .widget_register p {
+    color: var(--text-muted);
+    opacity: 1;
+}
+.theme-starter .widget .widget_register .form-control {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.theme-starter .widget .widget_register .form-control::placeholder {
+    color: var(--text-muted);
+}
+.theme-starter .widget .widget_register .form-check-label {
+    color: var(--text);
+}
+.theme-starter .widget .widget_register .form-check-input {
+    background-color: var(--bg);
+    border-color: var(--border);
+}
 .theme-starter .widget .widget_register .btn {
     background: var(--text);
     color: var(--bg);

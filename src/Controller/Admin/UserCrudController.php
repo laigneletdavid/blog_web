@@ -102,8 +102,6 @@ class UserCrudController extends AbstractCrudController
                 'ROLE_SUPER_ADMIN' => 'dark',
             ])
             ->setChoices(RoleEnum::choices());
-        yield BooleanField::new('news');
-        yield BooleanField::new('articles');
 
         if ($this->siteContext->hasModule('directory')) {
             yield BooleanField::new('isDirectoryVisible', 'Visible dans l\'annuaire')

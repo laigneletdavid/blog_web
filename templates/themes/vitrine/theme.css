@@ -392,6 +392,38 @@
     letter-spacing: -0.02em;
     border-bottom: 2px solid var(--primary);
 }
+.theme-vitrine .widget .widget_register {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+}
+.theme-vitrine .widget .widget_register h4 {
+    color: var(--text);
+    border-bottom: none;
+}
+.theme-vitrine .widget .widget_register p {
+    color: var(--text-muted);
+    opacity: 1;
+}
+.theme-vitrine .widget .widget_register .form-control {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.theme-vitrine .widget .widget_register .form-control::placeholder {
+    color: var(--text-muted);
+}
+.theme-vitrine .widget .widget_register .form-check-label {
+    color: var(--text);
+}
+.theme-vitrine .widget .widget_register .form-check-input {
+    background-color: var(--bg);
+    border-color: var(--border);
+}
+.theme-vitrine .widget .widget_register .btn {
+    border-radius: var(--radius);
+}
 .theme-vitrine .tag-pill {
     background: transparent;
     border: 1px solid var(--border);

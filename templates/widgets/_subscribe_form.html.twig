@@ -1,0 +1,39 @@
+<div class="p-4 widget_register">
+    <h4>Restez informes</h4>
+    <p class="text-muted small">Recevez nos actualites directement par email.</p>
+
+    {{ form_start(form, { attr: { class: 'subscribe-widget-form' } }) }}
+
+        <div class="mb-2">
+            {{ form_widget(form.email) }}
+            {{ form_errors(form.email) }}
+        </div>
+
+        {% if form.subscribeArticles is defined or form.subscribeEvents is defined %}
+            <div class="mb-2">
+                {% if form.subscribeArticles is defined %}
+                    <div class="form-check">
+                        {{ form_widget(form.subscribeArticles) }}
+                        {{ form_label(form.subscribeArticles) }}
+                    </div>
+                {% endif %}
+                {% if form.subscribeEvents is defined %}
+                    <div class="form-check">
+                        {{ form_widget(form.subscribeEvents) }}
+                        {{ form_label(form.subscribeEvents) }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {# Honeypot #}
+        {{ form_widget(form.website) }}
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-sm shadow-sm">
+                <i class="fas fa-bell me-1"></i> S'abonner
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+</div>

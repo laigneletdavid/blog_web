@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil — {{ site.name|default('Blog&Web') }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_user_show', { id: user.id }) }}">Mon profil</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-4">Modifier mon profil</h1>
+
+                    {{ form_start(form, { attr: { class: 'needs-validation', novalidate: 'novalidate' } }) }}
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.first_name) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.name) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(form.email) }}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_user_show', { id: user.id }) }}" class="btn btn-outline-secondary">
+                                Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Enregistrer
+                            </button>
+                        </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

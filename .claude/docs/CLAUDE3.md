@@ -562,6 +562,238 @@ Styles CSS pour les tableaux TipTap rendus cote front. Deux couches :
 
 ---
 
+## Phase 13 — Corrections & Harmonisation
+
+> Implemente le 2026-03-31
+
+### 13.1 — Favicons + Logos ✓ TERMINE
+
+Remplacement complet des anciens logos/favicons par les nouveaux assets.
+
+**Favicons** (7 fichiers dans `public/`) :
+- `favicon.ico`, `favicon.svg`, `favicon-96x96.png`
+- `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`
+- `site.webmanifest` (name: "Blog & Web", short_name: "BlogWeb")
+
+**Logos** (3 fichiers dans `public/images/`) :
+- `logo-blogweb.png` — theme clair (header)
+- `logo-blogweb-white.png` — theme sombre (footer)
+- `logo-blogweb.jpg` — fallback og:image / twitter:image
+
+**Fichiers modifies :**
+
+| Fichier | Modification |
+|---------|-------------|
+| `templates/base.html.twig` | Favicons SVG/PNG/ICO + apple-touch-icon + manifest + og:image/twitter:image fallback |
+| 5x `_header.html.twig` | `BlogWebbeta-h150.png` → `logo-blogweb.png` |
+| 5x `_footer.html.twig` | `BlogWebbeta - blanc.png` → `logo-blogweb-white.png` |
+
+### 13.2 — Reset HR dans le contenu ✓ TERMINE
+
+Les `<hr>` dans le contenu des pages/articles avaient un `border-top` Bootstrap visible. Ajout d'un reset `!important` dans `blocks.scss` pour `.content`, `.content_page`, `.page-detail__content`, `.article-detail__content`.
+
+### 13.3 — Fix ResponsiveImageExtension ✓ TERMINE
+
+Erreur `Undefined constant MediaUploadListener::RESPONSIVE_SIZES`. La constante est sur `MediaProcessorService`, pas `MediaUploadListener`.
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Twig/ResponsiveImageExtension.php` | Import `MediaProcessorService` au lieu de `MediaUploadListener` |
+
+### 13.4 — Cascade suppression Media (ON DELETE SET NULL) ✓ TERMINE
+
+Supprimer un media causait une `ForeignKeyConstraintViolationException` car les FK n'avaient pas de `onDelete`. Ajout `#[ORM\JoinColumn(onDelete: 'SET NULL')]` sur toutes les relations ManyToOne vers Media.
+
+**11 entites corrigees :**
+- Article, Page, Categorie (`featured_media`)
+- Service, Event, Product, ProductCategory, PortfolioItem (`image`)
+- Site (`favicon`, `heroImage`, `aboutImage`)
+- ProductImage (`media`) → `SET NULL`
+- SiteGalleryItem (`media`) → `CASCADE` (un item galerie sans media n'a pas de sens)
+
+| Fichier | Modification |
+|---------|-------------|
+| `migrations/Version20260331051133.php` | 26 ALTER TABLE pour ajouter ON DELETE SET NULL/CASCADE |
+
+### 13.5 — Fix categorie/show.html.twig ✓ TERMINE
+
+La page categorie incluait `article_liste_large.html.twig` avec une collection (`articles`) au lieu d'un article unique. Remplacement par une boucle `{% for article %}` avec `article/item.html.twig`.
+
+### 13.6 — Templates user (show + edit) ✓ TERMINE
+
+Les templates `user/show.html.twig` et `user/edit.html.twig` n'existaient pas → erreur 500 sur `/user/{id}`.
+
+**Fichiers crees :**
+
+| Fichier | Role |
+|---------|------|
+| `templates/user/show.html.twig` | Profil utilisateur (avatar, infos, abonnements, lien edit) |
+| `templates/user/edit.html.twig` | Formulaire edition profil (nom, prenom, email, abonnements) |
+
+### 13.7 — Harmonisation layout categorie + tag ✓ TERMINE
+
+Les templates `categorie/show.html.twig` et `tag/show.html.twig` utilisaient un ancien pattern (`flex-column-reverse`, sidebar a gauche, pas de classes CSS de theme). Alignement sur le pattern standard de `page/show.html.twig` :
+
+**Avant :** `d-flex flex-column-reverse flex-lg-row` > `col-lg-4` (sidebar) > `col-lg-8` (contenu)
+**Apres :** `row` > `col-lg-8` > `.page-detail` > `.page-detail__title` + `.page-detail__content.article-detail__content` > `col-lg-4` > `.blog-sidebar`
+
+Les overrides de theme s'appliquent maintenant automatiquement (`.page-detail__title`, `.article-detail__content`, `.blog-sidebar`).
+
+| Fichier | Modification |
+|---------|-------------|
+| `templates/categorie/show.html.twig` | Layout row standard + classes page-detail + blog-sidebar + breadcrumb Blog |
+| `templates/tag/show.html.twig` | Idem |
+
+---
+
+## Phase 14 — Systeme d'abonnement leger (sans compte)
+
+> Implemente le 2026-03-31
+
+### Contexte
+
+L'ancien systeme de "notifications" etait lie a l'entite `User` — il fallait creer un compte, se connecter, aller dans son profil pour cocher des cases. Le widget sidebar redirigait vers "Creer un compte" pour les non-connectes → personne ne s'abonnait.
+
+**Nouveau systeme** : light comme le panier e-commerce. Le visiteur donne son email, coche ce qui l'interesse, valide. Double opt-in par email. Desinscription en un clic. Aucun compte necessaire.
+
+### Fichiers crees
+
+| Fichier | Role |
+|---------|------|
+| `src/Entity/Subscriber.php` | Entite autonome (email, subscribeArticles, subscribeEvents, token, isActive, createdAt, confirmedAt) |
+| `src/Repository/SubscriberRepository.php` | `findActiveArticleSubscribers`, `findActiveEventSubscribers`, `findByToken`, `findByEmail` |
+| `src/Form/Type/SubscribeType.php` | Formulaire email + checkboxes conditionnels (modules actifs) + honeypot anti-spam |
+| `src/Controller/SubscribeController.php` | POST subscribe, GET confirm/{token}, GET unsubscribe/{token}, GET/POST manage/{token}, widget() |
+| `src/Controller/Admin/SubscriberCrudController.php` | CRUD admin lecture/edition/suppression avec filtres |
+| `templates/widgets/_subscribe_form.html.twig` | Partial widget formulaire inline (rendu via sub-request) |
+| `templates/subscribe/confirm.html.twig` | Page "Abonnement confirme" apres clic lien email |
+| `templates/subscribe/unsubscribe.html.twig` | Page "Desabonnement effectue" avec option re-abonnement |
+| `templates/subscribe/manage.html.twig` | Page gestion preferences via token (sans connexion) |
+| `migrations/Version20260331120749.php` | Table `subscriber` avec index composites |
+
+### Fichiers modifies
+
+| Fichier | Modification |
+|---------|-------------|
+| `templates/widgets/subscribe.html.twig` | Remplace par `render(controller('...SubscribeController::widget'))` |
+| `src/Service/ArticleNotificationService.php` | Injecte SubscriberRepository + UrlGenerator, envoie aux Subscribers actifs, dedup par email, lien desinscription dans footer |
+| `src/Service/EventNotificationService.php` | Idem — Subscribers events + lien desinscription |
+| `src/Controller/Admin/DashboardController.php` | Menu "Abonnes" dans section Communaute |
+| `config/packages/rate_limiter.yaml` | Ajout `subscribe_limiter` (5 requetes / 10 min) |
+| `templates/themes/corporate/blog.html.twig` | Ajout widget subscribe dans la sidebar existante (col-lg-3) |
+| `templates/themes/moderne/blog.html.twig` | Ajout bandeau subscribe inline apres pagination (col-lg-6, centre) |
+| `templates/themes/starter/blog.html.twig` | Ajout bandeau subscribe inline apres pagination (col-lg-5, centre) |
+| `templates/themes/vitrine/blog.html.twig` | Ajout bandeau subscribe inline apres pagination (col-lg-6, centre) |
+| `assets/css/base/widgets.scss` | CSS formulaire dans `.widget_register` (inputs, checkboxes, placeholder sur fond colore/gradient) |
+| `templates/themes/vitrine/theme.css` | Override `.widget_register` (fond surface, border, texte sombre) |
+| `templates/themes/starter/theme.css` | Override `.widget_register` (fond transparent, inputs normaux, texte sombre) |
+
+### Architecture
+
+```
+Visiteur → Widget sidebar/inline → POST /subscribe
+    → Honeypot check → Rate limiting → Email existe ?
+        → Nouveau : persist + email confirmation
+        → Existant inactif : update preferences + renvoyer email
+        → Existant actif : update preferences directement
+
+Email confirmation → GET /subscribe/confirm/{token}
+    → isActive = true, confirmedAt = now
+
+Publication article/event (admin) → NotificationService
+    → Subscribers actifs → email avec liens unsub + manage
+
+Desinscription → GET /unsubscribe/{token}
+    → isActive = false, flags reset
+
+Gestion → GET /subscribe/manage/{token}
+    → Formulaire pre-rempli, mise a jour preferences
+```
+
+### Integration par theme
+
+| Theme | Pattern | Emplacement |
+|-------|---------|-------------|
+| **Default** | Sidebar col-lg-4 | blog.html.twig (deja present) |
+| **Artisan** | Sidebar col-lg-4 | blog.html.twig (deja present) |
+| **Corporate** | Sidebar col-lg-3 | blog.html.twig (ajoute en premier widget) |
+| **Moderne** | Inline centre apres pagination | blog.html.twig (col-lg-6, fond gradient purple→cyan) |
+| **Starter** | Inline centre apres pagination | blog.html.twig (col-lg-5, fond transparent, border fine) |
+| **Vitrine** | Inline centre apres pagination | blog.html.twig (col-lg-6, fond surface, indigo accent) |
+
+### CSS widget_register par theme
+
+| Theme | Fond | Texte/inputs |
+|-------|------|-------------|
+| Base (widgets.scss) | `var(--gradient-primary)` | Blanc, inputs transparents rgba |
+| Corporate | `var(--primary)` navy | Blanc (herite base) |
+| Artisan | Gradient brown→sand | Blanc (herite base) |
+| Moderne | Gradient purple→cyan | Blanc (herite base) |
+| Starter | Transparent + border | Override : texte sombre, inputs normaux |
+| Vitrine | `var(--surface)` + border | Override : texte sombre, inputs normaux |
+
+### Securite et RGPD
+
+- **Double opt-in** : le subscriber n'est actif qu'apres clic sur le lien de confirmation email
+- **Token unique** (64 hex chars, `bin2hex(random_bytes(32))`) pour confirm, unsubscribe, manage
+- **Honeypot** anti-spam (meme pattern que ContactType)
+- **Rate limiting** 5 requetes / 10 min par IP
+- **Desinscription en un clic** dans chaque email de notification
+- **Gestion preferences** via lien tokenise (sans connexion)
+- **UniqueEntity** sur email — pas de doublons en base
+
+### Decisions d'implementation
+
+- **Entite Subscriber separee de User** — pas de couplage. Un visiteur peut etre subscriber sans avoir de compte.
+- **Pas de reCAPTCHA** sur le formulaire subscribe (present sur chaque page via sidebar → performance). Honeypot + rate limiting + double opt-in suffisent.
+- **Widget via sub-request** `render(controller())` — le formulaire est cree par le controller, pas par une variable Twig globale.
+- **Themes sans sidebar** (moderne, starter, vitrine) → bandeau inline centre apres pagination plutot que forcer une sidebar.
+- **Themes avec sidebar** (default, artisan, corporate) → widget en premier dans la sidebar.
+
+### 14.1 — Nettoyage ancien systeme (subscriptions sur User) ✓ TERMINE
+
+> Implemente le 2026-03-31
+
+Suppression complete de l'ancien systeme d'abonnement lie aux comptes utilisateur. Les NotificationServices n'utilisent plus que l'entite Subscriber.
+
+#### Fichiers modifies
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Entity/User.php` | Suppression 3 proprietes (`subscribeNews`, `subscribeArticles`, `subscribeEvents`) + 6 getters/setters |
+| `src/Form/UserType.php` | Suppression champs `subscribeArticles`/`subscribeEvents`, imports `CheckboxType` et `SiteContext` retires |
+| `src/Controller/Admin/UserCrudController.php` | Suppression champs admin `news` et `articles` (BooleanField) |
+| `src/Repository/UserRepository.php` | Suppression methode `findSubscribersForEvents()` (inutilisee) |
+| `src/Service/ArticleNotificationService.php` | Suppression branche User, uniquement SubscriberRepository, suppression import `UserRepository` |
+| `src/Service/EventNotificationService.php` | Idem — uniquement SubscriberRepository |
+| `templates/user/show.html.twig` | Suppression section "Abonnements" (badges Newsletter/Articles/Evenements) |
+| `templates/user/edit.html.twig` | Suppression section "Notifications" (checkboxes subscribeArticles/Events) |
+| `templates/event/show.html.twig` | Remplacement bloc ancien "Ne manquez rien" (lie a User) par `{% include 'widgets/subscribe.html.twig' %}` |
+
+#### Fichiers supprimes
+
+| Fichier | Raison |
+|---------|--------|
+| `templates/User/show.html.twig` | Template legacy orpheline (jamais referencee par un controller) |
+| `templates/User/edit.html.twig` | Idem |
+| `templates/User/edit_pass.html.twig` | Idem |
+| `templates/User/find.html.twig` | Idem |
+
+#### Migration
+
+| Fichier | SQL |
+|---------|-----|
+| `migrations/Version20260331134753.php` | `ALTER TABLE user DROP subscribe_news, DROP subscribe_articles, DROP subscribe_events` |
+
+#### Impact
+
+- **User entity** ne porte plus aucune notion d'abonnement → responsabilite unique (authentification + profil)
+- **NotificationServices** simplifie : une seule source de donnees (Subscriber), plus de dedup
+- **4 templates legacy** `templates/User/` supprimees (non referencees, remplacees par `templates/user/` depuis Phase 13.6)
+- **event/show.html.twig** utilise maintenant le meme widget subscribe que le reste du site
+
+---
+
 ## Recap packages npm ajoutes (Phase 12)
 
 ```
