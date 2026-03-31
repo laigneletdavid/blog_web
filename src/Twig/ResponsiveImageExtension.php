@@ -3,7 +3,7 @@
 namespace App\Twig;
 
 use App\Entity\Media;
-use App\EventListener\MediaUploadListener;
+use App\Service\MediaProcessorService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -74,7 +74,7 @@ class ResponsiveImageExtension extends AbstractExtension
         $baseName = pathinfo($media->getFileName(), PATHINFO_FILENAME);
         $parts = [];
 
-        foreach (MediaUploadListener::RESPONSIVE_SIZES as $width) {
+        foreach (MediaProcessorService::RESPONSIVE_SIZES as $width) {
             $sizedFile = $baseName . '-' . $width . 'w.webp';
             if (file_exists($this->mediaDirectory . '/' . $sizedFile)) {
                 $parts[] = '/documents/medias/' . $sizedFile . ' ' . $width . 'w';

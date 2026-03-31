@@ -48,6 +48,7 @@ class Event
     private ?string $location = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $image = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]

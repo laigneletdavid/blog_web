@@ -28,6 +28,7 @@ class Categorie
     private ?string $color = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $featured_media = null;
 
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'categories')]

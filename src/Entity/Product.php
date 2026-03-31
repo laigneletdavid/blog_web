@@ -60,6 +60,7 @@ class Product
     private Collection $tags;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $image = null;
 
     /** @var Collection<int, ProductImage> */

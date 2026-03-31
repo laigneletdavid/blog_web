@@ -59,6 +59,7 @@ class Article implements TimestampedInterface
     private Collection $tag;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $featured_media = null;
 
     #[ORM\Column(options: ['default' => false])]

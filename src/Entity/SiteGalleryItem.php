@@ -30,7 +30,7 @@ class SiteGalleryItem
     private ?Site $site = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Media $media = null;
 
     #[ORM\Column(length: 30)]

@@ -36,6 +36,7 @@ class Service
     private ?string $icon = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $image = null;
 
     #[ORM\ManyToOne(targetEntity: Page::class)]

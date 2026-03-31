@@ -65,6 +65,7 @@ class Site
     private ?string $googleSearchConsole = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $favicon = null;
 
     // --- Apparence ---
@@ -90,9 +91,11 @@ class Site
     // --- Images du theme ---
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $heroImage = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $aboutImage = null;
 
     /** @var Collection<int, SiteGalleryItem> */

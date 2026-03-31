@@ -53,6 +53,7 @@ class PortfolioItem
     private ?PortfolioCategory $category = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $image = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]

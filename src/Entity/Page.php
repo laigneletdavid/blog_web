@@ -36,6 +36,7 @@ class Page implements TimestampedInterface
     private ?bool $published = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $featured_media = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

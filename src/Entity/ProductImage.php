@@ -20,7 +20,7 @@ class ProductImage
     private ?Product $product = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Media $media = null;
 
     /**

@@ -29,6 +29,7 @@ class ProductCategory
     private ?string $description = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $image = null;
 
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
