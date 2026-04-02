@@ -123,6 +123,7 @@
                         <li><strong>Separateur</strong> &mdash; Ligne horizontale entre deux sections</li>
                         <li><strong>Encart (Callout)</strong> &mdash; Encadre colore pour attirer l'attention. 4 types : <em>Info</em> (bleu), <em>Succes</em> (vert), <em>Attention</em> (orange), <em>Danger</em> (rouge). Cliquez sur l'icone pour changer le type</li>
                         <li><strong>Colonnes</strong> &mdash; Disposez votre contenu sur 2 colonnes cote a cote (sur mobile, les colonnes s'empilent automatiquement)</li>
+                        <li><strong>Tableaux</strong> &mdash; Inserez un tableau via la barre d'outils ou la commande rapide <code>/tableau</code></li>
                     </ul>
 
                     <h5>Medias</h5>
@@ -137,6 +138,7 @@
 
                     <h5>Sauvegarde automatique</h5>
                     <p>L'editeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur. Si vous quittez la page sans sauvegarder, votre travail sera propose a la restauration a votre prochaine visite.</p>
+                    <p>Vous pouvez egalement sauvegarder manuellement a tout moment avec <strong>Ctrl+S</strong> (Windows/Linux) ou <strong>Cmd+S</strong> (Mac).</p>
 
                     <h5>Compteur de caracteres</h5>
                     <p>En bas de l'editeur, un compteur affiche le nombre de <strong>caracteres</strong> et de <strong>mots</strong>. Utile pour vos descriptions SEO et pour calibrer la longueur de vos textes.</p>
@@ -280,7 +282,11 @@
                         <li>Schema.org <strong>JSON-LD</strong> pour les extraits enrichis</li>
                         <li><strong>robots.txt</strong> optimise</li>
                         <li>Images <strong>WebP</strong> et <strong>lazy-loading</strong> pour la vitesse</li>
+                        <li><strong>Twitter Cards</strong> &mdash; generees automatiquement avec les memes donnees que l'Open Graph</li>
                     </ul>
+
+                    <h5>Image Open Graph</h5>
+                    <p>Configurez une image dediee dans <strong>Reglages &rarr; Identite</strong> (format recommande : 1200x630 px). Fallback automatique : image OG &rarr; image hero &rarr; logo.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
@@ -398,6 +404,112 @@
         </div>
         {% endif %}
 
+        {# ── 8b. Services ── #}
+        {% if site.hasModule('services') %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideServices">
+              <i class="fas fa-concierge-bell me-2"></i> Services et prestations
+            </button>
+          </h2>
+          <div id="guideServices" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+            <div class="accordion-body">
+              <h5>Fiches de services</h5>
+              <p>Le module Services permet de presenter vos prestations sous forme de grille sur la page d'accueil et en page dediee.</p>
+              <ul>
+                <li><strong>Description courte</strong> — affichee dans la grille des services</li>
+                <li><strong>Contenu detaille</strong> — page de detail optionnelle (editeur visuel avec commande <code>/</code>)</li>
+                <li><strong>Icone</strong> — classe Bootstrap Icons (ex: <code>bi-rocket</code>)</li>
+                <li><strong>Lien</strong> — vers une page du site, un lien externe, ou la page de detail auto-generee</li>
+                <li><strong>Ordre</strong> — position dans la grille (0 = premier)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {# ── 8c. Catalogue ── #}
+        {% if site.hasModule('catalogue') %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideCatalogue">
+              <i class="fas fa-store me-2"></i> Catalogue et produits
+            </button>
+          </h2>
+          <div id="guideCatalogue" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+            <div class="accordion-body">
+              <h5>Fiches produits</h5>
+              <p>Creez des fiches pour vos produits ou prestations avec tarification, variantes et galerie photos.</p>
+              <ul>
+                <li><strong>Prix HT/TTC</strong> — le mode d'affichage se configure dans Reglages > Identite > Catalogue</li>
+                <li><strong>Variantes</strong> — taille, duree, formule... chaque variante peut avoir son propre prix</li>
+                <li><strong>Galerie</strong> — ajoutez plusieurs photos par produit</li>
+                <li><strong>Disponibilite</strong> — disponible, indisponible ou sur devis</li>
+                <li><strong>Reservation</strong> — lien vers Calendly, Cal.com ou tout service de prise de rendez-vous</li>
+                <li><strong>Produits lies</strong> — suggestions "Vous aimerez aussi" (auto si vide)</li>
+              </ul>
+              <h5>Categories produits</h5>
+              <p>Organisez vos produits par categorie pour faciliter la navigation dans le catalogue.</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {# ── 8d. Evenements ── #}
+        {% if site.hasModule('events') %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideEvents">
+              <i class="fas fa-calendar-alt me-2"></i> Evenements
+            </button>
+          </h2>
+          <div id="guideEvents" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+            <div class="accordion-body">
+              <h5>Gerer vos evenements</h5>
+              <p>Publiez vos evenements a venir avec date, lieu et description detaillee.</p>
+              <ul>
+                <li><strong>Date et heure</strong> — date de debut obligatoire, date de fin optionnelle</li>
+                <li><strong>Lieu</strong> — adresse ou nom du lieu</li>
+                <li><strong>Evenement vedette</strong> — mis en avant sur la page d'accueil</li>
+                <li><strong>Produit lie</strong> — associez un produit du catalogue pour permettre l'inscription/achat direct</li>
+                <li><strong>Description</strong> — editeur visuel complet (commande <code>/</code> pour les blocs)</li>
+              </ul>
+              <p>Les evenements passes sont automatiquement archives et affiches separement.</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {# ── 8e. E-commerce ── #}
+        {% if site.hasModule('ecommerce') %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideEcommerce">
+              <i class="fas fa-shopping-cart me-2"></i> E-commerce et commandes
+            </button>
+          </h2>
+          <div id="guideEcommerce" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+            <div class="accordion-body">
+              <h5>Panier et commandes</h5>
+              <p>Le module e-commerce ajoute le panier, le tunnel de commande et le paiement Stripe.</p>
+              <ul>
+                <li><strong>Panier</strong> — les visiteurs ajoutent des produits et variantes au panier</li>
+                <li><strong>Commandes</strong> — consultables dans Modules > Commandes (lecture seule)</li>
+                <li><strong>Paiement Stripe</strong> — configurez vos cles dans Reglages > Identite > Paiement Stripe</li>
+                <li><strong>Statuts</strong> — en attente, payee, annulee, remboursee</li>
+              </ul>
+              <h5>Configuration Stripe</h5>
+              <p>Trois cles a renseigner dans Reglages > Identite :</p>
+              <ul>
+                <li><strong>Cle publique</strong> — commence par <code>pk_test_</code> ou <code>pk_live_</code></li>
+                <li><strong>Cle secrete</strong> — commence par <code>sk_test_</code> ou <code>sk_live_</code></li>
+                <li><strong>Secret webhook</strong> — commence par <code>whsec_</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
         {# ── 9. Personnalisation ── #}
         {% if is_granted('ROLE_FREELANCE') %}
         <div class="accordion-item">
@@ -469,6 +581,16 @@
                                 <td>Administrateur</td>
                                 <td>Gestion complete du site</td>
                             </tr>
+                            <tr>
+                                <td><strong>Freelance</strong></td>
+                                <td>ROLE_FREELANCE</td>
+                                <td>Themes, couleurs, polices + tout ce que fait Admin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Super Admin</strong></td>
+                                <td>ROLE_SUPER_ADMIN</td>
+                                <td>Acces total : modules, infra, configuration avancee</td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -480,6 +602,29 @@
             </div>
         </div>
         {% endif %}
+
+        {# ── 10b. Abonnes ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideSubscribers">
+                    <i class="fas fa-envelope me-2"></i> Abonnes et notifications
+                </button>
+            </h2>
+            <div id="guideSubscribers" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Systeme d'abonnement</h5>
+                    <p>Les visiteurs peuvent s'abonner aux notifications par email <strong>sans creer de compte</strong>. Un simple formulaire avec leur email suffit.</p>
+                    <ul>
+                        <li><strong>Double opt-in</strong> — l'abonne recoit un email de confirmation avant d'etre actif</li>
+                        <li><strong>Preferences</strong> — choix entre articles, evenements ou les deux</li>
+                        <li><strong>Desinscription</strong> — lien en un clic dans chaque email de notification</li>
+                        <li><strong>Gestion</strong> — l'abonne peut modifier ses preferences via un lien tokenise (sans connexion)</li>
+                    </ul>
+                    <h5>Dans l'admin</h5>
+                    <p>Consultez et gerez vos abonnes dans <strong>Communaute &rarr; Abonnes</strong>. Vous pouvez desactiver un abonne sans le supprimer.</p>
+                </div>
+            </div>
+        </div>
 
     </div>
 

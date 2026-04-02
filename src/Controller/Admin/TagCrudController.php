@@ -14,6 +14,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class TagCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return Tag::class;
@@ -35,5 +37,21 @@ class TagCrudController extends AbstractCrudController
         yield AssociationField::new('article', 'Articles')
             ->setHelp('Articles associés à ce tag')
             ->hideOnIndex();
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Tags',
+            'sections' => [
+                [
+                    'title' => 'Classification',
+                    'content' => '<p>Les tags permettent une classification fine par mots-cles. Ils sont partages entre les articles, les produits et le portfolio.</p>',
+                ],
+            ],
+            'tips' => [
+                'Chaque tag genere sa propre page avec tous les contenus associes.',
+            ],
+        ];
     }
 }

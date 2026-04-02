@@ -26,6 +26,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class OrderCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return Order::class;
@@ -112,5 +114,27 @@ class OrderCrudController extends AbstractCrudController
 
         yield TextField::new('stripeSessionId', 'Stripe Session')
             ->onlyOnDetail();
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Commandes',
+            'sections' => [
+                [
+                    'title' => 'Suivi des commandes',
+                    'content' => '<p>Les commandes sont creees automatiquement lors du passage en caisse. Elles sont en <strong>lecture seule</strong> — vous ne pouvez pas les modifier ni en creer manuellement.</p>
+                    <ul>
+                        <li><strong>En attente</strong> — commande creee, paiement non recu</li>
+                        <li><strong>Payee</strong> — paiement Stripe confirme</li>
+                        <li><strong>Annulee</strong> — commande annulee</li>
+                        <li><strong>Remboursee</strong> — remboursement effectue</li>
+                    </ul>',
+                ],
+            ],
+            'tips' => [
+                'Les remboursements se font directement depuis votre dashboard Stripe.',
+            ],
+        ];
     }
 }

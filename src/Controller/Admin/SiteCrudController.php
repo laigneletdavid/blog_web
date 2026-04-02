@@ -55,7 +55,7 @@ class SiteCrudController extends AbstractCrudController
                 ],
                 [
                     'title' => 'Google Analytics & Search Console',
-                    'content' => '<p>Collez votre <strong>ID Google Analytics</strong> (format GA-XXXXXXX) pour activer le suivi de visites Google.</p>
+                    'content' => '<p>Collez votre <strong>ID Google Analytics</strong> (format G-XXXXXXXXXX) pour activer le suivi de visites Google.</p>
                     <p>Le champ <strong>Google Search Console</strong> sert a la verification de propriete du site.</p>',
                 ],
             ],

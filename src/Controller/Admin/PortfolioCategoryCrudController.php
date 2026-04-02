@@ -14,6 +14,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class PortfolioCategoryCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return PortfolioCategory::class;
@@ -47,5 +49,21 @@ class PortfolioCategoryCrudController extends AbstractCrudController
 
         yield BooleanField::new('isActive', 'Activée')
             ->setHelp('Désactivez pour masquer cette catégorie des filtres.');
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Categories realisations',
+            'sections' => [
+                [
+                    'title' => 'Filtres',
+                    'content' => '<p>Les categories servent de filtres sur la page realisations. Les visiteurs cliquent sur une categorie pour afficher les projets correspondants.</p>',
+                ],
+            ],
+            'tips' => [
+                'L\'icone Bootstrap Icons (optionnelle) s\'affiche dans le bouton filtre.',
+            ],
+        ];
     }
 }

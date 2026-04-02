@@ -18,6 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
 #[IsGranted('ROLE_SUPER_ADMIN')]
 class ModulesCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return Site::class;
@@ -60,5 +62,31 @@ class ModulesCrudController extends AbstractCrudController
             ->generateUrl();
 
         return $this->redirect($url);
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Modules',
+            'sections' => [
+                [
+                    'title' => 'Activer des fonctionnalites',
+                    'content' => '<p>Chaque module ajoute des fonctionnalites au site :</p>
+                    <ul>
+                        <li><strong>Blog</strong> — articles, categories, tags, commentaires</li>
+                        <li><strong>Services</strong> — fiches de prestations</li>
+                        <li><strong>Catalogue</strong> — fiches produits avec variantes et tarifs</li>
+                        <li><strong>E-commerce</strong> — panier, commandes, paiement Stripe</li>
+                        <li><strong>Evenements</strong> — agenda avec evenements a venir et passes</li>
+                        <li><strong>Annuaire</strong> — annuaire des membres</li>
+                        <li><strong>FAQ</strong> — foire aux questions en accordeon</li>
+                        <li><strong>Portfolio</strong> — realisations et projets clients</li>
+                    </ul>',
+                ],
+            ],
+            'tips' => [
+                'Activez uniquement les modules dont votre client a besoin — le menu s\'adapte automatiquement.',
+            ],
+        ];
     }
 }

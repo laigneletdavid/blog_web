@@ -23,6 +23,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_FREELANCE')]
 class ThemeSettingsCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly ThemeService $themeService,
         private readonly SiteContext $siteContext,
@@ -207,6 +209,39 @@ class ThemeSettingsCrudController extends AbstractCrudController
             'accentColor' => $defaults['accentColor'] ?? '#8B5CF6',
             'fontFamily' => $defaults['fontFamily'] ?? "'Inter', sans-serif",
             'fontFamilySecondary' => $defaults['fontFamilySecondary'] ?? null,
+        ];
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Apparence',
+            'sections' => [
+                [
+                    'title' => 'Couleurs et polices',
+                    'content' => '<p>Personnalisez l\'apparence sans toucher au code :</p>
+                    <ul>
+                        <li><strong>Couleur primaire</strong> — boutons, liens, elements d\'accentuation</li>
+                        <li><strong>Couleur secondaire</strong> — fonds, bordures, elements complementaires</li>
+                        <li><strong>Couleur d\'accent</strong> — details, survols, call-to-action</li>
+                        <li><strong>Polices</strong> — 20 Google Fonts disponibles</li>
+                    </ul>
+                    <p>Laissez un champ vide pour utiliser la valeur par defaut du theme.</p>',
+                ],
+                [
+                    'title' => 'Images du theme',
+                    'content' => '<p>Les images principales du site :</p>
+                    <ul>
+                        <li><strong>Image hero</strong> — grande image d\'accueil (format paysage, 1920x800 min)</li>
+                        <li><strong>Image a propos</strong> — section "A propos" (portrait ou carre)</li>
+                    </ul>
+                    <p>Pour les galeries, logos et temoignages, utilisez le menu <strong>Images du theme</strong>.</p>',
+                ],
+            ],
+            'tips' => [
+                'Les 6 themes disponibles : Default, Corporate, Artisan, Vitrine, Starter, Moderne.',
+                'Changez de theme sans perdre vos couleurs personnalisees — elles sont conservees.',
+            ],
         ];
     }
 }

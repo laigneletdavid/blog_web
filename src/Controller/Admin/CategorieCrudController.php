@@ -86,7 +86,7 @@ class CategorieCrudController extends AbstractCrudController
             ->hideOnIndex();
 
         yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('A remplir uniquement si cette categorie existe aussi sur un autre site. Laissez vide sinon.')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
             ->hideOnIndex();
     }
 }

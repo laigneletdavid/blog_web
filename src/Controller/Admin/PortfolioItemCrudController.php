@@ -21,6 +21,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class PortfolioItemCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return PortfolioItem::class;
@@ -112,7 +114,7 @@ class PortfolioItemCrudController extends AbstractCrudController
             ->hideOnIndex();
 
         yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('À remplir uniquement si ce contenu existe aussi sur un autre site (ex : site du client).')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
             ->hideOnIndex();
 
         // --- Panel Paramètres ---
@@ -137,5 +139,28 @@ class PortfolioItemCrudController extends AbstractCrudController
 
         yield BooleanField::new('isFeatured', 'Mise en avant')
             ->setHelp('Les réalisations mises en avant peuvent être affichées sur la page d\'accueil.');
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Realisations',
+            'sections' => [
+                [
+                    'title' => 'Fiche projet',
+                    'content' => '<p>Presentez vos realisations avec une image, une description et des details techniques.</p>
+                    <ul>
+                        <li><strong>Image de couverture</strong> — ratio 4:3 recommande pour la grille</li>
+                        <li><strong>Client et date</strong> — affiches sur la page de detail</li>
+                        <li><strong>URL du projet</strong> — bouton "Voir le projet" vers le site en ligne</li>
+                        <li><strong>Tags</strong> — technologies ou competences (partages avec le blog)</li>
+                    </ul>',
+                ],
+            ],
+            'tips' => [
+                'Les realisations "vedettes" peuvent etre mises en avant sur la page d\'accueil.',
+                'Les visiteurs peuvent filtrer par categorie sur la page /realisations.',
+            ],
+        ];
     }
 }

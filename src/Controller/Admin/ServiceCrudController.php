@@ -17,6 +17,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_AUTHOR')]
 class ServiceCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return Service::class;
@@ -79,5 +81,30 @@ class ServiceCrudController extends AbstractCrudController
             ->setHelp('Ordre d\'affichage (0 = premier)');
 
         yield BooleanField::new('isActive', 'Actif');
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Services',
+            'sections' => [
+                [
+                    'title' => 'Fiches de services',
+                    'content' => '<p>Presentez vos prestations sous forme de grille sur la page d\'accueil.</p>
+                    <ul>
+                        <li><strong>Description courte</strong> — affichee dans la carte du service</li>
+                        <li><strong>Contenu detaille</strong> — page de detail optionnelle (editeur visuel)</li>
+                        <li><strong>Icone</strong> — classe Bootstrap Icons (ex: <code>bi-rocket</code>)</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Liens',
+                    'content' => '<p>Priorite des liens : page liee > lien externe > page de detail auto-generee (si contenu detaille rempli).</p>',
+                ],
+            ],
+            'tips' => [
+                'L\'icone s\'affiche dans la grille des services sur la home. Trouvez les icones sur icons.getbootstrap.com.',
+            ],
+        ];
     }
 }

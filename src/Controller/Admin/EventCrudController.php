@@ -22,6 +22,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class EventCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly EventNotificationService $notificationService,
     ) {
@@ -136,7 +138,7 @@ class EventCrudController extends AbstractCrudController
             ->hideOnIndex();
 
         yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('Si le contenu existe sur une autre URL.')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
             ->hideOnIndex();
 
         // --- Panel Paramètres ---
@@ -155,5 +157,32 @@ class EventCrudController extends AbstractCrudController
             ->setHelp('Associer un produit du catalogue pour permettre l\'achat/inscription directe depuis l\'evenement.')
             ->setRequired(false)
             ->hideOnIndex();
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Evenements',
+            'sections' => [
+                [
+                    'title' => 'Creer un evenement',
+                    'content' => '<p>Publiez vos evenements avec une date, un lieu et une description detaillee.</p>
+                    <ul>
+                        <li><strong>Date de debut</strong> — obligatoire</li>
+                        <li><strong>Date de fin</strong> — optionnelle</li>
+                        <li><strong>Lieu</strong> — adresse ou nom du lieu</li>
+                        <li><strong>Evenement vedette</strong> — mis en avant sur la page d\'accueil</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Produit lie',
+                    'content' => '<p>Associez un produit du catalogue pour permettre l\'inscription ou l\'achat direct depuis la page de l\'evenement.</p>',
+                ],
+            ],
+            'tips' => [
+                'Utilisez la commande / dans l\'editeur pour inserer rapidement des blocs (images, encarts, colonnes).',
+                'Les evenements passes sont automatiquement archives.',
+            ],
+        ];
     }
 }

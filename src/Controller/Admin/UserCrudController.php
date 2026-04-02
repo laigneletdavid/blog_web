@@ -43,9 +43,11 @@ class UserCrudController extends AbstractCrudController
                 [
                     'title' => 'Les roles',
                     'content' => '<ul>
-                        <li><strong>Utilisateur</strong> — Visiteur inscrit. Peut lire, commenter et gerer son profil.</li>
-                        <li><strong>Auteur</strong> — Redacteur. Peut creer et editer des articles, pages et medias.</li>
-                        <li><strong>Admin</strong> — Administrateur. Acces complet a la gestion du site.</li>
+                        <li><strong>ROLE_USER (Utilisateur)</strong> — Visiteur inscrit : lecture, commentaires, profil, annuaire.</li>
+                        <li><strong>ROLE_AUTHOR (Auteur)</strong> — Redacteur : articles, pages, medias (creation/edition).</li>
+                        <li><strong>ROLE_ADMIN (Admin)</strong> — Admin client : gestion complete du site (users, menus, categories, tags, config).</li>
+                        <li><strong>ROLE_FREELANCE (Freelance)</strong> — Revendeur : themes, couleurs, polices + tout ce que fait Admin.</li>
+                        <li><strong>ROLE_SUPER_ADMIN (Super Admin)</strong> — Acces total : modules, infra, configuration avancee.</li>
                     </ul>',
                 ],
                 [

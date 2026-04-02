@@ -17,6 +17,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class ProductCategoryCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return ProductCategory::class;
@@ -58,5 +60,21 @@ class ProductCategoryCrudController extends AbstractCrudController
             ->setHelp('Les categories sont triees par ordre croissant (0 = en premier).');
 
         yield BooleanField::new('isActive', 'Active');
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Categories produits',
+            'sections' => [
+                [
+                    'title' => 'Organisation du catalogue',
+                    'content' => '<p>Organisez vos produits par categorie. Chaque categorie a sa propre page avec image et description.</p>',
+                ],
+            ],
+            'tips' => [
+                'Ajoutez une image representative pour chaque categorie — elle s\'affiche dans la navigation du catalogue.',
+            ],
+        ];
     }
 }

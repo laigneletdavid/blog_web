@@ -21,6 +21,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_FREELANCE')]
 class ThemeImagesCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly SiteContext $siteContext,
     ) {
@@ -114,5 +116,26 @@ class ThemeImagesCrudController extends AbstractCrudController
         }
 
         return $qb;
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Images du theme',
+            'sections' => [
+                [
+                    'title' => 'Types d\'images',
+                    'content' => '<p>Trois types d\'images pour personnaliser la page d\'accueil :</p>
+                    <ul>
+                        <li><strong>Galerie</strong> — carousel ou grille d\'images</li>
+                        <li><strong>Logo client</strong> — bandeau de logos partenaires</li>
+                        <li><strong>Temoignage</strong> — photo + citation d\'un client</li>
+                    </ul>',
+                ],
+            ],
+            'tips' => [
+                'Le champ "titre" sert de texte alternatif pour les images et de nom pour les temoignages.',
+            ],
+        ];
     }
 }

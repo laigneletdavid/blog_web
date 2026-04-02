@@ -17,6 +17,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class FaqCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return Faq::class;
@@ -70,5 +72,31 @@ class FaqCrudController extends AbstractCrudController
 
         yield BooleanField::new('isActive', 'Activée')
             ->setHelp('Désactivez pour masquer cette question sans la supprimer.');
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — FAQ',
+            'sections' => [
+                [
+                    'title' => 'Questions / Reponses',
+                    'content' => '<p>Les questions sont affichees en accordeon sur la page <code>/faq</code>, groupees par categorie.</p>
+                    <ul>
+                        <li><strong>Question</strong> — formulee du point de vue du visiteur</li>
+                        <li><strong>Reponse</strong> — editeur visuel complet (commande <code>/</code>)</li>
+                        <li><strong>Categorie</strong> — regroupe les questions par theme</li>
+                        <li><strong>Icone</strong> — optionnelle, classe Bootstrap Icons</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'SEO',
+                    'content' => '<p>La page FAQ genere automatiquement le balisage <strong>Schema.org FAQPage</strong> pour un affichage enrichi dans Google.</p>',
+                ],
+            ],
+            'tips' => [
+                'Le slug de chaque question sert d\'ancre : partagez un lien direct avec /faq#slug.',
+            ],
+        ];
     }
 }

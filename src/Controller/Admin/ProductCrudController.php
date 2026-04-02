@@ -32,6 +32,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class ProductCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public function __construct(
         private readonly SiteContext $siteContext,
         private readonly MediaProcessorService $mediaProcessor,
@@ -251,7 +253,7 @@ class ProductCrudController extends AbstractCrudController
             ->hideOnIndex();
 
         yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('Si ce produit existe sur un autre site.')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
             ->hideOnIndex();
 
         // ============================================================
@@ -337,5 +339,36 @@ class ProductCrudController extends AbstractCrudController
                 $product->setImage($firstGallery->getMedia());
             }
         }
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Produits',
+            'sections' => [
+                [
+                    'title' => 'Fiche produit',
+                    'content' => '<p>Creez des fiches pour vos produits ou prestations :</p>
+                    <ul>
+                        <li><strong>Prix HT</strong> — le TTC est calcule automatiquement selon le taux de TVA</li>
+                        <li><strong>Ancien prix</strong> — affiche un prix barre pour les promotions</li>
+                        <li><strong>Disponibilite</strong> — disponible, indisponible, ou sur devis</li>
+                        <li><strong>Galerie</strong> — ajoutez plusieurs photos par produit</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Variantes',
+                    'content' => '<p>Ajoutez des variantes si votre produit a des options (taille, duree, formule). Chaque variante peut avoir son propre prix. Si le prix est vide, celui du produit parent s\'applique.</p>',
+                ],
+                [
+                    'title' => 'Reservation',
+                    'content' => '<p>Liez un service de reservation externe (Calendly, Cal.com...) pour afficher un bouton de prise de rendez-vous sur la fiche produit.</p>',
+                ],
+            ],
+            'tips' => [
+                'Laissez le prix vide pour les prestations "sur devis".',
+                'Les produits lies sont suggeres automatiquement si vous ne les selectionnez pas.',
+            ],
+        ];
     }
 }

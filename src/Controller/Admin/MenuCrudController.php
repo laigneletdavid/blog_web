@@ -20,6 +20,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class MenuCrudController extends AbstractCrudController
 {
+    use Trait\AdminHelpTrait;
+
     public static function getEntityFqcn(): string
     {
         return Menu::class;
@@ -110,5 +112,41 @@ class MenuCrudController extends AbstractCrudController
         }
 
         parent::deleteEntity($entityManager, $entityInstance);
+    }
+
+    protected function getHelpData(): ?array
+    {
+        return [
+            'title' => 'Aide — Navigation',
+            'sections' => [
+                [
+                    'title' => 'Emplacements',
+                    'content' => '<p>Trois zones de navigation disponibles :</p>
+                    <ul>
+                        <li><strong>Header</strong> — menu principal en haut du site</li>
+                        <li><strong>Footer navigation</strong> — liens utiles en bas de page</li>
+                        <li><strong>Footer legal</strong> — mentions legales, confidentialite, CGV</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Types de liens',
+                    'content' => '<p>Chaque element de menu pointe vers un contenu du site ou une URL externe :</p>
+                    <ul>
+                        <li><strong>Page</strong> — lie a une page du site</li>
+                        <li><strong>Article</strong> — lie a un article</li>
+                        <li><strong>Categorie</strong> — lie a une categorie</li>
+                        <li><strong>URL personnalisee</strong> — lien libre (interne ou externe)</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Elements systeme',
+                    'content' => '<p>Les elements systeme (crees automatiquement par le CMS) sont editables — vous pouvez les renommer, reordonner ou masquer — mais ils ne peuvent pas etre supprimes.</p>',
+                ],
+            ],
+            'tips' => [
+                'Utilisez le champ "Ordre" pour classer vos liens (0 = premier).',
+                'Les elements masques (visibilite desactivee) disparaissent du site mais restent dans l\'admin.',
+            ],
+        ];
     }
 }
