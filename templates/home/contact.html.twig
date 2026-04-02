@@ -5,6 +5,7 @@
 {% block body %}
     {% set _theme = site.template|default('default') %}
     {% include [
+        'client/contact.html.twig',
         'themes/' ~ _theme ~ '/contact.html.twig',
         'themes/default/contact.html.twig'
     ] %}

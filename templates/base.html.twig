@@ -144,8 +144,9 @@
         </script>
         {% endif %}
 
-        {# ====== HEADER (theme-aware) ====== #}
+        {# ====== HEADER (theme-aware, client override priority) ====== #}
         {% include [
+            'client/_header.html.twig',
             'themes/' ~ _theme ~ '/_header.html.twig',
             'themes/default/_header.html.twig'
         ] %}
@@ -163,8 +164,9 @@
 
         {% block body %}{% endblock %}
 
-        {# ====== FOOTER (theme-aware) ====== #}
+        {# ====== FOOTER (theme-aware, client override priority) ====== #}
         {% include [
+            'client/_footer.html.twig',
             'themes/' ~ _theme ~ '/_footer.html.twig',
             'themes/default/_footer.html.twig'
         ] %}

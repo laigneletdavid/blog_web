@@ -25,3 +25,8 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> client overrides ###
+/templates/client/*
+!/templates/client/.gitkeep
+###< client overrides ###
