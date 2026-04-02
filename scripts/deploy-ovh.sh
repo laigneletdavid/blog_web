@@ -1,16 +1,163 @@
 #!/bin/bash
-# BlogWeb — Script de deploiement manuel pour OVH mutualise
-# Usage: ssh user@host puis ./deploy-ovh.sh
+# BlogWeb — Script de deploiement pour OVH mutualise
+# Usage:
+#   Premier deploy : ./scripts/deploy-ovh.sh --init
+#   Mises a jour   : ./scripts/deploy-ovh.sh
+#   Import dump    : ./scripts/deploy-ovh.sh --import dump.sql
 set -euo pipefail
 
 SITE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$SITE_DIR"
 
-echo "=== BlogWeb — Deploy OVH ==="
-
 # --- 0. Forcer l'environnement prod ---
 export APP_ENV=prod
 export APP_DEBUG=0
+
+# =============================================================================
+# MODE --init : Premier deploiement (genere .env.local, teste BDD, etc.)
+# =============================================================================
+if [[ "${1:-}" == "--init" ]]; then
+    echo "=== BlogWeb — Init OVH ==="
+
+    # Verifier PHP
+    PHP_VER=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
+    echo "[check] PHP $PHP_VER"
+    if [[ "$PHP_VER" != "8.4" ]]; then
+        echo "ERREUR: PHP 8.4 requis (actuel: $PHP_VER)"
+        echo "Verifier .ovhconfig et se reconnecter en SSH"
+        exit 1
+    fi
+
+    # Generer .env.local
+    if [ -f .env.local ]; then
+        echo "[!] .env.local existe deja. Ecraser ? (y/N)"
+        read -r REPLY
+        if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
+            echo "Init annule."
+            exit 0
+        fi
+    fi
+
+    echo ""
+    echo "--- Configuration BDD ---"
+    read -rp "Host BDD (ex: ld60352-001.eu.clouddb.ovh.net) : " DB_HOST
+    read -rp "Port BDD (ex: 35547) : " DB_PORT
+    read -rp "Nom utilisateur BDD : " DB_USER
+    read -rsp "Mot de passe BDD : " DB_PASS
+    echo ""
+    read -rp "Nom de la base : " DB_NAME
+
+    # Tester la connexion BDD
+    echo ""
+    echo "[test] Connexion BDD..."
+    if php -r "new PDO('mysql:host=$DB_HOST;port=$DB_PORT;dbname=$DB_NAME', '$DB_USER', '$DB_PASS');" 2>/dev/null; then
+        echo "[OK] Connexion BDD reussie"
+    else
+        echo "ERREUR: Impossible de se connecter a la BDD."
+        echo "Verifier les credentials et les IP autorisees sur CloudDB OVH."
+        exit 1
+    fi
+
+    echo ""
+    echo "--- Configuration Mailer ---"
+    read -rp "MAILER_DSN Brevo (laisser vide pour skip) : " MAILER_DSN
+    MAILER_DSN="${MAILER_DSN:-smtp://localhost:1025}"
+
+    # Generer APP_SECRET
+    APP_SECRET=$(php -r "echo bin2hex(random_bytes(16));")
+
+    # Ecrire .env.local
+    cat > .env.local << ENVEOF
+###> symfony/framework-bundle ###
+APP_ENV=prod
+APP_SECRET=$APP_SECRET
+###< symfony/framework-bundle ###
+
+###> doctrine/doctrine-bundle ###
+DATABASE_URL="mysql://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME?serverVersion=8.0&charset=utf8mb4"
+###< doctrine/doctrine-bundle ###
+
+###> symfony/messenger ###
+MESSENGER_TRANSPORT_DSN=doctrine://default
+###< symfony/messenger ###
+
+###> symfony/mailer ###
+MAILER_DSN=$MAILER_DSN
+###< symfony/mailer ###
+
+###> recaptcha ###
+RECAPTCHA_SITE_KEY=
+RECAPTCHA_SECRET_KEY=
+###< recaptcha ###
+ENVEOF
+
+    echo ""
+    echo "[OK] .env.local genere"
+    echo ""
+
+    # Supprimer .env.prod si present (ecrase les valeurs)
+    if [ -f .env.prod ]; then
+        rm -f .env.prod
+        echo "[fix] .env.prod supprime (evite ecrasement des valeurs)"
+    fi
+
+    # Lancer le deploy normal
+    echo "--- Lancement du deploy ---"
+    echo ""
+    exec "$0"
+fi
+
+# =============================================================================
+# MODE --import : Importer un dump SQL
+# =============================================================================
+if [[ "${1:-}" == "--import" ]]; then
+    DUMP_FILE="${2:-}"
+    if [ -z "$DUMP_FILE" ] || [ ! -f "$DUMP_FILE" ]; then
+        echo "Usage: $0 --import <fichier.sql>"
+        exit 1
+    fi
+
+    # Verifier que c'est du SQL
+    if ! head -5 "$DUMP_FILE" | grep -qi 'sql\|mariadb\|mysql\|create\|insert'; then
+        echo "ERREUR: Le fichier ne semble pas etre un dump SQL valide."
+        head -3 "$DUMP_FILE"
+        exit 1
+    fi
+
+    # Extraire les credentials depuis .env.local
+    if [ ! -f .env.local ]; then
+        echo "ERREUR: .env.local manquant. Lancer --init d'abord."
+        exit 1
+    fi
+
+    DB_URL=$(grep '^DATABASE_URL=' .env.local | sed 's/DATABASE_URL=//' | tr -d '"')
+    # Parse: mysql://user:pass@host:port/dbname
+    DB_USER=$(echo "$DB_URL" | sed 's|mysql://||' | cut -d: -f1)
+    DB_PASS=$(echo "$DB_URL" | sed 's|mysql://||' | cut -d: -f2 | cut -d@ -f1)
+    DB_HOST=$(echo "$DB_URL" | cut -d@ -f2 | cut -d: -f1)
+    DB_PORT=$(echo "$DB_URL" | cut -d@ -f2 | cut -d: -f2 | cut -d/ -f1)
+    DB_NAME=$(echo "$DB_URL" | cut -d/ -f4 | cut -d? -f1)
+
+    echo "=== Import dump SQL ==="
+    echo "Fichier : $DUMP_FILE"
+    echo "BDD     : $DB_NAME@$DB_HOST:$DB_PORT"
+    echo ""
+    echo "ATTENTION: Cela va ecraser les donnees existantes. Continuer ? (y/N)"
+    read -r REPLY
+    if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
+        echo "Import annule."
+        exit 0
+    fi
+
+    mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$DUMP_FILE"
+    echo "[OK] Dump importe avec succes"
+    exit 0
+fi
+
+# =============================================================================
+# MODE NORMAL : Mise a jour (deploy)
+# =============================================================================
+echo "=== BlogWeb — Deploy OVH ==="
 
 # --- 1. Verifier PHP ---
 PHP_VER=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
@@ -34,7 +181,7 @@ fi
 
 # --- 4. .env.local check (avant composer pour que auto-scripts fonctionne) ---
 if [ ! -f .env.local ]; then
-    echo "ERREUR: .env.local manquant ! Copier .env.local.example et configurer."
+    echo "ERREUR: .env.local manquant ! Lancer: ./scripts/deploy-ovh.sh --init"
     exit 1
 fi
 if grep -q 'APP_SECRET=$' .env.local || grep -q 'APP_SECRET=CHANGE_ME' .env.local; then
@@ -42,6 +189,9 @@ if grep -q 'APP_SECRET=$' .env.local || grep -q 'APP_SECRET=CHANGE_ME' .env.loca
     sed -i "s|APP_SECRET=.*|APP_SECRET=$SECRET|" .env.local
     echo "       APP_SECRET genere automatiquement"
 fi
+
+# Supprimer .env.prod si present (ecrase les valeurs de .env.local)
+[ -f .env.prod ] && rm -f .env.prod && echo "       .env.prod supprime"
 
 # --- 5. Composer ---
 echo "[3/7] Dependances PHP..."
