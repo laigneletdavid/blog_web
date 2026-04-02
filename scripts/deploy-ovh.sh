@@ -8,6 +8,10 @@ cd "$SITE_DIR"
 
 echo "=== BlogWeb — Deploy OVH ==="
 
+# --- 0. Forcer l'environnement prod ---
+export APP_ENV=prod
+export APP_DEBUG=0
+
 # --- 1. Verifier PHP ---
 PHP_VER=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 echo "[check] PHP $PHP_VER"
@@ -28,15 +32,7 @@ if grep -rn '^<<<<<<< \|^=======\|^>>>>>>> ' assets/ src/ templates/ config/ 2>/
     exit 1
 fi
 
-# --- 4. Composer ---
-echo "[3/7] Dependances PHP..."
-if [ ! -f composer.phar ]; then
-    echo "       Installation de composer..."
-    curl -sS https://getcomposer.org/installer | php
-fi
-php composer.phar install --no-dev --optimize-autoloader --no-interaction
-
-# --- 5. .env.local check ---
+# --- 4. .env.local check (avant composer pour que auto-scripts fonctionne) ---
 if [ ! -f .env.local ]; then
     echo "ERREUR: .env.local manquant ! Copier .env.local.example et configurer."
     exit 1
@@ -46,6 +42,14 @@ if grep -q 'APP_SECRET=$' .env.local || grep -q 'APP_SECRET=CHANGE_ME' .env.loca
     sed -i "s|APP_SECRET=.*|APP_SECRET=$SECRET|" .env.local
     echo "       APP_SECRET genere automatiquement"
 fi
+
+# --- 5. Composer ---
+echo "[3/7] Dependances PHP..."
+if [ ! -f composer.phar ]; then
+    echo "       Installation de composer..."
+    curl -sS https://getcomposer.org/installer | php
+fi
+php composer.phar install --no-dev --optimize-autoloader --no-interaction
 
 # --- 6. Node + Assets ---
 echo "[4/7] Installation Node (nvm)..."
@@ -71,11 +75,11 @@ NODE_ENV=production npx encore production
 
 # --- 7. Symfony ---
 echo "[6/7] Cache Symfony..."
-php bin/console cache:clear --env=prod --no-debug
-php bin/console cache:warmup --env=prod --no-debug
+APP_ENV=prod php bin/console cache:clear --env=prod --no-debug
+APP_ENV=prod php bin/console cache:warmup --env=prod --no-debug
 
 echo "[7/7] Migrations BDD..."
-php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+APP_ENV=prod php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 echo ""
 echo "=== Deploy termine ! ==="
