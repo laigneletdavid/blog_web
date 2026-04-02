@@ -1,0 +1,79 @@
+name: Deploy bw_front
+
+on:
+  push:
+    branches: [bw_front]
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: '8.4'
+  NODE_VERSION: '20'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Verifications ---
+      - name: Check for merge conflict markers
+        run: |
+          if grep -rn '^<<<<<<< \|^=======\|^>>>>>>> ' assets/ src/ templates/ config/ 2>/dev/null; then
+            echo "::error::Merge conflict markers found!"
+            exit 1
+          fi
+
+      # --- PHP + Composer ---
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, pdo_mysql, zip
+          tools: composer:v2
+
+      - name: Composer install (no dev)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      # --- Node + Assets ---
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Build assets
+        run: |
+          npm ci
+          npx encore production
+
+      # --- Nettoyage avant deploy ---
+      - name: Clean dev files
+        run: |
+          rm -rf .claude/ .github/ .githooks/ node_modules/ assets/ docker/
+          rm -f CLAUDE.md RECAP_MISE_EN_PROD_BLOGWEB.md docker-compose.yml docker-compose.prod.yml docker-compose.override.yml Makefile
+          rm -f webpack.config.js package.json package-lock.json
+          rm -f phpunit.xml.dist .dockerignore client_reference_template.md
+
+      # --- Deploy via SSH + rsync ---
+      - name: Deploy to OVH
+        uses: easingthemes/ssh-deploy@v5
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.OVH_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.OVH_SSH_HOST }}
+          REMOTE_USER: ${{ secrets.OVH_SSH_USER }}
+          REMOTE_PORT: ${{ secrets.OVH_SSH_PORT }}
+          TARGET: ${{ secrets.OVH_DEPLOY_PATH }}
+          EXCLUDE: ".git/, .env.local, var/log/, var/cache/"
+          ARGS: "-rlgoDzvc --delete"
+
+      # --- Post-deploy ---
+      - name: Post-deploy (cache clear + migrations)
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.OVH_SSH_HOST }}
+          username: ${{ secrets.OVH_SSH_USER }}
+          key: ${{ secrets.OVH_SSH_KEY }}
+          port: ${{ secrets.OVH_SSH_PORT }}
+          script: |
+            cd ${{ secrets.OVH_DEPLOY_PATH }}
+            php bin/console cache:clear --env=prod --no-debug
+            php bin/console cache:warmup --env=prod --no-debug
+            php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
