@@ -101,10 +101,19 @@ ENVEOF
         echo "[fix] .env.prod supprime (evite ecrasement des valeurs)"
     fi
 
-    # Lancer le deploy normal
+    # Dump SQL a importer ?
+    echo ""
+    read -rp "Chemin du dump SQL a importer (laisser vide pour skip) : " DUMP_PATH
+    echo ""
+
+    # Lancer le deploy (skip migrations si dump prevu)
     echo "--- Lancement du deploy ---"
     echo ""
-    exec "$0"
+    if [ -n "$DUMP_PATH" ]; then
+        exec "$0" --skip-migrations "$DUMP_PATH"
+    else
+        exec "$0"
+    fi
 fi
 
 # =============================================================================
@@ -162,6 +171,16 @@ if [[ "${1:-}" == "--import" ]]; then
     [ "$IMPORT_FILE" != "$DUMP_FILE" ] && rm -f "$IMPORT_FILE"
     echo "[OK] Dump importe avec succes"
     exit 0
+fi
+
+# =============================================================================
+# MODE --skip-migrations : Deploy sans migrations (dump prevu)
+# =============================================================================
+SKIP_MIGRATIONS=false
+DUMP_TO_IMPORT=""
+if [[ "${1:-}" == "--skip-migrations" ]]; then
+    SKIP_MIGRATIONS=true
+    DUMP_TO_IMPORT="${2:-}"
 fi
 
 # =============================================================================
@@ -238,8 +257,16 @@ echo "[6/7] Cache Symfony..."
 APP_ENV=prod php bin/console cache:clear --env=prod --no-debug
 APP_ENV=prod php bin/console cache:warmup --env=prod --no-debug
 
-echo "[7/7] Migrations BDD..."
-APP_ENV=prod php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+if [ "$SKIP_MIGRATIONS" = true ]; then
+    echo "[7/7] Skip migrations (dump prevu)..."
+    if [ -n "$DUMP_TO_IMPORT" ] && [ -f "$DUMP_TO_IMPORT" ]; then
+        echo "       Import du dump..."
+        exec "$0" --import "$DUMP_TO_IMPORT"
+    fi
+else
+    echo "[7/7] Migrations BDD..."
+    APP_ENV=prod php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+fi
 
 echo ""
 echo "=== Deploy termine ! ==="
