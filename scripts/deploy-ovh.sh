@@ -149,7 +149,16 @@ if [[ "${1:-}" == "--import" ]]; then
         exit 0
     fi
 
-    mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$DUMP_FILE"
+    # Fix collation MariaDB → MySQL (utf8mb4_uca1400_ai_ci n'existe pas sur MySQL 8)
+    IMPORT_FILE="$DUMP_FILE"
+    if grep -q 'utf8mb4_uca1400_ai_ci' "$DUMP_FILE"; then
+        echo "[fix] Conversion collation MariaDB → MySQL..."
+        IMPORT_FILE="/tmp/dump_fixed.sql"
+        sed 's/utf8mb4_uca1400_ai_ci/utf8mb4_unicode_ci/g' "$DUMP_FILE" > "$IMPORT_FILE"
+    fi
+
+    mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$IMPORT_FILE"
+    [ "$IMPORT_FILE" != "$DUMP_FILE" ] && rm -f "$IMPORT_FILE"
     echo "[OK] Dump importe avec succes"
     exit 0
 fi
