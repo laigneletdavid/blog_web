@@ -54,11 +54,12 @@ composer-update: ## Update PHP dependencies
 	$(PHP) composer update
 
 ## — Database Export ———————————————————————————
-db-dump: ## Dump database to .claude/docs/blogweb_dump.sql
-	@echo "Dumping database..."
-	$(DOCKER) exec db mariadb-dump -uapp -papp blog_web > .claude/docs/blogweb_dump.sql
-	@head -5 .claude/docs/blogweb_dump.sql
-	@echo "Dump OK: .claude/docs/blogweb_dump.sql"
+db-dump: ## Dump database (reads DB name from .env.local)
+	$(eval DB_NAME := $(shell grep '^DATABASE_URL=' .env.local | sed 's|.*://.*:.*/||' | cut -d'?' -f1))
+	@echo "Dumping database: $(DB_NAME)..."
+	$(DOCKER) exec -T db mariadb-dump -uapp -papp $(DB_NAME) > scripts/$(DB_NAME)_dump.sql
+	@head -5 scripts/$(DB_NAME)_dump.sql
+	@echo "Dump OK: scripts/$(DB_NAME)_dump.sql"
 
 ## — Logs ——————————————————————————————————————
 logs: ## Show all container logs
