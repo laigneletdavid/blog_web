@@ -154,6 +154,8 @@ if [[ "${1:-}" == "--import" ]]; then
     IMPORT_FILE="/tmp/dump_fixed.sql"
     sed -e '/^\/\*M!999999/d' \
         -e 's/utf8mb4_uca1400_ai_ci/utf8mb4_unicode_ci/g' \
+        -e "s/ DEFAULT '\\[.*\\]' CHECK (json_valid(\`[^\`]*\`))//g" \
+        -e 's/ CHECK (json_valid(`[^`]*`))//g' \
         "$DUMP_FILE" > "$IMPORT_FILE"
 
     mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$IMPORT_FILE"
