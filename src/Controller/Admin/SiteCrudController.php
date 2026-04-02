@@ -95,6 +95,11 @@ class SiteCrudController extends AbstractCrudController
             ->setLabel('Phrase d\'accroche');
 
         yield AssociationField::new('logo', 'Logo')
+            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header du site.')
+            ->hideOnIndex();
+
+        yield AssociationField::new('ogImage', 'Image Open Graph')
+            ->setHelp('Image affichee lors du partage sur les reseaux sociaux (Facebook, LinkedIn, Twitter). Format recommande : 1200x630 px, JPG ou PNG.')
             ->hideOnIndex();
 
         yield TextField::new('email')

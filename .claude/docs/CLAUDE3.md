@@ -794,6 +794,50 @@ Suppression complete de l'ancien systeme d'abonnement lie aux comptes utilisateu
 
 ---
 
+## Phase 15 — Image Open Graph dediee
+
+> Implemente le 2026-04-02
+
+### Contexte
+
+L'image OG (Open Graph) de la home et des pages generiques utilisait le logo du site comme fallback. Un logo PNG transparent rend mal en apercu sur les reseaux sociaux (Facebook, LinkedIn, Twitter). Il faut une image dediee au format 1200x630.
+
+### Modification entite Site
+
+Ajout d'un champ `ogImage` (ManyToOne vers Media, nullable, `ON DELETE SET NULL`) dans la section SEO de l'entite.
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Entity/Site.php` | Ajout propriete `$ogImage` + getter/setter |
+| `migrations/Version20260402035203.php` | `ALTER TABLE site ADD og_image_id` + FK + index |
+
+### Modification admin
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Controller/Admin/SiteCrudController.php` | Ajout champ `ogImage` ("Image Open Graph") dans le panel Identite avec help "1200x630 px, JPG ou PNG". Ajout help sur le champ `logo` precisant le format recommande (horizontal/carre, PNG transparent ou JPG). |
+
+### Modification SeoService — fallback chain
+
+Nouvelle chaine de fallback pour l'image OG sur toutes les pages :
+
+```
+ogImage > heroImage > logo
+```
+
+| Fichier | Modification |
+|---------|-------------|
+| `src/Service/SeoService.php` | Nouvelle methode privee `resolveSiteImage(?Site)` utilisee par `resolveForHome()`, `resolveForPage()` et `resolveImage()` (fallback entites sans featuredMedia) |
+
+### Impact
+
+- **Home** : l'image OG est maintenant l'ogImage si definie, sinon heroImage, sinon logo
+- **Pages generiques** (contact, etc.) : meme fallback
+- **Articles/Pages avec featuredMedia** : inchange (featuredMedia prioritaire, puis fallback site)
+- **Admin** : nouveau champ dans Reglages > Identite, section Identite
+
+---
+
 ## Recap packages npm ajoutes (Phase 12)
 
 ```

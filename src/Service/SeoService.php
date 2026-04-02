@@ -55,7 +55,7 @@ class SeoService
             'keywords' => '',
             'noIndex' => false,
             'canonicalUrl' => null,
-            'image' => $site?->getLogo()?->getFileName(),
+            'image' => $this->resolveSiteImage($site),
             'type' => 'website',
             'publishedAt' => null,
             'createdAt' => null,
@@ -77,7 +77,7 @@ class SeoService
             'keywords' => '',
             'noIndex' => false,
             'canonicalUrl' => null,
-            'image' => $site?->getLogo()?->getFileName(),
+            'image' => $this->resolveSiteImage($site),
             'type' => 'website',
             'publishedAt' => null,
             'createdAt' => null,
@@ -134,8 +134,17 @@ class SeoService
             return $entity->getFeaturedMedia()->getFileName();
         }
 
-        $site = $this->siteContext->getCurrentSite();
-        return $site?->getLogo()?->getFileName();
+        return $this->resolveSiteImage($this->siteContext->getCurrentSite());
+    }
+
+    /**
+     * Fallback chain pour l'image OG du site : ogImage > heroImage > logo.
+     */
+    private function resolveSiteImage(?Site $site): ?string
+    {
+        return $site?->getOgImage()?->getFileName()
+            ?? $site?->getHeroImage()?->getFileName()
+            ?? $site?->getLogo()?->getFileName();
     }
 
     private function resolveType(object $entity): string

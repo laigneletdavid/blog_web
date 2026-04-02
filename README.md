@@ -8,8 +8,8 @@ CMS professionnel pret a deployer pour chaque client. Site propre, securise, SEO
 
 ### Gestion de contenu
 
-- **Articles de blog** — Editeur visuel TipTap (gras, italique, titres, listes, images, videos YouTube, citations, blocs de code). Sauvegarde automatique du brouillon toutes les 30 secondes. Publication avec notification email aux abonnes.
-- **Pages** — Pages personnalisees (A propos, Nos services...) + pages systeme (mentions legales, confidentialite, CGV). 3 mises en page : standard, pleine largeur, sidebar gauche.
+- **Articles de blog** — Editeur visuel TipTap (gras, italique, titres, listes, images, videos YouTube/Vimeo, citations, blocs de code, tableaux, colonnes, callouts). Sauvegarde automatique du brouillon toutes les 30 secondes. Publication avec notification email aux abonnes.
+- **Pages** — Pages personnalisees (A propos, Nos services...) + pages systeme (mentions legales, confidentialite, CGV). 3 mises en page : standard, pleine largeur, sidebar gauche. Widgets sidebar (categories, archives, tag cloud, evenements a venir).
 - **Categories** — Organisation des articles par thematique avec couleur et image. Un article peut appartenir a plusieurs categories.
 - **Tags** — Classification fine des articles par mots-cles.
 - **Medias** — Bibliotheque d'images avec conversion WebP automatique, generation de 3 tailles responsives (480px, 800px, 1200px), texte alternatif pour l'accessibilite et le SEO.
@@ -37,6 +37,7 @@ Chaque module s'active independamment selon les besoins du client :
 - **Sitemap XML** automatique (`/sitemap.xml`) avec priorites et dates de modification
 - **robots.txt** dynamique
 - **Open Graph** (Facebook, LinkedIn) et **Twitter Cards** automatiques
+- **Image Open Graph dediee** configurable dans l'identite du site (1200x630). Fallback : `ogImage > heroImage > logo`
 - **Schema.org JSON-LD** (Article, BreadcrumbList, FAQPage)
 - **Fallback chain** : champs SEO de l'entite > titre/description du contenu > valeurs par defaut du site
 - **Google Analytics** et **Google Search Console** configurables dans l'admin
@@ -45,14 +46,17 @@ Chaque module s'active independamment selon les besoins du client :
 ### Themes et personnalisation
 
 - **6 themes inclus** : Default, Corporate, Artisan, Vitrine, Starter, Moderne
+- **Home page generique** : un template unique (`_home_generic.html.twig`) adapte par le CSS de chaque theme via des selecteurs `.theme-{name} .home-*`. Les sections (hero, services, articles, evenements, produits, FAQ, portfolio) s'affichent conditionnellement selon les modules actives.
 - **Personnalisation sans code** : couleurs (primaire, secondaire, accent), polices (20 Google Fonts), logo, favicon
 - **CSS custom properties** : la personnalisation s'applique a tous les themes sans rebuild
 - **Preview live** des themes avant activation (desktop, tablette, mobile)
-- **Images du theme** : hero, about, galerie configurables dans l'admin
+- **Images du theme** : hero, about, galerie configurables dans l'admin (slots gallery, logo, testimonial)
+- **Cookie consent** : bandeau de consentement cookies (Stimulus controller)
 
 ### Administration
 
 - **Dashboard** avec KPI (visites jour/mois, articles publies, pages, commentaires), graphique des visites 30 jours (Chart.js), derniers articles et commentaires, actions rapides
+- **Stats admin** : service dedie (`AdminStatsService`) avec suivi des pages vues
 - **Tips contextuels** rotatifs sur le dashboard (15 astuces qui tournent a chaque visite)
 - **Aide contextuelle** : bouton `?` sur chaque section de l'admin avec panneau lateral d'aide
 - **Page Guide** complete (`/admin/guide`) avec 8 sections en accordeon
@@ -82,6 +86,7 @@ Chaque module s'active independamment selon les besoins du client :
 ### Notifications
 
 - **Email aux abonnes** a la publication d'un article (via Brevo)
+- **Email evenements** : notifications pour les nouveaux evenements (`EventNotificationService`)
 - **Formulaire de contact** envoie au email configure dans l'identite du site
 - **Mailpit** en dev pour capturer tous les emails sans les envoyer
 
@@ -149,11 +154,15 @@ docker compose exec php php bin/console app:recaptcha:setup
 
 | Commande | Description |
 |----------|-------------|
-| `app:client:setup` | Installation complete (site + admin + pages legales + menus) |
+| `app:client:setup` | Installation complete (site + admin + pages legales + menus) — idempotente |
+| `app:init:site` | Initialise la configuration du site |
 | `app:module:enable <module>` | Active un module |
 | `app:module:disable <module>` | Desactive un module |
 | `app:recaptcha:setup` | Configure reCAPTCHA v3 |
 | `app:menu:sync` | Resynchronise les menus systeme |
+| `app:create:super-admin` | Cree un compte super administrateur |
+| `app:legal-pages:update` | Met a jour les pages legales (mentions, confidentialite, CGV) |
+| `app:media:regenerate-sizes` | Regenere les tailles WebP des medias existants |
 
 ---
 
@@ -161,23 +170,30 @@ docker compose exec php php bin/console app:recaptcha:setup
 
 ```
 blog_web/
-├── docker/                    # Docker config (PHP, Nginx)
+├── docker/                    # Docker config (PHP, Nginx) — multi-stage dev/prod
 ├── assets/                    # JS/SCSS (Webpack Encore)
 │   ├── admin/                 # TipTap editor, dashboard Chart.js, menu manager
-│   └── css/base/              # Styles front (variables, blocks, composants)
+│   ├── controllers/           # Stimulus (search, cart, cookie consent, product gallery, TOC...)
+│   └── css/base/              # Styles front (variables, blocks, composants, home)
 ├── src/
-│   ├── Controller/            # Controllers front + admin (EasyAdmin CRUDs)
-│   ├── Entity/                # Entites Doctrine (Article, Page, Site, User...)
-│   ├── Service/               # Services metier (SiteContext, ThemeService, SEO, Stats...)
-│   ├── Security/              # Authenticator, email verification subscriber
-│   └── Command/               # CLI (client:setup, recaptcha:setup, modules...)
+│   ├── Controller/            # 25 controllers front + 24 CrudControllers admin (EasyAdmin)
+│   ├── Entity/                # ~20 entites Doctrine (Article, Page, Site, Product, Order, Event...)
+│   ├── Enum/                  # Module, Role, Visibility, OrderStatus, PaymentMethod, MenuLocation
+│   ├── Service/               # SiteContext, ThemeService, SEO, AdminStats, BlockRenderer, Widget, Cart, Stripe...
+│   ├── Security/              # Authenticator, ContentVoter, CheckVerifiedUserSubscriber
+│   ├── Twig/                  # AppExtension (menus, TOC, reading time), ResponsiveImageExtension
+│   └── Command/               # CLI (client:setup, create:super-admin, modules, legal-pages, media...)
 ├── templates/
 │   ├── themes/                # 6 themes (default, corporate, artisan, vitrine, starter, moderne)
+│   ├── home/                  # Home generique + contact
 │   ├── admin/                 # Dashboard, guide, aide contextuelle
-│   └── ...                    # Templates front (articles, pages, contact, recherche)
-├── .claude/docs/              # Spec technique dev (supprime chez clients)
+│   ├── widgets/               # Sidebar widgets (categories, archives, tags, evenements)
+│   └── ...                    # Templates front (articles, pages, recherche, FAQ, portfolio...)
+├── migrations/                # Migrations Doctrine
 ├── scripts/                   # deploy.sh, backup.sh
+├── docker-compose.yml         # Config dev (PHP-FPM + Nginx + MariaDB + Mailpit)
+├── docker-compose.prod.yml    # Override prod (port 80, healthchecks, limites ressources)
+├── Makefile                   # Raccourcis (up, down, db, migrate, assets, deploy...)
 ├── SETUP.md                   # Process d'installation client
-├── CLAUDE.md                  # Conventions et references (pour Claude Code)
 └── README.md                  # Ce fichier
 ```

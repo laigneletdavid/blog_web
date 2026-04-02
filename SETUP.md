@@ -167,18 +167,62 @@ docker compose exec php php bin/console cache:clear
 
 > **Sans reCAPTCHA** : le formulaire de contact reste protege par 3 couches (CSRF + honeypot + rate limiting 3/min). Le reCAPTCHA est recommande en production mais pas obligatoire.
 
-### 7. Personnaliser dans l'admin
+### 7. Injecter les images d'identite
+
+> **Utilisateur** : fournir les fichiers. **Agent** : les injecter dans le projet et la BDD.
+
+Les images du site se repartissent en deux categories :
+
+#### Images injectees par l'agent (identite du site)
+
+Ces images sont **techniques** — elles doivent etre en place avant la personnalisation. L'utilisateur les fournit, l'agent les injecte directement en BDD et dans le filesystem.
+
+| Image | Format attendu | Destination | Champ Site |
+|-------|---------------|-------------|------------|
+| **Logo** | PNG transparent ou JPG, horizontal ou carre, ~150px de haut | `public/documents/medias/` + Media en BDD | `logo` |
+| **Favicon** | PNG carre, 32x32 ou 64x64 px | `public/documents/medias/` + Media en BDD | `favicon` |
+| **Image Open Graph** | JPG ou PNG, 1200x630 px (apercu reseaux sociaux) | `public/documents/medias/` + Media en BDD | `ogImage` |
+| Apple-touch-icon (optionnel) | PNG carre, 180x180 px | `public/images/apple-touch-icon.png` | — |
+
+**Ce que l'agent fait :**
+
+1. Copie les fichiers dans `public/documents/medias/`
+2. Cree les entrees `Media` en BDD pour chaque fichier
+3. Associe au `Site` les champs `logo`, `favicon` et `ogImage`
+4. Remplace les fallbacks statiques dans `public/images/` si fournis (favicon-16x16, favicon-32x32, apple-touch-icon)
+
+> **Verif rapide :** recharger http://localhost:8080 — le logo doit apparaitre dans le header et le favicon dans l'onglet du navigateur.
+
+#### Images importees via l'admin (contenu visuel)
+
+Ces images sont **editoriales** — elles relevent de la personnalisation du site et se gerent dans Admin > Medias puis se selectionnent dans les formulaires.
+
+| Image | Ou la selectionner | Role |
+|-------|-------------------|------|
+| **Image hero** | Reglages > Apparence > Images du theme | Grande image d'accueil (bandeau principal). Fallback OG si pas d'image OG dediee. |
+| **Image a propos** | Reglages > Apparence > Images du theme | Illustration section "A propos" sur la home |
+| **Galerie** | Reglages > Apparence > Images du theme | Slot `gallery` — carousel ou grille sur la home |
+| **Logos clients** | Reglages > Apparence > Images du theme | Slot `logo` — bandeau de logos partenaires/clients |
+| **Temoignages** | Reglages > Apparence > Images du theme | Slot `testimonial` — photos temoignages |
+| **Images articles/pages** | Contenu > Articles / Pages | Image a la une (utilisee aussi comme OG de l'article) |
+
+> **Fallback OG :** si l'image Open Graph n'est pas definie, le systeme utilise automatiquement : `ogImage > heroImage > logo`.
+
+### 8. Personnaliser dans l'admin
+
+> **Utilisateur** : valide le rendu. **Agent** : execute les modifications dans l'admin.
 
 Se connecter a http://localhost:8080/admin puis :
 
-1. **Identite du site** (Reglages > Identite) — logo, coordonnees completes, description
+1. **Identite du site** (Reglages > Identite) — coordonnees completes, description, SEO par defaut
 2. **Theme et couleurs** (Reglages > Apparence) — choix du theme, couleurs, polices
-3. **Navigation** (Reglages > Navigation) — organiser les menus par drag & drop
-4. **Contenu** — creer articles, pages, ajouter des medias
-5. **SEO** — remplir les champs SEO des pages principales
-6. **Guide** — consulter Aide > Guide pour les details
+3. **Images du theme** (Reglages > Apparence) — hero, a propos, galerie, logos, temoignages (via admin Medias)
+4. **Navigation** (Reglages > Navigation) — organiser les menus par drag & drop
+5. **Contenu** — creer articles, pages, ajouter des medias
+6. **SEO** — remplir les champs SEO des pages principales
+7. **Guide** — consulter Aide > Guide pour les details
 
-### 8. Resync menus (apres changement de theme)
+### 9. Resync menus (apres changement de theme)
 
 ```bash
 docker compose exec php php bin/console app:menu:sync
@@ -206,8 +250,65 @@ docker compose exec php php bin/console app:menu:sync
 | `app:module:disable <module>` | Modules | Desactive un module |
 | `app:recaptcha:setup` | Securite | Configure les cles reCAPTCHA v3 dans .env.local |
 | `app:menu:sync` | Navigation | Resynchronise les menus systeme depuis le theme |
-| `app:create-super-admin` | Legacy | Cree un super admin (utiliser `app:client:setup` a la place) |
-| `app:init-site` | Legacy | Initialise le site (utiliser `app:client:setup` a la place) |
+| `app:legal-pages:update` | Contenu | Regenere les pages legales (mentions, confidentialite, CGV) |
+| `app:media:regenerate-sizes` | Medias | Regenere les 3 tailles WebP (480, 800, 1200px) des medias existants |
+| `app:create-super-admin` | Standalone | Cree un super admin (inclus dans `app:client:setup`) |
+| `app:init-site` | Standalone | Initialise le site (inclus dans `app:client:setup`) |
+
+---
+
+## Deploiement en production
+
+> **Utilisateur** : fournit le serveur (VPS, cloud) et les acces SSH. **Agent** : configure et deploie.
+
+### Premier deploiement
+
+```bash
+# Sur le serveur
+git clone git@github.com:laigneletdavid/blog_web.git /var/www/clients/client-x
+cd /var/www/clients/client-x
+git checkout bw_nom-du-client
+
+# Configurer l'environnement prod
+cp .env.local.example .env.local
+# Editer : APP_ENV=prod, APP_SECRET, DATABASE_URL (mots de passe forts), MAILER_DSN Brevo
+```
+
+Le docker-compose prod (`docker-compose.prod.yml`) active :
+- PHP target `prod` (opcache, APCu, limite 512M/1CPU)
+- Nginx sur port **80** (pas 8080)
+- BDD port ferme (non expose), mots de passe via variables d'env
+- Healthchecks sur PHP-FPM et MariaDB
+- Mailpit desactive (emails via Brevo uniquement)
+- Logs JSON limites (10MB x 3 fichiers)
+
+```bash
+# Lancer en prod
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+# Migrations + cache
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+docker compose exec php php bin/console cache:clear --env=prod
+docker compose exec php php bin/console cache:warmup --env=prod
+```
+
+### Mises a jour
+
+| Commande Make | Contexte | Ce qu'elle fait |
+|---------------|----------|-----------------|
+| `make update` | **Dev** | pull + composer install + migrate + assets dev + cache:clear |
+| `make deploy` | **Prod** | `scripts/deploy.sh` : pull + composer --no-dev + migrate (rollback si echec) + cache:clear/warmup + assets build + restart PHP/Nginx |
+| `make backup` | **Prod** | Dump compresse de la BDD |
+| `make restore FILE=...` | **Prod** | Restaure un dump compresse |
+
+```bash
+# Mise a jour prod (sur le serveur)
+cd /var/www/clients/client-x
+make deploy
+
+# Backup avant mise a jour (recommande)
+make backup
+```
 
 ---
 
@@ -312,7 +413,7 @@ docker compose exec php php bin/console app:menu:sync
 Le repo contient des fichiers de documentation technique (specs, audit, roadmap) dans `.claude/docs/`. Ces fichiers sont **utiles pour le developpement** mais ne doivent **jamais** se retrouver chez un client.
 
 **Nettoyage automatique :** `app:client:setup` (etape 5) supprime automatiquement :
-- `CLAUDE.md`, `CLAUDE2.md`, `CLAUDE3.md`, `CLAUDE_FULL.md` (specs techniques)
+- `CLAUDE.md`, `CLAUDE2.md`, `CLAUDE3.md`, `CLAUDE_FULL.md` (conventions et specs techniques)
 - `PLAN.md`, `DESIGN_THEME.md` (plans de dev)
 - `audit_cms_claude_code.md` (audit securite)
 - `.claude/docs/` (documentation detaillee)
@@ -328,7 +429,7 @@ Le repo contient des fichiers de documentation technique (specs, audit, roadmap)
 - **Pages legales** : editez le contenu dans Admin > Pages (les pages systeme sont pre-remplies avec des sections `[A COMPLETER]`).
 - **Menus** : les elements systeme sont editables (renommer, reordonner, masquer) mais pas supprimables. Ajoutez vos propres liens dans Reglages > Navigation.
 - **BDD vierge** : `make db` repart de zero (drop + create + migrate). Aucune donnee de test ne se retrouve chez le client.
-- **Commandes legacy** : `app:create-super-admin` et `app:init-site` fonctionnent toujours separement si besoin, mais `app:client:setup` les remplace.
+- **Commandes standalone** : `app:create-super-admin` et `app:init-site` fonctionnent separement si besoin, mais `app:client:setup` les englobe.
 - **Verification email** : les utilisateurs inscrits via le formulaire doivent confirmer leur email avant de pouvoir se connecter. Les comptes admin crees via CLI sont exempts.
 - **Securite contact** : 4 couches de protection (CSRF + honeypot + rate limiting + reCAPTCHA v3 optionnel).
 
@@ -338,21 +439,34 @@ Le repo contient des fichiers de documentation technique (specs, audit, roadmap)
 
 Ce projet est prevu pour etre installe et personnalise via Claude Code. Voici le workflow type :
 
-1. **L'utilisateur fournit** : la fiche de reference client (voir `client_reference_template.md`)
-2. **L'agent cree la branche** `bw_nom-du-client` depuis `main`
-3. **L'agent execute** le setup : `.env.local`, `make up`, `make db`, `make assets`, `app:client:setup`
-4. **L'agent active les modules** selon la fiche
-5. **L'utilisateur fournit** les cles reCAPTCHA (creees manuellement sur Google)
-6. **L'agent configure** le reCAPTCHA via `app:recaptcha:setup --site-key=... --secret-key=...`
-7. **L'agent personnalise** le site dans l'admin (theme, couleurs, contenu) via le navigateur
-8. **L'agent customise** les templates et le CSS sur la branche client (home, hero, sections)
-9. **L'agent commit** les personnalisations sur la branche `bw_nom-du-client`
-10. **L'utilisateur valide** le rendu et le contenu
-11. **Push en prod** quand c'est valide
+| Etape | Qui | Action |
+|-------|-----|--------|
+| 1 | **Utilisateur** | Fournit la fiche de reference client (`client_reference_template.md`) |
+| 2 | **Agent** | Cree la branche `bw_nom-du-client` depuis `main` |
+| 3 | **Agent** | Execute le setup : `.env.local`, `make up`, `make db`, `make assets`, `app:client:setup` |
+| 4 | **Agent** | Active les modules selon la fiche |
+| 5 | **Utilisateur** | Fournit les cles reCAPTCHA (creees sur Google) |
+| 6 | **Agent** | Configure le reCAPTCHA via `app:recaptcha:setup --site-key=... --secret-key=...` |
+| 7 | **Utilisateur** | Fournit les images d'identite : logo (PNG/JPG), favicon (PNG 32x32/64x64), image OG (JPG/PNG 1200x630) |
+| 8 | **Agent** | Injecte logo + favicon + OG dans `public/documents/medias/`, cree les Media en BDD, associe au Site (`logo`, `favicon`, `ogImage`) |
+| 9 | **Agent** | Personnalise le site dans l'admin (theme, couleurs, SEO par defaut) |
+| 10 | **Utilisateur** | Fournit les images de contenu : hero, a propos, galerie, logos clients, temoignages |
+| 11 | **Agent** | Importe les images de contenu via Admin > Medias, les associe dans Apparence > Images du theme |
+| 12 | **Agent** | Customise les templates et le CSS sur la branche client |
+| 13 | **Agent** | Commit les personnalisations sur la branche `bw_nom-du-client` |
+| 14 | **Utilisateur** | Valide le rendu et le contenu |
+| 15 | **Ensemble** | Push en prod quand c'est valide |
 
-Les seules etapes manuelles sont :
-- Creer les cles reCAPTCHA sur Google (necessite un compte Google + navigateur)
+Les seules etapes manuelles (utilisateur) sont :
+- Fournir la fiche client
+- Creer les cles reCAPTCHA sur Google (necessite un compte Google)
+- Fournir les images d'identite (logo, favicon, OG) — injectees par l'agent
+- Fournir les images de contenu (hero, a propos, galerie...) — importees via l'admin par l'agent
 - Creer le compte Brevo et recuperer les identifiants SMTP
 - Valider le contenu final
+
+> **Distinction importante :**
+> - **Images d'identite** (logo, favicon, OG) → l'agent les injecte directement dans le filesystem + BDD (etape 8)
+> - **Images de contenu** (hero, a propos, galerie, temoignages, logos clients) → l'agent les importe via Admin > Medias puis les selectionne dans les formulaires (etape 11)
 
 > **Regle importante pour l'agent :** ne jamais modifier le core CMS (controllers, entities, services) sur une branche client. Les personnalisations client se limitent aux templates, CSS, images et contenu.

@@ -68,6 +68,10 @@ class Site
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $favicon = null;
 
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Media $ogImage = null;
+
     // --- Apparence ---
 
     #[ORM\Column(length: 7, nullable: true)]
@@ -319,6 +323,18 @@ class Site
     public function setFavicon(?Media $favicon): self
     {
         $this->favicon = $favicon;
+
+        return $this;
+    }
+
+    public function getOgImage(): ?Media
+    {
+        return $this->ogImage;
+    }
+
+    public function setOgImage(?Media $ogImage): self
+    {
+        $this->ogImage = $ogImage;
 
         return $this;
     }
