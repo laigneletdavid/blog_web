@@ -1,0 +1,12 @@
+#!/bin/bash
+# Pre-commit hook: bloque les marqueurs de conflit Git
+
+CONFLICT_FILES=$(git diff --cached --name-only | xargs grep -l '<<<<<<\|======\|>>>>>>' 2>/dev/null || true)
+
+if [ -n "$CONFLICT_FILES" ]; then
+    echo "ERREUR: Marqueurs de conflit Git detectes dans :"
+    echo "$CONFLICT_FILES"
+    echo ""
+    echo "Resoudre les conflits avant de commit."
+    exit 1
+fi

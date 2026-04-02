@@ -259,56 +259,102 @@ docker compose exec php php bin/console app:menu:sync
 
 ## Deploiement en production
 
-> **Utilisateur** : fournit le serveur (VPS, cloud) et les acces SSH. **Agent** : configure et deploie.
+Deux modes de deploiement selon l'hebergement :
 
-### Premier deploiement
+| Mode | Hebergement | Comment |
+|------|-------------|---------|
+| **CI/CD** (recommande) | OVH mutualise, tout hebergement SSH | Push sur `main` → deploy automatique via GitHub Actions |
+| **Docker** | VPS, cloud, dedie | `make deploy` avec docker-compose.prod.yml |
+| **Manuel** | OVH mutualise (backup) | `scripts/deploy-ovh.sh` en SSH |
+
+---
+
+### Mode A — CI/CD GitHub Actions (recommande pour OVH mutualise)
+
+Le workflow `.github/workflows/deploy.yml` fait tout automatiquement :
+build des assets dans le CI (Node 20, pas de restrictions OVH), deploy via SSH/rsync.
+
+#### Setup (une seule fois)
+
+1. **Configurer les secrets GitHub** (Settings > Secrets and variables > Actions) :
+
+| Secret | Valeur |
+|--------|--------|
+| `OVH_SSH_HOST` | Hostname SSH OVH (ex: `ssh.cluster0XX.hosting.ovh.net`) |
+| `OVH_SSH_USER` | Login SSH OVH |
+| `OVH_SSH_KEY` | Cle privee SSH (contenu complet, inclure `-----BEGIN...`) |
+| `OVH_SSH_PORT` | Port SSH (defaut: 22) |
+| `OVH_DEPLOY_PATH` | Chemin du site (ex: `/home/loginovh/www`) |
+
+2. **Sur OVH** — preparer le `.env.local` (une seule fois) :
 
 ```bash
-# Sur le serveur
+ssh user@host
+cd /chemin/du/site
+cp .env.local.example .env.local
+# Editer : APP_SECRET (generer avec: php -r "echo bin2hex(random_bytes(16));")
+#          DATABASE_URL (credentials phpMyAdmin OVH)
+#          MAILER_DSN (Brevo)
+```
+
+3. **Creer la BDD** via phpMyAdmin OVH et importer le dump initial.
+
+#### Deployer
+
+```bash
+git push origin main   # C'est tout. Le CI build + deploy automatiquement.
+```
+
+Le workflow : checkout → check conflits Git → composer install --no-dev → npm ci + encore production → rsync vers OVH → cache:clear + migrations.
+
+---
+
+### Mode B — Docker (VPS / cloud / dedie)
+
+```bash
+# Premier deploiement
 git clone git@github.com:laigneletdavid/blog_web.git /var/www/clients/client-x
 cd /var/www/clients/client-x
 git checkout bw_nom-du-client
-
-# Configurer l'environnement prod
 cp .env.local.example .env.local
-# Editer : APP_ENV=prod, APP_SECRET, DATABASE_URL (mots de passe forts), MAILER_DSN Brevo
+# Editer : APP_ENV=prod, APP_SECRET, DATABASE_URL, MAILER_DSN
+
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+docker compose exec php php bin/console cache:clear --env=prod
 ```
 
 Le docker-compose prod (`docker-compose.prod.yml`) active :
-- PHP target `prod` (opcache, APCu, limite 512M/1CPU)
-- Nginx sur port **80** (pas 8080)
-- BDD port ferme (non expose), mots de passe via variables d'env
-- Healthchecks sur PHP-FPM et MariaDB
-- Mailpit desactive (emails via Brevo uniquement)
-- Logs JSON limites (10MB x 3 fichiers)
+- PHP target `prod` (opcache, APCu)
+- Nginx sur port **80**
+- BDD port ferme, healthchecks, logs limites
+- Mailpit desactive (emails via Brevo)
+
+---
+
+### Mode C — Manuel OVH (backup / urgence)
+
+Si le CI est down ou pour un hotfix rapide, utiliser `scripts/deploy-ovh.sh` en SSH :
 
 ```bash
-# Lancer en prod
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-
-# Migrations + cache
-docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
-docker compose exec php php bin/console cache:clear --env=prod
-docker compose exec php php bin/console cache:warmup --env=prod
+ssh user@host
+cd /chemin/du/site
+./scripts/deploy-ovh.sh
 ```
 
-### Mises a jour
+Ce script gere tout : check PHP, pull, composer, nvm/node, patch sync-rpc, build assets, cache, migrations.
 
-| Commande Make | Contexte | Ce qu'elle fait |
-|---------------|----------|-----------------|
-| `make update` | **Dev** | pull + composer install + migrate + assets dev + cache:clear |
-| `make deploy` | **Prod** | `scripts/deploy.sh` : pull + composer --no-dev + migrate (rollback si echec) + cache:clear/warmup + assets build + restart PHP/Nginx |
-| `make backup` | **Prod** | Dump compresse de la BDD |
+---
+
+### Commandes Make
+
+| Commande | Contexte | Ce qu'elle fait |
+|----------|----------|-----------------|
+| `make update` | **Dev** | pull + composer + migrate + assets dev + cache:clear |
+| `make deploy` | **Prod Docker** | `scripts/deploy.sh` : pull + composer --no-dev + migrate (rollback) + assets + restart |
+| `make backup` | **Dev/Prod** | Dump compresse de la BDD |
+| `make db-dump` | **Dev** | Dump BDD via docker compose (mariadb-dump) |
 | `make restore FILE=...` | **Prod** | Restaure un dump compresse |
-
-```bash
-# Mise a jour prod (sur le serveur)
-cd /var/www/clients/client-x
-make deploy
-
-# Backup avant mise a jour (recommande)
-make backup
-```
 
 ---
 
@@ -421,6 +467,16 @@ Le repo contient des fichiers de documentation technique (specs, audit, roadmap)
 **Securite supplementaire :** `scripts/deploy.sh` nettoie aussi ces fichiers a chaque deploiement.
 
 > **Migration initiale (une seule fois sur le repo de dev) :** pour deplacer les docs vers `.claude/docs/`, lancer `./scripts/migrate-docs.sh` puis remplacer CLAUDE.md par CLAUDE.md.new.
+
+---
+
+## Hook pre-commit (marqueurs de conflit)
+
+Le repo inclut un hook `.githooks/pre-commit` qui bloque les commits contenant des marqueurs de conflit Git (`<<<<<<<`, `=======`, `>>>>>>>`). A activer une fois par clone :
+
+```bash
+git config core.hooksPath .githooks
+```
 
 ---
 
