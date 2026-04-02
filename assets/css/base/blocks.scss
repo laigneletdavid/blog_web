@@ -319,6 +319,23 @@
         padding: 0;
         color: inherit;
     }
+
+    // Separateurs hr (reset border Bootstrap)
+    hr {
+        border: none !important;
+        border-top: 1px solid var(--border) !important;
+        margin: 2rem 0;
+        opacity: 0.4;
+    }
+}
+
+// Fallback pour les conteneurs alternatifs (page-detail, article-detail)
+.page-detail__content hr,
+.article-detail__content hr {
+    border: none !important;
+    border-top: 1px solid var(--border) !important;
+    margin: 2rem 0;
+    opacity: 0.4;
 }
 
 // Share buttons & related articles styles moved to article.scss

@@ -9,7 +9,7 @@
                 {% if site is not null and site.logo is not null %}
                     <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
                 {% else %}
-                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
                 {% endif %}
             </a>
 
@@ -73,7 +73,7 @@
                 {% if site is not null and site.logo is not null %}
                     <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
                 {% else %}
-                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
                 {% endif %}
             </a>
             {% include '_partials/_cart_badge.html.twig' %}
@@ -84,7 +84,7 @@
                 {% if site is not null and site.logo is not null %}
                     <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" style="height: 36px; width: auto;">
                 {% else %}
-                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web" style="height: 36px; width: auto;">
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" style="height: 36px; width: auto;">
                 {% endif %}
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>

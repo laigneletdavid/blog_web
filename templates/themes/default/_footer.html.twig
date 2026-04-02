@@ -8,7 +8,7 @@
                     {% if site is not null and site.logo is not null %}
                         <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
                     {% else %}
-                        <img src="{{ asset('images/BlogWebbeta - blanc.png') }}" alt="Blog&Web"/>
+                        <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web"/>
                     {% endif %}
                 </a>
                 <p class="footer-tagline">{{ site.defaultSeoDescription|default('Votre CMS professionnel, simple et accessible. Accompagne par un expert du web.') }}</p>

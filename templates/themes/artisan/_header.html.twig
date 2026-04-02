@@ -11,7 +11,7 @@
                     {% if site is not null and site.logo is not null %}
                         <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
                     {% else %}
-                        <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                        <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
                     {% endif %}
                 </a>
             </div>
@@ -56,7 +56,7 @@
                 {% if site is not null and site.logo is not null %}
                     <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
                 {% else %}
-                    <img src="{{ asset('images/BlogWebbeta-h150.png') }}" alt="Blog&Web"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
                 {% endif %}
             </a>
             {% include '_partials/_cart_badge.html.twig' %}
