@@ -23,7 +23,7 @@ git pull --ff-only
 
 # --- 3. Marqueurs de conflit ---
 echo "[2/7] Verification des conflits Git..."
-if grep -rn '<<<<<<\|======\|>>>>>>' assets/ src/ templates/ config/ 2>/dev/null; then
+if grep -rn '^<<<<<<< \|^=======\|^>>>>>>> ' assets/ src/ templates/ config/ 2>/dev/null; then
     echo "ERREUR: Marqueurs de conflit Git detectes !"
     exit 1
 fi
