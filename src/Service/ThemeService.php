@@ -128,6 +128,16 @@ class ThemeService
     }
 
     /**
+     * Check if a client override exists for a given template partial.
+     */
+    public function hasClientTemplate(string $template): bool
+    {
+        $path = $this->projectDir . '/templates/client/' . $template;
+
+        return file_exists($path);
+    }
+
+    /**
      * Resolve appearance values: site overrides ?? theme defaults.
      * Returns all 5 client-customizable properties with their effective value.
      *
