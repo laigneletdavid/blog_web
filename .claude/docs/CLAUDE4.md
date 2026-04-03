@@ -1,29 +1,15 @@
 # CLAUDE4 — Backlog technique
 
-## A faire
+## Fait
 
 ### Favicon auto-generation depuis le logo (CRUD Site)
-**Priorite** : Haute
-**Contexte** : Quand l'admin uploade un logo dans le CRUD Site (EasyAdmin), generer automatiquement tous les favicons et icones.
-
-**Implementation** :
-- EventSubscriber sur l'entite Site (post-persist/post-update)
-- Quand `Site.logo` change, generer via `intervention/image` :
-  - favicon.ico (16x16, 32x32, 48x48 multi-size)
-  - apple-touch-icon.png (180x180)
-  - favicon-96x96.png
-  - web-app-manifest-192x192.png (192x192)
-  - web-app-manifest-512x512.png (512x512)
-- Stocker dans `public/documents/medias/`
-- Mettre a jour `Site.favicon` automatiquement
-- Generer/maj `public/site.webmanifest` avec les bons chemins
-
-**Champ logoDark** :
-- Ajouter `Site.logoDark` (relation Media, nullable)
-- Ajouter dans le CRUD Site (EasyAdmin)
-- Utiliser dans les templates footer (fond sombre) : `site.logoDark ?? site.logo`
-
-**Dependances** : `intervention/image` (deja installe)
+**Statut** : FAIT (commit 6f9fa04)
+- `FaviconGeneratorService` : genere 7 favicons PNG (16, 32, 96, 150, 180, 192, 512) + `site.webmanifest` + `browserconfig.xml`
+- `SiteLogoListener` (postPersist/postUpdate) : regenere a chaque sauvegarde du Site
+- Champ `logoDark` (ManyToOne Media, nullable) pour le footer fond sombre
+- `base.html.twig` : package favicon complet, plus de condition if/else
+- 5 footers themes : `site.logoDark ?? site.logo` fallback
+- SiteCrudController : sous-sections (Nom, Visuels, Coordonnees), champ favicon manuel supprime
 
 ### Systeme d'override client templates/client/
 **Statut** : FAIT

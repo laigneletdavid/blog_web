@@ -24,7 +24,12 @@ CMS Symfony pret a vendre. Un site propre, securise, avec SEO integre, clonable 
 | `CLAUDE.md` | **Reference technique** — conventions, architecture, git, contraintes |
 | `SETUP.md` | **Process client** — installation locale, setup, modules, personnalisation admin |
 | `DEPLOY_REFERENCE.md` | **Process deploiement** — deploy OVH, --init, --import, checklist, problemes connus |
-| `.claude/docs/` | Archives dev (spec historique, roadmap, design) — supprimes chez les clients |
+| `.claude/docs/CLAUDE4.md` | **Backlog technique** — taches faites et a faire |
+| `.claude/docs/CLAUDE_FULL.md` | Spec complete originale (historique) |
+| `.claude/docs/SPEC.md` | Spec modules et fonctionnalites |
+| `.claude/docs/DESIGN_THEME.md` | Spec systeme de themes |
+| `.claude/docs/PLAN.md` | Roadmap et planification |
+| `.claude/docs/` | Archives dev — supprimes chez les clients |
 
 > **Priorite de reference** : DEPLOY_REFERENCE.md et deploy-ovh.sh sont les documents les plus recents et font autorite sur le deploiement. En cas de contradiction avec SETUP.md ou d'autres docs, c'est DEPLOY_REFERENCE.md qui prime.
 
@@ -137,6 +142,37 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 - **Ports bloques sur OVH** : le script patche sync-rpc automatiquement
 - **Pas de Docker sur OVH mutualise** : tout passe par deploy-ovh.sh
 
+## Favicon auto-generation
+
+Quand l'admin sauvegarde le Site avec un logo, `SiteLogoListener` declenche `FaviconGeneratorService` qui genere automatiquement :
+- 7 favicons PNG (16, 32, 96, 150, 180, 192, 512) dans `public/`
+- `public/site.webmanifest` (nom du site, couleur primaire, icones PWA)
+- `public/browserconfig.xml` (Windows tiles)
+
+Le champ `Site.logoDark` (optionnel) est utilise dans les footers : `site.logoDark ?? site.logo`.
+
+Le champ favicon manuel a ete supprime du CRUD Site.
+
+## Deploiement (deploy-ovh.sh)
+
+Script unique `scripts/deploy-ovh.sh` avec 3 modes. Detail complet dans `DEPLOY_REFERENCE.md`.
+
+| Mode | Usage |
+|------|-------|
+| `--init` | Premier deploy : collecte interactif BDD, genere `.env.local`, import dump optionnel |
+| `--import dump.sql` | Import standalone avec conversion auto MariaDB → MySQL 8 |
+| Normal | Mise a jour : pull + composer + assets + cache + migrations |
+
+### Problemes connus (auto-corriges)
+
+| Probleme | Correction auto |
+|----------|-----------------|
+| JSON DEFAULT echoue | `--import` supprime les contraintes |
+| Collation incompatible (`_uca1400_`) | `--import` convertit en `_unicode_` |
+| `.env.prod` ecrase config | Supprime par le script |
+| sync-rpc bloque (ports OVH) | Patch eslint.js automatique |
+| `DebugBundle not found` | Export `APP_ENV=prod` auto |
+
 ## Commandes
 
 ### Dev (local Docker)
@@ -184,8 +220,9 @@ blog_web/
 │   ├── Command/             # CLI (client:setup, module:enable, etc.)
 │   ├── Controller/Admin/    # CrudControllers EasyAdmin
 │   ├── Entity/              # Doctrine entities
-│   ├── Service/             # SiteContext, ThemeService, SeoService, etc.
-│   └── EventSubscriber/     # PageViewSubscriber, ContentSanitize, etc.
+│   ├── Service/             # SiteContext, ThemeService, FaviconGeneratorService, etc.
+│   ├── EventListener/       # MediaUploadListener, SiteLogoListener, ContentSanitize
+│   └── EventSubscriber/     # PageViewSubscriber, AdminSubscriber
 ├── templates/
 │   ├── client/              # Overrides client (vide sur main, rempli sur bw_*)
 │   ├── themes/              # 6 themes (default, corporate, artisan, moderne, vitrine, starter)
