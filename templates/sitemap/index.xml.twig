@@ -81,6 +81,14 @@
     </url>
     {% endfor %}
 
+    {% for entry in directoryEntries|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_directory_show', {slug: entry.slug})) }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endfor %}
+
     <url>
         <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
         <changefreq>daily</changefreq>

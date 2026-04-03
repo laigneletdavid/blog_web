@@ -785,6 +785,145 @@
     color: #fff;
 }
 
+/* ====== DIRECTORY OVERRIDES ====== */
+/* Moderne : dark mode, glow violet, gradient badges, surface bleu nuit, Space Grotesk */
+.theme-moderne .directory-card {
+    background: var(--surface);
+    border-color: var(--border);
+    border-radius: 1rem;
+}
+.theme-moderne .directory-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
+    transform: translateY(-3px);
+}
+.theme-moderne .directory-card__name {
+    color: var(--text);
+}
+.theme-moderne .directory-card__job {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+}
+.theme-moderne .directory-card__badge {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    border-radius: 1rem;
+}
+.theme-moderne .directory-card__initials {
+    background: color-mix(in srgb, var(--primary) 20%, var(--surface));
+    color: var(--primary);
+}
+.theme-moderne .directory-detail__name {
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+.theme-moderne .directory-detail__job {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.theme-moderne .directory-detail__avatar {
+    border: 2px solid var(--border);
+}
+.theme-moderne .directory-detail__contact a {
+    color: var(--primary);
+}
+.theme-moderne .directory-detail__socials .btn-outline-secondary {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+.theme-moderne .directory-detail__socials .btn-outline-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.2);
+}
+.theme-moderne .directory-search .form-control {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+}
+.theme-moderne .directory-search .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.15);
+}
+.theme-moderne .directory-filters__pill {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+.theme-moderne .directory-filters__pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+.theme-moderne .directory-filters__pill--active {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-color: transparent;
+    color: #fff;
+}
+/* Moderne directory single + sidebar */
+.theme-moderne .directory-detail__hero-img {
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+}
+.theme-moderne .directory-detail__badge {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+}
+.theme-moderne .directory-detail__name {
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+.theme-moderne .directory-detail__person {
+    color: var(--text-muted);
+}
+.theme-moderne .directory-detail__initials {
+    background: color-mix(in srgb, var(--primary) 20%, var(--surface));
+    color: var(--primary);
+}
+.theme-moderne .directory-detail__bio,
+.theme-moderne .directory-detail__contact {
+    color: var(--text);
+}
+.theme-moderne .directory-detail__contact a {
+    color: var(--primary);
+}
+.theme-moderne .directory-detail .h5 {
+    color: var(--text);
+}
+.theme-moderne .directory-sidebar__card {
+    background: var(--surface);
+    border-color: var(--border);
+    border-radius: 1rem;
+}
+.theme-moderne .directory-sidebar__title {
+    color: var(--text);
+    border-bottom-color: var(--primary);
+}
+.theme-moderne .directory-sidebar__list li {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+.theme-moderne .directory-sidebar__link {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+.theme-moderne .directory-sidebar__link:hover {
+    color: var(--primary);
+}
+.theme-moderne .directory-detail__section-title {
+    color: var(--text);
+    border-bottom-color: var(--primary);
+}
+.theme-moderne .directory-detail__bio-content {
+    color: var(--text);
+}
+
 /* --- TABLES --- */
 .theme-moderne .tiptap-table {
     border-color: var(--border);

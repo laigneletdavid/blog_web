@@ -1,97 +1,61 @@
 {% extends 'base.html.twig' %}
 
+{% block seo %}
+    <title>{{ seo.title|default('Annuaire') }} — {{ site.name|default('') }}</title>
+    <meta name="description" content="{{ seo.description|default('Decouvrez les professionnels de notre annuaire') }}">
+{% endblock %}
+
 {% block body %}
-<section class="directory-section py-5">
-    <div class="container">
-        {# Breadcrumbs #}
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Annuaire</li>
-            </ol>
-        </nav>
+<div class="container py-5 directory-section">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Annuaire</li>
+        </ol>
+    </nav>
 
-        <div class="directory-header text-center mb-5">
-            <h1 class="directory-title">Annuaire des membres</h1>
-            <p class="directory-subtitle">Retrouvez les membres de notre communaute</p>
+    <h1 class="title-one mb-4">{{ title_page }}</h1>
+
+    {# --- Recherche --- #}
+    <form class="directory-search mb-4" method="get" action="{{ path('app_directory') }}">
+        <div class="input-group" style="max-width: 480px;">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher un nom, metier, ville..." value="{{ search }}" autocomplete="off">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
         </div>
+    </form>
 
-        {# Search bar #}
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-6 col-md-8">
-                <form method="get" action="{{ path('app_directory') }}" class="directory-search">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Rechercher un membre, une entreprise..." value="{{ search }}">
-                        <button type="submit" class="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        {% if members|length > 0 %}
-            <div class="directory-grid">
-                {% for member in members %}
-                    <div class="member-card">
-                        <div class="member-avatar">
-                            {% if member.avatar %}
-                                <img src="{{ asset('documents/medias/' ~ member.avatar.fileName) }}" alt="{{ member.displayName }}" loading="lazy">
-                            {% else %}
-                                <div class="member-avatar-placeholder">
-                                    {{ member.firstName|default('')|slice(0,1)|upper }}{{ member.name|default('')|slice(0,1)|upper }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="member-info">
-                            <h3 class="member-name">{{ member.displayName }}</h3>
-                            {% if member.jobTitle %}
-                                <p class="member-job">{{ member.jobTitle }}</p>
-                            {% endif %}
-                            {% if member.company %}
-                                <p class="member-company">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                                        <polyline points="9 22 9 12 15 12 15 22"/>
-                                    </svg>
-                                    {{ member.company }}
-                                </p>
-                            {% endif %}
-                            {% if member.bio %}
-                                <p class="member-bio">{{ member.bio|length > 100 ? member.bio|slice(0, 100) ~ '...' : member.bio }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <p class="directory-count text-center text-muted mt-4">
-                {{ members|length }} membre{{ members|length > 1 ? 's' : '' }}
-                {% if search %} pour "{{ search }}"{% endif %}
-            </p>
-        {% else %}
-            <div class="directory-empty text-center py-5">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-3" style="opacity: 0.4; color: var(--text-muted);">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <p class="text-muted">
-                    {% if search %}
-                        Aucun membre ne correspond a "{{ search }}".
-                    {% else %}
-                        Aucun membre n'est encore visible dans l'annuaire.
-                    {% endif %}
-                </p>
-                {% if search %}
-                    <a href="{{ path('app_directory') }}" class="btn btn-outline-primary mt-2">Voir tous les membres</a>
-                {% endif %}
-            </div>
-        {% endif %}
+    {# --- Filtres categories --- #}
+    {% if directoryCategories|length > 1 %}
+    <div class="directory-filters mb-4">
+        <a href="{{ path('app_directory') }}"
+           class="directory-filters__pill{% if not activeCategory and search == '' %} directory-filters__pill--active{% endif %}">
+            Tous
+        </a>
+        {% for cat in directoryCategories %}
+        <a href="{{ path('app_directory', {categorie: cat.slug}) }}"
+           class="directory-filters__pill{% if activeCategory and activeCategory.id == cat.id %} directory-filters__pill--active{% endif %}">
+            {% if cat.icon %}<i class="{{ cat.icon }} me-1"></i>{% endif %}
+            {{ cat.name }}
+        </a>
+        {% endfor %}
     </div>
-</section>
+    {% endif %}
+
+    {# --- Grille --- #}
+    {% if entries|length > 0 %}
+        <p class="directory-count text-muted mb-3">{{ entries|length }} professionnel{{ entries|length > 1 ? 's' : '' }}{% if search %} pour « {{ search }} »{% endif %}</p>
+        <div class="directory-grid">
+            {% for entry in entries %}
+                {% include '_partials/_directory_card.html.twig' with { entry: entry } %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted">Aucun professionnel trouve{% if search %} pour « {{ search }} »{% endif %}.</p>
+            {% if search %}
+                <a href="{{ path('app_directory') }}" class="btn btn-outline-primary btn-sm mt-2">Effacer la recherche</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

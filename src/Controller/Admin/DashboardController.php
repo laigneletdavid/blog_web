@@ -12,6 +12,8 @@ use App\Entity\Media;
 use App\Entity\Page;
 use App\Entity\Order;
 use App\Entity\PortfolioCategory;
+use App\Entity\DirectoryCategory;
+use App\Entity\DirectoryEntry;
 use App\Entity\PortfolioItem;
 use App\Entity\Product;
 use App\Entity\ProductCategory;
@@ -267,6 +269,7 @@ class DashboardController extends AbstractDashboardController
             || $this->siteContext->hasModule('ecommerce')
             || $this->siteContext->hasModule('faq')
             || $this->siteContext->hasModule('portfolio')
+            || $this->siteContext->hasModule('directory')
         );
 
         if ($hasModules) {
@@ -297,6 +300,12 @@ class DashboardController extends AbstractDashboardController
                 yield MenuItem::subMenu('Portfolio', 'fas fa-images')->setSubItems([
                     MenuItem::linkToCrud('Realisations', 'fas fa-briefcase', PortfolioItem::class),
                     MenuItem::linkToCrud('Categories', 'fas fa-folder-open', PortfolioCategory::class),
+                ]);
+            }
+            if ($this->siteContext->hasModule('directory')) {
+                yield MenuItem::subMenu('Annuaire', 'fas fa-address-book')->setSubItems([
+                    MenuItem::linkToCrud('Fiches', 'fas fa-id-card', DirectoryEntry::class),
+                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', DirectoryCategory::class),
                 ]);
             }
         }

@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{{ seo.title|default(entry.company ?? entry.displayName) }} — {{ site.name|default('') }}</title>
+    {% if seo.description|default('') is not empty %}
+    <meta name="description" content="{{ seo.description }}">
+    {% endif %}
+    {% if entry.noIndex %}<meta name="robots" content="noindex, nofollow">{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_directory') }}">Annuaire</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ entry.company ?? entry.displayName }}</li>
+        </ol>
+    </nav>
+
+    <div class="directory-detail">
+        <div class="row g-5">
+            {# ====== COLONNE PRINCIPALE ====== #}
+            <div class="col-lg-8">
+                {# Header : photo + identite #}
+                <div class="directory-detail__header">
+                    {% if entry.photo %}
+                    <div class="directory-detail__hero-img mb-4">
+                        <img src="{{ asset('documents/medias/' ~ entry.photo) }}" alt="{{ entry.company ?? entry.displayName }}" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div class="directory-detail__identity">
+                        {% if entry.category %}
+                        <span class="directory-detail__badge">{{ entry.category.name }}</span>
+                        {% endif %}
+                        <h1 class="directory-detail__name">{{ entry.company ?? entry.displayName }}</h1>
+                        <p class="directory-detail__person">
+                            <i class="bi bi-person-fill me-1"></i>{{ entry.displayName }}{% if entry.jobTitle %} — {{ entry.jobTitle }}{% endif %}
+                        </p>
+                        {% if entry.city %}
+                        <p class="directory-detail__city"><i class="bi bi-geo-alt-fill me-1"></i>{{ entry.city }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Bio / A propos #}
+                {% if entry.bio %}
+                <div class="directory-detail__bio mt-4">
+                    <h2 class="directory-detail__section-title">A propos</h2>
+                    <div class="directory-detail__bio-content">
+                        {{ entry.bio|nl2br }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {# Bouton edition si proprietaire #}
+                {% if app.user and entry.user and app.user.id == entry.user.id %}
+                <div class="mt-4">
+                    <a href="{{ path('app_directory_my_entry') }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil me-1"></i>Modifier ma fiche</a>
+                </div>
+                {% endif %}
+            </div>
+
+            {# ====== SIDEBAR ====== #}
+            <div class="col-lg-4">
+                <aside class="directory-sidebar">
+                    {# Carte contact #}
+                    {% if entry.email or entry.phone %}
+                    <div class="directory-sidebar__card">
+                        <h3 class="directory-sidebar__title"><i class="bi bi-telephone-fill me-2"></i>Contact</h3>
+                        <ul class="directory-sidebar__list">
+                            {% if entry.email %}
+                            <li>
+                                <i class="bi bi-envelope"></i>
+                                <a href="mailto:{{ entry.email }}">{{ entry.email }}</a>
+                            </li>
+                            {% endif %}
+                            {% if entry.phone %}
+                            <li>
+                                <i class="bi bi-telephone"></i>
+                                <a href="tel:{{ entry.phone }}">{{ entry.phone }}</a>
+                            </li>
+                            {% endif %}
+                            {% if entry.city %}
+                            <li>
+                                <i class="bi bi-geo-alt"></i>
+                                <span>{{ entry.city }}</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {# Carte reseaux sociaux #}
+                    {% if entry.website or entry.linkedin or entry.facebook or entry.instagram %}
+                    <div class="directory-sidebar__card">
+                        <h3 class="directory-sidebar__title"><i class="bi bi-link-45deg me-2"></i>Liens</h3>
+                        <div class="directory-sidebar__links">
+                            {% if entry.website %}
+                            <a href="{{ entry.website }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                                <i class="bi bi-globe"></i><span>Site web</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                            </a>
+                            {% endif %}
+                            {% if entry.linkedin %}
+                            <a href="{{ entry.linkedin }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                                <i class="bi bi-linkedin"></i><span>LinkedIn</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                            </a>
+                            {% endif %}
+                            {% if entry.facebook %}
+                            <a href="{{ entry.facebook }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                                <i class="bi bi-facebook"></i><span>Facebook</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                            </a>
+                            {% endif %}
+                            {% if entry.instagram %}
+                            <a href="{{ entry.instagram }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                                <i class="bi bi-instagram"></i><span>Instagram</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# Retour #}
+                    <div class="directory-sidebar__back mt-3">
+                        <a href="{{ path('app_directory') }}" class="text-muted"><i class="bi bi-arrow-left me-1"></i>Retour a l'annuaire</a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

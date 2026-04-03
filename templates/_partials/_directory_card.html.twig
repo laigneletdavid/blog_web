@@ -1,0 +1,18 @@
+<a href="{{ path('app_directory_show', {slug: entry.slug}) }}" class="directory-card">
+    <div class="directory-card__avatar">
+        {% if entry.photo %}
+            <img src="{{ asset('documents/medias/' ~ entry.photo) }}" alt="{{ entry.company ?? entry.displayName }}" loading="lazy">
+        {% else %}
+            <div class="directory-card__initials">{{ entry.company ? entry.company|first|upper : (entry.firstName|first|upper ~ entry.lastName|first|upper) }}</div>
+        {% endif %}
+    </div>
+    {% if entry.category %}
+        <span class="directory-card__badge">{{ entry.category.name }}</span>
+    {% endif %}
+    <div class="directory-card__body">
+        {% if entry.company %}<h3 class="directory-card__company">{{ entry.company }}</h3>{% endif %}
+        <p class="directory-card__name">{{ entry.displayName }}{% if entry.jobTitle %} — {{ entry.jobTitle }}{% endif %}</p>
+        {% if entry.city %}<p class="directory-card__city"><i class="bi bi-geo-alt-fill me-1"></i>{{ entry.city }}</p>{% endif %}
+        <span class="directory-card__cta">En savoir plus <i class="bi bi-arrow-right ms-1"></i></span>
+    </div>
+</a>

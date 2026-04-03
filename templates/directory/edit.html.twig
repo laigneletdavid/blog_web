@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_directory') }}">Annuaire</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ma fiche</li>
+        </ol>
+    </nav>
+
+    <h1 class="title-one mb-4">{{ title_page }}</h1>
+
+    <div class="directory-edit" style="max-width: 640px;">
+        {% if entry.photo %}
+        <div class="mb-4">
+            <img src="{{ asset('documents/medias/' ~ entry.photo) }}" alt="{{ entry.displayName }}" class="rounded-circle" width="96" height="96" style="object-fit: cover;">
+        </div>
+        {% endif %}
+
+        {{ form_start(form, {attr: {class: 'directory-edit__form', enctype: 'multipart/form-data'}}) }}
+
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">Identite</legend>
+                {{ form_row(form.firstName) }}
+                {{ form_row(form.lastName) }}
+                {{ form_row(form.jobTitle) }}
+                {{ form_row(form.company) }}
+                {{ form_row(form.bio) }}
+                {{ form_row(form.photoFile) }}
+            </fieldset>
+
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">Coordonnees</legend>
+                {{ form_row(form.email) }}
+                {{ form_row(form.phone) }}
+                {{ form_row(form.city) }}
+            </fieldset>
+
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">Reseaux sociaux</legend>
+                {{ form_row(form.website) }}
+                {{ form_row(form.linkedin) }}
+                {{ form_row(form.facebook) }}
+                {{ form_row(form.instagram) }}
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+            <a href="{{ path('app_directory_show', {slug: entry.slug}) }}" class="btn btn-outline-secondary ms-2">Annuler</a>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
