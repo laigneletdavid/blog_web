@@ -17,13 +17,13 @@
     <h1 class="title-one mb-4">{{ title_page }}</h1>
 
     {# --- Filtres categories --- #}
-    {% if categories|length > 1 %}
+    {% if portfolioCategories|length > 1 %}
     <div class="portfolio-filters mb-4">
         <a href="{{ path('app_portfolio_index') }}"
            class="portfolio-filters__pill{% if not activeCategory %} portfolio-filters__pill--active{% endif %}">
             Toutes
         </a>
-        {% for cat in categories %}
+        {% for cat in portfolioCategories %}
         <a href="{{ path('app_portfolio_index', {categorie: cat.slug}) }}"
            class="portfolio-filters__pill{% if activeCategory and activeCategory.id == cat.id %} portfolio-filters__pill--active{% endif %}">
             {% if cat.icon %}<i class="{{ cat.icon }} me-1"></i>{% endif %}

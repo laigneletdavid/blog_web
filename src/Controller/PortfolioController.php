@@ -29,12 +29,12 @@ class PortfolioController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $categories = $portfolioCategoryRepository->findAllActive();
+        $portfolioCategories = $portfolioCategoryRepository->findAllActive();
         $categorySlug = $request->query->get('categorie');
         $activeCategory = null;
 
         if ($categorySlug) {
-            foreach ($categories as $cat) {
+            foreach ($portfolioCategories as $cat) {
                 if ($cat->getSlug() === $categorySlug) {
                     $activeCategory = $cat;
                     break;
@@ -49,7 +49,7 @@ class PortfolioController extends AbstractController
         return $this->render('portfolio/index.html.twig', [
             'title_page' => 'Nos realisations',
             'items' => $items,
-            'categories' => $categories,
+            'portfolioCategories' => $portfolioCategories,
             'activeCategory' => $activeCategory,
             'seo' => $this->seoService->resolveForPage('Portfolio'),
         ]);
