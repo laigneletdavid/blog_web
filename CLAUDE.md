@@ -9,7 +9,7 @@ CMS Symfony pret a vendre. Un site propre, securise, avec SEO integre, clonable 
 - **Backend** : PHP 8.4 / Symfony 7.4 LTS
 - **ORM** : Doctrine ORM 3.3 + Migrations
 - **Admin** : EasyAdmin Bundle 4.12
-- **Frontend** : Webpack Encore + Bootstrap 5.3 + Stimulus/Hotwire
+- **Frontend** : Webpack Encore + Bootstrap 5.3 + Bootstrap Icons + Stimulus/Hotwire
 - **Templates** : Twig 3
 - **BDD locale** : MariaDB 11 (Docker)
 - **BDD prod** : MySQL 8 (OVH CloudDB)
@@ -133,6 +133,27 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 - `loading="lazy"` systematique sur les images
 - Images responsives WebP auto (480w, 800w, 1200w)
 
+## Performances
+
+### Images WebP + responsive
+- `MediaProcessorService` convertit en WebP (85%) + genere 3 tailles responsives (480w, 800w, 1200w)
+- `responsive_img()` Twig : srcset WebP automatique, param `eager` pour les images LCP
+- **Docker** : `libwebp-dev` + `--with-webp` requis dans le Dockerfile (sinon GD echoue silencieusement)
+- `app:media:regenerate-sizes --force` pour regenerer toutes les images existantes
+
+### Cache HTTP
+- **`.htaccess`** : `Expires` 1 an + `Cache-Control: public, max-age=31536000, immutable` sur tous les assets
+- **Gzip** : active via `mod_deflate` sur HTML, CSS, JS, SVG, fonts
+- Les assets Webpack ont des noms hashes en prod (`enableVersioning`)
+
+### Google Fonts
+- Charge en non-blocking (`preload` + `onload`) avec `display=swap`
+- Preconnect vers `fonts.googleapis.com` et `fonts.gstatic.com`
+
+### Polyfills
+- `.browserslistrc` : cible `> 0.5%, last 2 versions, not dead, not ie 11`
+- `corejs: '3.30'` avec `useBuiltIns: 'usage'` (tree-shaking)
+
 ## Contraintes prod (OVH mutualise)
 
 - **MariaDB local ≠ MySQL 8 prod** : le script `--import` convertit automatiquement (collation, sandbox mode, JSON DEFAULT)
@@ -219,8 +240,9 @@ blog_web/
 ├── src/
 │   ├── Command/             # CLI (client:setup, module:enable, etc.)
 │   ├── Controller/Admin/    # CrudControllers EasyAdmin
-│   ├── Entity/              # Doctrine entities
-│   ├── Service/             # SiteContext, ThemeService, FaviconGeneratorService, etc.
+│   ├── Entity/              # Doctrine entities (Site, Media, Article, Page, DirectoryEntry, PortfolioItem, etc.)
+│   ├── Form/                # DirectoryEntryType (edition membre)
+│   ├── Service/             # SiteContext, ThemeService, FaviconGeneratorService, MediaProcessorService
 │   ├── EventListener/       # MediaUploadListener, SiteLogoListener, ContentSanitize
 │   └── EventSubscriber/     # PageViewSubscriber, AdminSubscriber
 ├── templates/

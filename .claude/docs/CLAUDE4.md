@@ -42,3 +42,14 @@
 - `npm install bootstrap-icons`
 - Import dans `assets/css/main.scss` : `@import "~bootstrap-icons/font/bootstrap-icons.css"`
 - Utilise pour les icones categories (annuaire + portfolio) et les icones de la fiche detail
+
+### Optimisation performances PageSpeed (commit d780414)
+**Statut** : FAIT
+- **Dockerfile** : ajout `libwebp-dev` + `--with-webp` — GD ne supportait pas WebP, toute la conversion echouait silencieusement
+- **ResponsiveImageExtension** : parametre `eager` pour les images LCP (`loading="eager" fetchpriority="high"`)
+- **Homepage** : hero + about utilisent `responsive_img()` avec srcset WebP au lieu des JPG bruts
+- **`.htaccess`** : cache 1 an immutable + gzip pour OVH Apache (le .htaccess Symfony par defaut n'avait aucun header cache)
+- **`base.html.twig`** : Google Fonts en preload non-blocking + `display=swap`
+- **`webpack.config.js`** : corejs mis a jour de 3.23 a 3.30
+- **`.browserslistrc`** : ciblage navigateurs modernes pour reduire les polyfills (~58 Ko)
+- Resultats attendus : images de 3.5 Mo → ~50 Ko WebP, Speed Index divise, cache 1 an au lieu de 15 min
