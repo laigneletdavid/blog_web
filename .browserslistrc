@@ -1,0 +1,5 @@
+# Cibler navigateurs modernes uniquement (reduit les polyfills)
+> 0.5%
+last 2 versions
+not dead
+not ie 11

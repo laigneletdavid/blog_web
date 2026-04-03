@@ -7,13 +7,14 @@ RUN apk add --no-cache \
     freetype-dev \
     libjpeg-turbo-dev \
     libpng-dev \
+    libwebp-dev \
     oniguruma-dev \
     linux-headers \
     fcgi \
     $PHPIZE_DEPS
 
 # PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
         intl \

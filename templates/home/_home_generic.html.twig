@@ -6,7 +6,7 @@
 {# ====== HERO ====== #}
 <section class="home-hero"
     {% if site.heroImage %}
-    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ site.heroImage.fileName) }}')"
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
     {% endif %}>
     <div class="home-hero__overlay"></div>
     <div class="container position-relative">
@@ -31,9 +31,7 @@
             </div>
             {% if site.heroImage %}
             <div class="col-lg-5 home-hero__visual d-none d-lg-block">
-                <img src="{{ asset('documents/medias/' ~ site.heroImage.fileName) }}"
-                     alt="{{ site.name|default('') }}"
-                     class="home-hero__img" loading="lazy"/>
+                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', site.name|default(''), true) }}
             </div>
             {% endif %}
         </div>
@@ -189,13 +187,12 @@
         <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
             <div class="col-12 col-lg-3 home-about__img-wrapper d-flex justify-content-center">
                 {% if site.aboutImage %}
-                <img src="{{ asset('documents/medias/' ~ site.aboutImage.fileName) }}"
-                     alt="{{ site.name|default('') }}"
-                     class="home-about__img rounded-circle" loading="lazy"/>
+                {{ responsive_img(site.aboutImage, '(max-width: 768px) 100vw, 25vw', 'home-about__img rounded-circle') }}
                 {% else %}
                 <img src="{{ asset('images/profil.jpg') }}"
                      alt="Votre interlocuteur"
-                     class="home-about__img rounded-circle" loading="lazy"/>
+                     class="home-about__img rounded-circle" loading="lazy"
+                     width="279" height="279"/>
                 {% endif %}
             </div>
             <div class="col-12 col-lg-9 home-about__content d-flex flex-column justify-content-evenly align-items-center">
