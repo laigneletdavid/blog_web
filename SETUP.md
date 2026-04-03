@@ -259,102 +259,19 @@ docker compose exec php php bin/console app:menu:sync
 
 ## Deploiement en production
 
-Deux modes de deploiement selon l'hebergement :
+Voir **`DEPLOY_REFERENCE.md`** pour le guide complet de deploiement OVH mutualise.
 
-| Mode | Hebergement | Comment |
-|------|-------------|---------|
-| **CI/CD** (recommande) | OVH mutualise, tout hebergement SSH | Push sur `main` → deploy automatique via GitHub Actions |
-| **Docker** | VPS, cloud, dedie | `make deploy` avec docker-compose.prod.yml |
-| **Manuel** | OVH mutualise (backup) | `scripts/deploy-ovh.sh` en SSH |
-
----
-
-### Mode A — CI/CD GitHub Actions (recommande pour OVH mutualise)
-
-Le workflow `.github/workflows/deploy.yml` fait tout automatiquement :
-build des assets dans le CI (Node 20, pas de restrictions OVH), deploy via SSH/rsync.
-
-#### Setup (une seule fois)
-
-1. **Configurer les secrets GitHub** (Settings > Secrets and variables > Actions) :
-
-| Secret | Valeur |
-|--------|--------|
-| `OVH_SSH_HOST` | Hostname SSH OVH (ex: `ssh.cluster0XX.hosting.ovh.net`) |
-| `OVH_SSH_USER` | Login SSH OVH |
-| `OVH_SSH_KEY` | Cle privee SSH (contenu complet, inclure `-----BEGIN...`) |
-| `OVH_SSH_PORT` | Port SSH (defaut: 22) |
-| `OVH_DEPLOY_PATH` | Chemin du site (ex: `/home/loginovh/www`) |
-
-2. **Sur OVH** — preparer le `.env.local` (une seule fois) :
+En resume :
 
 ```bash
-ssh user@host
-cd /chemin/du/site
-cp .env.local.example .env.local
-# Editer : APP_SECRET (generer avec: php -r "echo bin2hex(random_bytes(16));")
-#          DATABASE_URL (credentials phpMyAdmin OVH)
-#          MAILER_DSN (Brevo)
+# Premier deploy OVH
+git clone -b bw_nom_client https://github.com/laigneletdavid/blog_web.git .
+chmod +x scripts/deploy-ovh.sh
+./scripts/deploy-ovh.sh --init    # Genere .env.local + deploy + import dump
+
+# Mises a jour
+./scripts/deploy-ovh.sh           # Pull + build + cache + migrations
 ```
-
-3. **Creer la BDD** via phpMyAdmin OVH et importer le dump initial.
-
-#### Deployer
-
-```bash
-git push origin main   # C'est tout. Le CI build + deploy automatiquement.
-```
-
-Le workflow : checkout → check conflits Git → composer install --no-dev → npm ci + encore production → rsync vers OVH → cache:clear + migrations.
-
----
-
-### Mode B — Docker (VPS / cloud / dedie)
-
-```bash
-# Premier deploiement
-git clone git@github.com:laigneletdavid/blog_web.git /var/www/clients/client-x
-cd /var/www/clients/client-x
-git checkout bw_nom-du-client
-cp .env.local.example .env.local
-# Editer : APP_ENV=prod, APP_SECRET, DATABASE_URL, MAILER_DSN
-
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
-docker compose exec php php bin/console cache:clear --env=prod
-```
-
-Le docker-compose prod (`docker-compose.prod.yml`) active :
-- PHP target `prod` (opcache, APCu)
-- Nginx sur port **80**
-- BDD port ferme, healthchecks, logs limites
-- Mailpit desactive (emails via Brevo)
-
----
-
-### Mode C — Manuel OVH (backup / urgence)
-
-Si le CI est down ou pour un hotfix rapide, utiliser `scripts/deploy-ovh.sh` en SSH :
-
-```bash
-ssh user@host
-cd /chemin/du/site
-./scripts/deploy-ovh.sh
-```
-
-Ce script gere tout : check PHP, pull, composer, nvm/node, patch sync-rpc, build assets, cache, migrations.
-
----
-
-### Commandes Make
-
-| Commande | Contexte | Ce qu'elle fait |
-|----------|----------|-----------------|
-| `make update` | **Dev** | pull + composer + migrate + assets dev + cache:clear |
-| `make deploy` | **Prod Docker** | `scripts/deploy.sh` : pull + composer --no-dev + migrate (rollback) + assets + restart |
-| `make backup` | **Dev/Prod** | Dump compresse de la BDD |
-| `make db-dump` | **Dev** | Dump BDD via docker compose (mariadb-dump) |
-| `make restore FILE=...` | **Prod** | Restaure un dump compresse |
 
 ---
 
@@ -362,7 +279,7 @@ Ce script gere tout : check PHP, pull, composer, nvm/node, patch sync-rpc, build
 
 ### Principe
 
-Chaque client a sa propre branche git creee depuis `main`. Le CMS commun vit sur `main`, les personnalisations client (templates custom, CSS, structure de home) vivent sur la branche client. Quand une nouvelle feature arrive sur `main`, chaque branche client est **rebasee** sur `main`.
+Chaque client a sa propre branche git creee depuis `main`. Le CMS commun vit sur `main`, les personnalisations client vont dans `templates/client/` et les fichiers specifiques (images, CI/CD). Quand une nouvelle feature arrive sur `main`, on **merge main dans la branche client** (jamais rebase, jamais l'inverse).
 
 ```
 main                          ← CMS stable, reference pour tous les clients
@@ -373,81 +290,68 @@ main                          ← CMS stable, reference pour tous les clients
   └── bw_cabinet-avocat         ← Branche client
 ```
 
-| Element | Ou ca vit | Touche par rebase main ? |
-|---------|-----------|--------------------------|
-| Code CMS (controllers, entities, services) | main | **Oui** — c'est le but |
-| Templates custom du client | branche client | **Non** — fichiers differents |
-| CSS custom du client | branche client | **Non** — fichiers differents |
-| Contenu (articles, pages) | BDD MariaDB | **Non** |
-| Images uploadees | `public/uploads/` | **Non** |
+| Element | Ou ca vit | Conflit au merge ? |
+|---------|-----------|-------------------|
+| Code CMS (controllers, entities, services) | main | **Non** — pas touche sur bw_* |
+| Templates themes (headers, footers) | main | **Non** — pas touche sur bw_* |
+| Templates client (overrides) | `templates/client/` sur bw_* | **Non** — fichiers differents |
+| Images client | `public/documents/medias/` sur bw_* | **Non** — fichiers differents |
+| Contenu (articles, pages) | BDD | **Non** |
 | Config client (.env.local) | Fichier local (gitignore) | **Non** |
 | Theme, couleurs, polices | BDD (entite Site) | **Non** |
 
 ### Workflow : ajouter une feature au CMS
 
 ```bash
-# 1. Developper sur main (ou une branche feature mergee dans main)
+# 1. Developper sur main
 git checkout main
 # ... ajouter la feature ...
 git add ... && git commit -m "feat: description" && git push
 
-# 2. Rebaser chaque branche client sur le nouveau main
-git checkout bw_boulangerie-martin
-git rebase main
-# Resoudre les conflits si besoin (rare)
-make update
+# 2. Merger main dans chaque branche client
+git checkout bw_front
+git merge main          # Zero conflit
+git push origin bw_front
 ```
 
 ### Workflow : corriger un bug
 
 ```bash
 # 1. Corriger sur main
-cd ~/projects/blog_web
 git checkout main
 # ... fix ...
 git add ... && git commit -m "fix: description" && git push
 
-# 2. Rebaser chaque branche client
+# 2. Merger main dans chaque branche client
 for branch in $(git branch --list 'bw_*'); do
     echo "=== Mise a jour: $branch ==="
-    git checkout "$branch" && git rebase main && make update
+    git checkout "$branch" && git merge main && git push origin "$branch"
 done
 ```
 
-### Mise a jour en production
+### Mise a jour en production (OVH)
 
 ```bash
-cd /var/www/clients/client-x
-git pull origin bw_nom-du-client
-make deploy    # = scripts/deploy.sh (assets build en mode prod, --no-dev, restart services)
+ssh user@host
+./scripts/deploy-ovh.sh    # Pull + build + cache + migrations
 ```
 
 ### Regles importantes
 
 - **Features CMS** : toujours sur `main`, jamais directement sur une branche client
-- **Personnalisations client** (home custom, CSS, images) : uniquement sur la branche `bw_xxx`
-- **Ne jamais modifier le core CMS** sur une branche client — sinon conflits au rebase garantis
-- **Rebaser la branche client sur `main`** apres chaque release pour garder le CMS a jour
-- **Si une migration echoue** : `deploy.sh` rollback automatiquement la derniere migration
-
-### Ce qui conflicte (ou pas)
-
-| Fichier | Conflit probable ? |
-|---------|-------------------|
-| Templates custom du client (home, hero, CSS) | **Non** — fichiers propres au client |
-| `src/Controller/`, `src/Entity/`, `src/Service/` | **Non** — pas touches cote client |
-| Templates de base des themes | **Rare** — le client a ses propres fichiers |
-| `config/`, `docker/`, `Makefile` | **Non** — partage, pas modifie cote client |
-| Un template modifie des deux cotes | **Oui** — seul cas, resolution manuelle au rebase |
+- **Personnalisations client** : dans `templates/client/` + images dans `public/documents/medias/`
+- **Ne jamais modifier les templates themes** sur une branche client → utiliser le systeme d'override
+- **Merge main dans bw_xxx** pour les mises a jour, **jamais rebase, jamais l'inverse**
+- **Ne jamais merger bw_* dans main** — main ne recoit jamais de code client
 
 ### Cas particuliers
 
-**Ajout d'un nouveau module :** apres `git rebase main`, activer le module si besoin :
+**Ajout d'un nouveau module :** apres `git merge main`, activer le module si besoin :
 ```bash
 docker compose exec php php bin/console app:module:enable <module>
 ```
 
-**Changement de theme :** apres `git rebase main`, resync les menus si le theme a change :
+**Changement de theme :** apres `git merge main`, resync les menus si le theme a change :
 ```bash
 docker compose exec php php bin/console app:menu:sync
 ```
