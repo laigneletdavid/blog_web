@@ -27,6 +27,10 @@ class Site
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Media $logo = null;
 
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Media $logoDark = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
@@ -177,6 +181,18 @@ class Site
     public function setLogo(?Media $logo): self
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function getLogoDark(): ?Media
+    {
+        return $this->logoDark;
+    }
+
+    public function setLogoDark(?Media $logoDark): self
+    {
+        $this->logoDark = $logoDark;
 
         return $this;
     }

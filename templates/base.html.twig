@@ -68,15 +68,13 @@
         {# ====== JSON-LD Schema.org ====== #}
         {% block jsonld %}{% endblock %}
 
-        {# ====== Favicon ====== #}
-        {% if site is not null and site.favicon is not null %}
-        <link rel="icon" type="image/png" href="{{ asset('documents/medias/' ~ site.favicon.fileName) }}">
-        {% else %}
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+        {# ====== Favicon (auto-genere depuis le logo) ====== #}
         <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
-        {% endif %}
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <meta name="msapplication-TileImage" content="/mstile-150x150.png">
+        <meta name="msapplication-TileColor" content="{{ site.primaryColor|default('#ffffff') }}">
         <link rel="manifest" href="/site.webmanifest">
 
         {# ====== CSS Custom Properties ====== #}
