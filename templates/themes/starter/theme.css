@@ -501,6 +501,103 @@
     font-size: clamp(1.25rem, 3vw, 1.75rem);
 }
 
+/* ====== DIRECTORY OVERRIDES ====== */
+/* Starter : brut, minimaliste, pas de cards, layout liste, hover opacity, pas de fioritures */
+.theme-starter .directory-grid {
+    grid-template-columns: 1fr;
+    max-width: 700px;
+    gap: 0;
+}
+.theme-starter .directory-card {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+}
+.theme-starter .directory-card:hover {
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+}
+.theme-starter .directory-card__avatar {
+    width: 48px;
+    height: 48px;
+}
+.theme-starter .directory-card__badge {
+    display: none;
+}
+.theme-starter .directory-card__socials {
+    display: none;
+}
+.theme-starter .directory-card__name {
+    font-size: 1rem;
+    font-weight: 600;
+}
+.theme-starter .directory-card__job {
+    font-size: 0.8125rem;
+}
+.theme-starter .directory-card__city {
+    font-size: 0.75rem;
+}
+.theme-starter .directory-detail {
+    max-width: 640px;
+}
+.theme-starter .directory-detail__name {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+}
+.theme-starter .directory-detail__avatar {
+    width: 80px;
+    height: 80px;
+}
+.theme-starter .directory-filters__pill {
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+}
+.theme-starter .directory-filters__pill--active {
+    background: var(--text);
+    border-color: var(--text);
+}
+/* Starter directory single + sidebar */
+.theme-starter .directory-detail__hero-img {
+    border-radius: 0.375rem;
+}
+.theme-starter .directory-detail__badge {
+    display: none;
+}
+.theme-starter .directory-detail__name {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+}
+.theme-starter .directory-sidebar__card {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: 1rem 0;
+}
+.theme-starter .directory-sidebar__title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    border-bottom: none;
+}
+.theme-starter .directory-detail__section-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    border-bottom-color: var(--border);
+}
+
 /* --- FOOTER --- */
 .theme-starter .footer--starter {
     border-top: 1px solid var(--border);

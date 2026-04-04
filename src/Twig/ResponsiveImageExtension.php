@@ -32,11 +32,16 @@ class ResponsiveImageExtension extends AbstractExtension
     /**
      * Retourne un tag <img> complet avec srcset, sizes et loading="lazy".
      */
+    /**
+     * Retourne un tag <img> complet avec srcset, sizes et loading.
+     * $eager = true pour les images LCP (hero) : loading="eager" + fetchpriority="high"
+     */
     public function responsiveImg(
         ?Media $media,
         string $sizes = '100vw',
         string $cssClass = '',
         ?string $alt = null,
+        bool $eager = false,
     ): string {
         if (!$media || !$media->getFileName()) {
             return '';
@@ -49,12 +54,13 @@ class ResponsiveImageExtension extends AbstractExtension
         $classAttr = $cssClass ? ' class="' . htmlspecialchars($cssClass, ENT_QUOTES, 'UTF-8') . '"' : '';
         $srcsetAttr = $srcsetValue ? ' srcset="' . $srcsetValue . '"' : '';
         $sizesAttr = $srcsetValue ? ' sizes="' . htmlspecialchars($sizes, ENT_QUOTES, 'UTF-8') . '"' : '';
+        $loadingAttr = $eager ? ' loading="eager" fetchpriority="high"' : ' loading="lazy"';
 
         return '<img src="' . htmlspecialchars($src, ENT_QUOTES, 'UTF-8') . '"'
             . $srcsetAttr . $sizesAttr
             . ' alt="' . $altText . '"'
             . $classAttr
-            . ' loading="lazy">';
+            . $loadingAttr . '>';
     }
 
     /**

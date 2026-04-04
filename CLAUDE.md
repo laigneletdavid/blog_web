@@ -9,24 +9,87 @@ CMS Symfony pret a vendre. Un site propre, securise, avec SEO integre, clonable 
 - **Backend** : PHP 8.4 / Symfony 7.4 LTS
 - **ORM** : Doctrine ORM 3.3 + Migrations
 - **Admin** : EasyAdmin Bundle 4.12
-- **Frontend** : Webpack Encore + Bootstrap 5.3 + Stimulus/Hotwire
+- **Frontend** : Webpack Encore + Bootstrap 5.3 + Bootstrap Icons + Stimulus/Hotwire
 - **Templates** : Twig 3
-- **BDD** : MariaDB 11
-- **Infra** : Docker (PHP-FPM 8.4 + Nginx + MariaDB 11 + Mailpit)
+- **BDD locale** : MariaDB 11 (Docker)
+- **BDD prod** : MySQL 8 (OVH CloudDB)
+- **Infra dev** : Docker (PHP-FPM 8.4 + Nginx + MariaDB 11 + Mailpit)
+- **Infra prod** : OVH mutualise
 - **Mailer** : Brevo (via `symfony/brevo-mailer`)
 
-## Documentation detaillee
+## Documentation
 
-La spec technique complete, l'architecture, les phases de dev et la roadmap sont dans `.claude/docs/` :
+| Fichier | Role |
+|---------|------|
+| `CLAUDE.md` | **Reference technique** — conventions, architecture, git, contraintes |
+| `SETUP.md` | **Process client** — installation locale, setup, modules, personnalisation admin |
+| `DEPLOY_REFERENCE.md` | **Process deploiement** — deploy OVH, --init, --import, checklist, problemes connus |
+| `.claude/docs/CLAUDE4.md` | **Backlog technique** — taches faites et a faire |
+| `.claude/docs/CLAUDE_FULL.md` | Spec complete originale (historique) |
+| `.claude/docs/SPEC.md` | Spec modules et fonctionnalites |
+| `.claude/docs/DESIGN_THEME.md` | Spec systeme de themes |
+| `.claude/docs/PLAN.md` | Roadmap et planification |
+| `.claude/docs/` | Archives dev — supprimes chez les clients |
 
-| Fichier | Contenu |
-|---------|---------|
-| `.claude/docs/SPEC.md` | Spec technique complete (architecture, phases, conventions, structure) |
-| `.claude/docs/CLAUDE2.md` | Extension spec — dette technique, modules, corrections |
-| `.claude/docs/CLAUDE_FULL.md` | Roadmap long terme (multi-tenant, Stripe, IA, provisioning) |
-| `.claude/docs/DESIGN_THEME.md` | Specs design des themes |
+> **Priorite de reference** : DEPLOY_REFERENCE.md et deploy-ovh.sh sont les documents les plus recents et font autorite sur le deploiement. En cas de contradiction avec SETUP.md ou d'autres docs, c'est DEPLOY_REFERENCE.md qui prime.
 
-> **Ces fichiers sont supprimes automatiquement chez les clients** par `app:client:setup` et `scripts/deploy.sh`.
+## Architecture Git
+
+```
+main                    ← CMS commun, jamais en prod
+  ├── bw_front          ← Site BlogWeb (premier client)
+  ├── bw_client2        ← Futur client
+  └── bw_client3        ← Futur client
+```
+
+### Regles strictes
+
+- **main** = tronc commun CMS. Jamais deploye. Features et fixes CMS ici.
+- **bw_*** = branches clients. Deployees en prod. Contenu specifique client.
+- **Merge, JAMAIS rebase** : `git checkout bw_xxx && git merge main`
+- **Jamais** merger bw_* dans main. Main ne recoit jamais de code client.
+- **Jamais** modifier les fichiers CMS (controllers, entities, services, templates themes) sur une branche client.
+
+### Mise a jour client quand main evolue
+
+```bash
+git checkout bw_nom_client
+git merge main              # Zero conflit si regles respectees
+git push origin bw_nom_client
+```
+
+### Ce qui va sur chaque branche
+
+| Fichier | main | bw_* |
+|---------|------|------|
+| src/ (controllers, entities, services) | Oui | **Non** |
+| templates/themes/ (headers, footers) | Oui | **Non** |
+| templates/client/ (overrides) | Vide (.gitkeep) | Oui (`git add -f`) |
+| config/, docker/, Makefile | Oui | **Non** |
+| public/documents/medias/ (images client) | Non | Oui |
+| .github/workflows/deploy.yml | Non | Oui (trigger par branche) |
+| scripts/bw_*_dump.sql (dump BDD) | Non | Oui (temporaire) |
+
+## Override templates client
+
+Priorite de chargement Twig (automatique) :
+
+```
+1. templates/client/        ← Override client (si existe)
+2. templates/themes/{theme}/ ← Template du theme actif
+3. templates/themes/default/  ← Fallback
+```
+
+Templates overridables : `_header.html.twig`, `_footer.html.twig`, `home.html.twig`, `contact.html.twig`, `blog.html.twig`
+
+Pour creer un override sur une branche client :
+```bash
+cp templates/themes/vitrine/_header.html.twig templates/client/_header.html.twig
+# Modifier le fichier
+git add -f templates/client/_header.html.twig
+```
+
+Sur main, `templates/client/` est gitignore (vide). Sur les branches bw_*, les fichiers sont force-trackes.
 
 ## Conventions de code
 
@@ -70,29 +133,101 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 - `loading="lazy"` systematique sur les images
 - Images responsives WebP auto (480w, 800w, 1200w)
 
-## Commandes utiles
+## Performances
+
+### Images WebP + responsive
+- `MediaProcessorService` convertit en WebP (85%) + genere 3 tailles responsives (480w, 800w, 1200w)
+- `responsive_img()` Twig : srcset WebP automatique, param `eager` pour les images LCP
+- **Docker** : `libwebp-dev` + `--with-webp` requis dans le Dockerfile (sinon GD echoue silencieusement)
+- `app:media:regenerate-sizes --force` pour regenerer toutes les images existantes
+
+### Cache HTTP
+- **`.htaccess`** : `Expires` 1 an + `Cache-Control: public, max-age=31536000, immutable` sur tous les assets
+- **Gzip** : active via `mod_deflate` sur HTML, CSS, JS, SVG, fonts
+- Les assets Webpack ont des noms hashes en prod (`enableVersioning`)
+
+### Google Fonts
+- Charge en non-blocking (`preload` + `onload`) avec `display=swap`
+- Preconnect vers `fonts.googleapis.com` et `fonts.gstatic.com`
+
+### Polyfills
+- `.browserslistrc` : cible `> 0.5%, last 2 versions, not dead, not ie 11`
+- `corejs: '3.30'` avec `useBuiltIns: 'usage'` (tree-shaking)
+
+## Contraintes prod (OVH mutualise)
+
+- **MariaDB local ≠ MySQL 8 prod** : le script `--import` convertit automatiquement (collation, sandbox mode, JSON DEFAULT)
+- **Pas de .env.prod** dans le repo : ecrase les valeurs de .env.local. Supprime automatiquement par le script.
+- **APP_ENV=prod** doit etre exporte avant toute commande Symfony (auto-scripts composer)
+- **Node.js ancien sur OVH** : le script installe nvm + Node 20 automatiquement
+- **Ports bloques sur OVH** : le script patche sync-rpc automatiquement
+- **Pas de Docker sur OVH mutualise** : tout passe par deploy-ovh.sh
+
+## Favicon auto-generation
+
+Quand l'admin sauvegarde le Site avec un logo, `SiteLogoListener` declenche `FaviconGeneratorService` qui genere automatiquement :
+- 7 favicons PNG (16, 32, 96, 150, 180, 192, 512) dans `public/`
+- `public/site.webmanifest` (nom du site, couleur primaire, icones PWA)
+- `public/browserconfig.xml` (Windows tiles)
+
+Le champ `Site.logoDark` (optionnel) est utilise dans les footers : `site.logoDark ?? site.logo`.
+
+Le champ favicon manuel a ete supprime du CRUD Site.
+
+## Deploiement (deploy-ovh.sh)
+
+Script unique `scripts/deploy-ovh.sh` avec 3 modes. Detail complet dans `DEPLOY_REFERENCE.md`.
+
+| Mode | Usage |
+|------|-------|
+| `--init` | Premier deploy : collecte interactif BDD, genere `.env.local`, import dump optionnel |
+| `--import dump.sql` | Import standalone avec conversion auto MariaDB → MySQL 8 |
+| Normal | Mise a jour : pull + composer + assets + cache + migrations |
+
+### Problemes connus (auto-corriges)
+
+| Probleme | Correction auto |
+|----------|-----------------|
+| JSON DEFAULT echoue | `--import` supprime les contraintes |
+| Collation incompatible (`_uca1400_`) | `--import` convertit en `_unicode_` |
+| `.env.prod` ecrase config | Supprime par le script |
+| sync-rpc bloque (ports OVH) | Patch eslint.js automatique |
+| `DebugBundle not found` | Export `APP_ENV=prod` auto |
+
+## Commandes
+
+### Dev (local Docker)
 
 ```bash
 make up              # Lance Docker
 make down            # Stop
 make sh              # Shell PHP
 make db              # Reset BDD (drop + create + migrate)
+make db-dump         # Dump BDD (lit le nom depuis .env.local)
 make migrate         # Migrations seulement
 make assets          # npm run dev
 make assets-build    # npm run build (prod)
 make cc              # Cache clear
 ```
 
-## Installation client
-
-Voir `SETUP.md` pour le process complet. En resume :
+### Prod (OVH)
 
 ```bash
-git clone git@repo:blog_web.git /var/www/clients/client-x
-cd /var/www/clients/client-x
-cp .env.local.example .env.local   # Editer BDD, APP_SECRET, MAILER_DSN
-make up && make db && make assets
-docker compose exec php php bin/console app:client:setup
+./scripts/deploy-ovh.sh --init              # Premier deploy (genere .env.local + deploy + import dump)
+./scripts/deploy-ovh.sh --import dump.sql   # Import dump (conversion MariaDB→MySQL auto)
+./scripts/deploy-ovh.sh                     # Mise a jour (pull + build + cache + migrations)
+```
+
+### Symfony CLI
+
+```bash
+app:client:setup                    # Setup complet (site + admin + pages legales + menus)
+app:module:enable <module>          # Active un module (blog, services, catalogue, ecommerce, events, directory, faq, portfolio)
+app:module:disable <module>         # Desactive un module
+app:recaptcha:setup                 # Configure reCAPTCHA v3
+app:menu:sync                       # Resync menus apres changement theme
+app:legal-pages:update              # Regenere pages legales
+app:media:regenerate-sizes          # Regenere tailles WebP
 ```
 
 ## Structure
@@ -100,19 +235,23 @@ docker compose exec php php bin/console app:client:setup
 ```
 blog_web/
 ├── docker/                  # Dockerfile, nginx, php.ini
-├── scripts/                 # deploy.sh, backup.sh
+├── scripts/                 # deploy-ovh.sh, backup.sh, deploy.sh
 ├── assets/                  # JS/SCSS (app + admin entries)
 ├── src/
 │   ├── Command/             # CLI (client:setup, module:enable, etc.)
-│   ├── Controller/Admin/    # 19 CrudControllers EasyAdmin
-│   ├── Entity/              # Doctrine entities
-│   ├── Service/             # SiteContext, ThemeService, SeoService, etc.
-│   └── EventSubscriber/     # PageViewSubscriber, ContentSanitize, etc.
+│   ├── Controller/Admin/    # CrudControllers EasyAdmin
+│   ├── Entity/              # Doctrine entities (Site, Media, Article, Page, DirectoryEntry, PortfolioItem, etc.)
+│   ├── Form/                # DirectoryEntryType (edition membre)
+│   ├── Service/             # SiteContext, ThemeService, FaviconGeneratorService, MediaProcessorService
+│   ├── EventListener/       # MediaUploadListener, SiteLogoListener, ContentSanitize
+│   └── EventSubscriber/     # PageViewSubscriber, AdminSubscriber
 ├── templates/
-│   ├── themes/              # 6 themes (default, corporate, artisan, etc.)
+│   ├── client/              # Overrides client (vide sur main, rempli sur bw_*)
+│   ├── themes/              # 6 themes (default, corporate, artisan, moderne, vitrine, starter)
 │   ├── admin/               # Dashboard, guide, menu manager
 │   └── ...                  # Front templates
 ├── .claude/docs/            # Spec technique (dev only, supprime chez clients)
-├── SETUP.md                 # Process installation
+├── SETUP.md                 # Process installation client
+├── DEPLOY_REFERENCE.md      # Process deploiement OVH
 └── README.md                # Presentation du projet
 ```

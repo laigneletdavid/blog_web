@@ -5,8 +5,9 @@
         <div class="row">
             <div class="col-lg-4 mb-4 mb-lg-0 text-center text-lg-start">
                 <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
-                    {% if site is not null and site.logo is not null %}
-                        <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                    {% set footerLogo = site.logoDark ?? site.logo ?? null %}
+                    {% if footerLogo is not null %}
+                        <img src="{{ asset('documents/medias/' ~ footerLogo.fileName) }}" alt="{{ site.name|default('') }}"/>
                     {% else %}
                         <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web"/>
                     {% endif %}

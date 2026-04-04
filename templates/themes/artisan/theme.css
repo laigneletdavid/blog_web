@@ -533,6 +533,86 @@
     background: var(--accent);
 }
 
+/* ====== DIRECTORY OVERRIDES ====== */
+/* Artisan : chaleureux, arrondis genereux, serif, fond creme, tons terre */
+.theme-artisan .directory-card {
+    border-radius: 1rem;
+    background: var(--surface);
+}
+.theme-artisan .directory-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(45, 27, 0, 0.08);
+}
+.theme-artisan .directory-card__avatar {
+    border: 3px solid var(--secondary);
+}
+.theme-artisan .directory-card__name {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .directory-card__initials {
+    background: color-mix(in srgb, var(--secondary) 25%, transparent);
+    color: var(--primary);
+}
+.theme-artisan .directory-card__badge {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 1rem;
+}
+.theme-artisan .directory-detail__name {
+    font-family: var(--font-family-secondary, var(--font-family));
+    letter-spacing: -0.01em;
+}
+.theme-artisan .directory-detail__avatar {
+    border: 4px solid var(--secondary);
+}
+.theme-artisan .directory-detail__bio h2,
+.theme-artisan .directory-detail__contact h2,
+.theme-artisan .directory-detail .h5 {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .directory-filters__pill {
+    border-radius: 1rem;
+}
+.theme-artisan .directory-filters__pill--active {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+/* Artisan directory single + sidebar */
+.theme-artisan .directory-detail__hero-img {
+    border-radius: 1rem;
+}
+.theme-artisan .directory-detail__badge {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 1rem;
+}
+.theme-artisan .directory-detail__name {
+    font-family: var(--font-family-secondary, var(--font-family));
+    letter-spacing: -0.01em;
+}
+.theme-artisan .directory-detail__initials {
+    background: color-mix(in srgb, var(--secondary) 25%, transparent);
+    color: var(--primary);
+}
+.theme-artisan .directory-detail .h5 {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+.theme-artisan .directory-sidebar__card {
+    border-radius: 1rem;
+    background: var(--surface);
+}
+.theme-artisan .directory-sidebar__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    border-bottom-color: var(--secondary);
+}
+.theme-artisan .directory-detail__section-title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    border-bottom-color: var(--secondary);
+}
+.theme-artisan .directory-sidebar__link:hover {
+    color: var(--primary);
+}
+
 /* --- FOOTER --- */
 .theme-artisan .footer--artisan { background: var(--text); color: rgba(255,255,255,0.8); }
 .theme-artisan .footer--artisan .footer-heading {

@@ -88,19 +88,32 @@ class SiteCrudController extends AbstractCrudController
             ->setIcon('fa fa-building')
             ->collapsible();
 
+        // Sous-section : Nom et presentation
+        yield FormField::addFieldset('Nom et presentation');
+
         yield TextField::new('name')
             ->setLabel('Nom du site');
 
         yield TextField::new('title')
             ->setLabel('Phrase d\'accroche');
 
+        // Sous-section : Visuels
+        yield FormField::addFieldset('Visuels');
+
         yield AssociationField::new('logo', 'Logo')
-            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header du site.')
+            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header. Les favicons (onglet navigateur, ecran d\'accueil mobile) sont generes automatiquement.')
+            ->hideOnIndex();
+
+        yield AssociationField::new('logoDark', 'Logo fond sombre')
+            ->setHelp('Pour le footer et les zones sombres. Si vide, le logo principal est utilise.')
             ->hideOnIndex();
 
         yield AssociationField::new('ogImage', 'Image Open Graph')
-            ->setHelp('Image affichee lors du partage sur les reseaux sociaux (Facebook, LinkedIn, Twitter). Format recommande : 1200x630 px, JPG ou PNG.')
+            ->setHelp('Image affichee lors du partage sur les reseaux sociaux. Format recommande : 1200x630 px.')
             ->hideOnIndex();
+
+        // Sous-section : Coordonnees
+        yield FormField::addFieldset('Coordonnees');
 
         yield TextField::new('email')
             ->setLabel('E-mail de contact');
@@ -144,10 +157,6 @@ class SiteCrudController extends AbstractCrudController
 
         yield TextField::new('googleSearchConsole', 'Google Search Console')
             ->setHelp('Code de verification pour prouver a Google que vous etes proprietaire du site. Disponible dans Google Search Console > Parametres.')
-            ->hideOnIndex();
-
-        yield AssociationField::new('favicon', 'Favicon')
-            ->setHelp('Petite icone affichee dans l\'onglet du navigateur. Format carre recommande (32x32 ou 64x64 px).')
             ->hideOnIndex();
 
         // --- Panel Catalogue (si module actif) ---
