@@ -35,10 +35,10 @@
                         {% endif %}
                         <h1 class="directory-detail__name">{{ entry.company ?? entry.displayName }}</h1>
                         <p class="directory-detail__person">
-                            <i class="bi bi-person-fill me-1"></i>{{ entry.displayName }}{% if entry.jobTitle %} — {{ entry.jobTitle }}{% endif %}
+                            {{ bi('person-fill', 'me-1') }}{{ entry.displayName }}{% if entry.jobTitle %} — {{ entry.jobTitle }}{% endif %}
                         </p>
                         {% if entry.city %}
-                        <p class="directory-detail__city"><i class="bi bi-geo-alt-fill me-1"></i>{{ entry.city }}</p>
+                        <p class="directory-detail__city">{{ bi('geo-alt-fill', 'me-1') }}{{ entry.city }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                 {# Bouton edition si proprietaire #}
                 {% if app.user and entry.user and app.user.id == entry.user.id %}
                 <div class="mt-4">
-                    <a href="{{ path('app_directory_my_entry') }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil me-1"></i>Modifier ma fiche</a>
+                    <a href="{{ path('app_directory_my_entry') }}" class="btn btn-primary btn-sm">{{ bi('pencil', 'me-1') }}Modifier ma fiche</a>
                 </div>
                 {% endif %}
             </div>
@@ -67,23 +67,23 @@
                     {# Carte contact #}
                     {% if entry.email or entry.phone %}
                     <div class="directory-sidebar__card">
-                        <h3 class="directory-sidebar__title"><i class="bi bi-telephone-fill me-2"></i>Contact</h3>
+                        <h3 class="directory-sidebar__title">{{ bi('telephone-fill', 'me-2') }}Contact</h3>
                         <ul class="directory-sidebar__list">
                             {% if entry.email %}
                             <li>
-                                <i class="bi bi-envelope"></i>
+                                {{ bi('envelope') }}
                                 <a href="mailto:{{ entry.email }}">{{ entry.email }}</a>
                             </li>
                             {% endif %}
                             {% if entry.phone %}
                             <li>
-                                <i class="bi bi-telephone"></i>
+                                {{ bi('telephone') }}
                                 <a href="tel:{{ entry.phone }}">{{ entry.phone }}</a>
                             </li>
                             {% endif %}
                             {% if entry.city %}
                             <li>
-                                <i class="bi bi-geo-alt"></i>
+                                {{ bi('geo-alt') }}
                                 <span>{{ entry.city }}</span>
                             </li>
                             {% endif %}
@@ -94,26 +94,26 @@
                     {# Carte reseaux sociaux #}
                     {% if entry.website or entry.linkedin or entry.facebook or entry.instagram %}
                     <div class="directory-sidebar__card">
-                        <h3 class="directory-sidebar__title"><i class="bi bi-link-45deg me-2"></i>Liens</h3>
+                        <h3 class="directory-sidebar__title">{{ bi('link-45deg', 'me-2') }}Liens</h3>
                         <div class="directory-sidebar__links">
                             {% if entry.website %}
                             <a href="{{ entry.website }}" target="_blank" rel="noopener" class="directory-sidebar__link">
-                                <i class="bi bi-globe"></i><span>Site web</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                                {{ bi('globe') }}<span>Site web</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                             {% if entry.linkedin %}
                             <a href="{{ entry.linkedin }}" target="_blank" rel="noopener" class="directory-sidebar__link">
-                                <i class="bi bi-linkedin"></i><span>LinkedIn</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                                {{ bi('linkedin') }}<span>LinkedIn</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                             {% if entry.facebook %}
                             <a href="{{ entry.facebook }}" target="_blank" rel="noopener" class="directory-sidebar__link">
-                                <i class="bi bi-facebook"></i><span>Facebook</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                                {{ bi('facebook') }}<span>Facebook</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                             {% if entry.instagram %}
                             <a href="{{ entry.instagram }}" target="_blank" rel="noopener" class="directory-sidebar__link">
-                                <i class="bi bi-instagram"></i><span>Instagram</span><i class="bi bi-box-arrow-up-right ms-auto"></i>
+                                {{ bi('instagram') }}<span>Instagram</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                         </div>
@@ -122,7 +122,7 @@
 
                     {# Retour #}
                     <div class="directory-sidebar__back mt-3">
-                        <a href="{{ path('app_directory') }}" class="text-muted"><i class="bi bi-arrow-left me-1"></i>Retour a l'annuaire</a>
+                        <a href="{{ path('app_directory') }}" class="text-muted">{{ bi('arrow-left', 'me-1') }}Retour a l'annuaire</a>
                     </div>
                 </aside>
             </div>

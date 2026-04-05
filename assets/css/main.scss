@@ -1,4 +1,12 @@
-@import "~bootstrap-icons/font/bootstrap-icons.css";
+/* Bootstrap Icons — SVG inline via bi() Twig function */
+.bi-svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
 @import "./base/header";
 @import "./base/home";
 @import "./base/footer";

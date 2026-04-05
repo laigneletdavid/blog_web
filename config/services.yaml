@@ -43,6 +43,14 @@ services:
             $publicDirectory: '%kernel.project_dir%/public'
 
 
+    App\EventListener\SiteLogoListener:
+        arguments:
+            $mediaDirectory: '%medias_directory%'
+
+    App\Twig\IconExtension:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Service\ThemeService:
         arguments:
             $projectDir: '%kernel.project_dir%'

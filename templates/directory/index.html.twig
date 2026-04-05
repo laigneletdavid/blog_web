@@ -20,7 +20,7 @@
     <form class="directory-search mb-4" method="get" action="{{ path('app_directory') }}">
         <div class="input-group" style="max-width: 480px;">
             <input type="text" name="q" class="form-control" placeholder="Rechercher un nom, metier, ville..." value="{{ search }}" autocomplete="off">
-            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+            <button class="btn btn-primary" type="submit">{{ bi('search') }}</button>
         </div>
     </form>
 
@@ -34,7 +34,7 @@
         {% for cat in directoryCategories %}
         <a href="{{ path('app_directory', {categorie: cat.slug}) }}"
            class="directory-filters__pill{% if activeCategory and activeCategory.id == cat.id %} directory-filters__pill--active{% endif %}">
-            {% if cat.icon %}<i class="{{ cat.icon }} me-1"></i>{% endif %}
+            {% if cat.icon %}{{ bi(cat.icon|replace({'bi bi-': '', 'bi-': ''}), 'me-1') }}{% endif %}
             {{ cat.name }}
         </a>
         {% endfor %}

@@ -8,7 +8,7 @@
              loading="lazy">
         {% else %}
         <div class="portfolio-card__placeholder">
-            <i class="bi bi-image"></i>
+            {{ bi('image') }}
         </div>
         {% endif %}
         {% if item.category %}
@@ -19,7 +19,7 @@
         <h3 class="portfolio-card__title">{{ item.title }}</h3>
         {% if item.client %}
         <span class="portfolio-card__client">
-            <i class="bi bi-person-fill me-1"></i>{{ item.client }}
+            {{ bi('person-fill', 'me-1') }}{{ item.client }}
         </span>
         {% endif %}
         {% if item.shortDescription %}

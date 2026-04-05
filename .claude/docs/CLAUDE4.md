@@ -52,4 +52,30 @@
 - **`base.html.twig`** : Google Fonts en preload non-blocking + `display=swap`
 - **`webpack.config.js`** : corejs mis a jour de 3.23 a 3.30
 - **`.browserslistrc`** : ciblage navigateurs modernes pour reduire les polyfills (~58 Ko)
-- Resultats attendus : images de 3.5 Mo → ~50 Ko WebP, Speed Index divise, cache 1 an au lieu de 15 min
+- Resultats : WebP fonctionne, responsive_img() actif, Google Fonts non-blocking, cache .htaccess en place
+- **Score actuel** : Mobile 72, Desktop ~90
+
+## A faire
+
+### Performances PageSpeed — problemes restants
+**Priorite** : Haute
+**Score mobile actuel** : 72 (objectif > 90)
+
+**Probleme principal : `/theme-css/vitrine` bloque 10.4s**
+- Route Symfony dynamique qui genere le CSS du theme a chaque requete
+- Cree une chaine critique de 10.4s sur mobile
+- **Solution** : servir le theme.css en fichier statique pre-genere au lieu d'une route Symfony, ou inliner le CSS critique
+
+**Bootstrap Icons trop lourd (13.4 Ko CSS inutilise)**
+- Charge les 1800+ icones alors qu'on en utilise ~10
+- Ajoute un fichier CSS render-blocking supplementaire (`373.971dca9d.css`)
+- **Solution** : passer en SVG inline pour les icones utilisees, ou extraire uniquement les icones necessaires
+
+**Logos PNG surdimensionnes (42 Ko inutiles)**
+- `logo-blogweb.png` et `logo-blogweb-white.png` : 682x554 affiches en 78x63
+- **Solution** : generer des versions optimisees (WebP, taille reelle) dans le FaviconGeneratorService ou manuellement
+
+**JS inutilise (~79 Ko)**
+- `512.dd4ea596.js` (core-js polyfills) : 58 Ko
+- `373.bf2fc378.js` : 20 Ko
+- **Solution** : verifier si `.browserslistrc` est bien pris en compte en prod, investiguer les imports inutiles
