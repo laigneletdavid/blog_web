@@ -104,9 +104,9 @@
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
-        {# ====== Theme CSS (conditionally loaded) ====== #}
+        {# ====== Theme CSS (inlined to avoid render-blocking Symfony route) ====== #}
         {% if _theme != 'default' and theme_service.hasTemplate(_theme, 'theme.css') %}
-        <link rel="stylesheet" href="{{ path('app_theme_css', { slug: _theme }) }}">
+        <style>{{ source('themes/' ~ _theme ~ '/theme.css') }}</style>
         {% endif %}
 
         {% block javascripts %}

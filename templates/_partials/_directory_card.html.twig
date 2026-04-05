@@ -12,7 +12,7 @@
     <div class="directory-card__body">
         {% if entry.company %}<h3 class="directory-card__company">{{ entry.company }}</h3>{% endif %}
         <p class="directory-card__name">{{ entry.displayName }}{% if entry.jobTitle %} — {{ entry.jobTitle }}{% endif %}</p>
-        {% if entry.city %}<p class="directory-card__city"><i class="bi bi-geo-alt-fill me-1"></i>{{ entry.city }}</p>{% endif %}
-        <span class="directory-card__cta">En savoir plus <i class="bi bi-arrow-right ms-1"></i></span>
+        {% if entry.city %}<p class="directory-card__city">{{ bi('geo-alt-fill', 'me-1') }}{{ entry.city }}</p>{% endif %}
+        <span class="directory-card__cta">En savoir plus {{ bi('arrow-right', 'ms-1') }}</span>
     </div>
 </a>

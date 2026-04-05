@@ -25,17 +25,17 @@
             <div class="portfolio-detail__meta">
                 {% if item.category %}
                 <span class="portfolio-detail__meta-item">
-                    <i class="bi bi-folder2 me-1"></i>{{ item.category.name }}
+                    {{ bi('folder2', 'me-1') }}{{ item.category.name }}
                 </span>
                 {% endif %}
                 {% if item.client %}
                 <span class="portfolio-detail__meta-item">
-                    <i class="bi bi-person me-1"></i>{{ item.client }}
+                    {{ bi('person', 'me-1') }}{{ item.client }}
                 </span>
                 {% endif %}
                 {% if item.projectDate %}
                 <span class="portfolio-detail__meta-item">
-                    <i class="bi bi-calendar3 me-1"></i>{{ item.projectDate|date('F Y') }}
+                    {{ bi('calendar3', 'me-1') }}{{ item.projectDate|date('F Y') }}
                 </span>
                 {% endif %}
             </div>
@@ -76,7 +76,7 @@
         {% if item.projectUrl %}
         <div class="portfolio-detail__cta mb-4">
             <a href="{{ item.projectUrl }}" target="_blank" rel="noopener" class="btn btn-primary">
-                <i class="bi bi-box-arrow-up-right me-1"></i>Voir le projet
+                {{ bi('box-arrow-up-right', 'me-1') }}Voir le projet
             </a>
         </div>
         {% endif %}
@@ -84,7 +84,7 @@
         {# --- Retour --- #}
         <div class="portfolio-detail__back">
             <a href="{{ path('app_portfolio_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Toutes les realisations
+                {{ bi('arrow-left', 'me-1') }}Toutes les realisations
             </a>
         </div>
     </article>

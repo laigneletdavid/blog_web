@@ -10,6 +10,7 @@ class MediaProcessorService
 {
     private const SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
     private const WEBP_QUALITY = 85;
+    private const MAX_WIDTH = 1920;
     public const RESPONSIVE_SIZES = [480, 800, 1200];
 
     public function __construct(
@@ -40,6 +41,9 @@ class MediaProcessorService
             return null;
         }
 
+        // Downscale original if wider than MAX_WIDTH
+        $this->downscaleOriginal($sourcePath);
+
         $baseName = pathinfo($fileName, PATHINFO_FILENAME);
         $webpFileName = $baseName . '.webp';
         $webpPath = $this->mediaDirectory . '/' . $webpFileName;
@@ -65,6 +69,26 @@ class MediaProcessorService
             return $webpFileName;
         } catch (\Throwable) {
             return null;
+        }
+    }
+
+    private function downscaleOriginal(string $sourcePath): void
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($sourcePath);
+
+            if ($image->width() > self::MAX_WIDTH) {
+                $image->scale(width: self::MAX_WIDTH);
+                $extension = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
+                match ($extension) {
+                    'png' => $image->toPng()->save($sourcePath),
+                    'gif' => $image->toGif()->save($sourcePath),
+                    default => $image->toJpeg(90)->save($sourcePath),
+                };
+            }
+        } catch (\Throwable) {
+            // Silent failure — original remains untouched
         }
     }
 
