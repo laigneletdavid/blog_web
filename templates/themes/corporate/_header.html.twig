@@ -6,9 +6,9 @@
         <div class="container d-flex align-items-center justify-content-between">
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}" width="auto" height="42"/>
+                    {{ logo_img(site.logo, 42, site.name|default('')) }}
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="52" height="42"/>
                 {% endif %}
             </a>
 
@@ -61,9 +61,9 @@
             </button>
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}" width="auto" height="42"/>
+                    {{ logo_img(site.logo, 42, site.name|default('')) }}
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="52" height="42"/>
                 {% endif %}
             </a>
             {% include '_partials/_cart_badge.html.twig' %}
