@@ -7,9 +7,9 @@
         <div class="container d-flex align-items-center justify-content-between">
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" width="auto" height="42"/>
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
                 {% endif %}
             </a>
 
@@ -71,9 +71,9 @@
             </button>
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}"/>
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" width="auto" height="42"/>
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
                 {% endif %}
             </a>
             {% include '_partials/_cart_badge.html.twig' %}

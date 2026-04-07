@@ -15,7 +15,7 @@ use Intervention\Image\ImageManager;
 #[AsEntityListener(event: Events::postUpdate, entity: Site::class)]
 class SiteLogoListener
 {
-    private const MAX_LOGO_HEIGHT = 400;
+    private const MAX_LOGO_HEIGHT = 128;
 
     public function __construct(
         private readonly FaviconGeneratorService $faviconGenerator,

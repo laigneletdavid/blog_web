@@ -1,7 +1,15 @@
-// Variables and Bootstrap overrides must come BEFORE Bootstrap
+// Variables and Bootstrap overrides
 @import "./base/variables";
 @import "./base/_variables-custom";
-@import '../../node_modules/bootstrap/scss/bootstrap';
 
-// Components (variables already loaded)
+// Bootstrap tools only (functions, variables, mixins — zero CSS output)
+// Full Bootstrap CSS is loaded async via vendor entry
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/variables-dark';
+@import '../../node_modules/bootstrap/scss/maps';
+@import '../../node_modules/bootstrap/scss/mixins';
+@import '../../node_modules/bootstrap/scss/utilities';
+
+// Custom components
 @import "./main";
