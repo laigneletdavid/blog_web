@@ -1,0 +1,341 @@
+{# ====== HOME CLIENT — Override bw_front (BlogWeb) ====== #}
+{# Surcharge de home/_home_generic.html.twig #}
+
+{# ====== HERO ====== #}
+<section class="home-hero"
+    {% if site.heroImage %}
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
+    {% endif %}>
+    <div class="home-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center home-hero__row">
+            <div class="col-lg-7 home-hero__content">
+                {% if site.title %}
+                <span class="home-hero__badge">{{ site.title }}</span>
+                {% endif %}
+                <h1 class="home-hero__title">Le code c'est nous, le contenu c'est vous.</h1>
+                <p class="home-hero__desc">Un site professionnel livré en une demi-journée, prêt à être trouvé sur Google. Vous racontez votre métier, on s'occupe du reste.</p>
+                <div class="home-hero__actions">
+                    <a href="/page/offres" class="btn btn-primary btn-lg">Voir les offres</a>
+                    <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">Demander un devis</a>
+                </div>
+                <div class="home-hero__badges">
+                    <span class="home-hero__trust-badge">&#9989; Installation rapide</span>
+                    <span class="home-hero__trust-badge">&#128274; Sécurisé & RGPD</span>
+                    <span class="home-hero__trust-badge">&#127467;&#127479; Hébergé en France</span>
+                </div>
+            </div>
+            {% if site.heroImage %}
+            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
+                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', site.name|default(''), true) }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== BLOC "Pourquoi pas un WordPress ?" ====== #}
+<section class="home-wordpress-compare">
+    <div class="container">
+        <div class="home-wordpress-compare__inner">
+            <h2 class="home-section-title">Pourquoi pas un WordPress comme tout le monde ?</h2>
+            <p class="home-wordpress-compare__text">WordPress, c'est l'illusion de la simplicité. En réalité : des plugins à empiler, des mises à jour qui cassent tout, des failles de sécurité tous les mois, et un site qui ralentit avec le temps. BlogWeb fait l'inverse : tout est intégré, sécurisé, optimisé dès le premier jour. Rien à installer, rien à maintenir, rien à craindre.</p>
+            <a href="/page/site-sur-mesure-vs-cms-classique" class="btn btn-outline-light btn-lg">Voir la comparaison complète</a>
+        </div>
+    </div>
+</section>
+
+{# ====== FEATURES — "Une plateforme pensée pour vous faire gagner du temps" ====== #}
+<section class="home-features">
+    <div class="container">
+        <h2 class="home-section-title text-center">Une plateforme pensée pour vous faire gagner du temps</h2>
+        <div class="home-features__grid">
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <h3 class="home-features__title">Éditeur visuel</h3>
+                <p class="home-features__desc">Rédigez vos articles avec un éditeur moderne. Texte, images, vidéos, code — tout en un.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <h3 class="home-features__title">Pages & Layouts</h3>
+                <p class="home-features__desc">Créez des pages vitrine avec différents layouts pour présenter vos services et votre activité.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </div>
+                <h3 class="home-features__title">Navigation flexible</h3>
+                <p class="home-features__desc">Organisez votre menu par glisser-déposer, avec sous-menus et liens personnalisés.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3 class="home-features__title">SEO intégré</h3>
+                <p class="home-features__desc">Meta tags, sitemap XML, Open Graph — votre site est optimisé pour les moteurs de recherche.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 class="home-features__title">Contact & Notifications</h3>
+                <p class="home-features__desc">Formulaire de contact, commentaires et notifications email pour rester connectés à vos visiteurs.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3 class="home-features__title">Design personnalisable</h3>
+                <p class="home-features__desc">Couleurs, polices et logo — personnalisez votre site sans toucher au code.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== SERVICES (si module actif + données) ====== #}
+{% if services|default([])|length > 0 %}
+<section class="home-services">
+    <div class="container">
+        <div class="home-services__header text-center">
+            <h2 class="home-section-title">Tout ce dont vous avez besoin</h2>
+        </div>
+        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== BLOC "Nos offres" ====== #}
+<section class="home-pricing">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="home-section-title">Trois offres, trois prix, zéro mauvaise surprise</h2>
+            <p class="home-pricing__subtitle">Pas de devis opaque, pas de coûts cachés. Vous savez exactement ce que vous payez et ce que vous obtenez.</p>
+        </div>
+        <div class="home-pricing__grid">
+            {# Carte Vitrine #}
+            <div class="home-pricing__card">
+                <div class="home-pricing__card-header">
+                    <h3 class="home-pricing__card-title">Vitrine</h3>
+                    <p class="home-pricing__card-audience">Vos clients vous trouvent enfin sur Google</p>
+                </div>
+                <div class="home-pricing__card-body">
+                    <div class="home-pricing__price">
+                        <span class="home-pricing__price-main">520 € <small>TTC</small></span>
+                        <span class="home-pricing__price-ht">450 € HT</span>
+                        <span class="home-pricing__price-label">Installation</span>
+                    </div>
+                    <div class="home-pricing__price">
+                        <span class="home-pricing__price-main">36 €/mois <small>TTC</small></span>
+                        <span class="home-pricing__price-ht">30 € HT</span>
+                        <span class="home-pricing__price-label">Abonnement</span>
+                    </div>
+                </div>
+                <div class="home-pricing__card-footer">
+                    <a href="/page/offres" class="btn btn-outline-primary w-100">Voir le détail</a>
+                </div>
+            </div>
+
+            {# Carte Blog — Populaire #}
+            <div class="home-pricing__card home-pricing__card--popular">
+                <span class="home-pricing__badge">POPULAIRE</span>
+                <div class="home-pricing__card-header">
+                    <h3 class="home-pricing__card-title">Blog</h3>
+                    <p class="home-pricing__card-audience">Montrez votre expertise et attirez des clients</p>
+                </div>
+                <div class="home-pricing__card-body">
+                    <div class="home-pricing__price">
+                        <span class="home-pricing__price-main">660 € <small>TTC</small></span>
+                        <span class="home-pricing__price-ht">550 € HT</span>
+                        <span class="home-pricing__price-label">Installation</span>
+                    </div>
+                    <div class="home-pricing__price">
+                        <span class="home-pricing__price-main">42 €/mois <small>TTC</small></span>
+                        <span class="home-pricing__price-ht">35 € HT</span>
+                        <span class="home-pricing__price-label">Abonnement</span>
+                    </div>
+                </div>
+                <div class="home-pricing__card-footer">
+                    <a href="/page/offres" class="btn btn-primary w-100">Voir le détail</a>
+                </div>
+            </div>
+
+            {# Carte Complet #}
+            <div class="home-pricing__card">
+                <div class="home-pricing__card-header">
+                    <h3 class="home-pricing__card-title">Complet</h3>
+                    <p class="home-pricing__card-audience">Vendez en ligne sans aucune limite technique</p>
+                </div>
+                <div class="home-pricing__card-body">
+                    <div class="home-pricing__price">
+                        <span class="home-pricing__price-main">1500 € <small>TTC</small></span>
+                        <span class="home-pricing__price-ht">1250 € HT</span>
+                        <span class="home-pricing__price-label">Installation</span>
+                    </div>
+                    <div class="home-pricing__price">
+                        <span class="home-pricing__price-main">60 €/mois <small>TTC</small></span>
+                        <span class="home-pricing__price-ht">50 € HT</span>
+                        <span class="home-pricing__price-label">Abonnement</span>
+                    </div>
+                </div>
+                <div class="home-pricing__card-footer">
+                    <a href="/page/offres" class="btn btn-outline-primary w-100">Voir le détail</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="/page/offres" class="btn btn-outline-primary btn-lg">Comparer toutes les offres en détail</a>
+        </div>
+    </div>
+</section>
+
+{# ====== PRODUITS (si module catalogue actif) ====== #}
+{% if featuredProducts|default([])|length > 0 %}
+    {% include '_partials/_product_featured.html.twig' with { featuredProducts: featuredProducts, site: site|default(null) } %}
+{% endif %}
+
+{# ====== EVENEMENTS (si module actif) ====== #}
+{% if upcomingEvents|default([])|length > 0 %}
+<section class="home-events py-5">
+    <div class="container">
+        <h2 class="home-section-title text-center">Événements à venir</h2>
+        <div class="row g-4">
+            {% for event in upcomingEvents %}
+            <div class="col-md-4">
+                {% include '_partials/_event_card.html.twig' with { event: event } %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== PORTFOLIO (si module actif + réalisations) ====== #}
+{% if featuredPortfolio|default([])|length > 0 %}
+<section class="home-portfolio py-5">
+    <div class="container">
+        <h2 class="home-section-title text-center">Nos réalisations</h2>
+        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ (si module actif) ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="home-faq py-5" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="home-section-title text-center">Questions fréquentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== METRICS ====== #}
+<section class="home-metrics">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">24h</div>
+                <div class="home-metrics__label">de mise en ligne</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">6</div>
+                <div class="home-metrics__label">thèmes inclus</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">0</div>
+                <div class="home-metrics__label">plugin à installer</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">1</div>
+                <div class="home-metrics__label">interlocuteur unique</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== DERNIERS ARTICLES ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="home-section-title mb-0">Actualités</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== A PROPOS / TEAM ====== #}
+<section class="home-about" id="home-about">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
+            <div class="col-12 col-lg-3 home-about__img-wrapper d-flex justify-content-center">
+                {% if site.aboutImage %}
+                {{ responsive_img(site.aboutImage, '(max-width: 768px) 100vw, 25vw', 'home-about__img rounded-circle') }}
+                {% else %}
+                <img src="{{ asset('images/profil.jpg') }}"
+                     alt="Votre interlocuteur"
+                     class="home-about__img rounded-circle" loading="lazy"
+                     width="279" height="279"/>
+                {% endif %}
+            </div>
+            <div class="col-12 col-lg-9 home-about__content d-flex flex-column justify-content-evenly align-items-center">
+                <span class="home-about__overtitle">À propos</span>
+                <h2 class="home-about__title">{{ site.title|default(site.name|default('')) }}</h2>
+                {% if site.defaultSeoDescription %}
+                <p class="home-about__text">{{ site.defaultSeoDescription }}</p>
+                {% endif %}
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">En savoir plus</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== GALERIE (si images gallery) ====== #}
+{% set gallery = site.getGalleryBySlot('gallery') %}
+{% if gallery|length > 0 %}
+<section class="home-gallery">
+    <div class="container">
+        <h2 class="home-section-title text-center">Galerie</h2>
+        {% include '_partials/_gallery_grid.html.twig' with { gallery: gallery } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== TEMOIGNAGES (si gallery slot testimonial) ====== #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length > 0 %}
+<section class="home-testimonials">
+    <div class="container">
+        <h2 class="home-section-title text-center">Ce que disent nos clients</h2>
+        {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== LOGOS CLIENTS (si gallery slot logo) ====== #}
+{% set logos = site.getGalleryBySlot('logo') %}
+{% if logos|length > 0 %}
+<section class="home-logos">
+    <div class="container">
+        <p class="home-logos__title text-center">Ils nous font confiance</p>
+        {% include '_partials/_logos_grid.html.twig' with { logos: logos } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== CTA FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center">
+        <h2 class="home-cta__title">Prêt à lancer votre site ?</h2>
+        <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en quelques jours.</p>
+        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous contacter</a>
+    </div>
+</section>
