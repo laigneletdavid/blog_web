@@ -7,9 +7,9 @@
         <div class="container d-flex align-items-center justify-content-between">
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" width="auto" height="42"/>
+                    {{ logo_img(site.logo, 42, site.name|default('Blog&Web')) }}
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="52" height="42"/>
                 {% endif %}
             </a>
 
@@ -71,9 +71,9 @@
             </button>
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" width="auto" height="42"/>
+                    {{ logo_img(site.logo, 42, site.name|default('Blog&Web')) }}
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="52" height="42"/>
                 {% endif %}
             </a>
             {% include '_partials/_cart_badge.html.twig' %}
@@ -82,9 +82,9 @@
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Blog&Web') }}" style="height: 36px; width: auto;">
+                    {{ logo_img(site.logo, 36, site.name|default('Blog&Web')) }}
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" style="height: 36px; width: auto;">
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="44" height="36"/>
                 {% endif %}
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>

@@ -26,7 +26,42 @@ class ResponsiveImageExtension extends AbstractExtension
     {
         return [
             new TwigFunction('responsive_img', [$this, 'responsiveImg'], ['is_safe' => ['html']]),
+            new TwigFunction('logo_img', [$this, 'logoImg'], ['is_safe' => ['html']]),
         ];
+    }
+
+    /**
+     * Generates an <img> tag for a logo with correct width/height based on actual image dimensions.
+     * Calculates width dynamically from the target display height to preserve aspect ratio.
+     */
+    public function logoImg(?Media $media, int $displayHeight = 42, string $alt = '', string $cssClass = ''): string
+    {
+        if (!$media || !$media->getFileName()) {
+            return '';
+        }
+
+        $filePath = $this->mediaDirectory . '/' . $media->getFileName();
+        $src = '/documents/medias/' . $media->getFileName();
+
+        // Calculate width from actual image dimensions
+        $widthAttr = '';
+        if (file_exists($filePath)) {
+            $imageSize = @getimagesize($filePath);
+            if ($imageSize && $imageSize[1] > 0) {
+                $ratio = $imageSize[0] / $imageSize[1];
+                $displayWidth = (int) round($ratio * $displayHeight);
+                $widthAttr = ' width="' . $displayWidth . '"';
+            }
+        }
+
+        $altText = htmlspecialchars($alt, ENT_QUOTES, 'UTF-8');
+        $classAttr = $cssClass ? ' class="' . htmlspecialchars($cssClass, ENT_QUOTES, 'UTF-8') . '"' : '';
+
+        return '<img src="' . htmlspecialchars($src, ENT_QUOTES, 'UTF-8') . '"'
+            . ' alt="' . $altText . '"'
+            . $widthAttr
+            . ' height="' . $displayHeight . '"'
+            . $classAttr . '>';
     }
 
     /**
