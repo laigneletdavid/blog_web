@@ -1,6 +1,6 @@
 {
-    "name": "Blog Web",
-    "short_name": "Blog Web",
+    "name": "BlogWeb",
+    "short_name": "BlogWeb",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -15,7 +15,7 @@
             "purpose": "maskable"
         }
     ],
-    "theme_color": "#ffffff",
+    "theme_color": "#2563eb",
     "background_color": "#ffffff",
     "display": "standalone"
 }
