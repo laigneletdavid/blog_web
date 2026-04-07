@@ -9,9 +9,9 @@
             <div class="text-center py-3">
                 <a href="{{ path('app_home') }}" class="header-logo">
                     {% if site is not null and site.logo is not null %}
-                        <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                        <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}" width="auto" height="42"/>
                     {% else %}
-                        <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
+                        <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
                     {% endif %}
                 </a>
             </div>
@@ -54,9 +54,9 @@
             </button>
             <a href="{{ path('app_home') }}" class="header-logo">
                 {% if site is not null and site.logo is not null %}
-                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}"/>
+                    <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('') }}" width="auto" height="42"/>
                 {% else %}
-                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web"/>
+                    <img src="{{ asset('images/logo-blogweb.png') }}" alt="Blog&Web" width="auto" height="42"/>
                 {% endif %}
             </a>
             {% include '_partials/_cart_badge.html.twig' %}

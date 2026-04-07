@@ -104,6 +104,12 @@
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
+        {# ====== Bootstrap CSS (async — non render-blocking, cacheable) ====== #}
+        {% for href in encore_entry_css_files('vendor') %}
+        <link rel="stylesheet" href="{{ href }}" media="print" onload="this.media='all'">
+        {% endfor %}
+        <noscript>{{ encore_entry_link_tags('vendor') }}</noscript>
+
         {# ====== Theme CSS (inlined to avoid render-blocking Symfony route) ====== #}
         {% if _theme != 'default' and theme_service.hasTemplate(_theme, 'theme.css') %}
         <style>{{ source('themes/' ~ _theme ~ '/theme.css') }}</style>
