@@ -34,7 +34,8 @@ class LegalPagesUpdateCommand extends Command
         foreach (SystemPageEnum::cases() as $type) {
             $page = $this->pageRepository->findSystemPage($type->value);
             if ($page !== null) {
-                $page->setContent($this->legalPageService->getDefaultContent($type));
+                $content = $this->legalPageService->getDefaultContent($type);
+                $page->setContent($content);
                 $page->setUpdatedAt(new \DateTime());
                 $page->setNoIndex(true);
                 $io->text("Updated: {$page->getTitle()}");
