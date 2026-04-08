@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Page;
 use App\Enum\VisibilityEnum;
+use App\Repository\PageViewRepository;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -16,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -28,6 +30,7 @@ class PageCrudController extends AbstractCrudController
 
     public function __construct(
         private readonly SiteContext $siteContext,
+        private readonly PageViewRepository $pageViewRepository,
     ) {
     }
 
@@ -153,6 +156,13 @@ class PageCrudController extends AbstractCrudController
             ->renderAsSwitch(false)
             ->setFormTypeOption('disabled', true)
             ->hideOnIndex();
+
+        $pvRepo = $this->pageViewRepository;
+        yield IntegerField::new('viewCount', 'Vues')
+            ->hideOnForm()
+            ->formatValue(function ($value, Page $entity) use ($pvRepo) {
+                return $pvRepo->countViewsByUrl('/' . $entity->getSlug());
+            });
 
         yield DateTimeField::new('created_at', 'Créée le')
             ->hideOnForm();

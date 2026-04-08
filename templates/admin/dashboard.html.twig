@@ -125,6 +125,53 @@
         </div>
     </div>
 
+    {# --- Pages les plus vues --- #}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="bw-card bw-card--full">
+                <div class="bw-card__header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <h3 class="bw-card__title mb-0"><i class="fas fa-ranking-star me-2"></i>Pages les plus vues</h3>
+                    <form method="get" action="{{ path('admin') }}" class="d-flex gap-2 align-items-center">
+                        <select name="period" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                            <option value="today"{{ topPagesPeriod == 'today' ? ' selected' }}>Aujourd'hui</option>
+                            <option value="week"{{ topPagesPeriod == 'week' ? ' selected' }}>Cette semaine</option>
+                            <option value="month"{{ topPagesPeriod == 'month' ? ' selected' }}>Ce mois</option>
+                            <option value="year"{{ topPagesPeriod == 'year' ? ' selected' }}>Cette ann&eacute;e</option>
+                            <option value="all"{{ topPagesPeriod == 'all' ? ' selected' }}>Tout</option>
+                        </select>
+                        <select name="year" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                            {% for y in availableYears %}
+                            <option value="{{ y }}"{{ topPagesYear == y ? ' selected' }}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                <div class="bw-card__body">
+                    {% if stats.topPages|length > 0 %}
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Page</th>
+                                <th class="text-end" style="width: 100px;">Vues</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for page in stats.topPages %}
+                            <tr>
+                                <td><a href="{{ page.url }}" target="_blank">{{ page.url }}</a></td>
+                                <td class="text-end fw-bold">{{ page.views }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted text-center py-3 mb-0">Aucune visite pour cette p&eacute;riode.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
     {# --- Activite recente + Actions rapides --- #}
     <div class="row g-3 mb-4">
         {# Derniers articles #}

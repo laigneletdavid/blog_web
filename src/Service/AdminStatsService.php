@@ -31,8 +31,12 @@ class AdminStatsService
      *     dailyStats: array
      * }
      */
-    public function getDashboardStats(): array
+    public function getDashboardStats(string $topPagesPeriod = 'month', int $topPagesYear = 0): array
     {
+        if ($topPagesYear === 0) {
+            $topPagesYear = (int) date('Y');
+        }
+
         return [
             'viewsToday' => $this->pageViewRepository->countToday(),
             'viewsMonth' => $this->pageViewRepository->countThisMonth(),
@@ -43,6 +47,7 @@ class AdminStatsService
             'commentsCount' => $this->commentRepository->countAll(),
             'recentArticles' => $this->articleRepository->findRecentPublished(5),
             'recentComments' => $this->commentRepository->findRecent(5),
+            'topPages' => $this->pageViewRepository->topPages(10, $topPagesPeriod, $topPagesYear),
             'dailyStats' => $this->pageViewRepository->dailyStats(30),
         ];
     }

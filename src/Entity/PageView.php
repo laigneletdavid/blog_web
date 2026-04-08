@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PageViewRepository::class)]
 #[ORM\Index(columns: ['created_at'], name: 'idx_pageview_created_at')]
 #[ORM\Index(columns: ['url'], name: 'idx_pageview_url')]
+#[ORM\Index(columns: ['is_bot'], name: 'idx_pageview_is_bot')]
 class PageView
 {
     #[ORM\Id]
@@ -27,6 +28,9 @@ class PageView
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $referer = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isBot = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -85,6 +89,18 @@ class PageView
     public function setReferer(?string $referer): self
     {
         $this->referer = $referer;
+
+        return $this;
+    }
+
+    public function isBot(): bool
+    {
+        return $this->isBot;
+    }
+
+    public function setIsBot(bool $isBot): self
+    {
+        $this->isBot = $isBot;
 
         return $this;
     }

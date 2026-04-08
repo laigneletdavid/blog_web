@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
+use App\Repository\PageViewRepository;
 use App\Security\Voter\ContentVoter;
 use App\Service\SeoService;
 use App\Service\SiteContext;
@@ -76,7 +77,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(?Article $article, Request $request, EntityManagerInterface $em, ArticleRepository $articleRepository): Response
+    public function show(?Article $article, Request $request, EntityManagerInterface $em, ArticleRepository $articleRepository, PageViewRepository $pageViewRepository): Response
     {
         if (!$this->siteContext->hasModule('blog')) {
             throw $this->createNotFoundException();
@@ -119,11 +120,14 @@ class ArticleController extends AbstractController
         // Articles connexes (meme categorie)
         $relatedArticles = $articleRepository->findRelated($article, 3);
 
+        $viewCount = $pageViewRepository->countViewsByUrl('/article/' . $article->getSlug());
+
         return $this->render('article/show.html.twig', [
             'title_page' => 'Article',
             'article' => $article,
             'commentForm' => $commentForm,
             'relatedArticles' => $relatedArticles,
+            'viewCount' => $viewCount,
             'seo' => $this->seoService->resolve($article),
         ]);
     }
