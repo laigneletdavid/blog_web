@@ -31,7 +31,8 @@ class LegalPageContentService
         $page->setVisibility('public');
         $page->setTemplate('full-width');
         $page->setCreatedAt(new \DateTime());
-        $page->setContent($this->getDefaultContent($type));
+        $content = $this->getDefaultContent($type);
+        $page->setContent($content);
         $page->setSeoDescription($this->getSeoDescription($type));
         $page->setNoIndex(true);
 

@@ -29,6 +29,7 @@ async function initChart() {
 
     const views = rawData.map(d => parseInt(d.views, 10));
     const visitors = rawData.map(d => parseInt(d.visitors, 10));
+    const botViews = rawData.map(d => parseInt(d.bot_views || 0, 10));
 
     new Chart(canvas, {
         type: 'line',
@@ -57,6 +58,18 @@ async function initChart() {
                     pointHoverRadius: 5,
                     borderWidth: 2,
                     borderDash: [5, 3],
+                },
+                {
+                    label: 'Robots',
+                    data: botViews,
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.05)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                    borderWidth: 1.5,
+                    borderDash: [3, 3],
                 },
             ],
         },

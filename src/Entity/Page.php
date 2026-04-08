@@ -204,7 +204,12 @@ class Page implements TimestampedInterface
      */
     public function getBlocksJson(): ?string
     {
-        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+        if ($this->blocks !== null) {
+            return json_encode($this->blocks, JSON_UNESCAPED_UNICODE);
+        }
+
+        // Fallback: return HTML content for pages without Tiptap blocks (e.g. legal pages)
+        return $this->content;
     }
 
     public function setBlocksJson(?string $json): self

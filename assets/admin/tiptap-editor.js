@@ -61,7 +61,8 @@ class TiptapEditor {
         try {
             return JSON.parse(value);
         } catch (e) {
-            return null;
+            // Not JSON — treat as HTML (Tiptap can parse HTML natively)
+            return value;
         }
     }
 

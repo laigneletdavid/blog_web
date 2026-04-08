@@ -4,13 +4,14 @@ namespace App\EventSubscriber;
 
 use App\Entity\PageView;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Log chaque visite front dans la table page_view.
- * Exclut les routes admin, le profiler, les assets et les bots courants.
+ * Exclut les admins/auteurs, detecte les bots (is_bot=true).
  */
 class PageViewSubscriber implements EventSubscriberInterface
 {
@@ -26,8 +27,16 @@ class PageViewSubscriber implements EventSubscriberInterface
         '/favicon',
     ];
 
+    private const BOT_PATTERNS = [
+        'bot', 'crawl', 'spider', 'slurp', 'googlebot', 'bingbot', 'yandex',
+        'baidu', 'duckduckbot', 'facebookexternalhit', 'twitterbot', 'linkedinbot',
+        'semrush', 'ahrefs', 'mj12bot', 'dotbot', 'petalbot', 'bytespider',
+        'gptbot', 'claudebot', 'lighthouse', 'pagespeed', 'gtmetrix',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly Security $security,
     ) {
     }
 
@@ -66,6 +75,13 @@ class PageViewSubscriber implements EventSubscriberInterface
             }
         }
 
+        // Ne pas compter les admins/auteurs connectes
+        if ($this->security->isGranted('ROLE_AUTHOR')) {
+            return;
+        }
+
+        $userAgent = mb_substr($request->headers->get('User-Agent', ''), 0, 500) ?: null;
+
         // Hasher l'IP (RGPD — on ne stocke jamais l'IP en clair)
         $ip = $request->getClientIp() ?? '0.0.0.0';
         $ipHash = hash('sha256', $ip . date('Y-m-d')); // Salté par jour pour limiter le tracking
@@ -73,10 +89,27 @@ class PageViewSubscriber implements EventSubscriberInterface
         $pageView = new PageView();
         $pageView->setUrl(mb_substr($path, 0, 500));
         $pageView->setIpHash($ipHash);
-        $pageView->setUserAgent(mb_substr($request->headers->get('User-Agent', ''), 0, 500) ?: null);
+        $pageView->setUserAgent($userAgent);
         $pageView->setReferer(mb_substr($request->headers->get('Referer', ''), 0, 500) ?: null);
+        $pageView->setIsBot($this->isBot($userAgent));
 
         $this->em->persist($pageView);
         $this->em->flush();
+    }
+
+    private function isBot(?string $userAgent): bool
+    {
+        if ($userAgent === null || $userAgent === '') {
+            return true; // Pas de User-Agent = probablement un bot
+        }
+
+        $ua = strtolower($userAgent);
+        foreach (self::BOT_PATTERNS as $pattern) {
+            if (str_contains($ua, $pattern)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

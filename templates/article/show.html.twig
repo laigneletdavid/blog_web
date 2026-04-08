@@ -86,6 +86,10 @@
                     <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|date('d M Y') }}</time>
                     <span class="article-detail__dot"></span>
                     <span>{{ article.content|readingTime }} min de lecture</span>
+                    {% if viewCount|default(0) > 0 %}
+                    <span class="article-detail__dot"></span>
+                    <span>{{ viewCount }} vue{{ viewCount > 1 ? 's' : '' }}</span>
+                    {% endif %}
                 </div>
 
                 {# --- Titre --- #}

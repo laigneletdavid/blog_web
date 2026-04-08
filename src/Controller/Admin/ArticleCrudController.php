@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Article;
 use App\Enum\VisibilityEnum;
+use App\Repository\PageViewRepository;
 use App\Service\ArticleNotificationService;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -15,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -28,6 +30,7 @@ class ArticleCrudController extends AbstractCrudController
     public function __construct(
         private readonly ArticleNotificationService $notificationService,
         private readonly SiteContext $siteContext,
+        private readonly PageViewRepository $pageViewRepository,
     ) {
     }
 
@@ -153,6 +156,13 @@ class ArticleCrudController extends AbstractCrudController
             ->setTargetFieldName('title')
             ->setHelp('Généré automatiquement depuis le titre')
             ->hideOnIndex();
+
+        $pvRepo = $this->pageViewRepository;
+        yield IntegerField::new('viewCount', 'Vues')
+            ->hideOnForm()
+            ->formatValue(function ($value, Article $entity) use ($pvRepo) {
+                return $pvRepo->countViewsByUrl('/article/' . $entity->getSlug());
+            });
 
         yield DateTimeField::new('created_at', 'Créé le')
             ->hideOnForm();

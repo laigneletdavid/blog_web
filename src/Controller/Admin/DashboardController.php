@@ -57,7 +57,13 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $site = $this->siteContext->getCurrentSite();
-        $stats = $this->adminStatsService->getDashboardStats();
+
+        // Filtres top pages
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $topPagesPeriod = $request?->query->getString('period', 'month') ?? 'month';
+        $topPagesYear = $request?->query->getInt('year', (int) date('Y')) ?? (int) date('Y');
+
+        $stats = $this->adminStatsService->getDashboardStats($topPagesPeriod, $topPagesYear);
 
         $ecommerceStats = null;
         if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('ecommerce')) {
@@ -68,11 +74,18 @@ class DashboardController extends AbstractDashboardController
             ];
         }
 
+        // Années disponibles pour le filtre
+        $currentYear = (int) date('Y');
+        $availableYears = range($currentYear, $currentYear - 3);
+
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
             'stats' => $stats,
             'ecommerceStats' => $ecommerceStats,
+            'topPagesPeriod' => $topPagesPeriod,
+            'topPagesYear' => $topPagesYear,
+            'availableYears' => $availableYears,
         ]);
     }
 
