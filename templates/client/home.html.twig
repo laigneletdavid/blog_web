@@ -20,7 +20,7 @@
                     <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">Demander un devis</a>
                 </div>
                 <div class="home-hero__badges">
-                    <span class="home-hero__trust-badge">&#9989; Installation rapide</span>
+                    <span class="home-hero__trust-badge">&#9989; Site en ligne en &#189; journée</span>
                     <span class="home-hero__trust-badge">&#128274; Sécurisé & RGPD</span>
                     <span class="home-hero__trust-badge">&#127467;&#127479; Hébergé en France</span>
                 </div>
@@ -101,7 +101,8 @@
 <section class="home-services">
     <div class="container">
         <div class="home-services__header text-center">
-            <h2 class="home-section-title">Tout ce dont vous avez besoin</h2>
+            <h2 class="home-section-title">Comment ça se passe concrètement</h2>
+            <p class="home-section-subtitle">De votre premier message à votre site en ligne, voici ce que vous allez vivre.</p>
         </div>
         {% include '_partials/_services_grid.html.twig' with { services: services } %}
     </div>
@@ -238,8 +239,8 @@
     <div class="container">
         <div class="row">
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value">24h</div>
-                <div class="home-metrics__label">de mise en ligne</div>
+                <div class="home-metrics__value">&frac12; j</div>
+                <div class="home-metrics__label">pour être en ligne</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
                 <div class="home-metrics__value">6</div>
@@ -335,7 +336,7 @@
 <section class="home-cta">
     <div class="container text-center">
         <h2 class="home-cta__title">Prêt à lancer votre site ?</h2>
-        <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en quelques jours.</p>
+        <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en une demi-journée, après validation de votre contenu.</p>
         <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous contacter</a>
     </div>
 </section>
