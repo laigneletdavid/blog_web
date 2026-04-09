@@ -53,7 +53,8 @@ class ArticleCrudController extends AbstractCrudController
                     'title' => 'Publication',
                     'content' => '<ul>
                         <li>Par defaut, un article est en <strong>brouillon</strong> (non visible)</li>
-                        <li>Cochez <em>Publie</em> pour le rendre visible</li>
+                        <li>Cochez <em>Publie</em> pour le rendre visible immediatement</li>
+                        <li>Ou definissez une <strong>date de publication programmee</strong> pour publier automatiquement a la date choisie</li>
                         <li>La date de publication est remplie automatiquement</li>
                         <li>Les abonnes sont notifies par email a la publication</li>
                     </ul>',
@@ -132,7 +133,13 @@ class ArticleCrudController extends AbstractCrudController
             ->setHelp('Court résumé affiché dans les listes d\'articles')
             ->hideOnIndex();
 
-        yield BooleanField::new('published', 'Publié');
+        yield BooleanField::new('published', 'Publié')
+            ->setHelp('Si une date de programmation est définie dans le futur, l\'article sera publié automatiquement à cette date.');
+
+        yield DateTimeField::new('scheduled_at', 'Publication programmée')
+            ->setHelp('Laissez vide pour publier manuellement. Si une date future est définie, l\'article sera publié automatiquement.')
+            ->hideOnIndex()
+            ->setRequired(false);
 
         yield BooleanField::new('isFeatured', 'Article vedette')
             ->setHelp('L\'article vedette est mis en avant en haut de la page blog')
@@ -209,6 +216,9 @@ class ArticleCrudController extends AbstractCrudController
         $entityInstance->setCreatedAt(new \DateTime());
         $entityInstance->setUpdatedAt(new \DateTime());
 
+        // Si scheduled_at est dans le futur, forcer brouillon (le subscriber publiera)
+        $this->handleScheduledPublication($entityInstance);
+
         $isNewlyPublished = false;
         if ($entityInstance->isPublished() && $entityInstance->getPublishedAt() === null) {
             $entityInstance->setPublishedAt(new \DateTime());
@@ -228,6 +238,9 @@ class ArticleCrudController extends AbstractCrudController
         /** @var Article $entityInstance */
         $entityInstance->setUpdatedAt(new \DateTime());
 
+        // Si scheduled_at est dans le futur, forcer brouillon (le subscriber publiera)
+        $this->handleScheduledPublication($entityInstance);
+
         $isNewlyPublished = false;
         if ($entityInstance->isPublished() && $entityInstance->getPublishedAt() === null) {
             $entityInstance->setPublishedAt(new \DateTime());
@@ -239,6 +252,35 @@ class ArticleCrudController extends AbstractCrudController
         // Notification aux abonnés si l'article vient d'être publié
         if ($isNewlyPublished) {
             $this->notificationService->notifySubscribers($entityInstance);
+        }
+    }
+
+    /**
+     * Gere la coherence entre scheduled_at et published :
+     * - scheduled_at dans le futur → force brouillon (publication auto par le subscriber)
+     * - scheduled_at dans le passe → publication immediate
+     * - publication manuelle → nettoie scheduled_at
+     */
+    private function handleScheduledPublication(Article $entityInstance): void
+    {
+        $scheduledAt = $entityInstance->getScheduledAt();
+
+        if ($scheduledAt !== null) {
+            if ($scheduledAt > new \DateTime()) {
+                // Date future : forcer brouillon, le subscriber publiera
+                $entityInstance->setPublished(false);
+                $entityInstance->setPublishedAt(null);
+            } else {
+                // Date passee : publier immediatement
+                $entityInstance->setPublished(true);
+                if ($entityInstance->getPublishedAt() === null) {
+                    $entityInstance->setPublishedAt($scheduledAt);
+                }
+                $entityInstance->setScheduledAt(null);
+            }
+        } elseif ($entityInstance->isPublished()) {
+            // Publication manuelle sans programmation : nettoyer scheduled_at
+            $entityInstance->setScheduledAt(null);
         }
     }
 }

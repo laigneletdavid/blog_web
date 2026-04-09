@@ -252,6 +252,23 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Articles programmes dont la date de publication est atteinte.
+     * Utilise par ScheduledPublicationSubscriber a chaque visite.
+     *
+     * @return Article[]
+     */
+    public function findScheduledReady(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.published = FALSE')
+            ->andWhere('a.scheduled_at IS NOT NULL')
+            ->andWhere('a.scheduled_at <= :now')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countDrafts(): int
     {
         return (int) $this->createQueryBuilder('a')
