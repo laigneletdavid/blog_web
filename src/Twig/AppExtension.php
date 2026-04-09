@@ -115,7 +115,7 @@ class AppExtension extends AbstractExtension
         }
 
         foreach ($matches as $match) {
-            $text = strip_tags($match[2]);
+            $text = html_entity_decode(strip_tags($match[2]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $items[] = [
                 'id' => $this->slugify($text),
                 'text' => $text,
