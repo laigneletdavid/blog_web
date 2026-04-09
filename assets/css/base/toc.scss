@@ -3,8 +3,6 @@
 // =============================================================================
 
 .widget-toc {
-  position: sticky;
-  top: 5rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -66,8 +64,7 @@
     }
   }
 
-  // Tablet: keep widget but remove sticky
   @media (max-width: 991.98px) {
-    position: static;
+    margin-top: 1rem;
   }
 }
