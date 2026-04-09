@@ -16,7 +16,7 @@
         </div>
         <div class="blog-card__body">
             <h2 class="blog-card__title">{{ article.title }}</h2>
-            <p class="blog-card__excerpt">{{ article.featuredText ?: article.content|striptags|slice(0, 150) ~ '...' }}</p>
+            <p class="blog-card__excerpt">{{ article.featuredText ?: article.content|plaintext|slice(0, 150) ~ '...' }}</p>
             <div class="blog-card__meta">
                 <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|date('d M Y') }}</time>
                 <span class="blog-card__dot"></span>

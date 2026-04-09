@@ -27,6 +27,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('highlight', [$this, 'highlight'], ['is_safe' => ['html']]),
             new TwigFilter('toc_anchors', [$this, 'addTocAnchors'], ['is_safe' => ['html']]),
             new TwigFilter('menuVisible', [$this, 'menuVisible']),
+            new TwigFilter('plaintext', [$this, 'plaintext']),
         ];
     }
 
@@ -132,6 +133,19 @@ class AppExtension extends AbstractExtension
         $text = preg_replace('/[^a-z0-9]+/', '-', $text);
 
         return trim($text, '-');
+    }
+
+    /**
+     * Convertit du HTML en texte lisible : retire les balises et decode les entites.
+     * Usage : {{ article.content|plaintext|slice(0, 150) }}
+     */
+    public function plaintext(?string $html): string
+    {
+        if (!$html) {
+            return '';
+        }
+
+        return html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 
     /**
