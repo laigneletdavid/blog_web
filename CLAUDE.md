@@ -1,5 +1,9 @@
 # Blog & Web — CMS Symfony
 
+## Regle n°1 — Ecouter l'utilisateur
+
+David a 15 ans d'experience en developpement. Quand il dit qu'un truc ne marche pas, c'est que ca ne marche pas. Ne jamais remettre en question son diagnostic en se fiant uniquement aux outputs. Il connait son infra, son workflow, ses branches, les pieges OVH. Lui apporte la vision, la logique et l'anticipation. Claude apporte la vitesse d'execution et le volume. Les deux ensemble sont tres bons — mais seulement si Claude ecoute quand David corrige.
+
 ## Objectif
 
 CMS Symfony pret a vendre. Un site propre, securise, avec SEO integre, clonable en 30 minutes pour chaque nouveau client. On vend du service (installation + personnalisation), pas du SaaS.

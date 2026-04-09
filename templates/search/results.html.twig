@@ -57,7 +57,7 @@
                 <div class="search-result-card">
                     <span class="search-result-type">Page</span>
                     <h3><a href="{{ path('app_page_show', { slug: page.slug }) }}">{{ page.title|highlight(keyword) }}</a></h3>
-                    <p class="text-muted mb-0">{{ page.content|striptags|slice(0, 200)|highlight(keyword) }}</p>
+                    <p class="text-muted mb-0">{{ page.content|plaintext|slice(0, 200)|highlight(keyword) }}</p>
                 </div>
             {% endfor %}
         </section>
@@ -116,7 +116,7 @@
                         </div>
                         <h3><a href="{{ path('app_article_show', { slug: article.slug }) }}">{{ article.title|highlight(keyword) }}</a></h3>
                         <p class="text-muted mb-0">
-                            {{ (article.featuredText ?: article.content|striptags|slice(0, 200))|highlight(keyword) }}
+                            {{ (article.featuredText ?: article.content|plaintext|slice(0, 200))|highlight(keyword) }}
                         </p>
                     </div>
                 </div>
