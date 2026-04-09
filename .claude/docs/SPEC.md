@@ -408,7 +408,7 @@ Conteneuriser toute l'app. Tout tourne dans Docker, zéro dépendance locale.
 - [x] `DashboardController::configureMenuItems()` : section "Apparence" (`ROLE_FREELANCE+`) avec Catalogue, Réglages, Images
 - [x] Créer `templates/admin/themes/browser.html.twig` — grille cards avec preview, couleurs, bouton activer, preview fullscreen (iframe responsive desktop/tablette/mobile)
 
-#### 3.6 Créer les 5 themes ✅
+#### 3.6 Créer les 6 themes ✅
 
 - [x] `corporate` — PME services B2B, sobre et professionnel (Montserrat)
 - [x] `artisan` — Commerce local, chaleureux (Lato)

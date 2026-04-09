@@ -1,4 +1,4 @@
-# CLAUDE5 — Session du 8 avril 2026
+# CLAUDE5 — Sessions du 8-9 avril 2026
 
 ## Fait
 
@@ -64,6 +64,30 @@
 - Hero badge : "Site en ligne en 1/2 journee"
 - Chiffres cles : "1/2 j pour etre en ligne"
 - Bloc CTA : "en une demi-journee, apres validation de votre contenu"
+
+### Publication programmee (lazy scheduling)
+**Statut** : FAIT
+- **Champ `scheduled_at`** (DateTime, nullable) sur `Article` + migration `Version20260409085027`
+- **`ArticleRepository::findScheduledReady()`** : articles non publies avec `scheduled_at <= NOW()`
+- **`ScheduledPublicationSubscriber`** (kernel.request) : a chaque visite front, verifie si des articles programmes sont prets. Si oui : `published = true`, `published_at = scheduled_at`, flush, notification abonnes
+- **Pas de cron** : fonctionne nativement en multi-site, delenche par la premiere visite apres la date programmee
+- **Logique admin (`handleScheduledPublication`)** : date future → force brouillon (meme si "Publie" coche). Date passee → publication immediate. Publication manuelle → nettoie `scheduled_at`
+- **CRUD** : champ DateTimeField "Publication programmee" dans le panneau Parametres, aide et tips mis a jour
+- Exclut assets et outils dev (`/_wdt`, `/_profiler`, `/build/`, etc.)
+- Erreurs de notification catchees (ne bloquent pas la publication)
+
+### Fix sommaire (TOC) — entites HTML dans les titres
+**Statut** : FAIT
+- **Probleme** : les apostrophes dans les titres du sommaire s'affichaient en `&#039;` au lieu de `'`
+- **Cause** : `extractToc()` dans `AppExtension.php` utilisait `strip_tags()` sans decoder les entites HTML. Twig echappait ensuite le texte, laissant les entites brutes.
+- **Fix** : ajout `html_entity_decode()` apres `strip_tags()` dans `extractToc()`
+
+### Fix widget "Dernier article" — image debordante
+**Statut** : FAIT
+- **Probleme** : l'image du widget "Dernier article" dans la sidebar debordait de la colonne
+- **Cause** : `.widget_article_img` avait `width: 100%` dans un `flex-row`, prenant toute la largeur
+- **Fix template** : typo `felx-row` → `flex-row`, ajout `flex-shrink-0` sur l'image, `overflow-hidden` sur le texte
+- **Fix CSS** : `.widget_article_img` passe a `width: 8rem; min-width: 8rem` (taille fixe), `overflow: hidden` sur le parent `.widget_article`
 
 ## Scores actuels (8 avr. 2026)
 

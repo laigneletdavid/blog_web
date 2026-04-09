@@ -1,13 +1,13 @@
 <div class="p-4 widget_article">
     <h4 class="fst-italic">Dernier article</h4>
     {% if widget_article %}
-        <div class="d-flex felx-row">
-            <div class="widget_article_img">
+        <div class="d-flex flex-row">
+            <div class="widget_article_img flex-shrink-0">
                 {% if widget_article.featuredMedia %}
                     <img src="{{ asset('documents/medias/' ~ widget_article.featuredMedia.fileName) }}" alt="{{ widget_article.featuredMedia.name }}"/>
                 {% endif %}
             </div>
-            <div class="ps-3 d-flex flex-column justify-content-evenly">
+            <div class="ps-3 d-flex flex-column justify-content-evenly overflow-hidden">
                 <h5 class="mb-0">{{ widget_article.title }}</h5>
                 <div class="categories d-flex flex-row">
                     {% for cat in widget_article.categories %}
