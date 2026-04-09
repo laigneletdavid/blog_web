@@ -54,9 +54,9 @@ class ArticleCrudController extends AbstractCrudController
                     'content' => '<ul>
                         <li>Par defaut, un article est en <strong>brouillon</strong> (non visible)</li>
                         <li>Cochez <em>Publie</em> pour le rendre visible immediatement</li>
-                        <li>Ou definissez une <strong>date de publication programmee</strong> pour publier automatiquement a la date choisie</li>
-                        <li>La date de publication est remplie automatiquement</li>
-                        <li>Les abonnes sont notifies par email a la publication</li>
+                        <li>Ou definissez une <strong>date de publication programmee</strong> : l\'article sera publie automatiquement a la date et heure choisies, des qu\'un visiteur accede au site</li>
+                        <li>Si une date future est definie, l\'article reste en brouillon meme si <em>Publie</em> est coche</li>
+                        <li>Les abonnes sont notifies par email au moment de la publication (immediate ou programmee)</li>
                     </ul>',
                 ],
                 [
@@ -71,6 +71,7 @@ class ArticleCrudController extends AbstractCrudController
             'tips' => [
                 'Ajoutez toujours une image mise en avant et un texte d\'accroche pour rendre vos articles plus attractifs.',
                 'Un bon titre SEO fait entre 50 et 70 caracteres, et la meta-description entre 120 et 160.',
+                'Utilisez la publication programmee pour preparer vos articles a l\'avance et maintenir un rythme regulier.',
             ],
         ];
     }

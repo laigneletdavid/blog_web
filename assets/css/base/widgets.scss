@@ -115,6 +115,7 @@
   // Last article widget
   .widget_article {
     max-width: 100%;
+    overflow: hidden;
 
     h5 {
       font-family: var(--font-display);
@@ -124,7 +125,8 @@
     }
 
     .widget_article_img {
-      width: 100%;
+      width: 8rem;
+      min-width: 8rem;
       height: 8rem;
       border-radius: var(--radius-md);
       overflow: hidden;
