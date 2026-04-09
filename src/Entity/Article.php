@@ -36,6 +36,9 @@ class Article implements TimestampedInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $published_at = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $scheduled_at = null;
+
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
@@ -141,6 +144,34 @@ class Article implements TimestampedInterface
         $this->published_at = $published_at;
 
         return $this;
+    }
+
+    public function getScheduledAt(): ?\DateTimeInterface
+    {
+        return $this->scheduled_at;
+    }
+
+    public function setScheduledAt(?\DateTimeInterface $scheduled_at): self
+    {
+        $this->scheduled_at = $scheduled_at;
+
+        return $this;
+    }
+
+    /**
+     * L'article est-il programme pour une publication future ?
+     */
+    public function isScheduled(): bool
+    {
+        return $this->scheduled_at !== null && !$this->published && $this->scheduled_at > new \DateTime();
+    }
+
+    /**
+     * L'article programme est-il pret a etre publie (date atteinte) ?
+     */
+    public function isScheduledReady(): bool
+    {
+        return $this->scheduled_at !== null && !$this->published && $this->scheduled_at <= new \DateTime();
     }
 
     public function getSlug(): ?string
