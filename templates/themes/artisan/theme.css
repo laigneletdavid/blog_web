@@ -1,6 +1,40 @@
 /* ====== Artisan Theme ====== */
 /* Commerces locaux, restaurants, artisans — Chaleureux, authentique */
 
+/* ====== BOOTSTRAP BUTTON OVERRIDES (use theme colors instead of default blue) ====== */
+.theme-artisan .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+.theme-artisan .btn-primary:hover,
+.theme-artisan .btn-primary:focus {
+    background-color: color-mix(in srgb, var(--primary) 85%, #000);
+    border-color: color-mix(in srgb, var(--primary) 85%, #000);
+    color: #fff;
+}
+.theme-artisan .btn-primary:active {
+    background-color: color-mix(in srgb, var(--primary) 75%, #000);
+    border-color: color-mix(in srgb, var(--primary) 75%, #000);
+}
+.theme-artisan .btn-primary:focus-visible {
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--primary) 50%, transparent);
+}
+.theme-artisan .btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: transparent;
+}
+.theme-artisan .btn-outline-primary:hover,
+.theme-artisan .btn-outline-primary:focus {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+.theme-artisan .btn-outline-primary:focus-visible {
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
 /* ====== UNIFIED HOME OVERRIDES (home-* classes) ====== */
 
 /* Hero: background-image mode, centered text */
@@ -30,8 +64,41 @@
     flex: 0 0 100% !important;
 }
 .theme-artisan .home-hero__visual { display: none !important; }
-.theme-artisan .home-hero__desc { margin-left: auto; margin-right: auto; }
+.theme-artisan .home-hero__title,
+.theme-artisan .home-hero__desc,
+.theme-artisan .home-hero__badge {
+    color: #fff;
+}
+.theme-artisan .home-hero__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.theme-artisan .home-hero__desc {
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
 .theme-artisan .home-hero__actions { justify-content: center; }
+.theme-artisan .home-hero__actions .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+.theme-artisan .home-hero__actions .btn-primary:hover {
+    background: color-mix(in srgb, var(--primary) 85%, #000);
+    transform: translateY(-2px);
+}
+.theme-artisan .home-hero__actions .btn-outline-primary {
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: #fff;
+    background: transparent;
+}
+.theme-artisan .home-hero__actions .btn-outline-primary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #fff;
+}
 
 /* About: warm styling */
 .theme-artisan .home-about__overtitle {
@@ -64,14 +131,83 @@
     border-top: none;
 }
 
-/* CTA: show address if available */
+/* Section titles: use secondary font */
+.theme-artisan .home-section-title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    color: var(--text);
+}
+
+/* Features: icons in secondary color + center last row for 7 items */
+.theme-artisan .home-features__icon {
+    background: color-mix(in srgb, var(--secondary) 15%, transparent);
+    color: var(--secondary);
+}
+.theme-artisan .home-features__grid--7 {
+    justify-items: center;
+}
+.theme-artisan .home-features__grid--7 .home-features__card:last-child {
+    grid-column: 2 / 3;
+}
+@media (max-width: 991.98px) and (min-width: 576px) {
+    .theme-artisan .home-features__grid--7 .home-features__card:last-child {
+        grid-column: 1 / -1;
+        max-width: 50%;
+        justify-self: center;
+    }
+}
+@media (max-width: 575.98px) {
+    .theme-artisan .home-features__grid--7 .home-features__card:last-child {
+        grid-column: auto;
+    }
+}
+
+/* About: overtitle in secondary */
+.theme-artisan .home-about__overtitle {
+    color: var(--secondary);
+}
+
+/* CTA: primary (terracotta) background */
 .theme-artisan .home-cta {
     background: var(--primary);
+}
+.theme-artisan .home-cta__title,
+.theme-artisan .home-cta__desc {
+    color: #fff;
+}
+.theme-artisan .home-cta .btn-light {
+    background: #fff;
+    color: var(--primary);
+}
+.theme-artisan .home-cta .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+.theme-artisan .home-cta .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #fff;
 }
 
 /* ====== END UNIFIED HOME ====== */
 
 /* --- HEADER --- */
+.theme-artisan .header-logo {
+    display: inline-block;
+    line-height: 0;
+}
+.theme-artisan .header-logo img {
+    height: auto !important;
+    max-height: 140px;
+    width: auto;
+    margin-top: -30px;
+    margin-bottom: -30px;
+}
+@media (max-width: 767.98px) {
+    .theme-artisan .header-logo img {
+        max-height: 80px;
+        margin-top: -15px;
+        margin-bottom: -15px;
+    }
+}
 .theme-artisan .header--artisan { border-bottom: 2px solid var(--border); }
 .theme-artisan .art-nav {
     display: flex;
@@ -614,7 +750,7 @@
 }
 
 /* --- FOOTER --- */
-.theme-artisan .footer--artisan { background: var(--text); color: rgba(255,255,255,0.8); }
+.theme-artisan .footer--artisan { background: var(--secondary); color: rgba(255,255,255,0.8); }
 .theme-artisan .footer--artisan .footer-heading {
     color: #fff;
     font-family: var(--font-family-secondary, var(--font-family));
@@ -625,7 +761,18 @@
 .theme-artisan .footer--artisan .nav-link:hover { color: #fff; }
 .theme-artisan .footer--artisan .footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); font-size: 0.8rem; color: rgba(255,255,255,0.5); }
 .theme-artisan .footer--artisan .footer-tagline { color: rgba(255,255,255,0.6); font-size: 0.875rem; }
-.theme-artisan .footer--artisan .footer-logo img { max-height: 40px; filter: brightness(0) invert(1); }
+.theme-artisan .footer--artisan .footer-logo {
+    display: inline-block;
+    line-height: 0;
+}
+.theme-artisan .footer--artisan .footer-logo img {
+    height: auto !important;
+    max-height: 140px;
+    width: auto;
+    margin-top: -30px;
+    margin-bottom: -30px;
+    filter: brightness(0) invert(1);
+}
 
 /* --- TABLES --- */
 .theme-artisan .tiptap-table {
