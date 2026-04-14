@@ -1,0 +1,5 @@
+/* ====== Client CSS Override ====== */
+/* This file is loaded AFTER the theme CSS in base.html.twig.            */
+/* Use it on client branches (bw_*) to override theme styles             */
+/* without modifying CMS theme files.                                     */
+/* On main, this file stays empty.                                        */

@@ -109,6 +109,12 @@
         <style>{{ source('themes/' ~ _theme ~ '/theme.css') }}</style>
         {% endif %}
 
+        {# ====== Client CSS override (loaded last, highest priority) ====== #}
+        {% set _client_css = source('client/theme.css', true) %}
+        {% if _client_css is not empty %}
+        <style>{{ _client_css }}</style>
+        {% endif %}
+
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

@@ -32,7 +32,8 @@ docker compose exec php php bin/console app:module:enable blog
 docker compose exec php php bin/console app:recaptcha:setup
 
 # 7. Personnaliser (templates, CSS, contenu)
-# Les modifications custom du client se font sur cette branche
+# Templates : templates/client/home.html.twig (override de la home)
+# CSS : templates/client/theme.css (surcharge du theme, charge en dernier)
 
 # 8. Vider le cache
 docker compose exec php php bin/console cache:clear
@@ -208,7 +209,26 @@ Ces images sont **editoriales** — elles relevent de la personnalisation du sit
 
 > **Fallback OG :** si l'image Open Graph n'est pas definie, le systeme utilise automatiquement : `ogImage > heroImage > logo`.
 
-### 8. Personnaliser dans l'admin
+### 8. Personnaliser les templates et le CSS
+
+Les fichiers de personnalisation client vivent dans `templates/client/` :
+
+| Fichier | Role | Charge quand |
+|---------|------|--------------|
+| `templates/client/home.html.twig` | Override complet de la home | Prioritaire sur le theme et le generique |
+| `templates/client/theme.css` | Surcharge CSS du theme | Charge en dernier dans `<head>`, apres le theme.css |
+
+**`client/theme.css`** est le bon endroit pour ajuster les couleurs, le hero, le CTA, la taille du logo, etc. sans modifier les fichiers du CMS. Exemple :
+```css
+/* Forcer le CTA en couleur secondaire */
+.theme-artisan .home-cta { background: var(--secondary); }
+/* Agrandir le logo header */
+.theme-artisan .header-logo img { height: auto !important; max-height: 140px; }
+```
+
+> **Regle :** ne jamais modifier directement les fichiers `themes/*/theme.css` ou `themes/*/_header.html.twig` sur une branche client. Utiliser les overrides `templates/client/`.
+
+### 9. Personnaliser dans l'admin
 
 > **Utilisateur** : valide le rendu. **Agent** : execute les modifications dans l'admin.
 
