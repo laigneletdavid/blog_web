@@ -1,0 +1,154 @@
+{# ====== HOME CLIENT — Les Pros d'Ici ====== #}
+{# Override de _home_generic.html.twig pour la branche bw_pro_dici #}
+{# Theme : artisan | Direction artistique : Occitanie moderne & solaire #}
+
+{# ====== HERO ====== #}
+<section class="home-hero"
+    {% if site.heroImage %}
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
+    {% endif %}>
+    <div class="home-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center home-hero__row">
+            <div class="col-lg-7 home-hero__content">
+                <span class="home-hero__badge">Les Pros d'Ici</span>
+                <h1 class="home-hero__title">De Tournefeuille à Grenade, trouvez le pro qu'il vous faut.</h1>
+                <p class="home-hero__desc">Des visages, des savoir-faire, une sélection humaine. Votre réseau de confiance dans le Nord-Ouest toulousain.</p>
+                <div class="home-hero__actions">
+                    <a href="{{ path('app_directory') }}" class="btn btn-primary btn-lg">Trouver mon expert</a>
+                    <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">Rejoindre le réseau</a>
+                </div>
+            </div>
+            {% if site.heroImage %}
+            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
+                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', 'Les Pros d\'Ici', true) }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== FAMILLES METIERS (remplace features) ====== #}
+<section class="home-features">
+    <div class="container">
+        <h2 class="home-section-title text-center">Les familles du réseau</h2>
+        <p class="text-center text-muted mb-4">Sept univers qui font vivre notre secteur, de l'atelier à la table.</p>
+        <div class="home-features__grid home-features__grid--7">
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('tools', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Maison & Travaux</h3>
+                <p class="home-features__desc">Artisans du bâtiment, rénovation, dépannage. Les mains qui construisent et réparent votre quotidien.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('heart-pulse', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Santé & Bien-être</h3>
+                <p class="home-features__desc">Praticiens, thérapeutes et coachs du coin pour prendre soin de vous et des vôtres.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('laptop', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Services & Informatique</h3>
+                <p class="home-features__desc">Aide à domicile, dépannage informatique, services pratiques. Les alliés de votre quotidien.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('palette', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Commerce & Artisanat d'Art</h3>
+                <p class="home-features__desc">Créateurs, boutiques, fait main. Des cadeaux et objets avec une histoire.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('cup-hot', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Gastronomie & Terroir</h3>
+                <p class="home-features__desc">Producteurs, traiteurs, cavistes. Le bon goût d'ici, dans votre assiette.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('truck', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Mobilité & Transports</h3>
+                <p class="home-features__desc">Garages, transports, deux-roues. Les pros qui vous gardent en mouvement.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    {{ bi('briefcase', '', '28') }}
+                </div>
+                <h3 class="home-features__title">Expertise & Conseil</h3>
+                <p class="home-features__desc">Comptables, coachs, consultants et experts du coin pour faire grandir votre activité en confiance.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== DERNIERS ARTICLES ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="home-section-title mb-0">Portraits & actualités</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Lire tous les articles &rarr;</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== A PROPOS — Notre histoire ====== #}
+<section class="home-about" id="home-about">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
+            <div class="col-12 col-lg-3 home-about__img-wrapper d-flex justify-content-center">
+                {% if site.aboutImage %}
+                {{ responsive_img(site.aboutImage, '(max-width: 768px) 100vw, 25vw', 'home-about__img rounded-circle') }}
+                {% else %}
+                <img src="{{ asset('images/profil.jpg') }}"
+                     alt="Les Pros d'Ici"
+                     class="home-about__img rounded-circle" loading="lazy"
+                     width="279" height="279"/>
+                {% endif %}
+            </div>
+            <div class="col-12 col-lg-9 home-about__content d-flex flex-column justify-content-evenly align-items-center">
+                <span class="home-about__overtitle">À propos</span>
+                <h2 class="home-about__title">Notre histoire</h2>
+                <p class="home-about__text">Habitants et professionnels du Nord-Ouest toulousain, nous avons lancé ce réseau pour une raison simple : en finir avec la galère de trouver un bon pro dans le coin. De Tournefeuille à Grenade, notre mission est de reconnecter les talents locaux avec celles et ceux qui en ont besoin.</p>
+                <p class="home-about__text">Plus qu'une liste de contacts, Les Pros d'Ici met en lumière les savoir-faire de notre secteur à travers des portraits qui vous aident à choisir en confiance. Ici, on privilégie la proximité réelle, le sérieux et la recommandation. Parce qu'un bon pro, c'est d'abord quelqu'un d'ici.</p>
+                <a href="{{ path('app_directory') }}" class="btn btn-outline-primary">Découvrir les pros du coin</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== GALERIE — Le coin en images ====== #}
+{% set gallery = site.getGalleryBySlot('gallery') %}
+{% if gallery|length > 0 %}
+<section class="home-gallery">
+    <div class="container">
+        <h2 class="home-section-title text-center">Le coin en images</h2>
+        {% include '_partials/_gallery_grid.html.twig' with { gallery: gallery } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== TEMOIGNAGES — masque pour la v1 ====== #}
+{# A reactiver quand Alexandra aura des retours membres/clients #}
+
+{# ====== CTA FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center">
+        <h2 class="home-cta__title">Un bon pro du coin, c'est par ici.</h2>
+        <p class="home-cta__desc">Habitant à la recherche d'un expert de confiance ou professionnel qui souhaite rejoindre le réseau, nous sommes là pour vous.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{{ path('app_directory') }}" class="btn btn-light btn-lg">Trouver un pro</a>
+            <a href="{{ path('app_contact') }}" class="btn btn-outline-light btn-lg">Nous contacter</a>
+        </div>
+    </div>
+</section>
