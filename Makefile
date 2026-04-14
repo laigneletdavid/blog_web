@@ -30,6 +30,13 @@ db: ## Reset DB: drop + create + migrate
 	$(PHP) php bin/console doctrine:database:create
 	$(PHP) php bin/console doctrine:migrations:migrate --no-interaction
 
+db-client: ## Create client DB (reads name from .env.local) + migrate
+	$(eval DB_NAME := $(shell grep '^DATABASE_URL=' .env.local | sed 's|.*://.*:.*/||' | cut -d'?' -f1))
+	@echo "Creating database: $(DB_NAME)..."
+	$(DOCKER) exec db mariadb -uroot -proot -e "CREATE DATABASE IF NOT EXISTS \`$(DB_NAME)\`; GRANT ALL PRIVILEGES ON \`$(DB_NAME)\`.* TO 'app'@'%'; FLUSH PRIVILEGES;"
+	$(PHP) php bin/console doctrine:migrations:migrate --no-interaction
+	@echo "Database $(DB_NAME) ready."
+
 migrate: ## Run pending migrations
 	$(PHP) php bin/console doctrine:migrations:migrate --no-interaction
 

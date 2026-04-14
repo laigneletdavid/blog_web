@@ -26,7 +26,3 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-###> client overrides (desactive sur branche client) ###
-#/templates/client/*
-#!/templates/client/.gitkeep
-###< client overrides ###
