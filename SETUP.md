@@ -20,7 +20,7 @@ cp .env.local.example .env.local
 # Editer : APP_SECRET, DATABASE_URL, MAILER_DSN
 
 # 3. Lancer + creer la BDD + builder les assets
-make up && make db && make assets
+make up && make db-client && make assets
 
 # 4. Setup complet (site + admin + pages legales + menus)
 docker compose exec php php bin/console app:client:setup
@@ -81,7 +81,7 @@ Editer `.env.local` :
 
 ```bash
 make up          # Lance les containers (PHP, Nginx, MariaDB, Mailpit)
-make db          # Drop + Create + Migrate (BDD vierge)
+make db-client   # Create BDD client (via root) + Migrate (lit le nom dans .env.local)
 make assets      # Build Webpack (CSS + JS)
 ```
 
@@ -430,3 +430,59 @@ Les seules etapes manuelles (utilisateur) sont :
 > - **Images de contenu** (hero, a propos, galerie, temoignages, logos clients) → l'agent les importe via Admin > Medias puis les selectionne dans les formulaires (etape 11)
 
 > **Regle importante pour l'agent :** ne jamais modifier le core CMS (controllers, entities, services) sur une branche client. Les personnalisations client se limitent aux templates, CSS, images et contenu.
+
+---
+
+## Troubleshooting / FAQ
+
+### BDD : "Access denied" a la creation
+L'utilisateur `app` n'a pas les droits `CREATE DATABASE`. Utiliser `make db-client` au lieu de `make db` — cette commande cree la BDD via root et accorde les privileges automatiquement.
+
+### Super admin : mode non-interactif
+La commande supporte les options CLI :
+```bash
+docker compose exec php php bin/console app:create-super-admin \
+  --email=admin@client.fr --password=MonMotDePasse123 \
+  --first-name=Prenom --last-name=Nom
+```
+
+### OVH : `^M` / "mauvais interpreteur" sur les scripts
+Les scripts .sh ont des fins de ligne Windows (CRLF). Le `.gitattributes` corrige ca pour les futurs clones. Pour un clone existant :
+```bash
+sed -i 's/\r$//' scripts/deploy-ovh.sh
+```
+
+### OVH : PHP 5.4 par defaut sur un nouveau multisite
+Creer un `.ovhconfig` a la racine du dossier :
+```
+app.engine=php
+app.engine.version=8.4
+http.firewall=none
+environment=production
+container.image=stable64
+```
+Se deconnecter et reconnecter en SSH pour appliquer.
+
+### OVH : Erreur sync-rpc lors du build assets
+Le build Encore echoue avec "listen EACCES". Appliquer le patch avant le build :
+```bash
+ESLINT_FILE="node_modules/@symfony/webpack-encore/lib/plugins/eslint.js"
+sed -i "s|^const forceSync|//const forceSync|" "$ESLINT_FILE"
+sed -i "s|^const hasEslintConfiguration = forceSync|//const hasEslintConfiguration = forceSync|" "$ESLINT_FILE"
+NODE_ENV=production npx encore production
+```
+Note : `deploy-ovh.sh` applique ce patch automatiquement.
+
+### OVH : Dossier non vide au `git clone .`
+OVH cree un dossier `public/` par defaut. Supprimer avant de cloner :
+```bash
+rmdir public
+git clone -b bw_nom_client https://github.com/laigneletdavid/blog_web.git .
+```
+
+### Assets : pas besoin de rebuild pour les templates/CSS themes
+Le `theme.css` est charge en inline via Twig. Les templates sont interpretes par Symfony. Apres un `git pull` sur le serveur, un simple `cache:clear` suffit :
+```bash
+php bin/console cache:clear --env=prod
+```
+Le rebuild assets (npm/encore) n'est necessaire que si les fichiers dans `assets/` (SCSS, JS) ont change.

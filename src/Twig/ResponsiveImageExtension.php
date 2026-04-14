@@ -34,17 +34,26 @@ class ResponsiveImageExtension extends AbstractExtension
      * Generates an <img> tag for a logo with correct width/height based on actual image dimensions.
      * Calculates width dynamically from the target display height to preserve aspect ratio.
      */
-    public function logoImg(?Media $media, int $displayHeight = 42, string $alt = '', string $cssClass = ''): string
+    public function logoImg(?Media $media, int $displayHeight = 0, string $alt = '', string $cssClass = ''): string
     {
         if (!$media || !$media->getFileName()) {
             return '';
         }
 
-        $filePath = $this->mediaDirectory . '/' . $media->getFileName();
         $src = '/documents/medias/' . $media->getFileName();
+        $altText = htmlspecialchars($alt, ENT_QUOTES, 'UTF-8');
+        $classAttr = $cssClass ? ' class="' . htmlspecialchars($cssClass, ENT_QUOTES, 'UTF-8') . '"' : '';
+
+        // If displayHeight is 0, let CSS handle sizing (no inline width/height)
+        if ($displayHeight === 0) {
+            return '<img src="' . htmlspecialchars($src, ENT_QUOTES, 'UTF-8') . '"'
+                . ' alt="' . $altText . '"'
+                . $classAttr . '>';
+        }
 
         // Calculate width from actual image dimensions
         $widthAttr = '';
+        $filePath = $this->mediaDirectory . '/' . $media->getFileName();
         if (file_exists($filePath)) {
             $imageSize = @getimagesize($filePath);
             if ($imageSize && $imageSize[1] > 0) {
@@ -53,9 +62,6 @@ class ResponsiveImageExtension extends AbstractExtension
                 $widthAttr = ' width="' . $displayWidth . '"';
             }
         }
-
-        $altText = htmlspecialchars($alt, ENT_QUOTES, 'UTF-8');
-        $classAttr = $cssClass ? ' class="' . htmlspecialchars($cssClass, ENT_QUOTES, 'UTF-8') . '"' : '';
 
         return '<img src="' . htmlspecialchars($src, ENT_QUOTES, 'UTF-8') . '"'
             . ' alt="' . $altText . '"'

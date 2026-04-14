@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -24,11 +25,22 @@ class CreateSuperAdminCommand extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this
+            ->addOption('email', null, InputOption::VALUE_REQUIRED, 'Admin email')
+            ->addOption('password', null, InputOption::VALUE_REQUIRED, 'Admin password (min 12 characters)')
+            ->addOption('first-name', null, InputOption::VALUE_REQUIRED, 'First name', '')
+            ->addOption('last-name', null, InputOption::VALUE_REQUIRED, 'Last name', '')
+        ;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
-        $email = $io->ask('Email');
+        // Email: option or interactive
+        $email = $input->getOption('email') ?? $io->ask('Email');
         if (!$email) {
             $io->error('Email is required.');
             return Command::FAILURE;
@@ -40,20 +52,27 @@ class CreateSuperAdminCommand extends Command
             return Command::FAILURE;
         }
 
-        $password = $io->askHidden('Password (min 12 characters)');
-        if (!$password || strlen($password) < 12) {
+        // Password: option or interactive
+        $password = $input->getOption('password');
+        if (!$password) {
+            $password = $io->askHidden('Password (min 12 characters)');
+            if (!$password || strlen($password) < 12) {
+                $io->error('Password must be at least 12 characters.');
+                return Command::FAILURE;
+            }
+
+            $confirm = $io->askHidden('Confirm password');
+            if ($password !== $confirm) {
+                $io->error('Passwords do not match.');
+                return Command::FAILURE;
+            }
+        } elseif (strlen($password) < 12) {
             $io->error('Password must be at least 12 characters.');
             return Command::FAILURE;
         }
 
-        $confirm = $io->askHidden('Confirm password');
-        if ($password !== $confirm) {
-            $io->error('Passwords do not match.');
-            return Command::FAILURE;
-        }
-
-        $name = $io->ask('Last name', '');
-        $firstName = $io->ask('First name', '');
+        $name = $input->getOption('last-name') ?: ($input->getOption('last-name') === '' ? '' : $io->ask('Last name', ''));
+        $firstName = $input->getOption('first-name') ?: ($input->getOption('first-name') === '' ? '' : $io->ask('First name', ''));
 
         $user = new User();
         $user->setEmail($email);
