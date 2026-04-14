@@ -7,7 +7,7 @@
                 <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
                     {% set footerLogo = site.logoDark ?? site.logo ?? null %}
                     {% if footerLogo is not null %}
-                        <img src="{{ asset('documents/medias/' ~ footerLogo.fileName) }}" alt="{{ site.name|default('') }}">
+                        {{ logo_img(footerLogo, 40, site.name|default('')) }}
                     {% else %}
                         <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
                     {% endif %}

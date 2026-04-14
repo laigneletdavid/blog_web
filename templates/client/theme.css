@@ -1,5 +1,121 @@
-/* ====== Client CSS Override ====== */
-/* This file is loaded AFTER the theme CSS in base.html.twig.            */
-/* Use it on client branches (bw_*) to override theme styles             */
-/* without modifying CMS theme files.                                     */
-/* On main, this file stays empty.                                        */
+/* ====== Client CSS Override — Les Pros d'Ici (bw_pro_dici) ====== */
+/* Loaded after theme CSS. Overrides artisan theme for this client. */
+
+/* ====== HERO — white text on image background ====== */
+.theme-artisan .home-hero__title,
+.theme-artisan .home-hero__desc,
+.theme-artisan .home-hero__badge {
+    color: #fff;
+}
+.theme-artisan .home-hero__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.theme-artisan .home-hero__desc {
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.theme-artisan .home-hero__actions .btn-outline-primary {
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: #fff;
+    background: transparent;
+}
+.theme-artisan .home-hero__actions .btn-outline-primary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #fff;
+}
+
+/* ====== SECTION TITLES — secondary font ====== */
+.theme-artisan .home-section-title {
+    font-family: var(--font-family-secondary, var(--font-family));
+}
+
+/* ====== FEATURES — icons in secondary color ====== */
+.theme-artisan .home-features__icon {
+    background: color-mix(in srgb, var(--secondary) 15%, transparent);
+    color: var(--secondary);
+}
+
+/* Center last row for 7 items grid */
+.theme-artisan .home-features__grid--7 {
+    justify-items: center;
+}
+.theme-artisan .home-features__grid--7 .home-features__card:last-child {
+    grid-column: 2 / 3;
+}
+@media (max-width: 991.98px) and (min-width: 576px) {
+    .theme-artisan .home-features__grid--7 .home-features__card:last-child {
+        grid-column: 1 / -1;
+        max-width: 50%;
+        justify-self: center;
+    }
+}
+@media (max-width: 575.98px) {
+    .theme-artisan .home-features__grid--7 .home-features__card:last-child {
+        grid-column: auto;
+    }
+}
+
+/* ====== ABOUT — overtitle in secondary ====== */
+.theme-artisan .home-about__overtitle {
+    color: var(--secondary);
+}
+
+/* ====== CTA — primary background, white text ====== */
+.theme-artisan .home-cta {
+    background: var(--primary);
+}
+.theme-artisan .home-cta__title,
+.theme-artisan .home-cta__desc {
+    color: #fff;
+}
+.theme-artisan .home-cta .btn-light {
+    background: #fff;
+    color: var(--primary);
+}
+.theme-artisan .home-cta .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+.theme-artisan .home-cta .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #fff;
+}
+
+/* ====== HEADER — large square logo with negative margins ====== */
+.theme-artisan .header-logo {
+    display: inline-block;
+    line-height: 0;
+}
+.theme-artisan .header-logo img {
+    height: auto !important;
+    max-height: 140px;
+    width: auto;
+    margin-top: -30px;
+    margin-bottom: -30px;
+}
+@media (max-width: 767.98px) {
+    .theme-artisan .header-logo img {
+        max-height: 80px;
+        margin-top: -15px;
+        margin-bottom: -15px;
+    }
+}
+
+/* ====== FOOTER — secondary background + large logo ====== */
+.theme-artisan .footer--artisan {
+    background: var(--secondary);
+}
+.theme-artisan .footer--artisan .footer-logo {
+    display: inline-block;
+    line-height: 0;
+}
+.theme-artisan .footer--artisan .footer-logo img {
+    height: auto !important;
+    max-height: 140px;
+    width: auto;
+    margin-top: -30px;
+    margin-bottom: -30px;
+    filter: brightness(0) invert(1);
+}
