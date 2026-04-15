@@ -1,4 +1,4 @@
-# CLAUDE5 — Sessions du 8-9 avril 2026
+# CLAUDE5 — Sessions du 8-9-14 avril 2026
 
 ## Fait
 
@@ -97,6 +97,43 @@
 | Accessibilite | **100** | **100** |
 | Bonnes pratiques | **100** | **100** |
 | SEO | **100** | **100** |
+
+### Premier deploiement client — Les Pros d'Ici (bw_pro_dici)
+**Statut** : FAIT
+- **Client** : AlexMB (Alexandra Michalski Beaudouin) — annuaire de professionnels Nord-Ouest toulousain
+- **Theme** : artisan | Couleurs : Terracotta `#E2725B`, Vert mousse `#41521F`, Sable `#F9F7F2`
+- **Modules** : blog + directory
+- **Domaine** : prodici.comwebsolutions.fr
+- **Setup complet** : BDD, client:setup, modules, categories blog (4), pages legales, 2 admins, reCAPTCHA
+- **Home custom** : `templates/client/home.html.twig` avec 7 familles metiers, textes rediges, icones SVG inline
+- **CSS client** : `templates/client/theme.css` (hero, CTA, logo, footer, familles metiers)
+- **Deploy OVH** : clone branche + deploy-ovh.sh --init + dump SQL importe
+
+### Corrections post-deploiement (main)
+**Statut** : FAIT
+
+**Mecanisme client/theme.css**
+- `base.html.twig` : charge `templates/client/theme.css` en dernier dans `<head>` (apres theme.css)
+- Fichier vide sur main, personnalise sur les branches client
+- Evite de modifier les fichiers CMS (theme.css, _header, _footer) sur les branches bw_*
+
+**Corrections globales**
+- `.gitattributes` : force LF sur les .sh (fix `^M` sur OVH)
+- `.gitignore` : supprime la regle `templates/client/*` (bloquait les overrides client)
+- `Makefile` : ajout target `make db-client` (cree BDD via root + grant privileges + migrate)
+- `CreateSuperAdminCommand` : ajout options CLI `--email`, `--password`, `--first-name`, `--last-name`
+- `ResponsiveImageExtension::logoImg()` : `displayHeight=0` par defaut → pas de width/height inline, CSS gere la taille
+- `global.scss` : override `.btn-primary` et `.btn-outline-primary` avec `var(--primary)` (fix boutons bleus Bootstrap)
+- 6 footers themes : ajout lien "Developpe avec BlogWeb" (blogweb.comwebsolutions.fr)
+- `SETUP.md` : `make db-client` remplace `make db`, section Troubleshooting complete, documentation override client
+
+**7 icones SVG ajoutees** (templates/icons/)
+- `tools.svg`, `heart-pulse.svg`, `laptop.svg`, `palette.svg`, `cup-hot.svg`, `truck.svg`, `briefcase.svg`
+
+### Merge tactique des branches
+**Statut** : FAIT
+- `main → bw_front` : merge propre, zero conflit
+- `main → bw_pro_dici` : conflit `.gitignore` resolu (garde main), overrides migres de theme.css artisan vers client/theme.css, fichiers CMS revertes a leur etat main
 
 ## A faire
 
