@@ -1,6 +1,6 @@
 {
-    "name": "BlogWeb",
-    "short_name": "BlogWeb",
+    "name": "APA d'B\u00e9arn",
+    "short_name": "APA d'B\u00e9arn",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -15,7 +15,7 @@
             "purpose": "maskable"
         }
     ],
-    "theme_color": "#2563eb",
+    "theme_color": "#175e3d",
     "background_color": "#ffffff",
     "display": "standalone"
 }

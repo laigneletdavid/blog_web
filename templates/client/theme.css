@@ -113,15 +113,15 @@
     padding: 1rem 0;
 }
 .theme-vitrine .header--vitrine .header-logo {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--primary);
-    border-radius: 0;
+    padding: 0;
+    border: none;
     display: inline-flex;
     align-items: center;
-    transition: background 0.2s;
 }
-.theme-vitrine .header--vitrine .header-logo:hover {
-    background: var(--surface);
+.theme-vitrine .header--vitrine .header-logo img {
+    max-height: 64px;
+    width: auto;
+    height: auto;
 }
 .theme-vitrine .header--vitrine .nav-link {
     font-family: 'Lato', sans-serif;
@@ -185,6 +185,11 @@
 }
 .theme-vitrine .home-services__header {
     margin-bottom: 3.5rem;
+}
+/* Centrer les cards de la derniere ligne quand le total ne remplit pas la grille
+   (ex: 5 services = 3 + 2 centrees sur grand ecran) */
+.theme-vitrine .home-services .services-grid .row {
+    justify-content: center;
 }
 .theme-vitrine .service-card {
     background: var(--bg);
@@ -271,6 +276,47 @@
     background: var(--bg);
 }
 
+/* --- Nuage de tags (home + blog) --- */
+.theme-vitrine .home-tags {
+    padding: 5rem 0;
+    background: var(--surface);
+}
+.theme-vitrine .blog-tags {
+    padding: 3rem 0 1rem;
+    border-top: 1px solid var(--border);
+}
+.theme-vitrine .blog-tags__title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 2vw, 2rem);
+    margin-bottom: 1rem;
+}
+.theme-vitrine .tag-cloud--center {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 0.6rem;
+}
+.theme-vitrine .tag-cloud--center .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.theme-vitrine .tag-cloud--center .tag-pill__count {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
 /* --- CTA final : fond primary plein, padding tres large --- */
 .theme-vitrine .home-cta {
     background: var(--primary);
@@ -311,6 +357,14 @@
     text-transform: uppercase;
     font-size: 0.72rem;
     letter-spacing: 0.18em;
+}
+/* Logo couleur originale dans le footer (neutralise le filter blanc du theme vitrine) */
+.theme-vitrine .footer--vitrine .footer-logo img {
+    filter: none;
+    background: #fff;
+    padding: 0.4rem 0.75rem;
+    border-radius: 2px;
+    max-height: 56px;
 }
 
 /* --- Reseaux sociaux flottants (desktop only) --- */

@@ -1,0 +1,26 @@
+{# ====== FOOTER — Override APA d'Béarn ====== #}
+{# Force site.logo (logo couleur standard) au lieu de site.logoDark #}
+<footer class="footer footer--vitrine">
+    <div class="container py-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <a href="{{ path('app_home') }}" class="footer-logo">
+                {% if site is not null and site.logo is not null %}
+                    {{ logo_img(site.logo, 40, site.name|default('')) }}
+                {% else %}
+                    <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
+                {% endif %}
+            </a>
+            <nav class="d-flex flex-wrap justify-content-center gap-3">
+                {% for menu in footer_nav_menus %}
+                    <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                {% endfor %}
+                <span class="text-muted">|</span>
+                {% for menu in footer_legal_menus %}
+                    <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                {% endfor %}
+            </nav>
+            <span class="footer-copy">&copy; {{ "now"|date("Y") }} {{ site.name|default('') }}</span>
+            <span class="footer-credit ms-2">Développé avec <a href="https://blogweb.comwebsolutions.fr" target="_blank" rel="noopener">BlogWeb</a></span>
+        </div>
+    </div>
+</footer>

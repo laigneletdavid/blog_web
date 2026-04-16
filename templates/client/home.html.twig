@@ -82,7 +82,7 @@
                 Des séances sur mesure, pensées pour tes besoins, tes capacités et tes envies.
             </p>
         </div>
-        {% include '_partials/_services_grid.html.twig' with { services: services|slice(0, 4) } %}
+        {% include '_partials/_services_grid.html.twig' with { services: services } %}
         <div class="text-center mt-4">
             <a href="{{ path('app_service_index') }}" class="btn btn-outline-primary">Voir toutes mes prestations</a>
         </div>
@@ -141,6 +141,24 @@
         </div>
         <div class="row">
             {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== NUAGE DE TAGS ====== #}
+{% set tagCloud = widget_service.findTagCloud() %}
+{% if tagCloud|length > 0 %}
+<section class="home-tags">
+    <div class="container text-center">
+        <h2 class="home-section-title">Explorer par sujet</h2>
+        <div class="tag-cloud tag-cloud--center mt-4">
+            {% for row in tagCloud %}
+                <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}" class="tag-pill">
+                    {{ row[0].name }}
+                    <span class="tag-pill__count">{{ row.articleCount }}</span>
+                </a>
+            {% endfor %}
         </div>
     </div>
 </section>
