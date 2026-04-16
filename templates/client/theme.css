@@ -1,5 +1,350 @@
-/* ====== Client CSS Override ====== */
-/* This file is loaded AFTER the theme CSS in base.html.twig.            */
-/* Use it on client branches (bw_*) to override theme styles             */
-/* without modifying CMS theme files.                                     */
-/* On main, this file stays empty.                                        */
+/* ====== APA d'Béarn — Override theme vitrine ======
+ * Inspiration : template Wix "FRAIS" (epure, naturel, palette verte/creme)
+ * Charge en dernier, apres themes/vitrine/theme.css
+ * Couleurs Emma : --primary #175E3D, --secondary #648873, --accent #BCD0C5
+ * ============================================================ */
+
+/* --- Tokens : fond creme + bordure subtile --- */
+.theme-vitrine {
+    --bg: #FFFFFF;
+    --surface: #F8F7F7;
+    --border: #E8E4DE;
+    --radius: 0.125rem;
+    --radius-lg: 0.25rem;
+}
+
+/* --- Typo titres : Cormorant Garamond uppercase espacee, light --- */
+.theme-vitrine .home-hero__title,
+.theme-vitrine .home-section-title,
+.theme-vitrine .home-about__title,
+.theme-vitrine .home-cta__title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 400;
+    line-height: 1.15;
+}
+.theme-vitrine .home-hero__title {
+    font-size: clamp(2.25rem, 4.5vw, 4rem);
+    margin-bottom: 1.5rem;
+}
+.theme-vitrine .home-section-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    margin-bottom: 1rem;
+}
+.theme-vitrine .home-about__title {
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+}
+.theme-vitrine .home-cta__title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+/* --- Overlines (badge hero, overtitle about) : Lato uppercase espacee --- */
+.theme-vitrine .home-hero__badge {
+    display: inline-block;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 1.25rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+.theme-vitrine .home-about__overtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--secondary);
+}
+
+/* --- Section subtitle (sous-titre Services Emma) --- */
+.theme-vitrine .home-section-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 640px;
+    margin: 0 auto 2.5rem;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.25rem;
+}
+
+/* --- Boutons : rectangles plats, label uppercase espace, padding genereux --- */
+.theme-vitrine .btn {
+    border-radius: 2px;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.85rem 2rem;
+    transition: all 0.25s ease;
+}
+.theme-vitrine .btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+}
+.theme-vitrine .btn-sm {
+    padding: 0.55rem 1.25rem;
+    font-size: 0.7rem;
+}
+.theme-vitrine .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+.theme-vitrine .btn-primary:hover {
+    background: var(--secondary);
+    border-color: var(--secondary);
+}
+.theme-vitrine .btn-outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+.theme-vitrine .btn-outline-primary:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* --- Header : padding genereux, logo encadre subtle --- */
+.theme-vitrine .header--vitrine .header-main {
+    padding: 1rem 0;
+}
+.theme-vitrine .header--vitrine .header-logo {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary);
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+.theme-vitrine .header--vitrine .header-logo:hover {
+    background: var(--surface);
+}
+.theme-vitrine .header--vitrine .nav-link {
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    color: var(--text);
+}
+.theme-vitrine .header--vitrine .nav-link:hover {
+    color: var(--primary);
+}
+
+/* --- Hero : padding tres genereux + image arrondie minimale --- */
+.theme-vitrine .home-hero {
+    padding: 7rem 0 6rem;
+    background: var(--bg);
+}
+.theme-vitrine .home-hero__desc {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 540px;
+    margin-bottom: 2.5rem;
+}
+.theme-vitrine .home-hero__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.theme-vitrine .home-hero__img {
+    border-radius: 2px;
+    box-shadow: none;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+}
+
+/* --- About : padding important + image ronde sans ombre --- */
+.theme-vitrine .home-about {
+    padding: 6rem 0;
+    background: var(--surface);
+}
+.theme-vitrine .home-about__img {
+    max-width: 320px;
+    border-radius: 50%;
+    box-shadow: none;
+    border: 1px solid var(--border);
+}
+.theme-vitrine .home-about__text {
+    color: var(--text-muted);
+    line-height: 1.85;
+    font-size: 1.02rem;
+    margin-bottom: 1.25rem;
+}
+
+/* --- Services : grille epuree, cards minimalistes --- */
+.theme-vitrine .home-services {
+    padding: 6rem 0;
+    background: var(--bg);
+}
+.theme-vitrine .home-services__header {
+    margin-bottom: 3.5rem;
+}
+.theme-vitrine .service-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 2.5rem 1.75rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: none;
+}
+.theme-vitrine .service-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+.theme-vitrine .service-card__icon {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+.theme-vitrine .service-card__icon .bi-svg {
+    width: 2.75rem;
+    height: 2.75rem;
+}
+.theme-vitrine .service-card__title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+.theme-vitrine .service-card__text {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+.theme-vitrine .service-card__link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    text-decoration: none;
+}
+.theme-vitrine .service-card__link:hover {
+    color: var(--secondary);
+}
+
+/* --- Temoignages : cards epurees, citation italique sérif --- */
+.theme-vitrine .home-testimonials {
+    padding: 6rem 0;
+    background: var(--surface);
+}
+.theme-vitrine .testimonial-card {
+    background: var(--bg) !important;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    box-shadow: none !important;
+    padding: 2.25rem !important;
+}
+.theme-vitrine .testimonial-card__quote {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.6;
+    border: none;
+    padding: 0;
+}
+.theme-vitrine .testimonial-card__author {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+/* --- Articles section --- */
+.theme-vitrine .home-articles {
+    padding: 6rem 0;
+    background: var(--bg);
+}
+
+/* --- CTA final : fond primary plein, padding tres large --- */
+.theme-vitrine .home-cta {
+    background: var(--primary);
+    color: #fff;
+    padding: 6rem 0;
+}
+.theme-vitrine .home-cta__title {
+    color: #fff;
+}
+.theme-vitrine .home-cta__desc {
+    color: rgba(255,255,255,0.85);
+    opacity: 1;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+.theme-vitrine .home-cta .btn-light {
+    background: #fff;
+    color: var(--primary);
+    border: 1px solid #fff;
+}
+.theme-vitrine .home-cta .btn-light:hover {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+    opacity: 1;
+}
+
+/* --- Footer : reste minimaliste mais ajustement padding/typo --- */
+.theme-vitrine .footer--vitrine {
+    background: var(--text);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.theme-vitrine .footer--vitrine .nav-link {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+}
+
+/* --- Reseaux sociaux flottants (desktop only) --- */
+.floating-social {
+    position: fixed;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 50;
+}
+.floating-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--secondary);
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+.floating-social a:hover {
+    color: #fff;
+    background: var(--primary);
+    border-color: var(--primary);
+}
+.floating-social .bi-svg {
+    width: 16px;
+    height: 16px;
+}
+@media (max-width: 991px) {
+    .floating-social { display: none; }
+}

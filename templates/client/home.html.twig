@@ -1,0 +1,152 @@
+{# ====== HOME — APA d'Béarn (Emma Laignelet) ====== #}
+{# Override client. Reprend les classes home-* du theme vitrine. #}
+
+{# ====== HERO ====== #}
+<section class="home-hero"
+    {% if site.heroImage %}
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
+    {% endif %}>
+    <div class="home-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center home-hero__row">
+            <div class="col-lg-7 home-hero__content">
+                <span class="home-hero__badge">Activité physique adaptée — Béarn</span>
+                <h1 class="home-hero__title">Pas à pas vers le plaisir de bouger</h1>
+                <p class="home-hero__desc">
+                    Enseignante en Activité Physique Adaptée, je t'accompagne à ton rythme,
+                    en toute sécurité, pour retrouver le plaisir du mouvement —
+                    quel que soit ton âge ou ta condition.
+                </p>
+                <div class="home-hero__actions">
+                    <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Demander un devis</a>
+                    <a href="{{ path('app_service_index') }}" class="btn btn-outline-primary btn-lg">Découvrir mes séances</a>
+                </div>
+            </div>
+            {% if site.heroImage %}
+            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
+                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', site.name|default(''), true) }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== A PROPOS ====== #}
+<section class="home-about" id="home-about">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
+            <div class="col-12 col-lg-4 home-about__img-wrapper d-flex justify-content-center">
+                {% if site.aboutImage %}
+                {{ responsive_img(site.aboutImage, '(max-width: 768px) 100vw, 30vw', 'home-about__img rounded-circle', 'Emma Laignelet, enseignante APA') }}
+                {% else %}
+                <img src="{{ asset('images/profil.jpg') }}"
+                     alt="Emma Laignelet, enseignante APA"
+                     class="home-about__img rounded-circle" loading="lazy"
+                     width="279" height="279"/>
+                {% endif %}
+            </div>
+            <div class="col-12 col-lg-8 home-about__content">
+                <span class="home-about__overtitle">À propos</span>
+                <h2 class="home-about__title">À propos d'Emma</h2>
+                <p class="home-about__text">
+                    Je suis Emma Laignelet, enseignante spécialisée en Activité Physique Adaptée à la Santé.
+                    Diplômée d'un Master STAPS APAS à Grenoble et formée aux techniques de relaxation,
+                    j'ai choisi ce métier pour rendre le mouvement accessible à ceux qui en ont le plus besoin —
+                    et pour qui l'activité physique n'est pas évidente.
+                </p>
+                <p class="home-about__text">
+                    Mon approche est simple : t'écouter, m'adapter à toi, et m'assurer que chaque séance
+                    soit un vrai moment de plaisir. Parce que c'est quand on y prend goût qu'on tient dans la durée.
+                    Je me déplace à ton domicile, en structure ou en extérieur, en Béarn et dans les Pyrénées-Atlantiques.
+                </p>
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">Me contacter</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== SERVICES (4 sur la home, le 5e — ateliers — uniquement sur /service/) ====== #}
+{% if services|default([])|length > 0 %}
+<section class="home-services">
+    <div class="container">
+        <div class="home-services__header text-center">
+            <h2 class="home-section-title">Un accompagnement adapté à chacun</h2>
+            <p class="home-section-subtitle">
+                Des séances sur mesure, pensées pour tes besoins, tes capacités et tes envies.
+            </p>
+        </div>
+        {% include '_partials/_services_grid.html.twig' with { services: services|slice(0, 4) } %}
+        <div class="text-center mt-4">
+            <a href="{{ path('app_service_index') }}" class="btn btn-outline-primary">Voir toutes mes prestations</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== TEMOIGNAGES (statiques en attendant validation des prenoms par Emma) ====== #}
+<section class="home-testimonials">
+    <div class="container">
+        <h2 class="home-section-title text-center">Ce qu'en disent les personnes que j'accompagne</h2>
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <figure class="testimonial-card h-100 p-4 rounded shadow-sm" style="background: var(--surface);">
+                    <blockquote class="testimonial-card__quote mb-3">
+                        « Grâce à toi, on se sent revivre, on bouge avec plaisir. »
+                    </blockquote>
+                    <figcaption class="testimonial-card__author text-muted">
+                        — Bénéficiaire, séances collectives
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="col-md-4">
+                <figure class="testimonial-card h-100 p-4 rounded shadow-sm" style="background: var(--surface);">
+                    <blockquote class="testimonial-card__quote mb-3">
+                        « Tu m'as permis de reprendre confiance en mon corps, en mes capacités. »
+                    </blockquote>
+                    <figcaption class="testimonial-card__author text-muted">
+                        — Bénéficiaire, séances à domicile
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="col-md-4">
+                <figure class="testimonial-card h-100 p-4 rounded shadow-sm" style="background: var(--surface);">
+                    <blockquote class="testimonial-card__quote mb-3">
+                        « Toujours le sourire pendant les séances. »
+                    </blockquote>
+                    <figcaption class="testimonial-card__author text-muted">
+                        — Bénéficiaire, séances collectives
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== ARTICLES (si publies) ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="home-section-title mb-1">Le blog — Pour bouger en connaissance de cause</h2>
+            </div>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Lire tous les articles &rarr;</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== CTA FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center">
+        <h2 class="home-cta__title">Envie de retrouver le plaisir de bouger ?</h2>
+        <p class="home-cta__desc">
+            Parlons de tes besoins, de tes envies, de tes objectifs.
+            Le premier contact est toujours gratuit et sans engagement.
+        </p>
+        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Me contacter</a>
+    </div>
+</section>
