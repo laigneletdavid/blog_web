@@ -51,8 +51,8 @@ class ThemeSettingsCrudController extends AbstractCrudController
         $themeName = $theme['name'] ?? ucfirst($themeSlug);
 
         return $crud
-            ->setEntityLabelInSingular('Reglages du theme')
-            ->setEntityLabelInPlural('Reglages du theme')
+            ->setEntityLabelInSingular('Réglages du thème')
+            ->setEntityLabelInPlural('Réglages du thème')
             ->setPageTitle(Crud::PAGE_EDIT, 'Personnaliser le theme « ' . $themeName . ' »')
             ->setPageTitle(Crud::PAGE_DETAIL, 'Personnaliser le theme « ' . $themeName . ' »');
     }
