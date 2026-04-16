@@ -38,10 +38,18 @@ class DirectoryEntry
     private ?string $jobTitle = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'L\'entreprise est obligatoire (sert a generer le slug de la fiche).')]
     private ?string $company = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
+
+    /**
+     * Contenu Tiptap (JSON) — source de verite editable.
+     * Compile en HTML dans `bio` par ContentSanitizeListener.
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $blocks = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
@@ -172,6 +180,46 @@ class DirectoryEntry
     public function setBio(?string $bio): self
     {
         $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getBlocks(): ?array
+    {
+        return $this->blocks;
+    }
+
+    public function setBlocks(?array $blocks): self
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    // --- Virtual properties pour TipTap (pattern Article/Service) ---
+
+    public function getBlocksJson(): ?string
+    {
+        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+    }
+
+    public function setBlocksJson(?string $json): self
+    {
+        $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
+
+        return $this;
+    }
+
+    // --- Alias content/bio pour ContentSanitizeListener (qui appelle setContent/getContent) ---
+
+    public function getContent(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setContent(?string $content): self
+    {
+        $this->bio = $content;
 
         return $this;
     }

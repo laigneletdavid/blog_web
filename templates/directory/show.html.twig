@@ -48,7 +48,7 @@
                 <div class="directory-detail__bio mt-4">
                     <h2 class="directory-detail__section-title">A propos</h2>
                     <div class="directory-detail__bio-content">
-                        {{ entry.bio|nl2br }}
+                        {{ entry.bio|raw }}
                     </div>
                 </div>
                 {% endif %}
@@ -97,22 +97,22 @@
                         <h3 class="directory-sidebar__title">{{ bi('link-45deg', 'me-2') }}Liens</h3>
                         <div class="directory-sidebar__links">
                             {% if entry.website %}
-                            <a href="{{ entry.website }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                            <a href="{{ entry.website }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link">
                                 {{ bi('globe') }}<span>Site web</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                             {% if entry.linkedin %}
-                            <a href="{{ entry.linkedin }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                            <a href="{{ entry.linkedin }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link">
                                 {{ bi('linkedin') }}<span>LinkedIn</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                             {% if entry.facebook %}
-                            <a href="{{ entry.facebook }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                            <a href="{{ entry.facebook }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link">
                                 {{ bi('facebook') }}<span>Facebook</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                             {% if entry.instagram %}
-                            <a href="{{ entry.instagram }}" target="_blank" rel="noopener" class="directory-sidebar__link">
+                            <a href="{{ entry.instagram }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link">
                                 {{ bi('instagram') }}<span>Instagram</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}

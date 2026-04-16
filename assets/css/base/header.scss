@@ -140,3 +140,20 @@
     }
   }
 }
+
+// ─── Fix alignement des liens avec sous-menu (cross-themes) ────────────────
+// Le pattern commun <div class="dropdown"><a class="<nav-link> dropdown-toggle">
+// fait que le <div> wrapper devient l'enfant direct du conteneur nav au lieu
+// du <a>. Les paddings et l'alignement vertical du <a> restent internes et
+// creent un decalage visible (surtout sur les navs flex/gap comme artisan).
+// Le :has() cible uniquement les .dropdown qui wrappent un lien de nav,
+// sans toucher .header-search.dropdown qui a une structure differente.
+header nav .dropdown:has(> .dropdown-toggle) {
+  display: inline-flex;
+  align-items: stretch;
+
+  > .dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+  }
+}

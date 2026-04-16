@@ -92,6 +92,12 @@ update: ## Update client site (pull + composer + migrate + assets + cache)
 	$(PHP) php bin/console cache:clear
 	@echo "=== Mise a jour terminee ==="
 
+## — Icones ———————————————————————————————————
+icons-sync: ## Sync templates/icons/ -> public/icons/ (accessibles en HTTP pour Tiptap)
+	@mkdir -p public/icons
+	@cp -u templates/icons/*.svg public/icons/ 2>/dev/null || true
+	@echo "Icones synchronisees : $$(ls public/icons/*.svg 2>/dev/null | wc -l) fichiers"
+
 ## — Production ————————————————————————————————
 deploy: ## Deploy (pull + install + migrate + cache + assets)
 	./scripts/deploy.sh

@@ -34,7 +34,7 @@
         {% for cat in directoryCategories %}
         <a href="{{ path('app_directory', {categorie: cat.slug}) }}"
            class="directory-filters__pill{% if activeCategory and activeCategory.id == cat.id %} directory-filters__pill--active{% endif %}">
-            {% if cat.icon %}{{ bi(cat.icon|replace({'bi bi-': '', 'bi-': ''}), 'me-1') }}{% endif %}
+            {% if cat.icon %}{{ bi(cat.icon, 'me-1') }}{% endif %}
             {{ cat.name }}
         </a>
         {% endfor %}

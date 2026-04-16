@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\DirectoryCategory;
+use App\Field\IconPickerField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -40,8 +41,8 @@ class DirectoryCategoryCrudController extends AbstractCrudController
             ->setHelp('Genere automatiquement depuis le nom. Utilise dans l\'URL de filtre (/annuaire?categorie=slug).')
             ->hideOnIndex();
 
-        yield TextField::new('icon', 'Icone')
-            ->setHelp('Optionnel. Classe Bootstrap Icons (ex : bi-briefcase). Voir <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a>')
+        yield IconPickerField::new('icon', 'Icone')
+            ->setHelp('Optionnel. Cliquez sur "Choisir" pour parcourir les icones disponibles.')
             ->hideOnIndex();
 
         yield IntegerField::new('position', 'Ordre')

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PortfolioCategory;
+use App\Field\IconPickerField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -40,8 +41,8 @@ class PortfolioCategoryCrudController extends AbstractCrudController
             ->setHelp('Généré automatiquement depuis le nom. Utilisé dans l\'URL de filtre (/realisations?categorie=slug).')
             ->hideOnIndex();
 
-        yield TextField::new('icon', 'Icône')
-            ->setHelp('Optionnel. Icône affichée dans le bouton filtre. Classe Bootstrap Icons (ex : bi-brush). Voir <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a>')
+        yield IconPickerField::new('icon', 'Icône')
+            ->setHelp('Optionnel. Icône affichée dans le bouton filtre. Cliquez sur "Choisir" pour parcourir.')
             ->hideOnIndex();
 
         yield IntegerField::new('position', 'Ordre')
