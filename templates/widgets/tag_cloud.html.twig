@@ -6,7 +6,9 @@
         {% for row in tagCloud %}
             <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}" class="tag-pill">
                 {{ row[0].name }}
+                {% if row.articleCount > 0 %}
                 <span class="tag-pill__count">{{ row.articleCount }}</span>
+                {% endif %}
             </a>
         {% endfor %}
     </div>
