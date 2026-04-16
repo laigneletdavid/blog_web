@@ -66,7 +66,7 @@ class ProductCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('category', 'Categorie'))
+            ->add(EntityFilter::new('category', 'Catégorie'))
             ->add(ChoiceFilter::new('availability', 'Disponibilite')
                 ->setChoices(AvailabilityEnum::choices()))
             ->add(BooleanFilter::new('isActive', 'Actif'))
@@ -90,7 +90,7 @@ class ProductCrudController extends AbstractCrudController
             ->setHelp('Nom du produit ou de la prestation.')
             ->setColumns(8);
 
-        yield AssociationField::new('category', 'Categorie')
+        yield AssociationField::new('category', 'Catégorie')
             ->setHelp('Classez votre produit dans une categorie du catalogue.')
             ->setColumns(4);
 
@@ -207,7 +207,7 @@ class ProductCrudController extends AbstractCrudController
 
         yield TextField::new('bookingLabel', 'Texte du bouton')
             ->setHelp('Personnalisez le bouton : "Reserver", "Voir les disponibilites", "Prendre RDV"... Par defaut : "Reserver".')
-            ->setFormTypeOptions(['attr' => ['placeholder' => 'Reserver']])
+            ->setFormTypeOptions(['attr' => ['placeholder' => 'Réserver']])
             ->hideOnIndex();
 
         // ============================================================
@@ -259,7 +259,7 @@ class ProductCrudController extends AbstractCrudController
         // ============================================================
         // PANEL : Parametres
         // ============================================================
-        yield FormField::addPanel('Parametres')
+        yield FormField::addPanel('Paramètres')
             ->setIcon('fa fa-cog')
             ->collapsible()
             ->renderCollapsed();

@@ -36,7 +36,7 @@ class ProductCategoryCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield FormField::addPanel('Categorie')
+        yield FormField::addPanel('Catégorie')
             ->setIcon('fa fa-folder');
 
         yield TextField::new('name', 'Nom')

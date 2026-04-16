@@ -217,7 +217,7 @@ class DashboardController extends AbstractDashboardController
         $path = $this->getParameter('kernel.project_dir') . '/templates/themes/' . $slug . '/preview.png';
 
         if (!file_exists($path)) {
-            throw $this->createNotFoundException('Apercu non disponible.');
+            throw $this->createNotFoundException('Aperçu non disponible.');
         }
 
         return new BinaryFileResponse($path);
@@ -261,7 +261,7 @@ class DashboardController extends AbstractDashboardController
             if ($this->siteContext->hasModule('blog')) {
                 yield MenuItem::subMenu('Blog', 'fas fa-newspaper')->setSubItems([
                     MenuItem::linkToCrud('Articles', 'fas fa-pen-to-square', Article::class),
-                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', Categorie::class),
+                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', Categorie::class),
                     MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class),
                 ]);
             }
@@ -297,7 +297,7 @@ class DashboardController extends AbstractDashboardController
             if ($this->siteContext->hasModule('catalogue')) {
                 yield MenuItem::subMenu('Catalogue', 'fas fa-store')->setSubItems([
                     MenuItem::linkToCrud('Produits', 'fas fa-box-open', Product::class),
-                    MenuItem::linkToCrud('Categories', 'fas fa-folder-tree', ProductCategory::class),
+                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-tree', ProductCategory::class),
                 ]);
             }
             if ($this->siteContext->hasModule('ecommerce')) {
@@ -306,19 +306,19 @@ class DashboardController extends AbstractDashboardController
             if ($this->siteContext->hasModule('faq')) {
                 yield MenuItem::subMenu('FAQ', 'fas fa-circle-question')->setSubItems([
                     MenuItem::linkToCrud('Questions', 'fas fa-question', Faq::class),
-                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', FaqCategory::class),
+                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', FaqCategory::class),
                 ]);
             }
             if ($this->siteContext->hasModule('portfolio')) {
                 yield MenuItem::subMenu('Portfolio', 'fas fa-images')->setSubItems([
                     MenuItem::linkToCrud('Realisations', 'fas fa-briefcase', PortfolioItem::class),
-                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', PortfolioCategory::class),
+                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', PortfolioCategory::class),
                 ]);
             }
             if ($this->siteContext->hasModule('directory')) {
                 yield MenuItem::subMenu('Annuaire', 'fas fa-address-book')->setSubItems([
                     MenuItem::linkToCrud('Fiches', 'fas fa-id-card', DirectoryEntry::class),
-                    MenuItem::linkToCrud('Categories', 'fas fa-folder-open', DirectoryCategory::class),
+                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', DirectoryCategory::class),
                 ]);
             }
         }
@@ -339,9 +339,9 @@ class DashboardController extends AbstractDashboardController
 
         // --- Reglages (ROLE_ADMIN+) ---
         if ($this->isGranted('ROLE_ADMIN')) {
-            yield MenuItem::section('Reglages');
+            yield MenuItem::section('Réglages');
 
-            yield MenuItem::linkToCrud('Identite du site', 'fas fa-building', Site::class)
+            yield MenuItem::linkToCrud('Identité du site', 'fas fa-building', Site::class)
                 ->setController(SiteCrudController::class)
                 ->setAction(Crud::PAGE_EDIT)
                 ->setEntityId($this->siteContext->getCurrentSiteId());
@@ -351,12 +351,12 @@ class DashboardController extends AbstractDashboardController
 
         if ($this->isGranted('ROLE_FREELANCE')) {
             if (!$this->isGranted('ROLE_ADMIN')) {
-                yield MenuItem::section('Reglages');
+                yield MenuItem::section('Réglages');
             }
 
             yield MenuItem::subMenu('Apparence', 'fas fa-palette')->setSubItems([
                 MenuItem::linkToRoute('Catalogue de themes', 'fas fa-swatchbook', 'admin_theme_browser'),
-                MenuItem::linkToCrud('Reglages du theme', 'fas fa-sliders', Site::class)
+                MenuItem::linkToCrud('Réglages du thème', 'fas fa-sliders', Site::class)
                     ->setController(ThemeSettingsCrudController::class)
                     ->setAction(Crud::PAGE_EDIT)
                     ->setEntityId($this->siteContext->getCurrentSiteId()),

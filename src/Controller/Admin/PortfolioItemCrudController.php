@@ -40,7 +40,7 @@ class PortfolioItemCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('category', 'Categorie'))
+            ->add(EntityFilter::new('category', 'Catégorie'))
             ->add(BooleanFilter::new('isActive', 'Active'))
             ->add(BooleanFilter::new('isFeatured', 'Mis en avant'));
     }

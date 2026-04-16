@@ -17,20 +17,20 @@
 
                     {% if visibility == 'user' %}
                         <p class="restricted-message">
-                            Cette page est reservee aux membres du site.
-                            Connectez-vous ou creez un compte pour y acceder.
+                            Cette page est réservée aux membres du site.
+                            Connectez-vous ou créez un compte pour y accéder.
                         </p>
                     {% elseif visibility == 'author' %}
                         <p class="restricted-message">
-                            Cette page est reservee aux auteurs et contributeurs du site.
+                            Cette page est réservée aux auteurs et contributeurs du site.
                         </p>
                     {% elseif visibility == 'admin' %}
                         <p class="restricted-message">
-                            Cette page est reservee aux administrateurs.
+                            Cette page est réservée aux administrateurs.
                         </p>
                     {% else %}
                         <p class="restricted-message">
-                            Vous n'avez pas les droits necessaires pour acceder a ce contenu.
+                            Vous n'avez pas les droits nécessaires pour accéder à ce contenu.
                         </p>
                     {% endif %}
 
@@ -45,12 +45,12 @@
                                 Se connecter
                             </a>
                             <a href="{{ path('app_register') }}" class="btn btn-outline-primary btn-lg">
-                                Creer un compte
+                                Créer un compte
                             </a>
                         </div>
                     {% elseif visibility in ['author', 'admin'] %}
                         <p class="restricted-info text-muted mt-3">
-                            Vous etes connecte mais votre compte ne dispose pas des droits suffisants pour ce contenu.
+                            Vous êtes connecté mais votre compte ne dispose pas des droits suffisants pour ce contenu.
                         </p>
                     {% endif %}
 
@@ -59,7 +59,7 @@
                             <line x1="19" y1="12" x2="5" y2="12"/>
                             <polyline points="12 19 5 12 12 5"/>
                         </svg>
-                        Retour a l'accueil
+                        Retour à l'accueil
                     </a>
                 </div>
             </div>

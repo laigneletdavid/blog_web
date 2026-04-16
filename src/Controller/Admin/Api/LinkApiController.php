@@ -77,7 +77,7 @@ class LinkApiController extends AbstractController
         // Categories
         foreach ($categorieRepository->findBy([], ['name' => 'ASC']) as $categorie) {
             $links[] = [
-                'type' => 'Categorie',
+                'type' => 'Catégorie',
                 'title' => $categorie->getName(),
                 'url' => $this->generateUrl('app_categorie_show', ['slug' => $categorie->getSlug()]),
             ];

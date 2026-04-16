@@ -83,8 +83,8 @@ class SiteCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // --- Panel Identite ---
-        yield FormField::addPanel('Identite')
+        // --- Panel Identité ---
+        yield FormField::addPanel('Identité')
             ->setIcon('fa fa-building')
             ->collapsible();
 
