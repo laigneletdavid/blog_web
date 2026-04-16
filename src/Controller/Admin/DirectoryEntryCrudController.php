@@ -47,7 +47,7 @@ class DirectoryEntryCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         // --- Panel Identite ---
-        yield FormField::addPanel('Identite')
+        yield FormField::addPanel('Identité')
             ->setIcon('fa fa-user')
             ->collapsible();
 
@@ -145,7 +145,7 @@ class DirectoryEntryCrudController extends AbstractCrudController
             ->hideOnIndex();
 
         // --- Panel Parametres ---
-        yield FormField::addPanel('Parametres')
+        yield FormField::addPanel('Paramètres')
             ->setIcon('fa fa-cog')
             ->collapsible();
 
@@ -153,10 +153,10 @@ class DirectoryEntryCrudController extends AbstractCrudController
             ->setTargetFieldName('company')
             ->hideOnIndex();
 
-        yield AssociationField::new('category', 'Categorie')
+        yield AssociationField::new('category', 'Catégorie')
             ->setRequired(false);
 
-        yield AssociationField::new('user', 'Membre lie')
+        yield AssociationField::new('user', 'Membre lié')
             ->setHelp('Optionnel. Si lie a un compte utilisateur, le membre peut editer sa fiche depuis /annuaire/ma-fiche.')
             ->setRequired(false)
             ->hideOnIndex();
