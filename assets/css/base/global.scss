@@ -49,72 +49,80 @@ a {
   @include btn-font-secondary;
 }
 
-// Bootstrap button overrides — use theme CSS custom properties
-.btn-primary {
-  background-color: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
+// Bootstrap button overrides — surcharge des CSS variables --bs-btn-* avec
+// les couleurs runtime du theme (var(--primary), var(--secondary)).
+// Bootstrap 5+ utilise ces vars en interne via .btn { background: var(--bs-btn-bg) },
+// donc on les surcharge directement plutot que de combattre la cascade.
 
-  &:hover, &:focus {
-    background-color: color-mix(in srgb, var(--primary) 85%, #000);
-    border-color: color-mix(in srgb, var(--primary) 85%, #000);
-    color: #fff;
-  }
-  &:active {
-    background-color: color-mix(in srgb, var(--primary) 75%, #000);
-    border-color: color-mix(in srgb, var(--primary) 75%, #000);
-  }
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--primary);
+  --bs-btn-border-color: var(--primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #{"color-mix(in srgb, var(--primary) 85%, #000)"};
+  --bs-btn-hover-border-color: #{"color-mix(in srgb, var(--primary) 85%, #000)"};
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #{"color-mix(in srgb, var(--primary) 75%, #000)"};
+  --bs-btn-active-border-color: #{"color-mix(in srgb, var(--primary) 75%, #000)"};
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--primary);
+  --bs-btn-disabled-border-color: var(--primary);
+
   &:focus-visible {
-    box-shadow: 0 0 0 .25rem color-mix(in srgb, var(--primary) 50%, transparent);
+    box-shadow: 0 0 0 .25rem #{"color-mix(in srgb, var(--primary) 50%, transparent)"};
   }
 }
 
 .btn-outline-primary {
-  color: var(--primary);
-  border-color: var(--primary);
-  background: transparent;
+  --bs-btn-color: var(--primary);
+  --bs-btn-border-color: var(--primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--primary);
+  --bs-btn-hover-border-color: var(--primary);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--primary);
+  --bs-btn-active-border-color: var(--primary);
+  --bs-btn-disabled-color: var(--primary);
+  --bs-btn-disabled-border-color: var(--primary);
 
-  &:hover, &:focus {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-  }
   &:focus-visible {
-    box-shadow: 0 0 0 .25rem color-mix(in srgb, var(--primary) 50%, transparent);
+    box-shadow: 0 0 0 .25rem #{"color-mix(in srgb, var(--primary) 50%, transparent)"};
   }
 }
 
 .btn-secondary {
-  background-color: var(--secondary);
-  border-color: var(--secondary);
-  color: #fff;
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--secondary);
+  --bs-btn-border-color: var(--secondary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #{"color-mix(in srgb, var(--secondary) 85%, #000)"};
+  --bs-btn-hover-border-color: #{"color-mix(in srgb, var(--secondary) 85%, #000)"};
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #{"color-mix(in srgb, var(--secondary) 75%, #000)"};
+  --bs-btn-active-border-color: #{"color-mix(in srgb, var(--secondary) 75%, #000)"};
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--secondary);
+  --bs-btn-disabled-border-color: var(--secondary);
 
-  &:hover, &:focus {
-    background-color: color-mix(in srgb, var(--secondary) 85%, #000);
-    border-color: color-mix(in srgb, var(--secondary) 85%, #000);
-    color: #fff;
-  }
-  &:active {
-    background-color: color-mix(in srgb, var(--secondary) 75%, #000);
-    border-color: color-mix(in srgb, var(--secondary) 75%, #000);
-  }
   &:focus-visible {
-    box-shadow: 0 0 0 .25rem color-mix(in srgb, var(--secondary) 50%, transparent);
+    box-shadow: 0 0 0 .25rem #{"color-mix(in srgb, var(--secondary) 50%, transparent)"};
   }
 }
 
 .btn-outline-secondary {
-  color: var(--secondary);
-  border-color: var(--secondary);
-  background: transparent;
+  --bs-btn-color: var(--secondary);
+  --bs-btn-border-color: var(--secondary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--secondary);
+  --bs-btn-hover-border-color: var(--secondary);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--secondary);
+  --bs-btn-active-border-color: var(--secondary);
+  --bs-btn-disabled-color: var(--secondary);
+  --bs-btn-disabled-border-color: var(--secondary);
 
-  &:hover, &:focus {
-    background-color: var(--secondary);
-    border-color: var(--secondary);
-    color: #fff;
-  }
   &:focus-visible {
-    box-shadow: 0 0 0 .25rem color-mix(in srgb, var(--secondary) 50%, transparent);
+    box-shadow: 0 0 0 .25rem #{"color-mix(in srgb, var(--secondary) 50%, transparent)"};
   }
 }
 

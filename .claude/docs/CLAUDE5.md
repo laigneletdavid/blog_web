@@ -214,11 +214,23 @@
 - `DirectoryEntryCrudController` : `setRequired(true)` + `setHelp` sur le TextField company (force l'asterisque visible — le `nullable: true` ORM faisait que Symfony deduisait `required: false` malgre le NotBlank)
 - `DirectoryEntryType` : `'required' => true` + help sur firstName, lastName, company
 
-### Boutons Bootstrap secondary — extension de l'override theme
+### Boutons Bootstrap — refonte override en CSS variables Bootstrap
 **Statut** : FAIT
-- **Probleme** : `.btn-secondary` et `.btn-outline-secondary` utilisaient encore les couleurs grises Bootstrap natives. Visible sur 5 themes /6 (vitrine, corporate, starter, artisan + default partiellement) — ex: bouton recherche desktop en `btn-outline-secondary`, bouton deconnexion, "mon compte"...
-- **Fix `assets/css/base/global.scss`** : ajout des overrides `.btn-secondary` et `.btn-outline-secondary` avec `var(--secondary)` (meme pattern que les overrides primary : hover/focus/active/focus-visible avec `color-mix` pour les nuances)
-- Couvre tous les themes via la cascade des CSS custom properties
+- **Probleme initial v1** : `.btn-primary` / `.btn-outline-primary` overrides existaient mais ne fonctionnaient PAS en runtime sur les themes (sauf default). Le bouton restait bleu `#2563EB` meme sur theme artisan. Idem `btn-secondary` / `btn-outline-secondary` jamais surcharges.
+- **Cause racine** : `assets/css/base/variables.scss:6` definit `$bw-primary: #2563EB` (SCSS compile-time). Bootstrap genere `.btn-primary { --bs-btn-bg: #2563eb; }` au compile et utilise `--bs-btn-bg` en runtime via `.btn { background-color: var(--bs-btn-bg); }`. L'ancien override `background-color: var(--primary)` se battait contre ce pattern (specificite egale, ordre cascade fragile).
+- **Fix v2 dans `global.scss`** : remplace les overrides `background-color` par des overrides des **CSS variables Bootstrap** elles-memes :
+  ```scss
+  .btn-primary {
+      --bs-btn-bg: var(--primary);
+      --bs-btn-border-color: var(--primary);
+      --bs-btn-hover-bg: #{"color-mix(in srgb, var(--primary) 85%, #000)"};
+      // ... idem hover/active/disabled/focus
+  }
+  ```
+- Pattern applique a `.btn-primary`, `.btn-outline-primary`, `.btn-secondary`, `.btn-outline-secondary`
+- Bootstrap utilise nos vars → couleurs theme runtime gagnent partout, sans combat de cascade
+- **5 themes /6 concernes** : artisan, vitrine, corporate, starter affichaient des boutons en couleurs Bootstrap au lieu du theme (recherche header, deconnexion, mon compte, etc.)
+- **Note SCSS** : interpolation `#{"color-mix(...)"}` necessaire pour passer la fonction CSS brute sans que SCSS essaye de l'evaluer comme fonction SCSS
 
 ### Liens contact responsives (mailto / tel)
 **Statut** : FAIT
