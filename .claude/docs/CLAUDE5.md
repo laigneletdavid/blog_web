@@ -214,6 +214,12 @@
 - `DirectoryEntryCrudController` : `setRequired(true)` + `setHelp` sur le TextField company (force l'asterisque visible — le `nullable: true` ORM faisait que Symfony deduisait `required: false` malgre le NotBlank)
 - `DirectoryEntryType` : `'required' => true` + help sur firstName, lastName, company
 
+### Boutons Bootstrap secondary — extension de l'override theme
+**Statut** : FAIT
+- **Probleme** : `.btn-secondary` et `.btn-outline-secondary` utilisaient encore les couleurs grises Bootstrap natives. Visible sur 5 themes /6 (vitrine, corporate, starter, artisan + default partiellement) — ex: bouton recherche desktop en `btn-outline-secondary`, bouton deconnexion, "mon compte"...
+- **Fix `assets/css/base/global.scss`** : ajout des overrides `.btn-secondary` et `.btn-outline-secondary` avec `var(--secondary)` (meme pattern que les overrides primary : hover/focus/active/focus-visible avec `color-mix` pour les nuances)
+- Couvre tous les themes via la cascade des CSS custom properties
+
 ### Liens contact responsives (mailto / tel)
 **Statut** : FAIT
 - **Probleme** : sur desktop, clic sur `mailto:` / `tel:` declenche le client mail systeme / dialer (intrusif sur poste, mal configure souvent). Sur mobile c'est ok.
