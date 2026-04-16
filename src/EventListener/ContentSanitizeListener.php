@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\Article;
+use App\Entity\DirectoryEntry;
 use App\Entity\Event;
 use App\Entity\Faq;
 use App\Entity\Page;
@@ -38,7 +39,7 @@ class ContentSanitizeListener
 
     private function process(object $entity): void
     {
-        if (!$entity instanceof Article && !$entity instanceof Page && !$entity instanceof Service && !$entity instanceof Event && !$entity instanceof Product && !$entity instanceof Faq && !$entity instanceof PortfolioItem) {
+        if (!$entity instanceof Article && !$entity instanceof Page && !$entity instanceof Service && !$entity instanceof Event && !$entity instanceof Product && !$entity instanceof Faq && !$entity instanceof PortfolioItem && !$entity instanceof DirectoryEntry) {
             return;
         }
 

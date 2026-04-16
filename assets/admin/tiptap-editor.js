@@ -25,6 +25,32 @@ import TableHeader from '@tiptap/extension-table-header';
 import { Callout } from './extensions/callout';
 import { Columns, Column } from './extensions/columns';
 
+// ─── Inline Image — variante inline de Image, utilisee pour les icones ──────
+// Extension dediee inline pour se comporter comme un caractere dans le flux.
+const InlineImage = Image.extend({
+    name: 'inlineImage',
+    // IMPORTANT : Image de Tiptap derive inline/group depuis this.options.inline.
+    // On override via addOptions pour forcer inline:true, puis on aligne group.
+    addOptions() {
+        return {
+            ...this.parent?.(),
+            inline: true,
+            HTMLAttributes: {},
+        };
+    },
+    inline: true,
+    group: 'inline',
+    atom: true,
+    draggable: false,
+    selectable: true,
+    priority: 200,
+    parseHTML() {
+        return [
+            { tag: 'img[src^="/icons/"]' },
+        ];
+    },
+});
+
 // ─── TipTap Editor Class ────────────────────────────────────────────────────
 
 class TiptapEditor {
@@ -119,6 +145,7 @@ class TiptapEditor {
             [
                 { cmd: 'link', icon: 'fa-link', title: 'Lien' },
                 { cmd: 'image', icon: 'fa-image', title: 'Image' },
+                { cmd: 'icon', icon: 'fa-icons', title: 'Inserer une icone' },
                 { cmd: 'youtube', icon: 'fa-video', title: 'Video YouTube' },
             ],
             // Other
@@ -209,6 +236,7 @@ class TiptapEditor {
                     HTMLAttributes: { loading: 'lazy' },
                     allowBase64: false,
                 }),
+                InlineImage,
                 Youtube.configure({
                     controls: true,
                     nocookie: true,
@@ -456,6 +484,7 @@ class TiptapEditor {
             case 'redo':         chain.redo().run(); break;
             case 'link':         this.toggleLink(); break;
             case 'image':        this.openMediaModal(); break;
+            case 'icon':         this.openIconModal(); break;
             case 'youtube':      this.insertVideo(); break;
             case 'previewDesktop':  this.setPreviewMode('desktop'); break;
             case 'previewTablet':   this.setPreviewMode('tablet'); break;
@@ -939,6 +968,124 @@ class TiptapEditor {
             document.removeEventListener('keydown', this._escHandler);
             this._escHandler = null;
         }
+    }
+
+    // ─── Icon Modal ──────────────────────────────────────────────────────
+
+    openIconModal() {
+        if (this.iconModal) return;
+
+        this.iconModal = document.createElement('div');
+        this.iconModal.className = 'tiptap-modal';
+        this.iconModal.innerHTML = `
+            <div class="tiptap-modal-backdrop"></div>
+            <div class="tiptap-modal-dialog" style="max-width:600px">
+                <div class="tiptap-modal-header">
+                    <h3>Inserer une icone</h3>
+                    <button type="button" class="tiptap-modal-close">&times;</button>
+                </div>
+                <div class="tiptap-modal-body" style="padding:0">
+                    <div style="padding:0.75rem 1.25rem;border-bottom:1px solid #dee2e6;">
+                        <input type="text" class="form-control form-control-sm tiptap-icon-search" placeholder="Rechercher une icone...">
+                    </div>
+                    <div class="tiptap-icon-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:0.4rem;padding:0.75rem;max-height:400px;overflow-y:auto"></div>
+                    <div class="tiptap-icon-empty" style="display:none;padding:2rem;text-align:center;color:#6c757d;font-size:0.9rem">Aucune icone trouvee</div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(this.iconModal);
+
+        this.iconModal.querySelector('.tiptap-modal-backdrop').addEventListener('click', () => this.closeIconModal());
+        this.iconModal.querySelector('.tiptap-modal-close').addEventListener('click', () => this.closeIconModal());
+
+        this._iconEscHandler = (e) => { if (e.key === 'Escape') this.closeIconModal(); };
+        document.addEventListener('keydown', this._iconEscHandler);
+
+        const searchInput = this.iconModal.querySelector('.tiptap-icon-search');
+        searchInput.addEventListener('input', () => this.filterIconGrid(searchInput.value.trim()));
+
+        this.loadIconList();
+        setTimeout(() => searchInput.focus(), 50);
+    }
+
+    async loadIconList() {
+        const grid = this.iconModal.querySelector('.tiptap-icon-grid');
+        const empty = this.iconModal.querySelector('.tiptap-icon-empty');
+
+        try {
+            const response = await fetch('/admin/api/icons');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const icons = await response.json();
+
+            this._iconList = icons;
+
+            if (!icons.length) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            this.renderIconGrid(icons);
+        } catch (err) {
+            grid.innerHTML = '<div style="grid-column:1/-1;padding:1rem;color:#dc3545;text-align:center">Erreur de chargement</div>';
+            console.error('[TipTap] Icon list error:', err);
+        }
+    }
+
+    renderIconGrid(icons) {
+        const grid = this.iconModal.querySelector('.tiptap-icon-grid');
+        grid.innerHTML = '';
+        icons.forEach(icon => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'tiptap-icon-item';
+            item.title = icon.name;
+            item.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.25rem;padding:0.5rem 0.25rem;background:none;border:1px solid transparent;border-radius:4px;cursor:pointer;transition:all 0.15s';
+            item.innerHTML = `
+                <img src="${icon.url}" alt="${this.escapeHtml(icon.name)}" width="24" height="24" style="display:block">
+                <span style="font-size:0.65rem;color:#6c757d;text-align:center;word-break:break-word;line-height:1.1">${this.escapeHtml(icon.name)}</span>
+            `;
+            item.addEventListener('mouseenter', () => { item.style.background = '#f1f3f5'; item.style.borderColor = '#ced4da'; });
+            item.addEventListener('mouseleave', () => { item.style.background = 'none'; item.style.borderColor = 'transparent'; });
+            item.addEventListener('click', () => {
+                // Insertion inline (mode "caractere") via l'extension InlineImage dediee
+                this.editor.chain().focus().insertContent({
+                    type: 'inlineImage',
+                    attrs: { src: icon.url, alt: icon.name },
+                }).run();
+                this.closeIconModal();
+            });
+            grid.appendChild(item);
+        });
+    }
+
+    filterIconGrid(query) {
+        if (!this._iconList) return;
+        const q = query.toLowerCase();
+        const filtered = q ? this._iconList.filter(i => i.name.toLowerCase().includes(q)) : this._iconList;
+        const empty = this.iconModal.querySelector('.tiptap-icon-empty');
+        const grid = this.iconModal.querySelector('.tiptap-icon-grid');
+        if (!filtered.length) {
+            grid.style.display = 'none';
+            empty.style.display = 'block';
+        } else {
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+            this.renderIconGrid(filtered);
+        }
+    }
+
+    closeIconModal() {
+        if (this.iconModal) {
+            this.iconModal.remove();
+            this.iconModal = null;
+        }
+        if (this._iconEscHandler) {
+            document.removeEventListener('keydown', this._iconEscHandler);
+            this._iconEscHandler = null;
+        }
+        this.editor.commands.focus();
     }
 
     // ─── Save Helpers ──────────────────────────────────────────────────

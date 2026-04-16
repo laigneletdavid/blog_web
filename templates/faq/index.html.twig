@@ -64,7 +64,7 @@
                                     data-bs-target="#faq-answer-{{ faq.id }}"
                                     aria-expanded="false"
                                     aria-controls="faq-answer-{{ faq.id }}">
-                                {% if faq.icon %}<i class="{{ faq.icon }} me-2"></i>{% endif %}
+                                {% if faq.icon %}{{ bi(faq.icon, 'me-2') }}{% endif %}
                                 {{ faq.question }}
                             </button>
                         </h3>

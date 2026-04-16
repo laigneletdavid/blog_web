@@ -26,7 +26,7 @@
         {% for cat in portfolioCategories %}
         <a href="{{ path('app_portfolio_index', {categorie: cat.slug}) }}"
            class="portfolio-filters__pill{% if activeCategory and activeCategory.id == cat.id %} portfolio-filters__pill--active{% endif %}">
-            {% if cat.icon %}<i class="{{ cat.icon }} me-1"></i>{% endif %}
+            {% if cat.icon %}{{ bi(cat.icon, 'me-1') }}{% endif %}
             {{ cat.name }}
         </a>
         {% endfor %}

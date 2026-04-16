@@ -701,6 +701,16 @@
     text-align: center;
 }
 
+// ─── Inline icons (img src="/icons/...") ─────────────────────────────────────
+
+.tiptap-editor-content img[src^="/icons/"] {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: -0.15em;
+    margin: 0 0.15em;
+}
+
 // ─── Responsive ──────────────────────────────────────────────────────────────
 
 @media (max-width: 768px) {

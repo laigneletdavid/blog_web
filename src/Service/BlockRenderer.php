@@ -67,6 +67,7 @@ class BlockRenderer
             'codeBlock' => $this->renderCodeBlock($attrs, $content),
             'horizontalRule' => '<hr class="block-separator">',
             'image' => $this->renderImage($attrs),
+            'inlineImage' => $this->renderInlineImage($attrs),
             'youtube' => $this->renderYoutube($attrs),
             'callout' => $this->renderCallout($attrs, $content),
             'table' => "<table class=\"tiptap-table\">{$content}</table>",
@@ -130,6 +131,13 @@ class BlockRenderer
     private function renderImage(array $attrs): string
     {
         $rawSrc = $attrs['src'] ?? '';
+
+        // Compatibilite : icones sauvegardees avant l'extension InlineImage
+        // (stockees comme type:'image' avec src=/icons/...). Rendu inline sans <figure>.
+        if (str_starts_with($rawSrc, '/icons/')) {
+            return $this->renderInlineImage($attrs);
+        }
+
         // Encoder les espaces et caracteres speciaux dans le chemin (le sanitizer rejette les URLs invalides)
         $dir = dirname($rawSrc);
         $file = basename($rawSrc);
@@ -169,6 +177,20 @@ class BlockRenderer
         $figcaption = $title ? "<figcaption>{$title}</figcaption>" : '';
 
         return "<figure class=\"block-image\"><img src=\"{$src}\"{$srcsetAttr}{$sizesAttr} alt=\"{$alt}\" loading=\"lazy\">{$figcaption}</figure>";
+    }
+
+    /**
+     * Rend une icone inline (pas de figure, pas de wrapper block).
+     */
+    private function renderInlineImage(array $attrs): string
+    {
+        $src = htmlspecialchars($attrs['src'] ?? '', ENT_QUOTES, 'UTF-8');
+        if ($src === '') {
+            return '';
+        }
+        $alt = htmlspecialchars($attrs['alt'] ?? '', ENT_QUOTES, 'UTF-8');
+
+        return "<img src=\"{$src}\" alt=\"{$alt}\">";
     }
 
     private function renderYoutube(array $attrs): string

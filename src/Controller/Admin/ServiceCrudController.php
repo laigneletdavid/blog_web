@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Service;
+use App\Field\IconPickerField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -53,8 +54,7 @@ class ServiceCrudController extends AbstractCrudController
             ->setHelp('Page de detail du service (editeur visuel, optionnel). Tapez <strong>/</strong> pour inserer un bloc. Si vide, pas de page detail.')
             ->hideOnIndex();
 
-        yield TextField::new('icon', 'Icône')
-            ->setHelp('Classe Bootstrap Icons (ex: bi-rocket, bi-laptop, bi-gear). Voir <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a>')
+        yield IconPickerField::new('icon', 'Icône')
             ->hideOnIndex();
 
         yield AssociationField::new('image', 'Image')

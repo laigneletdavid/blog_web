@@ -383,6 +383,7 @@ class DashboardController extends AbstractDashboardController
             ->addWebpackEncoreEntry('admin_editor')
             ->addWebpackEncoreEntry('admin_menu')
             ->addWebpackEncoreEntry('admin_fonts')
+            ->addWebpackEncoreEntry('admin_icons')
             ->addWebpackEncoreEntry('admin_dashboard');
     }
 }
