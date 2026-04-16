@@ -103,6 +103,8 @@ Cette commande unique fait tout :
 
 La commande est **idempotente** : si le site ou l'admin existent deja, ces etapes sont ignorees.
 
+> **Regle de redaction :** tous les textes, contenus, libelles, menus, pages, commentaires et autres elements crees pour le site doivent etre **en francais avec les accents** (é, è, ê, à, ç, ô, î, û, etc.). Ne jamais livrer des contenus client en francais sans accents ou en anglais — c'est du contenu qui sera lu par les visiteurs finaux.
+
 Mode non-interactif (pour scripts ou agents) :
 ```bash
 docker compose exec php php bin/console app:client:setup \
@@ -110,6 +112,28 @@ docker compose exec php php bin/console app:client:setup \
   --site-email=contact@client.fr \
   --admin-email=admin@client.fr \
   --admin-password=MonMotDePasse123
+```
+
+#### 4b. Compte client en ROLE_ADMIN (au lieu de SUPER_ADMIN)
+
+Par defaut `app:client:setup` cree le compte client en `ROLE_SUPER_ADMIN` (acces total : modules, infrastructure, themes...). Pour les livraisons standards, le client ne doit avoir que `ROLE_ADMIN` (gestion complete du contenu mais pas du systeme).
+
+**Downgrader le compte juste apres le setup :**
+```bash
+docker compose exec -T db mariadb -uapp -papp <db_name> -e \
+  "UPDATE user SET roles='[\"ROLE_ADMIN\"]', is_verified=1 WHERE email='client@example.fr';"
+```
+
+> **Note :** la commande set aussi `is_verified=1` car la creation CLI ne le fait pas (sinon le client est bloque au login en attendant la verification email).
+
+**Creer son propre compte SUPER_ADMIN dev (optionnel) :**
+```bash
+docker compose exec php php bin/console app:create-super-admin \
+  --email=david@comwebsolutions.fr --password=MonMotDePasse123 \
+  --first-name=David --last-name=Laignelet
+# Puis verifier l'email manuellement (la commande ne le fait pas) :
+docker compose exec -T db mariadb -uapp -papp <db_name> -e \
+  "UPDATE user SET is_verified=1 WHERE email='david@comwebsolutions.fr';"
 ```
 
 ### 5. Activer les modules
@@ -129,6 +153,40 @@ docker compose exec php php bin/console app:module:enable portfolio
 ```
 
 Chaque module active ses routes, cree ses pages legales associees et met a jour les menus.
+
+#### 5b. Remplir les placeholders des pages legales
+
+Les pages legales generees (mentions legales, politique de confidentialite, CGV, CGU) contiennent des placeholders type `{{RAISON_SOCIALE}}`, `{{ADRESSE}}`, `{{SIRET}}`, etc. **Aucune commande automatique ne les remplit** — c'est manuel via SQL ou via le CRUD admin (Pages > Edition).
+
+**Approche SQL recommandee (rapide, batch) :**
+```bash
+docker compose exec -T db mariadb -uapp -papp <db_name> <<'SQL'
+UPDATE page SET content = REPLACE(content, '{{DATE}}', '16 avril 2026') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{RAISON_SOCIALE}}', 'APA d''Bearn') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{FORME_JURIDIQUE}}', 'Entreprise individuelle') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{ADRESSE}}', '413 chemin Labarrere, 64570 Arette') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{SIRET}}', '999 572 647 00017') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{TVA}}', 'Non assujetti (art. 293 B du CGI)') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{CAPITAL}}', 'Non applicable') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{NOM_DIRECTEUR}}', 'Prenom Nom') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{EMAIL_CONTACT}}', 'contact@client.fr') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{TELEPHONE}}', '06 25 63 63 76') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{NOM_HEBERGEUR}}', 'OVH SAS') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{ADRESSE_HEBERGEUR}}', '2 rue Kellermann, 59100 Roubaix, France') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{URL_HEBERGEUR}}', 'https://www.ovhcloud.com/fr/') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{EMAIL_DPO}}', 'contact@client.fr') WHERE is_system = 1;
+UPDATE page SET content = REPLACE(content, '{{MEDIATEUR}}', 'Non applicable') WHERE is_system = 1;
+SQL
+```
+
+**Verifier qu'il ne reste aucun placeholder :**
+```bash
+docker compose exec -T db mariadb -uapp -papp <db_name> -e \
+  "SELECT id, title, content REGEXP '\\\\{\\\\{[A-Z_]+\\\\}\\\\}' AS has_placeholder FROM page WHERE is_system = 1;"
+```
+Tous les `has_placeholder` doivent etre a `0`. Sinon adapter la liste de REPLACE ci-dessus avec le placeholder manquant (ex : `{{SERVICES_SUPPLEMENTAIRES}}` pour les CGU si module ecommerce non actif).
+
+> **Alternative :** ouvrir chaque page dans Admin > Pages et modifier via l'editeur Tiptap. Plus long mais plus visuel.
 
 ### 6. Configurer reCAPTCHA (anti-spam)
 
@@ -274,6 +332,51 @@ docker compose exec php php bin/console app:menu:sync
 | `app:media:regenerate-sizes` | Medias | Regenere les 3 tailles WebP (480, 800, 1200px) des medias existants |
 | `app:create-super-admin` | Standalone | Cree un super admin (inclus dans `app:client:setup`) |
 | `app:init-site` | Standalone | Initialise le site (inclus dans `app:client:setup`) |
+
+---
+
+## Preparer le commit de la branche client
+
+Avant de pousser la branche `bw_*` ou de generer un dump pour le deploiement, s'assurer que tous les fichiers specifiques au client sont bien committes. Sans ca, ils seront **perdus au prochain deploy fresh** sur OVH.
+
+### Fichiers a commit sur la branche client (force-track si gitignore)
+
+| Fichier / dossier | Quand le commit ? | Genere par |
+|-------------------|-------------------|------------|
+| `templates/client/home.html.twig` | Apres customisation home | Manuel |
+| `templates/client/_header.html.twig`, `_footer.html.twig`, `blog.html.twig`, `contact.html.twig` | Apres customisation override | Manuel |
+| `templates/client/theme.css` | Apres customisation CSS | Manuel |
+| `public/documents/medias/*` | Apres upload images via admin (logo, photos hero, about, content...) | Admin > Medias |
+| `public/favicon-*.png`, `apple-touch-icon.png`, `android-chrome-*.png`, `mstile-150x150.png` | Apres upload du logo via admin (regeneration auto) | `SiteLogoListener` |
+| `public/site.webmanifest`, `public/browserconfig.xml` | Apres upload du logo (regeneration auto) | `SiteLogoListener` |
+| `scripts/bw_<client>_dump.sql` | Avant chaque deploy OVH | `make db-dump` |
+
+### Commandes types
+
+```bash
+# 1. Apres customisation templates/CSS et upload des medias via l'admin :
+git add templates/client/ public/documents/medias/ \
+        public/favicon-*.png public/apple-touch-icon.png \
+        public/android-chrome-*.png public/mstile-150x150.png \
+        public/site.webmanifest public/browserconfig.xml
+git commit -m "feat(bw_<client>): customisations + medias client"
+
+# 2. Avant deploy : generer + commit le dump BDD
+make db-dump                     # Genere scripts/bw_<client>_dump.sql
+git add scripts/bw_<client>_dump.sql
+git commit -m "chore(bw_<client>): dump BDD pour deploiement OVH"
+
+# 3. Push
+git push origin bw_<client>
+```
+
+> **Le dump SQL est temporaire** : le supprimer du repo (`git rm scripts/bw_<client>_dump.sql && git commit && git push`) apres le 1er deploy OVH reussi pour ne pas alourdir le repo. Garder uniquement entre dev et prod, le temps de l'import.
+
+### Fichiers a NE PAS commit
+
+- `.env.local` (gitignore : config locale, contient APP_SECRET, DSN BDD, mailer)
+- `.claude/settings.local.json` (local Claude Code)
+- `config/reference.php` si modifie sans intention (regenere automatiquement par cache:clear, c'est du parasite Symfony)
 
 ---
 
