@@ -124,8 +124,13 @@ class ArticleCrudController extends AbstractCrudController
 
         yield AssociationField::new('categories', 'Catégories');
 
+        // Article::tag est en mappedBy (cote inverse). Sans by_reference=false,
+        // Symfony Forms modifie la collection sans appeler addTag()/removeTag(),
+        // donc rien n'est persiste cote owning (Tag). Ce flag force l'utilisation
+        // des methodes add*/remove* qui propagent au cote proprietaire.
         yield AssociationField::new('tag', 'Tags')
             ->setHelp('Associez des tags pour organiser vos articles par thématique')
+            ->setFormTypeOption('by_reference', false)
             ->hideOnIndex();
 
         yield AssociationField::new('featured_media', 'Image mise en avant');
