@@ -44,11 +44,14 @@ class TagRepository extends ServiceEntityRepository
      */
     public function findAllWithArticleCount(): array
     {
+        // Retourne TOUS les tags avec leur count d'articles publies (0 inclus).
+        // Le HAVING > 0 a ete retire pour que la sidebar / le nuage affiche
+        // l'ensemble des sujets prevus, meme avant qu'un article soit ecrit.
+        // Cote template: cacher le compteur quand articleCount == 0.
         return $this->createQueryBuilder('t')
             ->select('t', 'COUNT(a.id) AS articleCount')
             ->leftJoin('t.article', 'a', 'WITH', 'a.published = true')
             ->groupBy('t.id')
-            ->having('COUNT(a.id) > 0')
             ->orderBy('t.name', 'ASC')
             ->getQuery()
             ->getResult();
