@@ -1,4 +1,4 @@
-# CLAUDE5 — Sessions du 8-9-14 avril 2026
+# CLAUDE5 — Sessions du 8 au 16 avril 2026
 
 ## Fait
 
@@ -135,6 +135,55 @@
 - `main → bw_front` : merge propre, zero conflit
 - `main → bw_pro_dici` : conflit `.gitignore` resolu (garde main), overrides migres de theme.css artisan vers client/theme.css, fichiers CMS revertes a leur etat main
 
+### Liens internes Tiptap — enrichissement
+**Statut** : FAIT
+- **Probleme** : le picker de lien interne Tiptap ne listait que Pages, Articles, Categories, Services. Les pages en dur (Accueil, Contact...) et les modules activables (produits, events, portfolio, directory) etaient absents.
+- **`StaticPageEnum`** (nouveau) : enum centralise des pages "en dur" (HOME, CONTACT, SEARCH, BLOG_INDEX, SERVICE_INDEX, EVENT_INDEX, PORTFOLIO_INDEX, FAQ_INDEX, PRODUCT_INDEX, DIRECTORY_INDEX, CART) avec `label()`, `routeName()`, `requiredModule()`. Calque sur `SystemPageEnum`.
+- **`LinkApiController`** : ajoute un groupe "Raccourci" (pages statiques filtrees par module actif) + support Produits (CATALOGUE|ECOMMERCE), Evenements (EVENTS), Realisations (PORTFOLIO), Membres (DIRECTORY). `try/catch` silencieux sur les routes absentes.
+- Comportement existant inchange (Pages/Articles/Categories/Services toujours listes sans check module pour non-regression).
+
+### Systeme d'icones — catalogue + picker
+**Statut** : FAIT
+
+**Probleme initial** : mix de Font Awesome et bootstrap-icons CSS bundle, 21 SVG custom dans `templates/icons/`, pas de picker UI. Champs `icon` en BDD stockes au format FA (`fas fa-search`).
+
+**Catalogue elargi a 57 icones** (templates/icons/ + public/icons/)
+- Import depuis `node_modules/bootstrap-icons/icons/` (deja en devDep)
+- 50 icones essentielles : navigation (chevrons, arrows, list, x, check, three-dots...), actions (trash, plus, download, eye, gear, pencil), contenu (image, folder2, link-45deg, calendar3, clock, tag), contact (envelope, telephone, geo-alt-fill, globe), user (person, person-circle), social (facebook, instagram, linkedin, youtube, twitter-x, whatsapp), ecommerce (cart, bag, credit-card, truck), feedback (info-circle, exclamation-triangle, check-circle-fill, question-circle), reaction (star, heart, share)
+- 7 extras heritees (box-arrow-up-right, person-fill, telephone-fill, geo-alt, lock, lightning-charge, pencil-square)
+- **`make icons-sync`** : target Makefile qui copie `templates/icons/*.svg` → `public/icons/*.svg` (cp -u)
+
+**Hybride deux systemes**
+- **Templates/CRUD/composants** : `{{ bi('envelope') }}` (currentColor, inchange)
+- **Contenu editorial Tiptap** : `<img src="/icons/envelope.svg">` via Image picker
+
+**Integration Tiptap — Extension InlineImage**
+- Extension custom `InlineImage` (extend Image) : `inline:true`, `group:'inline'`, `atom:true`, `priority:200`, `parseHTML` sur `img[src^="/icons/"]`
+- `addOptions` override pour forcer inline=true dans la parent-chain Tiptap
+- Nouveau bouton toolbar "icone" + modal dedie avec grille + recherche
+- Endpoint `/admin/api/icons` (scan `public/icons/*.svg`)
+- `BlockRenderer.php` : handler `inlineImage` + fallback retro-compat (type:image avec src=/icons/ rendu inline sans `<figure>`)
+- CSS inline (admin tiptap-editor.scss + front main.scss apres imports) : `width: 1.2em; vertical-align: -0.15em; margin: 0 0.15em; border-radius: 0; max-width: none`
+
+**IconPickerField EasyAdmin (nouveau)**
+- `src/Field/IconPickerField.php` : custom field implementant `FieldInterface` avec `FieldTrait`, base TextType, attributs `data-icon-picker="true"`
+- `assets/admin/icon-picker.js` + scss : scanne les inputs `data-icon-picker`, ajoute bouton "Choisir" + zone preview live, modal avec grille reutilisant `/admin/api/icons`
+- Entry webpack `admin_icons` + chargement via `DashboardController::configureAssets`
+- **4 CRUDs migres** : ServiceCrudController, FaqCrudController, DirectoryCategoryCrudController, PortfolioCategoryCrudController (TextField → IconPickerField)
+- **4 templates migres** vers `{{ bi() }}` : _services_grid, faq/index, _faq_accordion, portfolio/index
+- Hack `replace({'bi bi-': '', 'bi-': ''})` supprime de directory/index
+
+**Commande migration format**
+- `app:icons:migrate-format [--dry-run]` : convertit les valeurs de champ `icon` en BDD
+- Supporte Font Awesome (`fas fa-search` → `search`), bootstrap-icons prefixe (`bi bi-xxx` → `xxx`), ou deja au format court
+- Mapping FA → bi couvre ~50 icones communes (fa-search→search, fa-edit→pencil, fa-bolt→lightning-charge, fa-map-marker-alt→geo-alt-fill, etc.)
+- Valeurs inconnues listees mais non modifiees (traitement manuel)
+- Parcourt Service, Faq, DirectoryCategory, PortfolioCategory
+
+**Nettoyage**
+- `templates/base_feettrip.html.twig` supprime (orphelin)
+- `bootstrap-icons` deplace en `devDependencies` dans `package.json` (source pour `make icons-sync` en dev, exclu en prod via `npm install --production`)
+
 ## A faire
 
 ### Bug editeur Tiptap — verifier sur toutes les pages
@@ -142,6 +191,12 @@
 - Le fix fallback HTML fonctionne pour les pages legales
 - Verifier que toutes les pages (articles, services, events, portfolio, FAQ) se comportent correctement
 - Verifier que la sauvegarde depuis l'editeur met bien a jour `content` via `ContentSanitizeListener`
+
+### Merge chantier icones vers branches clients
+**Priorite** : Haute
+- `main → bw_front` : merge + run `app:icons:migrate-format` + deploy OVH
+- `main → bw_pro_dici` : merge + run `app:icons:migrate-format` + deploy OVH
+- Verifier en prod : `make icons-sync` (ou que le deploy-ovh.sh copie bien public/icons/)
 
 ### Stats — ameliorations futures
 **Priorite** : Basse

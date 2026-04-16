@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Faq;
+use App\Field\IconPickerField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -49,8 +50,8 @@ class FaqCrudController extends AbstractCrudController
             ->setHelp('Reponse detaillee a la question (editeur visuel). Tapez <strong>/</strong> pour inserer un bloc (image, liste, encart...).')
             ->hideOnIndex();
 
-        yield TextField::new('icon', 'Icône')
-            ->setHelp('Optionnel. Icone affichee devant la question. Classe Bootstrap Icons (ex : bi-question-circle). Voir <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a>')
+        yield IconPickerField::new('icon', 'Icône')
+            ->setHelp('Optionnel. Icone affichee devant la question. Cliquez sur "Choisir" pour parcourir.')
             ->hideOnIndex();
 
         // --- Panel Parametres ---

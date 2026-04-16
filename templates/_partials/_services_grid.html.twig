@@ -8,7 +8,7 @@
             <div class="service-card h-100">
                 {% if service.icon %}
                 <div class="service-card__icon">
-                    <i class="{{ service.icon }}"></i>
+                    {{ bi(service.icon) }}
                 </div>
                 {% elseif service.image %}
                 <div class="service-card__image">

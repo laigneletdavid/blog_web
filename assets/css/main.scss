@@ -31,3 +31,17 @@
 @import "./base/directory";
 @import "./base/products";
 @import "./base/cart";
+
+/* Icones inserees via Tiptap (img src="/icons/...")
+   Defini apres les imports pour battre .article-detail__content img */
+img[src^="/icons/"],
+.article-detail__content img[src^="/icons/"],
+.page-detail__content img[src^="/icons/"] {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.15em;
+  margin: 0 0.15em;
+  max-width: none;
+  border-radius: 0;
+}
