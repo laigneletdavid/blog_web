@@ -184,6 +184,43 @@
 - `templates/base_feettrip.html.twig` supprime (orphelin)
 - `bootstrap-icons` deplace en `devDependencies` dans `package.json` (source pour `make icons-sync` en dev, exclu en prod via `npm install --production`)
 
+### Fix dropdown nav — alignement cross-themes
+**Statut** : FAIT
+- **Probleme** : sur theme artisan (et autres), les liens de nav avec sous-menu (PARENT▼) etaient decales par rapport aux liens simples. Cause : pattern HTML `<div class="dropdown"><a class="<nav>__link dropdown-toggle">` fait que le `<div>` wrapper devient l'enfant flex direct au lieu du `<a>`. Padding et alignement vertical du `<a>` restent internes, decalage visible (surtout sur navs avec gap explicite).
+- **Fix global** dans `assets/css/base/header.scss` (apres la closing `}` de `.header`) :
+  ```scss
+  header nav .dropdown:has(> .dropdown-toggle) {
+      display: inline-flex;
+      align-items: stretch;
+      > .dropdown-toggle { display: inline-flex; align-items: center; }
+  }
+  ```
+- `:has()` cible uniquement les wrappers de liens nav, sans toucher `.header-search.dropdown` (structure differente)
+- S'applique a tous les themes (default, vitrine, corporate, moderne, artisan). Starter non concerne (pas de support sous-menu).
+
+### Bio annuaire — Tiptap
+**Statut** : FAIT
+- **Migration** `Version20260416073057` : ajoute colonne `blocks JSON NULL` sur `directory_entry`
+- **`DirectoryEntry`** : champ `blocks` (JSON) + getters/setters + virtual `getBlocksJson()/setBlocksJson()` (pattern Article/Service) + alias `getContent()/setContent()` qui pointent vers `bio` (pour ContentSanitizeListener sans cas special)
+- **`ContentSanitizeListener`** : ajout DirectoryEntry au `instanceof` check. Compile `blocks` JSON en HTML stocke dans `bio` (via les alias content/bio).
+- **`DirectoryEntryCrudController`** : `TextareaField('bio')` → `TextareaField('blocksJson')` avec `data-tiptap-editor` (admin)
+- **`DirectoryEntryType`** (form user) : idem
+- **Template `directory/edit.html.twig`** : charge `admin_editor` webpack entry (CSS + JS Tiptap) via blocks `stylesheets` et `javascripts`. Form utilise `form.blocksJson`.
+- **Template `directory/show.html.twig`** : `entry.bio|raw` au lieu de `nl2br` (HTML safe via sanitizer)
+
+### Champs requis fiche annuaire
+**Statut** : FAIT
+- `DirectoryEntry` : `Assert\NotBlank` ajoute sur `company` (necessaire au slug genere via `setTargetFieldName('company')`)
+- `DirectoryEntryCrudController` : `setRequired(true)` + `setHelp` sur le TextField company (force l'asterisque visible — le `nullable: true` ORM faisait que Symfony deduisait `required: false` malgre le NotBlank)
+- `DirectoryEntryType` : `'required' => true` + help sur firstName, lastName, company
+
+### Liens contact responsives (mailto / tel)
+**Statut** : FAIT
+- **Probleme** : sur desktop, clic sur `mailto:` / `tel:` declenche le client mail systeme / dialer (intrusif sur poste, mal configure souvent). Sur mobile c'est ok.
+- **`assets/js/contact-link-handler.js`** (nouveau) : intercepte les clics sur `a[href^="mailto:"]` et `a[href^="tel:"]` UNIQUEMENT sur desktop (`matchMedia('(hover: hover) and (pointer: fine)')`). Copie dans le presse-papier + toast feedback 1.8s. Fallback `execCommand` pour vieux navigateurs / contextes non-securises. Listener delegue sur `document` (gere les liens dynamiques).
+- Importe dans `assets/app.js` (front entry global)
+- **`directory/show.html.twig`** : ajoute `noreferrer` au `noopener` sur les liens externes (website, linkedin, facebook, instagram) — best practice securite
+
 ## A faire
 
 ### Bug editeur Tiptap — verifier sur toutes les pages

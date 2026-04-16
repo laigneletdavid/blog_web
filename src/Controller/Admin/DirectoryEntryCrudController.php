@@ -71,10 +71,19 @@ class DirectoryEntryCrudController extends AbstractCrudController
         yield TextField::new('jobTitle', 'Poste / Metier');
 
         yield TextField::new('company', 'Entreprise')
+            ->setRequired(true)
+            ->setHelp('Sert a generer le slug (URL) de la fiche.')
             ->hideOnIndex();
 
-        yield TextareaField::new('bio', 'Biographie')
-            ->setFormTypeOptions(['attr' => ['rows' => 4]])
+        yield TextareaField::new('blocksJson', 'Biographie')
+            ->setFormTypeOptions([
+                'attr' => [
+                    'data-tiptap-editor' => '',
+                    'style' => 'display: none',
+                ],
+            ])
+            ->setColumns('col-12')
+            ->setHelp('Editeur visuel : mise en forme, listes, liens, icones. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
             ->hideOnIndex();
 
         // --- Panel Coordonnees ---

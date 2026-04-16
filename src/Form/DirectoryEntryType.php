@@ -17,14 +17,21 @@ class DirectoryEntryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstName', TextType::class, ['label' => 'Prenom'])
-            ->add('lastName', TextType::class, ['label' => 'Nom'])
+            ->add('firstName', TextType::class, ['label' => 'Prenom', 'required' => true])
+            ->add('lastName', TextType::class, ['label' => 'Nom', 'required' => true])
             ->add('jobTitle', TextType::class, ['label' => 'Poste / Metier', 'required' => false])
-            ->add('company', TextType::class, ['label' => 'Entreprise', 'required' => false])
-            ->add('bio', TextareaType::class, [
+            ->add('company', TextType::class, [
+                'label' => 'Entreprise',
+                'required' => true,
+                'help' => 'Sert a generer l\'URL de votre fiche (slug).',
+            ])
+            ->add('blocksJson', TextareaType::class, [
                 'label' => 'Biographie',
                 'required' => false,
-                'attr' => ['rows' => 4],
+                'attr' => [
+                    'data-tiptap-editor' => '',
+                    'style' => 'display: none',
+                ],
             ])
             ->add('email', TextType::class, ['label' => 'Email de contact', 'required' => false])
             ->add('phone', TextType::class, ['label' => 'Telephone', 'required' => false])
