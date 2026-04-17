@@ -18,7 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_FREELANCE')]
+#[IsGranted('ROLE_ADMIN')]
 class ThemeImagesCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
