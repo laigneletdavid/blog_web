@@ -135,7 +135,7 @@ class TiptapEditor {
                 { cmd: 'blockquote', icon: 'fa-quote-left', title: 'Citation' },
                 { cmd: 'codeBlock', icon: 'fa-code', title: 'Bloc de code' },
                 { cmd: 'callout', icon: 'fa-info-circle', title: 'Encart (info, alerte...)' },
-                { cmd: 'columns', icon: 'fa-columns', title: '2 colonnes' },
+                { cmd: 'columns', icon: 'fa-columns', title: '2 colonnes (cliquer pour activer/desactiver)' },
             ],
             // Table
             [
@@ -466,7 +466,15 @@ class TiptapEditor {
             case 'blockquote':   chain.toggleBlockquote().run(); break;
             case 'codeBlock':    chain.toggleCodeBlock().run(); break;
             case 'callout':      this.openCalloutMenu(); break;
-            case 'columns':      this.editor.chain().focus().setColumns().run(); break;
+            case 'columns':
+                // Toggle : si on est dans un bloc columns, le supprimer (preserve
+                // le contenu). Sinon, inserer un nouveau bloc 2 colonnes.
+                if (this.editor.isActive('columns')) {
+                    this.editor.chain().focus().unsetColumns().run();
+                } else {
+                    this.editor.chain().focus().setColumns().run();
+                }
+                break;
             case 'insertTable':  chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); break;
             case 'addColumnBefore': chain.addColumnBefore().run(); break;
             case 'addColumnAfter':  chain.addColumnAfter().run(); break;
