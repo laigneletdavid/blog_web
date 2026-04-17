@@ -265,3 +265,54 @@
 - CSS inutilise Bootstrap (34 Ko) — PurgeCSS possible mais risque
 - JS inutilise (79 Ko) — deja optimise
 - CDN Cloudflare (gratuit) en complement du VPS
+
+### Mode --rebuild dans deploy-ovh.sh
+**Priorite** : Moyenne — confort dev, gain de temps sur hotfixes
+
+**Contexte** : le mode normal de `deploy-ovh.sh` (pull + composer + npm install + build + cache + migrations) prend 3-5 min. Pour un simple patch code-only (PHP/JS/CSS sans nouvelle dep ni migration), c'est sur-dimensionne. Process manuel qui fonctionne :
+```bash
+git pull origin bw_xxx
+source ~/.nvm/nvm.sh
+npm run build
+php bin/console cache:clear
+```
+~30s-1min au lieu de 3-5min.
+
+**Specification du nouveau mode `./scripts/deploy-ovh.sh --rebuild`** :
+
+Option A (intelligent, recommandee) :
+1. `git pull --ff-only`
+2. Detecter ce qui a change : `CHANGED=$(git diff --name-only HEAD@{1} HEAD)`
+3. Si `composer.lock` dans $CHANGED → `composer install --no-dev --optimize-autoloader`
+4. Si `package-lock.json` ou `package.json` dans $CHANGED → `npm install` + patch sync-rpc
+5. Toujours : `NODE_ENV=production npm run build`
+6. Toujours : `cache:clear --env=prod --no-debug` + `cache:warmup --env=prod --no-debug`
+7. Si `migrations/Version*.php` dans $CHANGED → `doctrine:migrations:migrate --no-interaction`
+
+Avantages : rapide quand peu a change, safe quand beaucoup a change. Couvre 100% des cas sans decision humaine.
+
+Option B (simple, explicite) :
+1. `git pull --ff-only`
+2. `npm run build`
+3. `cache:clear` + `cache:warmup`
+4. Warning : "si composer.lock, package-lock.json ou migrations/ ont change, utiliser le mode normal"
+
+Avantages : simple a lire/maintenir, pas de magie. Defaut : l'utilisateur doit savoir ce qu'il deploie.
+
+**Choix fait** : a trancher au moment du dev. Option A si on veut vraiment rendre le script "idiot-proof", option B si on prefere garder une discipline de deploy.
+
+**Note** : n'oublier ni le `source ~/.nvm/nvm.sh` (ou `. "$NVM_DIR/nvm.sh"` deja dans le script), ni le patch sync-rpc apres npm install.
+
+**Piege recurrent a gerer en debut de mode --rebuild** : sur OVH il arrive souvent que `scripts/deploy-ovh.sh` (ou d'autres .sh) soient marques M par git alors qu'aucune modif legitime n'a ete faite. Causes : `sed -i` en CRLF→LF lance a la main lors d'un precedent deploy, autocrlf mal aligne avec `.gitattributes`, patch sync-rpc qui ecrit dans node_modules mais contamine aussi. Resultat : `git pull` echoue avec "Vos modifications locales aux fichiers suivants seraient ecrasees par la fusion: scripts/deploy-ovh.sh".
+
+**Debut du mode `--rebuild` (et du mode normal aussi tant qu'on y est)** :
+```bash
+# Nettoyer les modifs parasites sur les fichiers CMS avant pull
+# (sur un serveur de prod, rien ne devrait etre modifie manuellement)
+git checkout -- scripts/ assets/ src/ templates/ config/ 2>/dev/null || true
+```
+Ou plus brutal (equivalent `--hard` cible) :
+```bash
+git reset --hard HEAD 2>/dev/null || true
+```
+Avec un warning affiche a l'utilisateur ("nettoyage des modifs locales parasites") pour la transparence.
