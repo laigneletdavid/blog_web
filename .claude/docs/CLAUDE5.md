@@ -316,3 +316,63 @@ Ou plus brutal (equivalent `--hard` cible) :
 git reset --hard HEAD 2>/dev/null || true
 ```
 Avec un warning affiche a l'utilisateur ("nettoyage des modifs locales parasites") pour la transparence.
+
+**Note pratique recurrente (confirmee APA d'Bearn + Pro d'Ici)** : `git checkout -- scripts/deploy-ovh.sh` puis `git pull` ne resout PAS le bug line endings sur OVH — git re-normalise a chaque checkout et marque toujours le fichier modifie. Seule commande qui debloque a coup sur :
+```bash
+BRANCH=$(git branch --show-current)
+git fetch origin "$BRANCH"
+git reset --hard "origin/$BRANCH"
+```
+(equivaut a "jeter tout le local et copier le remote"). A integrer comme premiere etape du mode `--rebuild`.
+
+### Deploy multi-client automatique (scripts/deploy-all.sh local)
+**Priorite** : Moyenne — confort dev, devient utile des 3+ clients en prod
+
+**Contexte** : actuellement, quand main evolue avec un fix qui concerne tous les clients (ex: `606f4d6` fix admin role + Tiptap), il faut SSH manuellement sur chaque serveur OVH et enchainer les memes commandes. Avec 3 clients (APA d'Bearn, BlogWeb, Pro d'Ici) c'est deja fastidieux, et ca va empirer.
+
+**Specification du script `scripts/deploy-all.sh`** (s'execute en LOCAL, pas sur OVH) :
+
+```bash
+#!/bin/bash
+# Deploy en parallele sur tous les serveurs OVH.
+# Necessite des cles SSH configurees sur chaque serveur (ssh-copy-id).
+
+set -uo pipefail
+
+SERVERS=(
+    "ttuzcgq-apadbearn@ssh.cluster100.hosting.ovh.net:bw_apadbearn"
+    "ttuzcgq-blogweb@ssh.cluster100.hosting.ovh.net:bw_front"
+    "ttuzcgq-prodici@ssh.cluster100.hosting.ovh.net:bw_pro_dici"
+    # Ajouter les futurs clients ici
+)
+
+REMOTE_SCRIPT='
+set -e
+BRANCH=$(git branch --show-current)
+echo "[$(hostname)] rebuild sur $BRANCH"
+git fetch origin "$BRANCH"
+git reset --hard "origin/$BRANCH"
+source ~/.nvm/nvm.sh
+npm run build 2>&1 | tail -5
+php bin/console cache:clear 2>&1 | tail -3
+echo "[$(hostname)] OK"
+'
+
+for entry in "${SERVERS[@]}"; do
+    IFS=":" read -r host branch <<< "$entry"
+    echo "=== $branch sur $host ==="
+    ssh "$host" "$REMOTE_SCRIPT" || echo "[FAIL] $host — continuer avec les autres"
+    echo ""
+done
+```
+
+**Setup prerequis (une fois)** : generer une cle SSH + copier sur chaque serveur avec `ssh-copy-id user@host`. Apres ca, plus de mot de passe a taper.
+
+**Alternatives evaluees** :
+- **GitHub Actions sur push bw_*** : auto-deploy a chaque push. Bien pour le long terme mais necessite des secrets SSH dans GitHub (risque vol), et moins de controle (pas moyen de deployer sans pusher). Template deja mentionne dans `DEPLOY_REFERENCE.md`.
+- **Ansible** : overkill pour 3 serveurs mutualises, courbe d'apprentissage.
+- **Agent Claude avec SSH** : coute de l'API + latence, aucun benefice vs bash sur du scripting deterministe.
+
+**Reco finale** : `scripts/deploy-all.sh` bash + cles SSH. Suffit pour l'echelle actuelle (3 clients), scalable jusqu'a ~10 sans souci. Au-dela, basculer sur GitHub Actions.
+
+**Extension possible** : option `--parallel` qui lance les SSH en background (avec `&` + `wait`) pour deployer les N clients en parallele au lieu de sequentiel. Gain de temps linearise.
