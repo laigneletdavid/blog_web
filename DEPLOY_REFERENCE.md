@@ -197,10 +197,50 @@ Le script `--import` corrige automatiquement :
 
 | Probleme | Cause | Solution |
 |----------|-------|----------|
-| `PHP 4.4.9` en SSH | .ovhconfig manquant | Deja dans le repo, reconnexion SSH |
+| `PHP 4.4.9` ou `5.4` en SSH | .ovhconfig manquant ou pas appliqué | `.ovhconfig` deja dans le repo, **reconnexion SSH obligatoire** apres clone pour appliquer |
+| `/bin/bash^M : mauvais interpreteur` | Script .sh commit avec CRLF (Windows) | `sed -i 's/\r$//' scripts/deploy-ovh.sh` puis relancer. **Fixe sur main depuis le deploy APA d'Bearn** (deploy-ovh.sh re-commit en LF). Si reapparait sur un autre script : meme commande |
+| `npm ci` echoue : `Missing X from lock file` | `package-lock.json` derive de `package.json` (ajout deps oublie de regen lock) | **Fixe sur main depuis APA d'Bearn** : le script tente `npm ci`, fallback automatique sur `npm install`. Pour fix la racine en local : `docker compose run --rm -w /var/www/html node npm install && git add package-lock.json && git commit` |
+| `Error: listen EACCES 0.0.0.0` (sync-rpc) | OVH mutualise restreint l'ouverture de ports par les processes Node (sync-rpc essaie de bind un port) | Le script `deploy-ovh.sh` applique automatiquement le patch eslint.js apres `npm ci`. **Si tu fais `npm install` manuellement** (suite a un `npm ci` echoue), il faut **rappliquer le patch** avant `encore production` : `sed -i "s\|^const forceSync\|//const forceSync\|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js && sed -i "s\|^const hasEslintConfiguration = forceSync\|//const hasEslintConfiguration = forceSync\|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js` |
 | `DebugBundle not found` | APP_ENV pas prod | Script exporte APP_ENV=prod auto |
 | `enabled_modules can't have default` | MySQL 8 strict | --import corrige auto, --init skip migrations si dump |
 | `utf8mb4_uca1400_ai_ci` | MariaDB vs MySQL | --import convertit auto |
 | `No such file or directory` BDD | .env.prod ecrase DATABASE_URL | .env.prod supprime du repo |
 | `MESSENGER_TRANSPORT_DSN` corrompu | Erreur manuelle | --init genere un .env.local propre |
 | Conflits au merge | Fichiers modifies des 2 cotes | Override dans templates/client/, merge sans conflit |
+| OVH cree un dossier `public/` par defaut au cluster | Multisite OVH ajoute un public/ vide dans le home | `rmdir public` **avant** le `git clone .` (sinon "destination path '.' already exists and is not an empty directory") |
+| Connection refused vers la BDD CloudDB | IP de l'hebergement mutualise pas dans la whitelist | OVH > Cloud DB > IPs autorisees → ajouter l'IP du mutualise (visible dans les infos hebergement) |
+
+---
+
+## En cas d'echec partiel du `--init`
+
+**Pas de rollback automatique.** Le script est en `set -euo pipefail` : si une etape plante, tout s'arrete dans l'etat en cours. Recap des etapes :
+
+1. Pull du code
+2. Verification conflits Git
+3. Composer install (`[3/7]`)
+4. Installation Node + nvm (`[4/7]`)
+5. **Build assets : `npm ci` puis `encore production` (`[5/7]`)** ← echec frequent ici
+6. Cache Symfony clear + warmup (`[6/7]`)
+7. Migrations OU import dump (`[7/7]`)
+
+**Reprendre apres une erreur a l'etape 5 (sans relancer `--init` qui ecraserait `.env.local`) :**
+
+```bash
+# Sourcer nvm (sinon node pas dispo dans la session)
+export NVM_DIR="$HOME/.nvm"
+. "$NVM_DIR/nvm.sh"
+
+# 1. Build assets (npm install fallback + patch sync-rpc)
+npm install
+sed -i "s|^const forceSync|//const forceSync|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js
+sed -i "s|^const hasEslintConfiguration = forceSync|//const hasEslintConfiguration = forceSync|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js
+NODE_ENV=production npx encore production
+
+# 2. Cache Symfony
+APP_ENV=prod php bin/console cache:clear --env=prod --no-debug
+APP_ENV=prod php bin/console cache:warmup --env=prod --no-debug
+
+# 3. Import du dump
+./scripts/deploy-ovh.sh --import scripts/bw_<client>_dump.sql
+```
