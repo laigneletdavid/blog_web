@@ -376,3 +376,141 @@ done
 **Reco finale** : `scripts/deploy-all.sh` bash + cles SSH. Suffit pour l'echelle actuelle (3 clients), scalable jusqu'a ~10 sans souci. Au-dela, basculer sur GitHub Actions.
 
 **Extension possible** : option `--parallel` qui lance les SSH en background (avec `&` + `wait`) pour deployer les N clients en parallele au lieu de sequentiel. Gain de temps linearise.
+
+### Migration vers VPS dedie multi-client
+**Priorite** : Haute — prevu pour atteindre 6+ sites (APA d'Bearn + Pro d'Ici + BlogWeb + refonte des 3 sites perso)
+
+**Contexte** : le setup OVH mutualise actuel scale mal :
+- Setup manuel par client : ~30 min (BDD CloudDB + whitelist IP + espace hebergement + SSH + clone + init + dump)
+- Cout : ~8 EUR/mois par client (hebergement + CloudDB) = ~50 EUR/mois pour 6 clients
+- TTFB plafonne a 150-320ms (voisins bruyants) -> bloque l'objectif Lighthouse mobile 90+ mentionne dans CLAUDE5
+- Aucune isolation reelle entre clients
+
+**Break-even** : des 4-5 clients, un VPS dedie devient plus avantageux (cout ET temps). Avec 6 sites en vue, le moment est arrive.
+
+**Stack cible**
+
+| Brique | Rôle | Choix |
+|--------|------|-------|
+| **VPS** OVH ~15 EUR/mois (4 vCPU, 8 GB RAM, 80 GB NVMe) | Infra | Debian 12 ou Ubuntu 24.04 LTS |
+| **Docker + Compose** | Isolation par client (PHP-FPM + nginx + volumes) | Standard |
+| **Traefik v3** | Reverse proxy + SSL Let's Encrypt auto + routage par domaine | Alternative : Nginx Proxy Manager (GUI) si preferee |
+| **MariaDB** | 1 container central partage, 1 BDD par client (`bw_xxx`) | Alternative : 1 container MariaDB par client (isolation + mais conso RAM x6) |
+| **Node 20 + PHP 8.4** | Runtimes | Images officielles `node:20-alpine`, `php:8.4-fpm-alpine` |
+| **Scripts `new-client.sh` + `deploy-all.sh`** | Orchestration | Bash, pas d'Ansible (overkill < 20 clients) |
+
+**Arborescence cible VPS**
+```
+/var/www/blogweb/
+├── traefik/
+│   ├── docker-compose.yml       # Traefik seul, reseau public
+│   ├── traefik.yml              # Conf (entrypoints, certificats)
+│   └── acme.json                # Certificats Let's Encrypt
+├── mariadb/
+│   ├── docker-compose.yml       # MariaDB central, reseau internal
+│   └── data/                    # Volume persistant
+├── clients/
+│   ├── bw_apadbearn/
+│   │   ├── app/                 # Clone git branche bw_apadbearn
+│   │   ├── docker-compose.yml   # php + nginx du client, labels Traefik
+│   │   └── .env.local
+│   ├── bw_front/
+│   └── bw_pro_dici/
+└── scripts/
+    ├── new-client.sh            # Provisioning 1 client
+    ├── deploy-all.sh            # Update tous les clients
+    └── backup-all.sh            # Dump BDD + tar volumes -> offsite
+```
+
+**Workflow `new-client.sh`** (objectif : 1 commande, ~5 min)
+```bash
+./new-client.sh <branche> <domaine> [<sous_domaine_supp>]
+# Exemple : ./new-client.sh bw_emma apa-dbearn.fr www.apa-dbearn.fr
+```
+
+Actions sequentielles :
+1. `mkdir /var/www/blogweb/clients/<branche>/{app,.}` + `chown` user deployer
+2. `git clone -b <branche> <repo> app/` dans le dossier client
+3. Genere `docker-compose.yml` depuis un template (substitue `<branche>`, `<domaine>`, port interne, labels Traefik)
+4. Genere `.env.local` : APP_SECRET random, DATABASE_URL pointant sur MariaDB central (user+pass dedie), MAILER_DSN Brevo (prompt)
+5. Cree la BDD MariaDB + user : `CREATE DATABASE bw_xxx; CREATE USER 'bw_xxx'@'%' IDENTIFIED BY '<pwd>'; GRANT ALL ON bw_xxx.* TO 'bw_xxx'@'%';`
+6. `docker compose up -d` -> Traefik detecte les labels, provisionne SSL Let's Encrypt automatiquement (~30s)
+7. Prompt : "chemin du dump SQL a importer ? [laisser vide pour skip]" -> `docker compose exec -T mariadb ... < dump.sql`
+8. Affiche URL du site, credentials admin, statut SSL
+
+**Template `docker-compose.yml` client**
+```yaml
+services:
+  php:
+    image: blogweb-php:8.4  # image custom avec extensions + composer
+    volumes:
+      - ./app:/var/www/html
+      - ./app/var/logs:/var/www/html/var/logs
+    environment:
+      APP_ENV: prod
+    networks: [internal]
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./app:/var/www/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [internal, public]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.<branche>.rule=Host(`<domaine>`)"
+      - "traefik.http.routers.<branche>.tls=true"
+      - "traefik.http.routers.<branche>.tls.certresolver=letsencrypt"
+      - "traefik.http.services.<branche>.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+networks:
+  internal:
+  public:
+    external: true  # reseau Traefik
+```
+
+**Migration des clients existants (OVH -> VPS)**
+
+Plan sans downtime (migration progressive) :
+1. Installer VPS + Traefik + MariaDB + images Docker (1-2 jours)
+2. Tester sur un faux client (clone bw_front sur staging.blogweb.test)
+3. Pour chaque client, un par un :
+   a. Dump BDD OVH (`make db-dump`)
+   b. Lancer `new-client.sh bw_xxx <domaine>` + import du dump sur VPS
+   c. Tester sur URL temporaire (ex: bw_xxx.new.blogweb.fr via Traefik)
+   d. Une fois OK, changer DNS du domaine client (A record OVH -> IP VPS)
+   e. Attendre propagation DNS (5-60 min selon TTL)
+   f. Verifier SSL Let's Encrypt genere
+   g. Couper l'espace OVH mutualise (economie immediate)
+
+**Estimation temps / couts**
+
+| Phase | Temps |
+|-------|-------|
+| Stack VPS initiale (Traefik + MariaDB + images + scripts) | 1-2 jours |
+| Premier client migre | 1h (le temps de valider) |
+| Clients suivants | 30 min chacun |
+| Automatisation complete (new-client.sh + deploy-all.sh robustes) | +1 jour |
+
+**Couts compares**
+
+| Echelle | OVH mutualise | VPS dedie (15 EUR/mois) |
+|---------|---------------|-------------------------|
+| 3 clients | ~25 EUR/mois | 15 EUR/mois |
+| 6 clients | ~50 EUR/mois | **15 EUR/mois** |
+| 10 clients | ~80 EUR/mois | 15 EUR/mois (si VPS tient) |
+| 20 clients | ~160 EUR/mois | ~25 EUR/mois (VPS upgrade) |
+
+A 6 clients, economie directe = 35 EUR/mois = 420 EUR/an. Et temps de deploiement / 6.
+
+**Risques / points d'attention**
+- **Backup obligatoire** : sur VPS, tu es responsable. `scripts/backup-all.sh` cron quotidien -> offsite (S3/Backblaze/rclone vers OVH Cloud Storage)
+- **Monitoring** : installer `netdata` ou `uptime-kuma` (container), alerte Telegram/email sur CPU/RAM/disk
+- **Securite** : fail2ban + UFW + SSH cle only + updates auto (`unattended-upgrades`)
+- **Scaling** : 6-10 sites vitrines legers tiennent sur 4 vCPU / 8 GB facile. Au-dela, upgrade VPS ou passer sur Swarm/Kubernetes
+
+**Opportunite business** : une fois le setup rode, tu peux **revendre de l'hebergement** a tes clients a prix inferieur OVH tout en marge. 1 VPS = 20 clients = potentiel 400 EUR/mois de CA pour 15 EUR de cout infra.
+
+**A faire en premier quand tu lances ce chantier** : spec detaillee (CLAUDE6 probablement), prototype local avec Docker Desktop, puis VPS de test OVH 1 mois pour valider.
