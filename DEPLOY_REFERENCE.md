@@ -199,7 +199,7 @@ Le script `--import` corrige automatiquement :
 |----------|-------|----------|
 | `PHP 4.4.9` ou `5.4` en SSH | .ovhconfig manquant ou pas appliqué | `.ovhconfig` deja dans le repo, **reconnexion SSH obligatoire** apres clone pour appliquer |
 | `/bin/bash^M : mauvais interpreteur` | Script .sh commit avec CRLF (Windows) | `sed -i 's/\r$//' scripts/deploy-ovh.sh` puis relancer. **Fixe sur main depuis le deploy APA d'Bearn** (deploy-ovh.sh re-commit en LF). Si reapparait sur un autre script : meme commande |
-| `npm ci` echoue : `Missing X from lock file` | `package-lock.json` derive de `package.json` (ajout deps oublie de regen lock) | **Fixe sur main depuis APA d'Bearn** : le script tente `npm ci`, fallback automatique sur `npm install`. Pour fix la racine en local : `docker compose run --rm -w /var/www/html node npm install && git add package-lock.json && git commit` |
+| `npm ci` echoue : `Missing X from lock file` | Bug ambient OVH mutualise : peer deps resolues differemment (`tsx`, `vitest`, `esbuild`...) malgre un lock file en sync local | **Fixe sur main depuis APA d'Bearn** : le script utilise `npm install` au lieu de `npm ci`. Plus tolerant, fonctionne meme quand npm exige des peer deps non listees dans le lock |
 | `Error: listen EACCES 0.0.0.0` (sync-rpc) | OVH mutualise restreint l'ouverture de ports par les processes Node (sync-rpc essaie de bind un port) | Le script `deploy-ovh.sh` applique automatiquement le patch eslint.js apres `npm ci`. **Si tu fais `npm install` manuellement** (suite a un `npm ci` echoue), il faut **rappliquer le patch** avant `encore production` : `sed -i "s\|^const forceSync\|//const forceSync\|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js && sed -i "s\|^const hasEslintConfiguration = forceSync\|//const hasEslintConfiguration = forceSync\|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js` |
 | `DebugBundle not found` | APP_ENV pas prod | Script exporte APP_ENV=prod auto |
 | `enabled_modules can't have default` | MySQL 8 strict | --import corrige auto, --init skip migrations si dump |
@@ -231,11 +231,11 @@ Le script `--import` corrige automatiquement :
 export NVM_DIR="$HOME/.nvm"
 . "$NVM_DIR/nvm.sh"
 
-# 1. Build assets (npm install fallback + patch sync-rpc)
+# 1. Build assets (toujours npm install, jamais npm ci sur OVH mutualise)
 npm install
 sed -i "s|^const forceSync|//const forceSync|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js
 sed -i "s|^const hasEslintConfiguration = forceSync|//const hasEslintConfiguration = forceSync|" node_modules/@symfony/webpack-encore/lib/plugins/eslint.js
-NODE_ENV=production npx encore production
+NODE_ENV=production npm run build
 
 # 2. Cache Symfony
 APP_ENV=prod php bin/console cache:clear --env=prod --no-debug

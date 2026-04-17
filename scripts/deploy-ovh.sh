@@ -241,15 +241,10 @@ nvm install 20 2>/dev/null || true
 nvm use 20
 
 echo "[5/7] Build des assets..."
-# npm ci exige un package-lock.json strictement en sync. Si le lock derive
-# (ajout de deps oublie de regen) on retombe sur npm install qui regenere
-# le lock et installe quand meme. Permet de ne pas bloquer un deploy prod
-# pour un lock desync, sans masquer le souci en local (les CI strictes type
-# GitHub Actions garderont npm ci).
-npm ci || {
-    echo "       [warn] npm ci a echoue (lock desync ?), fallback sur npm install..."
-    npm install
-}
+# npm install (et pas npm ci) : sur OVH mutualise, npm ci echoue
+# systematiquement avec "Missing X from lock file" (peer deps resolues
+# differemment selon l'env). npm install est plus tolerant et fonctionne.
+npm install
 
 # Patch sync-rpc (contournement restriction ports OVH mutualise)
 ESLINT_FILE="node_modules/@symfony/webpack-encore/lib/plugins/eslint.js"
@@ -258,7 +253,7 @@ if [ -f "$ESLINT_FILE" ] && grep -q "^const forceSync" "$ESLINT_FILE"; then
     sed -i "s|^const hasEslintConfiguration = forceSync|//const hasEslintConfiguration = forceSync|" "$ESLINT_FILE"
     echo "       Patch sync-rpc applique"
 fi
-NODE_ENV=production npx encore production
+NODE_ENV=production npm run build
 
 # --- 7. Symfony ---
 echo "[6/7] Cache Symfony..."
