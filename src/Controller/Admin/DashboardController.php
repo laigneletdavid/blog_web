@@ -349,20 +349,28 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager');
         }
 
-        if ($this->isGranted('ROLE_FREELANCE')) {
-            if (!$this->isGranted('ROLE_ADMIN')) {
-                yield MenuItem::section('Réglages');
-            }
-
-            yield MenuItem::subMenu('Apparence', 'fas fa-palette')->setSubItems([
-                MenuItem::linkToRoute('Catalogue de themes', 'fas fa-swatchbook', 'admin_theme_browser'),
+        if ($this->isGranted('ROLE_ADMIN')) {
+            // Menu Apparence : reglages + images accessibles des ROLE_ADMIN
+            // (couleurs, polices, hero, about, galerie, logos, temoignages).
+            // Le catalogue de themes reste reserve a ROLE_FREELANCE+
+            // (changer de theme = decision technique critique).
+            $apparenceItems = [
                 MenuItem::linkToCrud('Réglages du thème', 'fas fa-sliders', Site::class)
                     ->setController(ThemeSettingsCrudController::class)
                     ->setAction(Crud::PAGE_EDIT)
                     ->setEntityId($this->siteContext->getCurrentSiteId()),
                 MenuItem::linkToCrud('Images du theme', 'fas fa-images', SiteGalleryItem::class)
                     ->setController(ThemeImagesCrudController::class),
-            ]);
+            ];
+
+            if ($this->isGranted('ROLE_FREELANCE')) {
+                array_unshift(
+                    $apparenceItems,
+                    MenuItem::linkToRoute('Catalogue de themes', 'fas fa-swatchbook', 'admin_theme_browser'),
+                );
+            }
+
+            yield MenuItem::subMenu('Apparence', 'fas fa-palette')->setSubItems($apparenceItems);
 
             if ($this->isGranted('ROLE_SUPER_ADMIN')) {
                 yield MenuItem::linkToCrud('Modules', 'fas fa-puzzle-piece', Site::class)

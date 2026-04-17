@@ -20,7 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_FREELANCE')]
+#[IsGranted('ROLE_ADMIN')]
 class ThemeSettingsCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
