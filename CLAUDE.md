@@ -108,6 +108,7 @@ Sur main, `templates/client/` est gitignore (vide). Sur les branches bw_*, les f
 - **Toujours** ownership check avant modif d'une ressource utilisateur
 - **Toujours** `HtmlSanitizer` sur contenu rendu avec `|raw`
 - **Toujours** verifier `site.owner` pour les actions ROLE_FREELANCE
+- **Tags partages multi-modules** (Article, Page, DirectoryEntry, Product, PortfolioItem, Categorie, Media). Regroupables en **Familles de tags** (`TagGroup`) pour generer des filtres front automatiques (ex: Villes / Metiers sur l'annuaire). Le rattachement a une famille est optionnel — `tag.tagGroup = null` reste valide.
 
 ### Securite
 - CSRF active globalement

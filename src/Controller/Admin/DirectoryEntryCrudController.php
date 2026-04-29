@@ -156,6 +156,12 @@ class DirectoryEntryCrudController extends AbstractCrudController
         yield AssociationField::new('category', 'Catégorie')
             ->setRequired(false);
 
+        yield AssociationField::new('tags', 'Tags')
+            ->setHelp('Ville, métier, spécialité... Les filtres front (annuaire) sont générés automatiquement à partir des familles de tags utilisées. Pour activer le filtrage par ville par exemple, créez une famille « Villes » puis taguez vos fiches.')
+            ->setRequired(false)
+            ->autocomplete()
+            ->hideOnIndex();
+
         yield AssociationField::new('user', 'Membre lié')
             ->setHelp('Optionnel. Si lie a un compte utilisateur, le membre peut editer sa fiche depuis /annuaire/ma-fiche.')
             ->setRequired(false)
@@ -184,11 +190,19 @@ class DirectoryEntryCrudController extends AbstractCrudController
                     'title' => 'Categories',
                     'content' => '<p>Les categories servent de filtres sur la page annuaire. Creez des categories par metier ou specialite pour faciliter la recherche.</p>',
                 ],
+                [
+                    'title' => 'Filtres par tags',
+                    'content' => '<p>Les <strong>tags</strong> ajoutent une dimension de filtrage en plus des catégories. Ils peuvent être regroupés en <strong>familles</strong> (Villes, Métiers, Spécialités...) qui génèrent automatiquement des filtres dédiés sur la page annuaire.</p>
+                    <p>Exemple : créez une famille « Villes » puis les tags <em>Paris</em>, <em>Lyon</em>, <em>Marseille</em>. Sur <code>/annuaire</code>, un filtre « Villes » apparaît automatiquement avec ces options.</p>
+                    <p>Les filtres tags <strong>se cumulent</strong> avec la recherche et la catégorie (ex: ville=Paris ET métier=Plombier).</p>
+                    <p>Pour gérer les familles : <em>Classification > Familles de tags</em>.</p>',
+                ],
             ],
             'tips' => [
                 'Les fiches "mises en avant" peuvent etre affichees sur la page d\'accueil.',
                 'Un membre lie a un compte peut modifier sa fiche via /annuaire/ma-fiche.',
-                'Les visiteurs peuvent filtrer par categorie et rechercher par nom, entreprise ou ville.',
+                'Les visiteurs peuvent filtrer par categorie, par tags (familles) et rechercher par nom, entreprise ou ville.',
+                'Pour activer un filtre « Villes » sur le front, créez d\'abord la famille puis tagguez vos fiches.',
             ],
         ];
     }

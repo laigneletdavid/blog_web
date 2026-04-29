@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Tag;
+use App\Entity\TagGroup;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -55,5 +56,61 @@ class TagRepository extends ServiceEntityRepository
             ->orderBy('t.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Tags utilises par au moins une DirectoryEntry active, avec count.
+     * Optionnellement filtre par famille de tags.
+     *
+     * @return array<array{0: Tag, directoryCount: int}>
+     */
+    public function findCloudForDirectory(?TagGroup $group = null): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('t', 'COUNT(d.id) AS directoryCount')
+            ->innerJoin('t.directoryEntries', 'd', 'WITH', 'd.isActive = true')
+            ->groupBy('t.id')
+            ->orderBy('t.name', 'ASC');
+
+        if ($group !== null) {
+            $qb->andWhere('t.tagGroup = :group')
+                ->setParameter('group', $group);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Compteurs cross-modules pour un tag donne. Sert a la page /tag/{slug}
+     * pour afficher des sections "Articles", "Annuaire", "Produits", etc.
+     *
+     * @return array{articles: int, directory: int, products: int, portfolio: int}
+     */
+    public function getMultiSourceCounts(Tag $tag): array
+    {
+        $em = $this->getEntityManager();
+
+        $articles = (int) $em->createQuery(
+            'SELECT COUNT(a.id) FROM App\\Entity\\Article a JOIN a.tag t WHERE t = :tag AND a.published = true'
+        )->setParameter('tag', $tag)->getSingleScalarResult();
+
+        $directory = (int) $em->createQuery(
+            'SELECT COUNT(d.id) FROM App\\Entity\\DirectoryEntry d JOIN d.tags t WHERE t = :tag AND d.isActive = true'
+        )->setParameter('tag', $tag)->getSingleScalarResult();
+
+        $products = (int) $em->createQuery(
+            'SELECT COUNT(p.id) FROM App\\Entity\\Product p JOIN p.tags t WHERE t = :tag'
+        )->setParameter('tag', $tag)->getSingleScalarResult();
+
+        $portfolio = (int) $em->createQuery(
+            'SELECT COUNT(pi.id) FROM App\\Entity\\PortfolioItem pi JOIN pi.tags t WHERE t = :tag'
+        )->setParameter('tag', $tag)->getSingleScalarResult();
+
+        return [
+            'articles' => $articles,
+            'directory' => $directory,
+            'products' => $products,
+            'portfolio' => $portfolio,
+        ];
     }
 }

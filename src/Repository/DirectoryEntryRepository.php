@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\DirectoryCategory;
 use App\Entity\DirectoryEntry;
+use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -93,6 +94,59 @@ class DirectoryEntryRepository extends ServiceEntityRepository
             ->andWhere('e.noIndex = :noIndex')
             ->setParameter('active', true)
             ->setParameter('noIndex', false)
+            ->orderBy('e.lastName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Filtre combine pour la page /annuaire : recherche full-text + categorie + tags.
+     * Tous les parametres sont optionnels. Les tags sont en intersection (AND),
+     * pour permettre des filtres cumulatifs (ex: ville=Paris ET metier=Plombier).
+     *
+     * @param int[] $tagIds
+     *
+     * @return DirectoryEntry[]
+     */
+    public function findFiltered(?string $query = null, ?DirectoryCategory $category = null, array $tagIds = []): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->where('e.isActive = :active')
+            ->setParameter('active', true)
+            ->orderBy('e.lastName', 'ASC');
+
+        if ($query !== null && $query !== '') {
+            $qb->andWhere('e.lastName LIKE :q OR e.firstName LIKE :q OR e.company LIKE :q OR e.jobTitle LIKE :q OR e.city LIKE :q')
+                ->setParameter('q', '%' . $query . '%');
+        }
+
+        if ($category !== null) {
+            $qb->andWhere('e.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        if ($tagIds !== []) {
+            // Intersection : la fiche doit avoir TOUS les tags demandes.
+            $qb->innerJoin('e.tags', 't')
+                ->andWhere('t.id IN (:tagIds)')
+                ->setParameter('tagIds', $tagIds)
+                ->groupBy('e.id')
+                ->having('COUNT(DISTINCT t.id) = :tagCount')
+                ->setParameter('tagCount', count($tagIds));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /** @return DirectoryEntry[] */
+    public function findActiveByTag(Tag $tag): array
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.tags', 't')
+            ->where('e.isActive = :active')
+            ->andWhere('t = :tag')
+            ->setParameter('active', true)
+            ->setParameter('tag', $tag)
             ->orderBy('e.lastName', 'ASC')
             ->getQuery()
             ->getResult();

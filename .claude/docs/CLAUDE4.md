@@ -2,6 +2,23 @@
 
 ## Fait
 
+### Familles de tags (TagGroup) + filtres annuaire dynamiques
+**Statut** : FAIT (29 avr. 2026)
+- **Entite** `TagGroup` (id, name, slug, color, displayOrder, description) + `TagGroupRepository` (findAllOrdered, findActiveForDirectory)
+- **Tag** : nouvelle relation ManyToOne nullable vers TagGroup (rattachement optionnel, ON DELETE SET NULL) + relation inverse vers DirectoryEntry
+- **DirectoryEntry** : nouvelle ManyToMany vers Tag (table `directory_entry_tag`)
+- Migration : `Version20260429075920` — 3 nouvelles tables/colonnes, retrocompat totale (tag.tagGroup nullable)
+- **TagRepository** : `findCloudForDirectory()`, `getMultiSourceCounts()` (compteurs articles + directory + products + portfolio)
+- **DirectoryEntryRepository** : `findFiltered()` (recherche + categorie + tags en intersection), `findActiveByTag()`
+- **Admin** : `TagGroupCrudController` (ColorField, IntegerField order, panneau aide complet), `TagCrudController` enrichi (champ tagGroup + tips + section "Familles" dans help), `DirectoryEntryCrudController` enrichi (champ tags autocomplete + section "Filtres par tags" dans help)
+- **Menu admin** : sous-menu `Classification` (Tags + Familles de tags) sous Contenu, ROLE_ADMIN. Tags reste accessible aussi via le sous-menu Blog (raccourci).
+- **Front annuaire** : `DirectoryController` lit `?tags[]=slug` et genere les filtres par famille automatiquement. Cumul avec recherche + categorie. Bandeau pills colore par famille (CSS via `--tg-color`).
+- **Sidebar blog** : `tag_cloud.html.twig` regroupe par famille des qu'au moins un tag a une famille (sinon rendu plat historique).
+- **Page `/tag/{slug}`** : sections multi-source (Annuaire + Articles), depend des modules actifs. Plus de blocage si module blog desactive.
+- **Fiche annuaire** : tags du membre groupes par famille, chaque pill est un lien vers `/annuaire?tags[]=slug`.
+- **CSS** : `directory.scss` (`directory-tag-filters__*`), `tags.scss` (`tag-cloud-group__*`) avec custom properties.
+- **Guide d'aide admin** : nouvelle section `#guide-tags` (avant Medias) expliquant tags + familles + cas d'usage + bonnes pratiques. Section Portfolio : mention "tags partages" enrichie pour citer l'annuaire.
+
 ### Favicon auto-generation depuis le logo (CRUD Site)
 **Statut** : FAIT (commit 6f9fa04)
 - `FaviconGeneratorService` : genere 7 favicons PNG (16, 32, 96, 150, 180, 192, 512) + `site.webmanifest` + `browserconfig.xml`
