@@ -39,6 +39,18 @@ class Tag
     #[ORM\ManyToMany(targetEntity: PortfolioItem::class, mappedBy: 'tags')]
     private Collection $portfolioItem;
 
+    #[ORM\ManyToMany(targetEntity: DirectoryEntry::class, mappedBy: 'tags')]
+    private Collection $directoryEntries;
+
+    /**
+     * Famille de tags (optionnelle). Permet de regrouper les tags
+     * pour generer des filtres front dedies (ex: Villes, Metiers).
+     * Sans famille, le tag reste "general" (compatible usage blog actuel).
+     */
+    #[ORM\ManyToOne(targetEntity: TagGroup::class, inversedBy: 'tags')]
+    #[ORM\JoinColumn(name: 'tag_group_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?TagGroup $tagGroup = null;
+
     public function __construct()
     {
         $this->article = new ArrayCollection();
@@ -47,6 +59,7 @@ class Tag
         $this->media = new ArrayCollection();
         $this->product = new ArrayCollection();
         $this->portfolioItem = new ArrayCollection();
+        $this->directoryEntries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -220,6 +233,43 @@ class Tag
         if ($this->portfolioItem->removeElement($portfolioItem)) {
             $portfolioItem->removeTag($this);
         }
+
+        return $this;
+    }
+
+    /** @return Collection<int, DirectoryEntry> */
+    public function getDirectoryEntries(): Collection
+    {
+        return $this->directoryEntries;
+    }
+
+    public function addDirectoryEntry(DirectoryEntry $directoryEntry): self
+    {
+        if (!$this->directoryEntries->contains($directoryEntry)) {
+            $this->directoryEntries->add($directoryEntry);
+            $directoryEntry->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDirectoryEntry(DirectoryEntry $directoryEntry): self
+    {
+        if ($this->directoryEntries->removeElement($directoryEntry)) {
+            $directoryEntry->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    public function getTagGroup(): ?TagGroup
+    {
+        return $this->tagGroup;
+    }
+
+    public function setTagGroup(?TagGroup $tagGroup): self
+    {
+        $this->tagGroup = $tagGroup;
 
         return $this;
     }

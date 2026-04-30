@@ -2,15 +2,73 @@
 {% if tagCloud|length > 0 %}
 <div class="widget-card mb-4">
     <h4 class="widget-card__title">Tags</h4>
-    <div class="tag-cloud">
+
+    {# Detection du regroupement : si au moins un tag a une famille, on regroupe ;
+       sinon on garde le rendu plat historique pour ne pas casser la sidebar blog. #}
+    {% set hasGroups = false %}
+    {% for row in tagCloud %}
+        {% if row[0].tagGroup %}{% set hasGroups = true %}{% endif %}
+    {% endfor %}
+
+    {% if hasGroups %}
+        {# Construction des buckets : "Sans famille" puis chaque famille presente #}
+        {% set ungrouped = [] %}
+        {% set groups = {} %}
         {% for row in tagCloud %}
-            <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}" class="tag-pill">
-                {{ row[0].name }}
-                {% if row.articleCount > 0 %}
-                <span class="tag-pill__count">{{ row.articleCount }}</span>
-                {% endif %}
-            </a>
+            {% if row[0].tagGroup %}
+                {% set gid = row[0].tagGroup.id %}
+                {% set bucket = groups[gid]|default({group: row[0].tagGroup, rows: []}) %}
+                {% set bucket = bucket|merge({rows: bucket.rows|merge([row])}) %}
+                {% set groups = groups|merge({(gid): bucket}) %}
+            {% else %}
+                {% set ungrouped = ungrouped|merge([row]) %}
+            {% endif %}
         {% endfor %}
-    </div>
+
+        {% if ungrouped|length > 0 %}
+            <div class="tag-cloud">
+                {% for row in ungrouped %}
+                    <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}" class="tag-pill">
+                        {{ row[0].name }}
+                        {% if row.articleCount > 0 %}
+                        <span class="tag-pill__count">{{ row.articleCount }}</span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for bucket in groups %}
+            <div class="tag-cloud-group mt-3">
+                <div class="tag-cloud-group__label" style="--tg-color: {{ bucket.group.color }};">
+                    {{ bucket.group.name }}
+                </div>
+                <div class="tag-cloud">
+                    {% for row in bucket.rows %}
+                        <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}"
+                           class="tag-pill"
+                           style="--tg-color: {{ bucket.group.color }};">
+                            {{ row[0].name }}
+                            {% if row.articleCount > 0 %}
+                            <span class="tag-pill__count">{{ row.articleCount }}</span>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        {# Rendu plat historique #}
+        <div class="tag-cloud">
+            {% for row in tagCloud %}
+                <a href="{{ path('app_tag_show', { slug: row[0].slug }) }}" class="tag-pill">
+                    {{ row[0].name }}
+                    {% if row.articleCount > 0 %}
+                    <span class="tag-pill__count">{{ row.articleCount }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endif %}

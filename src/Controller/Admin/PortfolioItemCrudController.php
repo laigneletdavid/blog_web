@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PortfolioItemCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -122,10 +123,7 @@ class PortfolioItemCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('title')
-            ->setHelp('Généré automatiquement depuis le titre.')
-            ->hideOnIndex();
+        yield $this->slugField('title');
 
         yield AssociationField::new('category', 'Catégorie')
             ->setRequired(false)

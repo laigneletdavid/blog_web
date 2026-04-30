@@ -16,6 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DirectoryCategoryCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -36,10 +37,7 @@ class DirectoryCategoryCrudController extends AbstractCrudController
         yield TextField::new('name', 'Nom')
             ->setHelp('Nom de la categorie affiche dans les filtres sur la page annuaire (ex : Artisan, Consultant, Commercant).');
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('name')
-            ->setHelp('Genere automatiquement depuis le nom. Utilise dans l\'URL de filtre (/annuaire?categorie=slug).')
-            ->hideOnIndex();
+        yield $this->slugField('name', 'Utilisé dans l\'URL de filtre (/annuaire?categorie=slug).');
 
         yield IconPickerField::new('icon', 'Icone')
             ->setHelp('Optionnel. Cliquez sur "Choisir" pour parcourir les icones disponibles.')
