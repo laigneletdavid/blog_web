@@ -1,0 +1,61 @@
+{#
+  Widget : nuage de tags filtre par famille (TagGroup).
+
+  Usage typique (footer, sidebar, homepage) :
+    {% include 'widgets/tag_cloud_by_family.html.twig' with {
+      family_slug: 'villes',
+      title: 'Nos villes',
+      context: 'directory',
+      limit: 20
+    } %}
+
+  Parametres :
+    family_slug (requis) : slug de la TagGroup (ex: 'villes', 'metiers')
+    title       (opt.)   : titre affiche au-dessus du nuage. Si vide, utilise le nom de la famille.
+    context     (opt.)   : 'directory' (defaut) | 'articles'
+                           - directory : count fiches actives, liens vers /annuaire?tags[]=slug
+                           - articles  : count articles publies, liens vers /tag/{slug}
+    limit       (opt.)   : nombre max de tags affiches (par count desc). null = tous.
+    show_count  (opt.)   : afficher le compteur (defaut true)
+    css_class   (opt.)   : classe CSS additionnelle sur le wrapper
+#}
+
+{% set family_slug = family_slug|default(null) %}
+{% set context = context|default('directory') %}
+{% set limit = limit|default(null) %}
+{% set show_count = show_count|default(true) %}
+{% set css_class = css_class|default('') %}
+
+{% if family_slug %}
+    {% set cloud = widget_service.findTagCloudByFamily(family_slug, context, limit) %}
+
+    {% if cloud.group and cloud.rows|length > 0 %}
+        {% set displayTitle = title|default(cloud.group.name) %}
+        {% set countKey = context == 'articles' ? 'articleCount' : 'directoryCount' %}
+
+        <div class="tag-cloud-family {{ css_class }}" style="--tg-color: {{ cloud.group.color }};">
+            {% if displayTitle %}
+                <h4 class="tag-cloud-family__title">{{ displayTitle }}</h4>
+            {% endif %}
+
+            <div class="tag-cloud">
+                {% for row in cloud.rows %}
+                    {% if context == 'directory' %}
+                        {% set url = path('app_directory', {tags: [row[0].slug]}) %}
+                    {% else %}
+                        {% set url = path('app_tag_show', {slug: row[0].slug}) %}
+                    {% endif %}
+
+                    <a href="{{ url }}"
+                       class="tag-pill"
+                       style="--tg-color: {{ cloud.group.color }};">
+                        {{ row[0].name }}
+                        {% if show_count and row[countKey] is defined and row[countKey] > 0 %}
+                            <span class="tag-pill__count">{{ row[countKey] }}</span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
