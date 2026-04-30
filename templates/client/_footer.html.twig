@@ -3,10 +3,21 @@
 <footer class="footer footer--artisan">
     <div class="container py-5">
         <div class="row">
-            {# Col 1 : Recherche + Logo + tagline #}
+            {# Col 1 : Logo + tagline + Recherche (en bas pour aerer) #}
             <div class="col-lg-4 mb-4 mb-lg-0 text-center text-lg-start">
+                {# --- Logo + tagline --- #}
+                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
+                    {% set footerLogo = site.logoDark ?? site.logo ?? null %}
+                    {% if footerLogo is not null %}
+                        {{ logo_img(footerLogo, 40, site.name|default('')) }}
+                    {% else %}
+                        <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
+                    {% endif %}
+                </a>
+                <p class="footer-tagline mb-3">{{ site.defaultSeoDescription|default('') }}</p>
+
                 {# --- Recherche (meme pattern Stimulus que le header) --- #}
-                <div class="footer-search dropdown mb-3" data-controller="search">
+                <div class="footer-search dropdown" data-controller="search">
                     <form class="d-flex gap-2"
                           action="{{ path('app_search_results') }}"
                           method="get"
@@ -26,17 +37,6 @@
                     </form>
                     <div class="dropdown-menu" data-search-target="results"></div>
                 </div>
-
-                {# --- Logo + tagline --- #}
-                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
-                    {% set footerLogo = site.logoDark ?? site.logo ?? null %}
-                    {% if footerLogo is not null %}
-                        {{ logo_img(footerLogo, 40, site.name|default('')) }}
-                    {% else %}
-                        <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
-                    {% endif %}
-                </a>
-                <p class="footer-tagline">{{ site.defaultSeoDescription|default('') }}</p>
             </div>
 
             {# Col 2 : Decouvrez par ville (titre cohérent avec le theme + widget sans titre interne) #}
