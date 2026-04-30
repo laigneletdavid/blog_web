@@ -1,26 +1,12 @@
 {# ====== FOOTER CLIENT — Les Pros d'Ici ====== #}
-{# Override du footer du theme artisan : colonne 2 remplacee par recherche + nuage villes #}
+{# Override du footer du theme artisan : recherche au-dessus du logo + nuage villes en col 2 #}
 <footer class="footer footer--artisan">
     <div class="container py-5">
         <div class="row">
-            {# Col 1 : Logo + tagline #}
+            {# Col 1 : Recherche + Logo + tagline #}
             <div class="col-lg-4 mb-4 mb-lg-0 text-center text-lg-start">
-                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
-                    {% set footerLogo = site.logoDark ?? site.logo ?? null %}
-                    {% if footerLogo is not null %}
-                        {{ logo_img(footerLogo, 40, site.name|default('')) }}
-                    {% else %}
-                        <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
-                    {% endif %}
-                </a>
-                <p class="footer-tagline">{{ site.defaultSeoDescription|default('') }}</p>
-            </div>
-
-            {# Col 2 : Recherche + Decouvrez par ville #}
-            <div class="col-lg-4 mb-4 mb-lg-0">
                 {# --- Recherche (meme pattern Stimulus que le header) --- #}
-                <h6 class="footer-heading">Rechercher</h6>
-                <div class="footer-search dropdown mb-4" data-controller="search">
+                <div class="footer-search dropdown mb-3" data-controller="search">
                     <form class="d-flex gap-2"
                           action="{{ path('app_search_results') }}"
                           method="get"
@@ -41,10 +27,24 @@
                     <div class="dropdown-menu" data-search-target="results"></div>
                 </div>
 
-                {# --- Nuage de villes (widget reutilisable) --- #}
+                {# --- Logo + tagline --- #}
+                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
+                    {% set footerLogo = site.logoDark ?? site.logo ?? null %}
+                    {% if footerLogo is not null %}
+                        {{ logo_img(footerLogo, 40, site.name|default('')) }}
+                    {% else %}
+                        <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
+                    {% endif %}
+                </a>
+                <p class="footer-tagline">{{ site.defaultSeoDescription|default('') }}</p>
+            </div>
+
+            {# Col 2 : Decouvrez par ville (titre cohérent avec le theme + widget sans titre interne) #}
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h6 class="footer-heading">Découvrez par ville</h6>
                 {% include 'widgets/tag_cloud_by_family.html.twig' with {
                     family_slug: 'villes',
-                    title: 'Découvrez par ville',
+                    title: '',
                     context: 'directory',
                     css_class: 'footer-tag-cloud'
                 } only %}
