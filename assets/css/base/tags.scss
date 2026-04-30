@@ -73,6 +73,13 @@
       background: var(--tg-color, var(--primary));
       color: #fff;
       border-color: var(--tg-color, var(--primary));
+
+      // Force le contraste du compteur sur fond colore au hover
+      // (sinon disparait sur fonds proches du gris/primary)
+      .tag-pill__count {
+        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+      }
     }
   }
 }
