@@ -1,0 +1,78 @@
+{# ====== FOOTER CLIENT — Les Pros d'Ici ====== #}
+{# Override du footer du theme artisan : colonne 2 remplacee par recherche + nuage villes #}
+<footer class="footer footer--artisan">
+    <div class="container py-5">
+        <div class="row">
+            {# Col 1 : Logo + tagline #}
+            <div class="col-lg-4 mb-4 mb-lg-0 text-center text-lg-start">
+                <a href="{{ path('app_home') }}" class="footer-logo d-inline-block mb-3">
+                    {% set footerLogo = site.logoDark ?? site.logo ?? null %}
+                    {% if footerLogo is not null %}
+                        {{ logo_img(footerLogo, 40, site.name|default('')) }}
+                    {% else %}
+                        <img src="{{ asset('images/logo-blogweb-white.png') }}" alt="Blog&Web" width="49" height="40"/>
+                    {% endif %}
+                </a>
+                <p class="footer-tagline">{{ site.defaultSeoDescription|default('') }}</p>
+            </div>
+
+            {# Col 2 : Recherche + Decouvrez par ville #}
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                {# --- Recherche (meme pattern Stimulus que le header) --- #}
+                <h6 class="footer-heading">Rechercher</h6>
+                <div class="footer-search dropdown mb-4" data-controller="search">
+                    <form class="d-flex gap-2"
+                          action="{{ path('app_search_results') }}"
+                          method="get"
+                          data-search-target="form"
+                          data-api-url="{{ path('app_search') }}"
+                          data-action="search#doSearch:prevent">
+                        <input type="search"
+                               name="q"
+                               class="form-control form-control-sm"
+                               placeholder="Rechercher un pro, une page..."
+                               aria-label="Rechercher"
+                               data-search-target="q"
+                               autocomplete="off">
+                        <button class="btn btn-sm btn-outline-light" type="submit" aria-label="Rechercher">
+                            {{ bi('search') }}
+                        </button>
+                    </form>
+                    <div class="dropdown-menu" data-search-target="results"></div>
+                </div>
+
+                {# --- Nuage de villes (widget reutilisable) --- #}
+                {% include 'widgets/tag_cloud_by_family.html.twig' with {
+                    family_slug: 'villes',
+                    title: 'Découvrez par ville',
+                    context: 'directory',
+                    css_class: 'footer-tag-cloud'
+                } only %}
+            </div>
+
+            {# Col 3 : Navigation (inchangee) #}
+            <div class="col-lg-2">
+                <h6 class="footer-heading">Navigation</h6>
+                <ul class="nav flex-column">
+                    {% for menu in footer_nav_menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {# Col 4 : Informations (inchangee) #}
+            <div class="col-lg-2">
+                <h6 class="footer-heading">Informations</h6>
+                <ul class="nav flex-column">
+                    {% for menu in footer_legal_menus %}
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom pt-4 mt-4 text-center">
+            <span>&copy; {{ "now"|date("Y") }} {{ site.name|default('') }} &mdash; Tous droits réservés</span>
+            <br><span class="footer-credit">Développé avec <a href="https://blogweb.comwebsolutions.fr" target="_blank" rel="noopener">BlogWeb</a></span>
+        </div>
+    </div>
+</footer>
