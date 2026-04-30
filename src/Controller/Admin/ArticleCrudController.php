@@ -26,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ArticleCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly ArticleNotificationService $notificationService,
@@ -165,10 +166,7 @@ class ArticleCrudController extends AbstractCrudController
             ->collapsible()
             ->renderCollapsed();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('title')
-            ->setHelp('Généré automatiquement depuis le titre')
-            ->hideOnIndex();
+        yield $this->slugField('title');
 
         $pvRepo = $this->pageViewRepository;
         yield IntegerField::new('viewCount', 'Vues')

@@ -2,6 +2,36 @@
 
 ## Fait
 
+### Protection des slugs cote admin (SlugFieldHelperTrait)
+**Statut** : FAIT (30 avr. 2026)
+
+Probleme : un admin client (ROLE_ADMIN) avait modifie un slug sans comprendre l'impact, cassant l'URL de sa page (404 sur les liens externes + casse du menu pour les pages indexees dans la nav).
+
+Solution :
+- Nouveau trait `App\Controller\Admin\Trait\SlugFieldHelperTrait` avec une methode `slugField(targetField, description, hideOnIndex)` factoree
+- **ROLE_ADMIN ou inferieur** : `hideOnForm()` — slug invisible en edition, donc impossible a modifier (le slug se genere a la creation depuis le targetField et reste fige)
+- **ROLE_FREELANCE+** (revendeur, super admin) : visible avec un help d'avertissement fort en rouge expliquant les consequences (404, perte SEO)
+- Applique a 15 CrudControllers : Article, Page, Categorie, Tag, TagGroup, Service, Event, Faq, FaqCategory, Portfolio (Item + Category), Product (+ Category), Directory (Entry + Category)
+
+Pour une vraie solution durable (laisser modifier sans risque), voir « Redirections 301 automatiques » dans le backlog A faire.
+
+### Familles de tags (TagGroup) + filtres annuaire dynamiques
+**Statut** : FAIT (29 avr. 2026)
+- **Entite** `TagGroup` (id, name, slug, color, displayOrder, description) + `TagGroupRepository` (findAllOrdered, findActiveForDirectory)
+- **Tag** : nouvelle relation ManyToOne nullable vers TagGroup (rattachement optionnel, ON DELETE SET NULL) + relation inverse vers DirectoryEntry
+- **DirectoryEntry** : nouvelle ManyToMany vers Tag (table `directory_entry_tag`)
+- Migration : `Version20260429075920` — 3 nouvelles tables/colonnes, retrocompat totale (tag.tagGroup nullable)
+- **TagRepository** : `findCloudForDirectory()`, `getMultiSourceCounts()` (compteurs articles + directory + products + portfolio)
+- **DirectoryEntryRepository** : `findFiltered()` (recherche + categorie + tags en intersection), `findActiveByTag()`
+- **Admin** : `TagGroupCrudController` (ColorField, IntegerField order, panneau aide complet), `TagCrudController` enrichi (champ tagGroup + tips + section "Familles" dans help), `DirectoryEntryCrudController` enrichi (champ tags autocomplete + section "Filtres par tags" dans help)
+- **Menu admin** : sous-menu `Classification` (Tags + Familles de tags) sous Contenu, ROLE_ADMIN. Tags reste accessible aussi via le sous-menu Blog (raccourci).
+- **Front annuaire** : `DirectoryController` lit `?tags[]=slug` et genere les filtres par famille automatiquement. Cumul avec recherche + categorie. Bandeau pills colore par famille (CSS via `--tg-color`).
+- **Sidebar blog** : `tag_cloud.html.twig` regroupe par famille des qu'au moins un tag a une famille (sinon rendu plat historique).
+- **Page `/tag/{slug}`** : sections multi-source (Annuaire + Articles), depend des modules actifs. Plus de blocage si module blog desactive.
+- **Fiche annuaire** : tags du membre groupes par famille, chaque pill est un lien vers `/annuaire?tags[]=slug`.
+- **CSS** : `directory.scss` (`directory-tag-filters__*`), `tags.scss` (`tag-cloud-group__*`) avec custom properties.
+- **Guide d'aide admin** : nouvelle section `#guide-tags` (avant Medias) expliquant tags + familles + cas d'usage + bonnes pratiques. Section Portfolio : mention "tags partages" enrichie pour citer l'annuaire.
+
 ### Favicon auto-generation depuis le logo (CRUD Site)
 **Statut** : FAIT (commit 6f9fa04)
 - `FaviconGeneratorService` : genere 7 favicons PNG (16, 32, 96, 150, 180, 192, 512) + `site.webmanifest` + `browserconfig.xml`
@@ -92,6 +122,30 @@
 - 6 headers themes : `aria-label="Rechercher"` sur les boutons de recherche SVG
 
 ## A faire
+
+### Redirections 301 automatiques sur changement de slug
+**Priorite** : Moyenne (resout le risque de casse SEO/liens externes)
+
+Aujourd'hui, le slug est `hideOnForm` pour ROLE_ADMIN client (introduit pour eviter qu'un client ne casse ses URLs sans comprendre). Mais ROLE_FREELANCE+ peut toujours modifier, et un changement reste destructeur (404 sur tous les liens externes).
+
+**Solution propre** : entite `Redirect` (old_path, new_path, entity_type, entity_id, created_at), listener `preUpdate` Doctrine sur les entites a slug qui detecte le changement et insere une ligne. EventSubscriber `kernel.exception` qui capte les 404, lookup en base, retourne `RedirectResponse(301)` vers le nouveau path.
+
+**Bonus** : permet aussi de taper directement des redirections custom dans l'admin (CRUD Redirect) — ex: redirection d'une URL externe migree vers un nouveau site.
+
+**Cible** : 6-8h. A planifier des qu'un client demande la modification d'une URL importante.
+
+### Widgets configurables par zone (homepage + sidebar)
+**Priorite** : Basse (besoin futur, pas urgent)
+
+Aujourd'hui les nuages de tags et autres widgets sont places via `{% include %}` dans les templates (hard-codes). Pour donner aux clients/freelances la liberte de placer un nuage par famille (ex: « Villes » sur la home, « Metiers » dans la sidebar annuaire) sans toucher au code, il faudrait :
+
+- Entite `WidgetZone` (slug de zone : `homepage_top`, `sidebar_blog`, etc.)
+- Entite `Widget` (zone, type: tag_cloud / categories / featured / ..., config JSON, position, isActive)
+- Type de widget « Nuage de tags » avec config : famille a filtrer, nombre max, contexte (articles/directory/...)
+- Templates: `{% widgets_for 'homepage_top' %}` qui itere et rend chaque widget actif
+- CRUD admin avec drag & drop pour reordonner
+
+**Cible** : 1-2 jours. A planifier quand un client demande explicitement « je veux un nuage X a tel endroit ».
 
 ### Performances mobile — pistes pour passer au-dessus de 90
 **Priorite** : Basse (score actuel 83, acceptable)

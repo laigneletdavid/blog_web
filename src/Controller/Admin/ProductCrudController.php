@@ -33,6 +33,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProductCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly SiteContext $siteContext,
@@ -264,10 +265,7 @@ class ProductCrudController extends AbstractCrudController
             ->collapsible()
             ->renderCollapsed();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('title')
-            ->setHelp('Genere automatiquement depuis le titre')
-            ->hideOnIndex();
+        yield $this->slugField('title');
 
         yield BooleanField::new('isActive', 'Actif')
             ->setHelp('Desactivez pour masquer du catalogue sans supprimer.');

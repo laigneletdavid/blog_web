@@ -53,6 +53,43 @@
                 </div>
                 {% endif %}
 
+                {# Tags rattaches, groupes par famille #}
+                {% if entry.tags|length > 0 %}
+                <div class="directory-detail__tags mt-4">
+                    {# Tags sans famille #}
+                    {% set ungrouped = entry.tags|filter(t => t.tagGroup is null) %}
+                    {% if ungrouped|length > 0 %}
+                        <div class="directory-tag-filters__group mb-2">
+                            {% for tag in ungrouped %}
+                                <a href="{{ path('app_directory', {tags: [tag.slug]}) }}"
+                                   class="directory-tag-filters__pill">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {# Tags groupes par famille #}
+                    {% set groups = {} %}
+                    {% for tag in entry.tags %}
+                        {% if tag.tagGroup %}
+                            {% set gid = tag.tagGroup.id %}
+                            {% set groups = groups|merge({(gid): groups[gid]|default({group: tag.tagGroup, tags: []})}) %}
+                            {% set groups = groups|merge({(gid): {group: tag.tagGroup, tags: groups[gid].tags|merge([tag])}}) %}
+                        {% endif %}
+                    {% endfor %}
+                    {% for entry_grp in groups %}
+                        <div class="directory-tag-filters__group mb-2">
+                            <span class="directory-tag-filters__label" style="--tg-color: {{ entry_grp.group.color }};">
+                                {{ entry_grp.group.name }}
+                            </span>
+                            {% for tag in entry_grp.tags %}
+                                <a href="{{ path('app_directory', {tags: [tag.slug]}) }}"
+                                   class="directory-tag-filters__pill"
+                                   style="--tg-color: {{ entry_grp.group.color }};">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 {# Bouton edition si proprietaire #}
                 {% if app.user and entry.user and app.user.id == entry.user.id %}
                 <div class="mt-4">

@@ -27,6 +27,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PageCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly SiteContext $siteContext,
@@ -147,10 +148,7 @@ class PageCrudController extends AbstractCrudController
             ->collapsible()
             ->renderCollapsed();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('title')
-            ->setHelp('Généré automatiquement depuis le titre')
-            ->hideOnIndex();
+        yield $this->slugField('title');
 
         yield BooleanField::new('is_system', 'Page système')
             ->renderAsSwitch(false)

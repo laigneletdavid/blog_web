@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProductCategoryCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -42,10 +43,7 @@ class ProductCategoryCrudController extends AbstractCrudController
         yield TextField::new('name', 'Nom')
             ->setHelp('Nom affiche dans le catalogue et les filtres.');
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('name')
-            ->setHelp('Genere automatiquement depuis le nom')
-            ->hideOnIndex();
+        yield $this->slugField('name');
 
         yield TextareaField::new('description', 'Description')
             ->setHelp('Courte description de la categorie, affichee en haut de la page categorie.')

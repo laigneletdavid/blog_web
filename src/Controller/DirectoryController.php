@@ -6,6 +6,8 @@ use App\Entity\DirectoryEntry;
 use App\Form\DirectoryEntryType;
 use App\Repository\DirectoryCategoryRepository;
 use App\Repository\DirectoryEntryRepository;
+use App\Repository\TagGroupRepository;
+use App\Repository\TagRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +32,8 @@ class DirectoryController extends AbstractController
         Request $request,
         DirectoryEntryRepository $entryRepository,
         DirectoryCategoryRepository $categoryRepository,
+        TagGroupRepository $tagGroupRepository,
+        TagRepository $tagRepository,
     ): Response {
         if (!$this->siteContext->hasModule('directory')) {
             throw $this->createNotFoundException();
@@ -49,13 +53,26 @@ class DirectoryController extends AbstractController
             }
         }
 
-        if ($search !== '') {
-            $entries = $entryRepository->searchActive($search);
-        } elseif ($activeCategory) {
-            $entries = $entryRepository->findActiveByCategory($activeCategory);
-        } else {
-            $entries = $entryRepository->findAllActive();
-        }
+        // --- Filtres par tags (familles dynamiques) ---
+        // Format URL : ?tags[]=paris&tags[]=plombier (array de slugs)
+        $activeTagSlugs = array_values(array_filter(
+            (array) $request->query->all('tags'),
+            static fn ($s) => is_string($s) && $s !== ''
+        ));
+        $activeTags = $activeTagSlugs !== []
+            ? $tagRepository->findBy(['slug' => $activeTagSlugs])
+            : [];
+        $activeTagIds = array_map(static fn ($t) => $t->getId(), $activeTags);
+
+        // Familles ayant au moins un tag utilise par une fiche active.
+        // Sert a generer dynamiquement les groupes de filtres.
+        $activeTagGroups = $tagGroupRepository->findActiveForDirectory();
+
+        $entries = $entryRepository->findFiltered(
+            $search !== '' ? $search : null,
+            $activeCategory,
+            $activeTagIds
+        );
 
         return $this->render('directory/index.html.twig', [
             'title_page' => 'Annuaire',
@@ -63,6 +80,8 @@ class DirectoryController extends AbstractController
             'directoryCategories' => $directoryCategories,
             'activeCategory' => $activeCategory,
             'search' => $search,
+            'activeTagGroups' => $activeTagGroups,
+            'activeTagSlugs' => $activeTagSlugs,
             'seo' => $this->seoService->resolveForPage('Annuaire'),
         ]);
     }

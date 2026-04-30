@@ -265,3 +265,252 @@
 - CSS inutilise Bootstrap (34 Ko) — PurgeCSS possible mais risque
 - JS inutilise (79 Ko) — deja optimise
 - CDN Cloudflare (gratuit) en complement du VPS
+
+### Mode --rebuild dans deploy-ovh.sh
+**Priorite** : Moyenne — confort dev, gain de temps sur hotfixes
+
+**Contexte** : le mode normal de `deploy-ovh.sh` (pull + composer + npm install + build + cache + migrations) prend 3-5 min. Pour un simple patch code-only (PHP/JS/CSS sans nouvelle dep ni migration), c'est sur-dimensionne. Process manuel qui fonctionne :
+```bash
+git pull origin bw_xxx
+source ~/.nvm/nvm.sh
+npm run build
+php bin/console cache:clear
+```
+~30s-1min au lieu de 3-5min.
+
+**Specification du nouveau mode `./scripts/deploy-ovh.sh --rebuild`** :
+
+Option A (intelligent, recommandee) :
+1. `git pull --ff-only`
+2. Detecter ce qui a change : `CHANGED=$(git diff --name-only HEAD@{1} HEAD)`
+3. Si `composer.lock` dans $CHANGED → `composer install --no-dev --optimize-autoloader`
+4. Si `package-lock.json` ou `package.json` dans $CHANGED → `npm install` + patch sync-rpc
+5. Toujours : `NODE_ENV=production npm run build`
+6. Toujours : `cache:clear --env=prod --no-debug` + `cache:warmup --env=prod --no-debug`
+7. Si `migrations/Version*.php` dans $CHANGED → `doctrine:migrations:migrate --no-interaction`
+
+Avantages : rapide quand peu a change, safe quand beaucoup a change. Couvre 100% des cas sans decision humaine.
+
+Option B (simple, explicite) :
+1. `git pull --ff-only`
+2. `npm run build`
+3. `cache:clear` + `cache:warmup`
+4. Warning : "si composer.lock, package-lock.json ou migrations/ ont change, utiliser le mode normal"
+
+Avantages : simple a lire/maintenir, pas de magie. Defaut : l'utilisateur doit savoir ce qu'il deploie.
+
+**Choix fait** : a trancher au moment du dev. Option A si on veut vraiment rendre le script "idiot-proof", option B si on prefere garder une discipline de deploy.
+
+**Note** : n'oublier ni le `source ~/.nvm/nvm.sh` (ou `. "$NVM_DIR/nvm.sh"` deja dans le script), ni le patch sync-rpc apres npm install.
+
+**Piege recurrent a gerer en debut de mode --rebuild** : sur OVH il arrive souvent que `scripts/deploy-ovh.sh` (ou d'autres .sh) soient marques M par git alors qu'aucune modif legitime n'a ete faite. Causes : `sed -i` en CRLF→LF lance a la main lors d'un precedent deploy, autocrlf mal aligne avec `.gitattributes`, patch sync-rpc qui ecrit dans node_modules mais contamine aussi. Resultat : `git pull` echoue avec "Vos modifications locales aux fichiers suivants seraient ecrasees par la fusion: scripts/deploy-ovh.sh".
+
+**Debut du mode `--rebuild` (et du mode normal aussi tant qu'on y est)** :
+```bash
+# Nettoyer les modifs parasites sur les fichiers CMS avant pull
+# (sur un serveur de prod, rien ne devrait etre modifie manuellement)
+git checkout -- scripts/ assets/ src/ templates/ config/ 2>/dev/null || true
+```
+Ou plus brutal (equivalent `--hard` cible) :
+```bash
+git reset --hard HEAD 2>/dev/null || true
+```
+Avec un warning affiche a l'utilisateur ("nettoyage des modifs locales parasites") pour la transparence.
+
+**Note pratique recurrente (confirmee APA d'Bearn + Pro d'Ici)** : `git checkout -- scripts/deploy-ovh.sh` puis `git pull` ne resout PAS le bug line endings sur OVH — git re-normalise a chaque checkout et marque toujours le fichier modifie. Seule commande qui debloque a coup sur :
+```bash
+BRANCH=$(git branch --show-current)
+git fetch origin "$BRANCH"
+git reset --hard "origin/$BRANCH"
+```
+(equivaut a "jeter tout le local et copier le remote"). A integrer comme premiere etape du mode `--rebuild`.
+
+### Deploy multi-client automatique (scripts/deploy-all.sh local)
+**Priorite** : Moyenne — confort dev, devient utile des 3+ clients en prod
+
+**Contexte** : actuellement, quand main evolue avec un fix qui concerne tous les clients (ex: `606f4d6` fix admin role + Tiptap), il faut SSH manuellement sur chaque serveur OVH et enchainer les memes commandes. Avec 3 clients (APA d'Bearn, BlogWeb, Pro d'Ici) c'est deja fastidieux, et ca va empirer.
+
+**Specification du script `scripts/deploy-all.sh`** (s'execute en LOCAL, pas sur OVH) :
+
+```bash
+#!/bin/bash
+# Deploy en parallele sur tous les serveurs OVH.
+# Necessite des cles SSH configurees sur chaque serveur (ssh-copy-id).
+
+set -uo pipefail
+
+SERVERS=(
+    "ttuzcgq-apadbearn@ssh.cluster100.hosting.ovh.net:bw_apadbearn"
+    "ttuzcgq-blogweb@ssh.cluster100.hosting.ovh.net:bw_front"
+    "ttuzcgq-prodici@ssh.cluster100.hosting.ovh.net:bw_pro_dici"
+    # Ajouter les futurs clients ici
+)
+
+REMOTE_SCRIPT='
+set -e
+BRANCH=$(git branch --show-current)
+echo "[$(hostname)] rebuild sur $BRANCH"
+git fetch origin "$BRANCH"
+git reset --hard "origin/$BRANCH"
+source ~/.nvm/nvm.sh
+npm run build 2>&1 | tail -5
+php bin/console cache:clear 2>&1 | tail -3
+echo "[$(hostname)] OK"
+'
+
+for entry in "${SERVERS[@]}"; do
+    IFS=":" read -r host branch <<< "$entry"
+    echo "=== $branch sur $host ==="
+    ssh "$host" "$REMOTE_SCRIPT" || echo "[FAIL] $host — continuer avec les autres"
+    echo ""
+done
+```
+
+**Setup prerequis (une fois)** : generer une cle SSH + copier sur chaque serveur avec `ssh-copy-id user@host`. Apres ca, plus de mot de passe a taper.
+
+**Alternatives evaluees** :
+- **GitHub Actions sur push bw_*** : auto-deploy a chaque push. Bien pour le long terme mais necessite des secrets SSH dans GitHub (risque vol), et moins de controle (pas moyen de deployer sans pusher). Template deja mentionne dans `DEPLOY_REFERENCE.md`.
+- **Ansible** : overkill pour 3 serveurs mutualises, courbe d'apprentissage.
+- **Agent Claude avec SSH** : coute de l'API + latence, aucun benefice vs bash sur du scripting deterministe.
+
+**Reco finale** : `scripts/deploy-all.sh` bash + cles SSH. Suffit pour l'echelle actuelle (3 clients), scalable jusqu'a ~10 sans souci. Au-dela, basculer sur GitHub Actions.
+
+**Extension possible** : option `--parallel` qui lance les SSH en background (avec `&` + `wait`) pour deployer les N clients en parallele au lieu de sequentiel. Gain de temps linearise.
+
+### Migration vers VPS dedie multi-client
+**Priorite** : Haute — prevu pour atteindre 6+ sites (APA d'Bearn + Pro d'Ici + BlogWeb + refonte des 3 sites perso)
+
+**Contexte** : le setup OVH mutualise actuel scale mal :
+- Setup manuel par client : ~30 min (BDD CloudDB + whitelist IP + espace hebergement + SSH + clone + init + dump)
+- Cout : ~8 EUR/mois par client (hebergement + CloudDB) = ~50 EUR/mois pour 6 clients
+- TTFB plafonne a 150-320ms (voisins bruyants) -> bloque l'objectif Lighthouse mobile 90+ mentionne dans CLAUDE5
+- Aucune isolation reelle entre clients
+
+**Break-even** : des 4-5 clients, un VPS dedie devient plus avantageux (cout ET temps). Avec 6 sites en vue, le moment est arrive.
+
+**Stack cible**
+
+| Brique | Rôle | Choix |
+|--------|------|-------|
+| **VPS** OVH ~15 EUR/mois (4 vCPU, 8 GB RAM, 80 GB NVMe) | Infra | Debian 12 ou Ubuntu 24.04 LTS |
+| **Docker + Compose** | Isolation par client (PHP-FPM + nginx + volumes) | Standard |
+| **Traefik v3** | Reverse proxy + SSL Let's Encrypt auto + routage par domaine | Alternative : Nginx Proxy Manager (GUI) si preferee |
+| **MariaDB** | 1 container central partage, 1 BDD par client (`bw_xxx`) | Alternative : 1 container MariaDB par client (isolation + mais conso RAM x6) |
+| **Node 20 + PHP 8.4** | Runtimes | Images officielles `node:20-alpine`, `php:8.4-fpm-alpine` |
+| **Scripts `new-client.sh` + `deploy-all.sh`** | Orchestration | Bash, pas d'Ansible (overkill < 20 clients) |
+
+**Arborescence cible VPS**
+```
+/var/www/blogweb/
+├── traefik/
+│   ├── docker-compose.yml       # Traefik seul, reseau public
+│   ├── traefik.yml              # Conf (entrypoints, certificats)
+│   └── acme.json                # Certificats Let's Encrypt
+├── mariadb/
+│   ├── docker-compose.yml       # MariaDB central, reseau internal
+│   └── data/                    # Volume persistant
+├── clients/
+│   ├── bw_apadbearn/
+│   │   ├── app/                 # Clone git branche bw_apadbearn
+│   │   ├── docker-compose.yml   # php + nginx du client, labels Traefik
+│   │   └── .env.local
+│   ├── bw_front/
+│   └── bw_pro_dici/
+└── scripts/
+    ├── new-client.sh            # Provisioning 1 client
+    ├── deploy-all.sh            # Update tous les clients
+    └── backup-all.sh            # Dump BDD + tar volumes -> offsite
+```
+
+**Workflow `new-client.sh`** (objectif : 1 commande, ~5 min)
+```bash
+./new-client.sh <branche> <domaine> [<sous_domaine_supp>]
+# Exemple : ./new-client.sh bw_emma apa-dbearn.fr www.apa-dbearn.fr
+```
+
+Actions sequentielles :
+1. `mkdir /var/www/blogweb/clients/<branche>/{app,.}` + `chown` user deployer
+2. `git clone -b <branche> <repo> app/` dans le dossier client
+3. Genere `docker-compose.yml` depuis un template (substitue `<branche>`, `<domaine>`, port interne, labels Traefik)
+4. Genere `.env.local` : APP_SECRET random, DATABASE_URL pointant sur MariaDB central (user+pass dedie), MAILER_DSN Brevo (prompt)
+5. Cree la BDD MariaDB + user : `CREATE DATABASE bw_xxx; CREATE USER 'bw_xxx'@'%' IDENTIFIED BY '<pwd>'; GRANT ALL ON bw_xxx.* TO 'bw_xxx'@'%';`
+6. `docker compose up -d` -> Traefik detecte les labels, provisionne SSL Let's Encrypt automatiquement (~30s)
+7. Prompt : "chemin du dump SQL a importer ? [laisser vide pour skip]" -> `docker compose exec -T mariadb ... < dump.sql`
+8. Affiche URL du site, credentials admin, statut SSL
+
+**Template `docker-compose.yml` client**
+```yaml
+services:
+  php:
+    image: blogweb-php:8.4  # image custom avec extensions + composer
+    volumes:
+      - ./app:/var/www/html
+      - ./app/var/logs:/var/www/html/var/logs
+    environment:
+      APP_ENV: prod
+    networks: [internal]
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./app:/var/www/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [internal, public]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.<branche>.rule=Host(`<domaine>`)"
+      - "traefik.http.routers.<branche>.tls=true"
+      - "traefik.http.routers.<branche>.tls.certresolver=letsencrypt"
+      - "traefik.http.services.<branche>.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+networks:
+  internal:
+  public:
+    external: true  # reseau Traefik
+```
+
+**Migration des clients existants (OVH -> VPS)**
+
+Plan sans downtime (migration progressive) :
+1. Installer VPS + Traefik + MariaDB + images Docker (1-2 jours)
+2. Tester sur un faux client (clone bw_front sur staging.blogweb.test)
+3. Pour chaque client, un par un :
+   a. Dump BDD OVH (`make db-dump`)
+   b. Lancer `new-client.sh bw_xxx <domaine>` + import du dump sur VPS
+   c. Tester sur URL temporaire (ex: bw_xxx.new.blogweb.fr via Traefik)
+   d. Une fois OK, changer DNS du domaine client (A record OVH -> IP VPS)
+   e. Attendre propagation DNS (5-60 min selon TTL)
+   f. Verifier SSL Let's Encrypt genere
+   g. Couper l'espace OVH mutualise (economie immediate)
+
+**Estimation temps / couts**
+
+| Phase | Temps |
+|-------|-------|
+| Stack VPS initiale (Traefik + MariaDB + images + scripts) | 1-2 jours |
+| Premier client migre | 1h (le temps de valider) |
+| Clients suivants | 30 min chacun |
+| Automatisation complete (new-client.sh + deploy-all.sh robustes) | +1 jour |
+
+**Couts compares**
+
+| Echelle | OVH mutualise | VPS dedie (15 EUR/mois) |
+|---------|---------------|-------------------------|
+| 3 clients | ~25 EUR/mois | 15 EUR/mois |
+| 6 clients | ~50 EUR/mois | **15 EUR/mois** |
+| 10 clients | ~80 EUR/mois | 15 EUR/mois (si VPS tient) |
+| 20 clients | ~160 EUR/mois | ~25 EUR/mois (VPS upgrade) |
+
+A 6 clients, economie directe = 35 EUR/mois = 420 EUR/an. Et temps de deploiement / 6.
+
+**Risques / points d'attention**
+- **Backup obligatoire** : sur VPS, tu es responsable. `scripts/backup-all.sh` cron quotidien -> offsite (S3/Backblaze/rclone vers OVH Cloud Storage)
+- **Monitoring** : installer `netdata` ou `uptime-kuma` (container), alerte Telegram/email sur CPU/RAM/disk
+- **Securite** : fail2ban + UFW + SSH cle only + updates auto (`unattended-upgrades`)
+- **Scaling** : 6-10 sites vitrines legers tiennent sur 4 vCPU / 8 GB facile. Au-dela, upgrade VPS ou passer sur Swarm/Kubernetes
+
+**Opportunite business** : une fois le setup rode, tu peux **revendre de l'hebergement** a tes clients a prix inferieur OVH tout en marge. 1 VPS = 20 clients = potentiel 400 EUR/mois de CA pour 15 EUR de cout infra.
+
+**A faire en premier quand tu lances ce chantier** : spec detaillee (CLAUDE6 probablement), prototype local avec Docker Desktop, puis VPS de test OVH 1 mois pour valider.

@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block seo_title %}Articles tag {{ tag.name }} - {{ site.name|default('') }}{% endblock %}
+{% block seo_title %}Tag {{ tag.name }} - {{ site.name|default('') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_article_show_all') }}">Blog</a></li>
+            {% if hasBlog %}
+                <li class="breadcrumb-item"><a href="{{ path('app_article_show_all') }}">Blog</a></li>
+            {% endif %}
             <li class="breadcrumb-item active" aria-current="page">{{ tag.name }}</li>
         </ol>
     </nav>
@@ -17,10 +19,38 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="page-detail">
-                <h1 class="page-detail__title">Articles : {{ tag.name }}</h1>
+                <h1 class="page-detail__title">
+                    {% if tag.tagGroup %}
+                        <span class="tag-cloud-group__label" style="--tg-color: {{ tag.tagGroup.color }};">{{ tag.tagGroup.name }}</span>
+                    {% endif %}
+                    {{ tag.name }}
+                </h1>
+
+                {# Resume multi-source #}
+                {% set sources = [] %}
+                {% if counts.articles > 0 %}{% set sources = sources|merge(['%d article%s'|format(counts.articles, counts.articles > 1 ? 's' : '')]) %}{% endif %}
+                {% if counts.directory > 0 %}{% set sources = sources|merge(['%d membre%s de l\'annuaire'|format(counts.directory, counts.directory > 1 ? 's' : '')]) %}{% endif %}
+                {% if counts.products > 0 %}{% set sources = sources|merge(['%d produit%s'|format(counts.products, counts.products > 1 ? 's' : '')]) %}{% endif %}
+                {% if counts.portfolio > 0 %}{% set sources = sources|merge(['%d realisation%s'|format(counts.portfolio, counts.portfolio > 1 ? 's' : '')]) %}{% endif %}
+                {% if sources|length > 0 %}
+                    <p class="text-muted mb-4">{{ sources|join(' • ') }}</p>
+                {% endif %}
 
                 <div class="page-detail__content article-detail__content">
-                    {% if articles|length > 0 %}
+
+                    {# --- Section Annuaire --- #}
+                    {% if hasDirectory and directoryEntries|length > 0 %}
+                        <h2 class="h4 mt-4 mb-3">{{ bi('address-book', 'me-2') }}Annuaire</h2>
+                        <div class="directory-grid">
+                            {% for entry in directoryEntries %}
+                                {% include '_partials/_directory_card.html.twig' with { entry: entry } %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# --- Section Articles --- #}
+                    {% if hasBlog and articles|length > 0 %}
+                        <h2 class="h4 mt-5 mb-3">{{ bi('newspaper', 'me-2') }}Articles</h2>
                         <div class="row">
                             {% for article in articles %}
                                 {% include 'article/item.html.twig' %}
@@ -50,8 +80,11 @@
                                 </ul>
                             </nav>
                         {% endif %}
-                    {% else %}
-                        <p class="text-muted">Aucun article pour ce tag.</p>
+                    {% endif %}
+
+                    {# --- Aucun contenu --- #}
+                    {% if articles|length == 0 and directoryEntries|length == 0 %}
+                        <p class="text-muted">Aucun contenu pour ce tag.</p>
                     {% endif %}
                 </div>
             </div>
@@ -60,8 +93,10 @@
         <div class="col-lg-4">
             <aside class="blog-sidebar">
                 {% include 'widgets/tag_cloud.html.twig' %}
-                {% include 'widgets/categories.html.twig' %}
-                {% include 'widgets/archives.html.twig' %}
+                {% if hasBlog %}
+                    {% include 'widgets/categories.html.twig' %}
+                    {% include 'widgets/archives.html.twig' %}
+                {% endif %}
             </aside>
         </div>
     </div>

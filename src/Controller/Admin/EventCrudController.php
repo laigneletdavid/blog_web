@@ -23,6 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EventCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly EventNotificationService $notificationService,
@@ -146,9 +147,7 @@ class EventCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('title')
-            ->hideOnIndex();
+        yield $this->slugField('title');
 
         yield BooleanField::new('isActive', 'Actif');
         yield BooleanField::new('isFeatured', 'Mis en avant');
