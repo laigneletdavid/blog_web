@@ -28,7 +28,7 @@
     {% if directoryCategories|length > 1 %}
     <div class="directory-filters mb-4">
         <a href="{{ path('app_directory') }}"
-           class="directory-filters__pill{% if not activeCategory and search == '' %} directory-filters__pill--active{% endif %}">
+           class="directory-filters__pill{% if not activeCategory and search == '' and activeTagSlugs is empty %} directory-filters__pill--active{% endif %}">
             Tous
         </a>
         {% for cat in directoryCategories %}
@@ -38,6 +38,46 @@
             {{ cat.name }}
         </a>
         {% endfor %}
+    </div>
+    {% endif %}
+
+    {# --- Filtres par familles de tags (genere automatiquement) --- #}
+    {% if activeTagGroups is not empty %}
+    <div class="directory-tag-filters mb-4">
+        {% for group in activeTagGroups %}
+            {% set groupTags = group.tags|filter(t => t.directoryEntries|filter(d => d.isActive)|length > 0) %}
+            {% if groupTags|length > 0 %}
+                <div class="directory-tag-filters__group mb-2">
+                    <span class="directory-tag-filters__label" style="--tg-color: {{ group.color }};">
+                        {{ group.name }}
+                    </span>
+                    {% for tag in groupTags %}
+                        {% set isActiveTag = tag.slug in activeTagSlugs %}
+                        {% set newTags = isActiveTag
+                            ? activeTagSlugs|filter(s => s != tag.slug)
+                            : activeTagSlugs|merge([tag.slug]) %}
+                        <a href="{{ path('app_directory', {
+                                q: search ?: null,
+                                categorie: activeCategory ? activeCategory.slug : null,
+                                tags: newTags
+                            }) }}"
+                           class="directory-tag-filters__pill{% if isActiveTag %} directory-tag-filters__pill--active{% endif %}"
+                           style="--tg-color: {{ group.color }};">
+                            {{ tag.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if activeTagSlugs is not empty %}
+            <a href="{{ path('app_directory', {
+                    q: search ?: null,
+                    categorie: activeCategory ? activeCategory.slug : null
+                }) }}"
+               class="directory-tag-filters__clear">
+                Effacer les filtres tags
+            </a>
+        {% endif %}
     </div>
     {% endif %}
 

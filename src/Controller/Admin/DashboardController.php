@@ -21,6 +21,7 @@ use App\Entity\Service;
 use App\Entity\Site;
 use App\Entity\SiteGalleryItem;
 use App\Entity\Tag;
+use App\Entity\TagGroup;
 use App\Entity\Subscriber;
 use App\Entity\User;
 use App\Repository\MenuRepository;
@@ -262,11 +263,19 @@ class DashboardController extends AbstractDashboardController
                 yield MenuItem::subMenu('Blog', 'fas fa-newspaper')->setSubItems([
                     MenuItem::linkToCrud('Articles', 'fas fa-pen-to-square', Article::class),
                     MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', Categorie::class),
-                    MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class),
                 ]);
+                // Tags geres dans Contenu > Classification (transverse multi-modules, ROLE_ADMIN)
             }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
+
+            // Classification transverse (tags partages entre modules + familles)
+            if ($this->isGranted('ROLE_ADMIN')) {
+                yield MenuItem::subMenu('Classification', 'fas fa-layer-group')->setSubItems([
+                    MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class),
+                    MenuItem::linkToCrud('Familles de tags', 'fas fa-object-group', TagGroup::class),
+                ]);
+            }
         } elseif ($this->isGranted('ROLE_AUTHOR')) {
             if ($this->siteContext->hasModule('blog')) {
                 yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);

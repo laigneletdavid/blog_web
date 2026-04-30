@@ -183,7 +183,63 @@
             </div>
         </div>
 
-        {# ── 4. Medias ── #}
+        {# ── 4. Tags & Familles ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-tags">
+                    <i class="fas fa-tags me-2 text-primary"></i> Tags &amp; familles
+                </button>
+            </h2>
+            <div id="guide-tags" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Qu'est-ce qu'un tag ?</h5>
+                    <p>Un <strong>tag</strong> est un mot-cle attache a un contenu. Il sert a la classification fine et genere une page automatique <code>/tag/{slug}</code> listant tous les contenus associes.</p>
+                    <p>Les tags sont <strong>partages entre les modules</strong> : un meme tag peut etre utilise par des articles, des fiches de l'annuaire, des produits du catalogue ou des realisations du portfolio.</p>
+
+                    <h5>Familles de tags : pour quoi faire ?</h5>
+                    <p>Une <strong>famille de tags</strong> regroupe des tags partageant un meme theme (Villes, Metiers, Niveaux, Marques...). Chaque famille genere automatiquement un <strong>filtre dedie</strong> sur les pages qui exposent les tags.</p>
+                    <p>Exemple concret pour un annuaire :</p>
+                    <ul>
+                        <li>Creez une famille <em>Villes</em> avec les tags <em>Paris</em>, <em>Lyon</em>, <em>Marseille</em></li>
+                        <li>Creez une famille <em>Metiers</em> avec les tags <em>Plombier</em>, <em>Electricien</em>, <em>Macon</em></li>
+                        <li>Tagguez vos fiches d'annuaire</li>
+                        <li>Sur la page <code>/annuaire</code>, deux bandeaux de filtres apparaissent automatiquement : « Villes » et « Metiers »</li>
+                        <li>Les filtres se cumulent : un visiteur peut chercher « Plombier a Paris »</li>
+                    </ul>
+
+                    <h5>Comment creer une famille</h5>
+                    <ol>
+                        <li>Menu <em>Contenu &rarr; Classification &rarr; Familles de tags</em></li>
+                        <li>Cliquez sur <strong>Creer</strong>, donnez un nom (ex: « Villes ») et une couleur</li>
+                        <li>L'ordre d'affichage decide de la position des filtres front (plus petit = plus haut)</li>
+                    </ol>
+
+                    <h5>Comment rattacher les tags</h5>
+                    <ol>
+                        <li>Menu <em>Contenu &rarr; Classification &rarr; Tags</em></li>
+                        <li>Editez un tag existant ou creez-en un nouveau</li>
+                        <li>Selectionnez la famille dans le champ <em>Famille</em> (optionnel)</li>
+                    </ol>
+                    <p>Le rattachement reste <strong>optionnel</strong> : un tag sans famille fonctionne comme avant (sujets blog, page tag classique).</p>
+
+                    <h5>Cote front</h5>
+                    <ul>
+                        <li><strong>Annuaire</strong> : filtres par famille generes automatiquement, cumulables avec la recherche et la categorie.</li>
+                        <li><strong>Sidebar blog</strong> : le nuage de tags se regroupe par famille des qu'au moins un tag a une famille.</li>
+                        <li><strong>Page <code>/tag/{slug}</code></strong> : affiche par sections les contenus associes (articles + membres + produits...) selon les modules actifs.</li>
+                    </ul>
+
+                    <div class="bw-guide-tip">
+                        <strong>Astuce :</strong> Pour un nouveau cas d'usage (filtrer le catalogue par marque, le blog par niveau...), creez une famille et tagguez. Aucun developpement specifique n'est necessaire — les filtres apparaissent automatiquement.
+                    </div>
+                    <div class="bw-guide-tip">
+                        <strong>Bonne pratique :</strong> Limitez-vous a 2-3 familles par module pour rester lisible. Trop de filtres tuent le filtre.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 5. Medias ── #}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-medias">
@@ -379,7 +435,7 @@
                         <li><strong>Client</strong> &mdash; Nom du client ou de l'entreprise</li>
                         <li><strong>Date de realisation</strong> &mdash; Date de livraison du projet</li>
                         <li><strong>Lien du projet</strong> &mdash; URL complete vers le projet en ligne (ex : https://www.client.fr). Un bouton "Voir le projet" sera affiche sur la page de detail</li>
-                        <li><strong>Tags</strong> &mdash; Technologies ou competences utilisees. Les tags sont partages avec le blog et le catalogue</li>
+                        <li><strong>Tags</strong> &mdash; Technologies ou competences utilisees. Les tags sont partages avec le blog, l'annuaire et le catalogue (voir section <em>Tags &amp; familles</em>)</li>
                     </ul>
 
                     <p><strong>Parametres :</strong></p>
