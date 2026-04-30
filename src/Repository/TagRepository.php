@@ -81,6 +81,24 @@ class TagRepository extends ServiceEntityRepository
     }
 
     /**
+     * Tags d'une famille avec count d'articles publies (pour widget filtre par famille).
+     *
+     * @return array<array{0: Tag, articleCount: int}>
+     */
+    public function findCloudByGroupForArticles(TagGroup $group): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t', 'COUNT(a.id) AS articleCount')
+            ->leftJoin('t.article', 'a', 'WITH', 'a.published = true')
+            ->where('t.tagGroup = :group')
+            ->setParameter('group', $group)
+            ->groupBy('t.id')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Compteurs cross-modules pour un tag donne. Sert a la page /tag/{slug}
      * pour afficher des sections "Articles", "Annuaire", "Produits", etc.
      *
