@@ -10,14 +10,19 @@
     } %}
 
   Parametres :
-    family_slug (requis) : slug de la TagGroup (ex: 'villes', 'metiers')
-    title       (opt.)   : titre affiche au-dessus du nuage. Si vide, utilise le nom de la famille.
-    context     (opt.)   : 'directory' (defaut) | 'articles'
-                           - directory : count fiches actives, liens vers /annuaire?tags[]=slug
-                           - articles  : count articles publies, liens vers /tag/{slug}
-    limit       (opt.)   : nombre max de tags affiches (par count desc). null = tous.
-    show_count  (opt.)   : afficher le compteur (defaut true)
-    css_class   (opt.)   : classe CSS additionnelle sur le wrapper
+    family_slug  (requis) : slug de la TagGroup (ex: 'villes', 'metiers')
+    title        (opt.)   : titre affiche au-dessus du nuage.
+                            - non passe        → utilise cloud.group.name (defaut)
+                            - chaine non vide  → utilise cette chaine
+                            - false ou ''      → pas de titre rendu (le consommateur fait
+                                                  le sien avant l'include, ex: footer-heading)
+    title_class  (opt.)   : classe CSS du titre (defaut 'tag-cloud-family__title')
+    context      (opt.)   : 'directory' (defaut) | 'articles'
+                            - directory : count fiches actives, liens vers /annuaire?tags[]=slug
+                            - articles  : count articles publies, liens vers /tag/{slug}
+    limit        (opt.)   : nombre max de tags affiches (par count desc). null = tous.
+    show_count   (opt.)   : afficher le compteur (defaut true)
+    css_class    (opt.)   : classe CSS additionnelle sur le wrapper
 #}
 
 {% set family_slug = family_slug|default(null) %}
@@ -25,17 +30,19 @@
 {% set limit = limit|default(null) %}
 {% set show_count = show_count|default(true) %}
 {% set css_class = css_class|default('') %}
+{% set title_class = title_class|default('tag-cloud-family__title') %}
 
 {% if family_slug %}
     {% set cloud = widget_service.findTagCloudByFamily(family_slug, context, limit) %}
 
     {% if cloud.group and cloud.rows|length > 0 %}
-        {% set displayTitle = title|default(cloud.group.name) %}
+        {# title : non defini → group.name ; defini (meme '') → tel quel (vide = pas de titre) #}
+        {% set displayTitle = title is defined ? title : cloud.group.name %}
         {% set countKey = context == 'articles' ? 'articleCount' : 'directoryCount' %}
 
         <div class="tag-cloud-family {{ css_class }}" style="--tg-color: {{ cloud.group.color }};">
             {% if displayTitle %}
-                <h4 class="tag-cloud-family__title">{{ displayTitle }}</h4>
+                <h4 class="{{ title_class }}">{{ displayTitle }}</h4>
             {% endif %}
 
             <div class="tag-cloud">
