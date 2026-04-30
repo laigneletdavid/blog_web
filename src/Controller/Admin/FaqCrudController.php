@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class FaqCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -59,10 +60,7 @@ class FaqCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('question')
-            ->setHelp('Généré automatiquement depuis la question. Sert d\'ancre dans l\'URL (/faq#slug).')
-            ->hideOnIndex();
+        yield $this->slugField('question', 'Sert d\'ancre dans l\'URL (/faq#slug).');
 
         yield AssociationField::new('category', 'Catégorie')
             ->setRequired(false)

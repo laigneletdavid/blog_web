@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TagCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -33,7 +34,7 @@ class TagCrudController extends AbstractCrudController
     {
         yield IdField::new('id')->hideOnForm();
         yield TextField::new('name', 'Nom');
-        yield SlugField::new('slug')->setTargetFieldName('name');
+        yield $this->slugField('name', null, false);
 
         yield AssociationField::new('tagGroup', 'Famille')
             ->setHelp('Optionnel. Regroupe le tag dans une famille (ex: Villes, Métiers) pour générer des filtres front dédiés. Sans famille, le tag reste "général" — comportement compatible avec l\'usage blog actuel.')

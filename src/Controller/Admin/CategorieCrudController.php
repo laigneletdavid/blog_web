@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CategorieCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -53,8 +54,7 @@ class CategorieCrudController extends AbstractCrudController
     {
         yield TextField::new('name');
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('name');
+        yield $this->slugField('name', null, false);
 
         yield ColorField::new('color');
 

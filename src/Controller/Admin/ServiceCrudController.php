@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ServiceCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -65,9 +66,7 @@ class ServiceCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('title')
-            ->hideOnIndex();
+        yield $this->slugField('title');
 
         yield AssociationField::new('linkedPage', 'Page liée')
             ->setHelp('Lier ce service à une page du site (prioritaire sur le lien externe)')

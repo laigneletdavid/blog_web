@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TagGroupCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -42,10 +43,7 @@ class TagGroupCrudController extends AbstractCrudController
         yield TextField::new('name', 'Nom')
             ->setHelp('Ex: <em>Villes</em>, <em>Métiers</em>, <em>Niveaux</em>. Sert à regrouper les tags pour générer des filtres dédiés sur l\'annuaire ou le catalogue.');
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('name')
-            ->setHelp('Identifiant URL. Généré automatiquement à partir du nom.')
-            ->hideOnIndex();
+        yield $this->slugField('name', 'Identifiant URL. Généré automatiquement à partir du nom.');
 
         yield ColorField::new('color', 'Couleur')
             ->setHelp('Couleur des badges et pills pour cette famille (front + admin). Choisissez une couleur lisible.');

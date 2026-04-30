@@ -21,6 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DirectoryEntryCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -149,9 +150,7 @@ class DirectoryEntryCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('company')
-            ->hideOnIndex();
+        yield $this->slugField('company');
 
         yield AssociationField::new('category', 'Catégorie')
             ->setRequired(false);

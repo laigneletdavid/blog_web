@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class FaqCategoryCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SlugFieldHelperTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -35,10 +36,7 @@ class FaqCategoryCrudController extends AbstractCrudController
         yield TextField::new('name', 'Nom')
             ->setHelp('Nom de la catégorie affiché comme titre de section sur la page FAQ (ex : « Livraison », « Paiement »).');
 
-        yield SlugField::new('slug')
-            ->setTargetFieldName('name')
-            ->setHelp('Généré automatiquement depuis le nom.')
-            ->hideOnIndex();
+        yield $this->slugField('name');
 
         yield IntegerField::new('position', 'Ordre')
             ->setHelp('Les catégories sont triées par ordre croissant (0 = en premier).');
