@@ -263,8 +263,8 @@ class DashboardController extends AbstractDashboardController
                 yield MenuItem::subMenu('Blog', 'fas fa-newspaper')->setSubItems([
                     MenuItem::linkToCrud('Articles', 'fas fa-pen-to-square', Article::class),
                     MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', Categorie::class),
-                    MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class),
                 ]);
+                // Tags geres dans Contenu > Classification (transverse multi-modules, ROLE_ADMIN)
             }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
