@@ -50,6 +50,7 @@ class HomeController extends AbstractController
         MailerInterface $mailer,
         SiteContext $siteContext,
         RecaptchaValidator $recaptchaValidator,
+        FaqRepository $faqRepository,
         #[Autowire(service: 'limiter.contact_limiter')] RateLimiterFactory $contactLimiter,
     ): Response {
         $form = $this->createForm(ContactType::class);
@@ -110,6 +111,7 @@ class HomeController extends AbstractController
             'title_page' => 'Formulaire de contact',
             'text_page' => 'Envoyez-moi un message',
             'contactForm' => $form,
+            'faqs' => $siteContext->hasModule('faq') ? $faqRepository->findAllActive() : [],
             'seo' => $this->seoService->resolveForPage('Contact'),
             'recaptcha_site_key' => $recaptchaValidator->isEnabled() ? $recaptchaValidator->getSiteKey() : null,
         ]);
