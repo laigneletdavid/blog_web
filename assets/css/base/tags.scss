@@ -54,6 +54,29 @@
   gap: 0.375rem;
 }
 
+// Widget reutilisable : nuage de tags filtre par famille (footer/sidebar/home)
+.tag-cloud-family {
+  &__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--text);
+    font-family: var(--font-display, var(--font-family));
+  }
+
+  // Pills colorees par la couleur de la famille (--tg-color sur le wrapper)
+  .tag-pill {
+    border-color: color-mix(in srgb, var(--tg-color, var(--primary)) 40%, transparent);
+    color: var(--tg-color, var(--text));
+
+    &:hover {
+      background: var(--tg-color, var(--primary));
+      color: #fff;
+      border-color: var(--tg-color, var(--primary));
+    }
+  }
+}
+
 // Tag cloud regroupe par famille (TagGroup)
 .tag-cloud-group {
   &__label {
