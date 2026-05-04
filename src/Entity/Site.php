@@ -106,6 +106,10 @@ class Site
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $aboutImage = null;
 
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Media $contactImage = null;
+
     /** @var Collection<int, SiteGalleryItem> */
     #[ORM\OneToMany(targetEntity: SiteGalleryItem::class, mappedBy: 'site', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['position' => 'ASC'])]
@@ -451,6 +455,18 @@ class Site
     public function setAboutImage(?Media $aboutImage): self
     {
         $this->aboutImage = $aboutImage;
+
+        return $this;
+    }
+
+    public function getContactImage(): ?Media
+    {
+        return $this->contactImage;
+    }
+
+    public function setContactImage(?Media $contactImage): self
+    {
+        $this->contactImage = $contactImage;
 
         return $this;
     }

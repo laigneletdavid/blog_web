@@ -182,6 +182,9 @@ class ThemeSettingsCrudController extends AbstractCrudController
 
         yield AssociationField::new('aboutImage', 'Image a propos')
             ->setHelp('Photo ou illustration pour la section "A propos". Format portrait ou carre recommande.');
+
+        yield AssociationField::new('contactImage', 'Image page contact')
+            ->setHelp('Photo ou illustration affichee dans la colonne droite du formulaire de contact. Format portrait ou carre recommande. Si vide, l\'image "A propos" est utilisee.');
     }
 
     /**
