@@ -71,6 +71,7 @@ git push origin bw_nom_client
 | templates/client/ (overrides) | Vide (.gitkeep) | Oui (`git add -f`) |
 | config/, docker/, Makefile | Oui | **Non** |
 | public/documents/medias/ (images client) | Non | Oui |
+| public/documents/files/ (PDF/docs client) | Non | Oui |
 | .github/workflows/deploy.yml | Non | Oui (trigger par branche) |
 | scripts/bw_*_dump.sql (dump BDD) | Non | Oui (temporaire) |
 
@@ -167,6 +168,22 @@ ROLE_USER < ROLE_AUTHOR < ROLE_ADMIN < ROLE_FREELANCE < ROLE_SUPER_ADMIN
 - **Node.js ancien sur OVH** : le script installe nvm + Node 20 automatiquement
 - **Ports bloques sur OVH** : le script patche sync-rpc automatiquement
 - **Pas de Docker sur OVH mutualise** : tout passe par deploy-ovh.sh
+
+## Documents (fichiers telechargeables)
+
+Module dedie pour fichiers integrables dans l'editeur TipTap (PDF, DOCX, XLSX, PPTX, ODT/ODS/ODP, ZIP/RAR/7Z, CSV, TXT — max 25 Mo).
+
+- **Entite** `Document` (id, name, file_name, extension, mime_type, size, created_at) — separee de `Media` (qui reste image-only avec son pipeline WebP)
+- **Stockage** : `public/documents/files/` (separe de `medias/` pour eviter le mix images/docs)
+- **`DocumentService`** : `formatSize()` (1,2 Mo / 340 Ko), `iconForExtension()` (mappe vers `fa-file-pdf`, `fa-file-word`, `fa-file-excel`, `fa-file-archive`, etc.), `MAX_FILE_SIZE_BYTES`, `ALLOWED_EXTENSIONS`
+- **`DocumentMetadataListener`** (postPersist/postUpdate) : extrait mime/size/extension du fichier sur disque apres upload, auto-flush
+- **`DocumentApiController`** : `/admin/api/document/list?q=` + `/admin/api/document/upload` (POST multipart, upload direct depuis l'editeur)
+- **CRUD admin** : `DocumentCrudController` (FileUploadType + AdminHelpTrait, ROLE_AUTHOR)
+- **Bouton TipTap** : icone `fa-file-arrow-down` dans la toolbar + commande slash `/document`. Modal avec liste + zone d'upload integree.
+- **Extension TipTap** : `assets/admin/extensions/document.js` — node `document` block-level atom. Render carte HTML `<a class="block-document">` avec icone + nom + meta + action download.
+- **Render serveur** : `BlockRenderer::renderDocument()` produit le meme markup pour le HTML cache (sanitizer-friendly)
+- **HtmlSanitizer** (`config/packages/html_sanitizer.yaml`) : `a[class, href, target, rel, download, data-document-id, data-extension]` + `i[class]`
+- **Front** : carte stylee dans `assets/css/base/blocks.scss` (`.block-document` avec custom properties theme)
 
 ## Favicon auto-generation
 

@@ -347,6 +347,7 @@ Avant de pousser la branche `bw_*` ou de generer un dump pour le deploiement, s'
 | `templates/client/_header.html.twig`, `_footer.html.twig`, `blog.html.twig`, `contact.html.twig` | Apres customisation override | Manuel |
 | `templates/client/theme.css` | Apres customisation CSS | Manuel |
 | `public/documents/medias/*` | Apres upload images via admin (logo, photos hero, about, content...) | Admin > Medias |
+| `public/documents/files/*` | Apres upload de PDF/DOCX/ZIP via admin ou editeur TipTap | Admin > Documents |
 | `public/favicon-*.png`, `apple-touch-icon.png`, `android-chrome-*.png`, `mstile-150x150.png` | Apres upload du logo via admin (regeneration auto) | `SiteLogoListener` |
 | `public/site.webmanifest`, `public/browserconfig.xml` | Apres upload du logo (regeneration auto) | `SiteLogoListener` |
 | `scripts/bw_<client>_dump.sql` | Avant chaque deploy OVH | `make db-dump` |

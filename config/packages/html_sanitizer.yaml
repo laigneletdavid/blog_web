@@ -9,6 +9,8 @@ framework:
                     div: ['class', 'data-callout', 'data-columns', 'data-column']
                     mark: ['class']
                     span: ['class']
+                    a: ['class', 'href', 'target', 'rel', 'download', 'data-document-id', 'data-extension']
+                    i: ['class']
                     table: ['class']
                     thead: []
                     tbody: []

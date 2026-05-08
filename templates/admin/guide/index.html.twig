@@ -129,12 +129,13 @@
                     <h5>Medias</h5>
                     <ul>
                         <li><strong>Images</strong> &mdash; Inserez une image depuis votre bibliotheque de medias. Le bouton ouvre un panneau de selection</li>
+                        <li><strong>Documents</strong> &mdash; Inserez un fichier telechargeable (PDF, DOCX, XLSX, ZIP...). Le bouton <i class="fas fa-file-arrow-down"></i> ouvre la bibliotheque de documents avec une zone d'upload integree. Le fichier apparait sous forme de carte cliquable dans votre contenu</li>
                         <li><strong>Videos YouTube</strong> &mdash; Collez l'URL d'une video pour l'integrer directement</li>
                         <li><strong>Liens</strong> &mdash; Selectionnez du texte puis cliquez sur l'icone lien pour ajouter une URL</li>
                     </ul>
 
                     <h5>Commande rapide /</h5>
-                    <p>Tapez <strong>/</strong> dans l'editeur pour ouvrir un menu contextuel. Vous pouvez inserer rapidement un titre, une image, une citation, un encart ou des colonnes sans utiliser la barre d'outils.</p>
+                    <p>Tapez <strong>/</strong> dans l'editeur pour ouvrir un menu contextuel. Vous pouvez inserer rapidement un titre, une image, un document, une video, une citation, un encart ou des colonnes sans utiliser la barre d'outils.</p>
 
                     <h5>Sauvegarde automatique</h5>
                     <p>L'editeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur. Si vous quittez la page sans sauvegarder, votre travail sera propose a la restauration a votre prochaine visite.</p>
@@ -267,6 +268,74 @@
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
                         <strong>Astuce :</strong> Donnez des noms descriptifs a vos images. Preferez "equipe-reunion-bureau" a "IMG_20240315.jpg".
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── 5b. Documents ── #}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-documents">
+                    <i class="fas fa-file-arrow-down me-2 text-primary"></i> Documents et fichiers telechargeables
+                </button>
+            </h2>
+            <div id="guide-documents" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>A quoi servent les documents ?</h5>
+                    <p>Le module <strong>Documents</strong> vous permet d'integrer des fichiers telechargeables (PDF, Word, Excel, archives...) directement dans vos articles et pages. Ils apparaissent sous forme de <strong>carte cliquable</strong> avec icone, nom et taille &mdash; bien plus visible qu'un simple lien texte.</p>
+
+                    <h5>Formats acceptes</h5>
+                    <p>Taille maximale : <strong>25 Mo</strong>. Formats supportes :</p>
+                    <ul>
+                        <li><strong>PDF</strong> &mdash; Documents portables (plaquettes, CV, factures...)</li>
+                        <li><strong>Word</strong> (.doc, .docx) et <strong>OpenDocument Texte</strong> (.odt)</li>
+                        <li><strong>Excel</strong> (.xls, .xlsx) et <strong>OpenDocument Calc</strong> (.ods, .csv)</li>
+                        <li><strong>PowerPoint</strong> (.ppt, .pptx) et <strong>OpenDocument Impress</strong> (.odp)</li>
+                        <li><strong>Archives</strong> (.zip, .rar, .7z)</li>
+                        <li><strong>Texte brut</strong> (.txt)</li>
+                    </ul>
+
+                    <h5>Deux facons d'ajouter un document</h5>
+                    <p><strong>Methode 1 &mdash; Bibliotheque centrale</strong></p>
+                    <ol>
+                        <li>Menu <em>Contenu &rarr; Documents</em></li>
+                        <li>Cliquez sur <strong>Ajouter un document</strong>, donnez-lui un nom descriptif et uploadez le fichier</li>
+                        <li>Vous pouvez ensuite l'inserer dans plusieurs articles ou pages depuis l'editeur</li>
+                    </ol>
+
+                    <p><strong>Methode 2 &mdash; Directement depuis l'editeur</strong></p>
+                    <ol>
+                        <li>Dans un article ou une page, placez le curseur la ou vous voulez inserer le document</li>
+                        <li>Cliquez sur l'icone <i class="fas fa-file-arrow-down"></i> de la barre d'outils (ou tapez <code>/document</code>)</li>
+                        <li>Dans la modale, choisissez un document existant <strong>ou</strong> uploadez un nouveau fichier directement &mdash; il sera automatiquement insere et ajoute a votre bibliotheque</li>
+                    </ol>
+
+                    <h5>Le nom affiche dans la carte</h5>
+                    <p>Le champ <em>Nom</em> que vous saisissez est utilise comme :</p>
+                    <ul>
+                        <li>Le <strong>titre visible</strong> dans la carte cote front</li>
+                        <li>Le <strong>nom du fichier telecharge</strong> par vos visiteurs (attribut <code>download</code>)</li>
+                    </ul>
+                    <p>Preferez "Plaquette commerciale 2026" plutot que "doc-final-v3.pdf" : c'est ce que verront vos clients.</p>
+
+                    <h5>Cote front</h5>
+                    <p>La carte affiche automatiquement :</p>
+                    <ul>
+                        <li>Une <strong>icone selon le type</strong> de fichier (PDF, Word, Excel, ZIP...)</li>
+                        <li>Le <strong>nom</strong> que vous avez saisi</li>
+                        <li>L'<strong>extension</strong> et la <strong>taille</strong> (ex: PDF · 1,2 Mo)</li>
+                        <li>Une <strong>icone de telechargement</strong> a droite</li>
+                    </ul>
+                    <p>Le clic ouvre le fichier dans un nouvel onglet (ou propose le telechargement selon le type).</p>
+
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Astuce :</strong> Pour les fichiers volumineux (videos, gros datasets), preferez un hebergeur dedie (YouTube, WeTransfer, Google Drive) avec un lien externe. Le module Documents est optimise pour les fichiers jusqu'a 25 Mo.
+                    </div>
+                    <div class="bw-guide-tip">
+                        <i class="fas fa-lightbulb me-1 text-warning"></i>
+                        <strong>Bonne pratique :</strong> Si vous mettez a jour un document (ex: nouveau tarif), modifiez-le directement dans la bibliotheque (l'URL reste la meme) plutot que de creer un nouveau document &mdash; tous les articles qui l'incluent seront automatiquement a jour.
                     </div>
                 </div>
             </div>

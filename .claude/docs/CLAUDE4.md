@@ -2,6 +2,27 @@
 
 ## Fait
 
+### Module Documents (fichiers telechargeables dans TipTap)
+**Statut** : FAIT (8 mai 2026)
+
+Probleme : pas moyen pour un admin client d'integrer un PDF (plaquette, tarif, CGV) ou un fichier bureautique (DOCX, XLSX) dans un article ou une page. Seules les images passaient par le module Medias.
+
+Solution :
+- **Entite** `Document` separee de `Media` (id, name, file_name, extension, mime_type, size, created_at). Pas de pipeline WebP, pas d'images responsives — usage 100% telechargement.
+- **Stockage** : `public/documents/files/` (separe de `medias/`). Le dossier est gitignore sur main et force-tracke sur les branches `bw_*`.
+- **Migration** : `Version20260508090000` — table `document` avec collation `utf8mb4_unicode_ci` (compatible MariaDB local + MySQL 8 OVH).
+- **`DocumentService`** : `formatSize()` (1,2 Mo / 340 Ko), `iconForExtension()` (mappage vers `fa-file-pdf`, `fa-file-word`, `fa-file-excel`, `fa-file-powerpoint`, `fa-file-archive`, `fa-file-lines`), constantes `MAX_FILE_SIZE_BYTES` (25 Mo) et `ALLOWED_EXTENSIONS` (pdf, doc, docx, xls, xlsx, ppt, pptx, odt, ods, odp, zip, rar, 7z, csv, txt).
+- **`DocumentMetadataListener`** (postPersist + postUpdate) : extrait mime/size/extension du fichier sur disque apres l'upload via `Symfony\Mime\MimeTypes`. Auto-flush avec guard anti-boucle (le pattern de `MediaUploadListener`).
+- **Admin CRUD** : `DocumentCrudController` avec `EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType` (pas de FileField natif dans EasyAdmin 4.12 — passage par `TextField::setFormType(FileUploadType::class)`). AdminHelpTrait + validation File contraintes (extensions whitelist + max 25 Mo).
+- **API TipTap** : `DocumentApiController` (ROLE_AUTHOR) — `GET /admin/api/document/list?q=` (recherche avec limite 200) + `POST /admin/api/document/upload` (multipart, valide les contraintes, slugifie + uuid, persiste, retourne JSON enrichi). L'upload depuis l'editeur cree le document en bibliotheque automatiquement.
+- **Extension TipTap** : `assets/admin/extensions/document.js` — `Node.create({ name: 'document', group: 'block', atom: true, draggable: true })`. Render HTML : `<a class="block-document" download data-document-id data-extension>` avec icone + nom + meta + action download.
+- **`tiptap-editor.js`** : nouveau bouton `fa-file-arrow-down` dans le groupe Media + entree `/document` dans le slash menu. `openDocumentModal()` avec liste recherchable + zone d'upload integree (bouton "Choisir un fichier" + champ nom optionnel).
+- **`BlockRenderer::renderDocument()`** : produit le meme markup HTML que TipTap cote serveur pour le cache `content` (sanitizer-friendly). Attention au rawurlencode du basename pour gerer les espaces.
+- **`html_sanitizer.yaml`** : whitelist enrichie avec `a[class, href, target, rel, download, data-document-id, data-extension]` + `i[class]` pour passer la carte sans strip.
+- **CSS** : `.block-document` dans `assets/css/base/blocks.scss` (front, custom properties theme) + version simplifiee dans `tiptap-editor.scss` pour l'editeur. Item de modal `.tiptap-doc-item` avec icone + nom + meta uppercase.
+- **Aide contextuelle** : `DocumentCrudController::getHelpData()` (panel lateral), section `#guide-documents` dans `templates/admin/guide/index.html.twig` avec 6 sous-sections (formats, methodes upload, nom affiche, rendu front, 2 tips), 2 nouvelles astuces dans le tableau `TIPS` du dashboard, mention dans `ArticleCrudController` et `PageCrudController` (section "L'editeur de contenu" + tip dedie).
+- **Menu admin** : entree `Documents` (icone `fa-file-arrow-down`) sous `Contenu`, entre `Medias` et la section `Classification`.
+
 ### Protection des slugs cote admin (SlugFieldHelperTrait)
 **Statut** : FAIT (30 avr. 2026)
 
