@@ -48,6 +48,8 @@ class DocumentService
 
     /**
      * Classe FontAwesome correspondant a l'extension.
+     * Utilisee dans l'admin (EasyAdmin charge FA) : modal TipTap, liste documents,
+     * editeur (le node TipTap stocke cette classe dans ses attrs).
      */
     public function iconForExtension(?string $extension): string
     {
@@ -61,6 +63,28 @@ class DocumentService
             'zip', 'rar', '7z' => 'fa-file-archive',
             'txt' => 'fa-file-lines',
             default => 'fa-file',
+        };
+    }
+
+    /**
+     * Nom de l'icone Bootstrap Icons (SVG inline) correspondant a l'extension.
+     * Utilisee cote front via IconExtension::icon() : le front n'a PAS Font
+     * Awesome (cf. CLAUDE4.md "Bootstrap Icons → SVG inline"), donc le rendu
+     * serveur du BlockRenderer doit cracher du SVG, pas des <i class="fas">.
+     * Les SVG correspondants sont dans templates/icons/file-earmark-*.svg.
+     */
+    public function biIconForExtension(?string $extension): string
+    {
+        $ext = strtolower((string) $extension);
+
+        return match ($ext) {
+            'pdf' => 'file-earmark-pdf',
+            'doc', 'docx', 'odt' => 'file-earmark-word',
+            'xls', 'xlsx', 'ods', 'csv' => 'file-earmark-excel',
+            'ppt', 'pptx', 'odp' => 'file-earmark-ppt',
+            'zip', 'rar', '7z' => 'file-earmark-zip',
+            'txt' => 'file-earmark-text',
+            default => 'file-earmark',
         };
     }
 

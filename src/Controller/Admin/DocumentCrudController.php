@@ -4,10 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\Document;
 use App\Service\DocumentService;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -61,6 +63,7 @@ class DocumentCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // --- Panel Document ---
         yield FormField::addPanel('Document')
             ->setIcon('fa fa-file')
             ->collapsible();
@@ -71,14 +74,25 @@ class DocumentCrudController extends AbstractCrudController
                 'attr' => ['placeholder' => 'Ex: Plaquette commerciale 2026, CV, Bon de commande...'],
             ]);
 
+        // Fichier : pattern EasyAdmin pour les fichiers non-image
+        // (TextField + FileUploadType). On declare explicitement le JS du widget
+        // car TextField, contrairement a ImageField, ne le charge pas tout seul.
         $fileField = TextField::new('fileName', 'Fichier')
             ->setFormType(FileUploadType::class)
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-file-upload.js'))
             ->setFormTypeOptions([
                 'upload_dir' => 'public/documents/files/',
                 'upload_filename' => '[slug]-[uuid].[extension]',
                 'allow_add' => false,
-                'allow_delete' => false,
-                'constraints' => [
+                // allow_delete TRUE : sinon le template Twig n'inclut pas
+                // .ea-fileupload-delete-btn et le JS plante en accedant
+                // .style.display sur null (le label "Choisir un fichier"
+                // ne se met alors plus a jour).
+                'allow_delete' => true,
+                // EasyAdmin applique 'file_constraints' au UploadedFile en interne.
+                // Si on passe 'constraints' direct, Symfony tente de valider la
+                // string filename comme un path -> "Le fichier n'a pas ete trouve".
+                'file_constraints' => [
                     new File(
                         maxSize: DocumentService::MAX_FILE_SIZE_BYTES,
                         extensions: DocumentService::ALLOWED_EXTENSIONS,
@@ -86,7 +100,8 @@ class DocumentCrudController extends AbstractCrudController
                     ),
                 ],
             ])
-            ->setHelp('Taille max : 25 Mo. PDF, Word, Excel, PowerPoint, OpenDocument, archives, CSV, TXT.');
+            ->setHelp('Taille max : 25 Mo. PDF, Word, Excel, PowerPoint, OpenDocument, archives, CSV, TXT.')
+            ->hideOnIndex();
 
         if (Crud::PAGE_EDIT === $pageName) {
             $fileField->setFormTypeOption('required', false);
@@ -94,18 +109,19 @@ class DocumentCrudController extends AbstractCrudController
 
         yield $fileField;
 
-        if (Crud::PAGE_INDEX === $pageName || Crud::PAGE_DETAIL === $pageName) {
-            yield TextField::new('extension', 'Type')
-                ->onlyOnIndex()
-                ->formatValue(fn ($value) => $value ? strtoupper((string) $value) : '');
+        // --- Colonnes index uniquement ---
+        yield TextField::new('extension', 'Type')
+            ->onlyOnIndex()
+            ->formatValue(fn ($value) => $value ? strtoupper((string) $value) : '');
 
-            yield TextField::new('size', 'Taille')
-                ->onlyOnIndex()
-                ->formatValue(fn ($value) => $value !== null ? $this->documentService->formatSize((int) $value) : '');
+        // IntegerField (pas TextField) car la propriete size est int|null
+        // et TextField crash : "value can't be converted into a string".
+        yield IntegerField::new('size', 'Taille')
+            ->onlyOnIndex()
+            ->formatValue(fn ($value) => $value !== null ? $this->documentService->formatSize((int) $value) : '');
 
-            yield DateTimeField::new('createdAt', 'Ajoute le')
-                ->setFormat('dd/MM/yyyy HH:mm')
-                ->onlyOnIndex();
-        }
+        yield DateTimeField::new('createdAt', 'Ajoute le')
+            ->setFormat('dd/MM/yyyy HH:mm')
+            ->onlyOnIndex();
     }
 }
