@@ -60,12 +60,15 @@ class PageCrudController extends AbstractCrudController
                 ],
                 [
                     'title' => 'L\'editeur',
-                    'content' => '<p>Meme editeur visuel que pour les articles. Votre brouillon est sauvegarde automatiquement.</p>',
+                    'content' => '<p>Meme editeur visuel que pour les articles : texte riche, titres, listes, images, videos YouTube, encarts, colonnes et tableaux.</p>
+                    <p>Vous pouvez aussi inserer des <strong>documents telechargeables</strong> (PDF, DOCX, XLSX, ZIP...) via le bouton <em>Document</em> de la barre d\'outils ou la commande <code>/document</code>. Ils s\'affichent en carte cliquable avec icone, nom et taille &mdash; pratique pour les plaquettes, tarifs, CGV ou formulaires a telecharger.</p>
+                    <p>Votre brouillon est sauvegarde automatiquement.</p>',
                 ],
             ],
             'tips' => [
                 'N\'oubliez pas d\'ajouter vos nouvelles pages dans la navigation (Reglages > Navigation).',
                 'Les pages systeme sont essentielles pour la conformite RGPD. Mettez-les a jour regulierement.',
+                'Pour les pages "Tarifs" ou "Documents legaux", inserez vos PDF directement dans le contenu via le bouton Document de l\'editeur.',
             ],
         ];
     }

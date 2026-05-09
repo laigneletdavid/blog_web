@@ -24,6 +24,7 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import { Callout } from './extensions/callout';
 import { Columns, Column } from './extensions/columns';
+import { Document as DocumentNode } from './extensions/document';
 
 // ─── Inline Image — variante inline de Image, utilisee pour les icones ──────
 // Extension dediee inline pour se comporter comme un caractere dans le flux.
@@ -145,6 +146,7 @@ class TiptapEditor {
             [
                 { cmd: 'link', icon: 'fa-link', title: 'Lien' },
                 { cmd: 'image', icon: 'fa-image', title: 'Image' },
+                { cmd: 'document', icon: 'fa-file-arrow-down', title: 'Document (PDF, DOCX, ZIP...)' },
                 { cmd: 'icon', icon: 'fa-icons', title: 'Inserer une icone' },
                 { cmd: 'youtube', icon: 'fa-video', title: 'Video YouTube' },
             ],
@@ -267,6 +269,7 @@ class TiptapEditor {
                 Callout,
                 Columns,
                 Column,
+                DocumentNode,
             ],
             content: this.initialContent,
             onUpdate: () => {
@@ -295,6 +298,7 @@ class TiptapEditor {
             { label: 'Titre H3', icon: 'fa-heading', action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run() },
             { label: 'Titre H4', icon: 'fa-heading', action: () => this.editor.chain().focus().toggleHeading({ level: 4 }).run() },
             { label: 'Image', icon: 'fa-image', action: () => this.openMediaModal() },
+            { label: 'Document (PDF, DOCX...)', icon: 'fa-file-arrow-down', action: () => this.openDocumentModal() },
             { label: 'Video YouTube', icon: 'fa-video', action: () => this.insertVideo() },
             { label: 'Citation', icon: 'fa-quote-left', action: () => this.editor.chain().focus().toggleBlockquote().run() },
             { label: 'Liste a puces', icon: 'fa-list-ul', action: () => this.editor.chain().focus().toggleBulletList().run() },
@@ -492,6 +496,7 @@ class TiptapEditor {
             case 'redo':         chain.redo().run(); break;
             case 'link':         this.toggleLink(); break;
             case 'image':        this.openMediaModal(); break;
+            case 'document':     this.openDocumentModal(); break;
             case 'icon':         this.openIconModal(); break;
             case 'youtube':      this.insertVideo(); break;
             case 'previewDesktop':  this.setPreviewMode('desktop'); break;
@@ -978,6 +983,187 @@ class TiptapEditor {
         }
     }
 
+    // ─── Document Modal ──────────────────────────────────────────────────
+
+    openDocumentModal() {
+        if (this.documentModal) return;
+
+        this.documentModal = document.createElement('div');
+        this.documentModal.className = 'tiptap-modal';
+        this.documentModal.innerHTML = `
+            <div class="tiptap-modal-backdrop"></div>
+            <div class="tiptap-modal-dialog" style="max-width:680px">
+                <div class="tiptap-modal-header">
+                    <h3>Bibliotheque de documents</h3>
+                    <button type="button" class="tiptap-modal-close">&times;</button>
+                </div>
+                <div class="tiptap-modal-body" style="padding:0">
+                    <div style="padding:0.75rem 1.25rem;border-bottom:1px solid #dee2e6;">
+                        <input type="text" class="form-control form-control-sm tiptap-doc-search" placeholder="Rechercher un document...">
+                    </div>
+                    <div class="tiptap-doc-list" style="max-height:340px;overflow-y:auto;padding:0.5rem"></div>
+                    <div class="tiptap-doc-empty" style="display:none;padding:1.5rem;text-align:center;color:#6c757d;font-size:0.9rem">Aucun document. Uploadez votre premier fichier ci-dessous.</div>
+                </div>
+                <div class="tiptap-modal-footer" style="display:flex;flex-direction:column;gap:0.5rem;align-items:stretch">
+                    <div class="tiptap-doc-upload" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+                        <label class="btn btn-sm btn-outline-primary" style="margin:0;cursor:pointer">
+                            <i class="fas fa-upload"></i> Choisir un fichier...
+                            <input type="file" class="tiptap-doc-file" style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp,.zip,.rar,.7z,.csv,.txt">
+                        </label>
+                        <input type="text" class="form-control form-control-sm tiptap-doc-name" style="flex:1;min-width:180px" placeholder="Nom affiche (optionnel)">
+                        <button type="button" class="btn btn-sm btn-primary tiptap-doc-upload-btn" disabled>Uploader</button>
+                    </div>
+                    <div class="tiptap-doc-status" style="font-size:0.8rem;color:#6c757d;min-height:1.1rem"></div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(this.documentModal);
+
+        this.documentModal.querySelector('.tiptap-modal-backdrop')
+            .addEventListener('click', () => this.closeDocumentModal());
+        this.documentModal.querySelector('.tiptap-modal-close')
+            .addEventListener('click', () => this.closeDocumentModal());
+
+        this._docEscHandler = (e) => { if (e.key === 'Escape') this.closeDocumentModal(); };
+        document.addEventListener('keydown', this._docEscHandler);
+
+        const searchInput = this.documentModal.querySelector('.tiptap-doc-search');
+        let searchTimer = null;
+        searchInput.addEventListener('input', () => {
+            if (searchTimer) clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => this.loadDocumentList(searchInput.value.trim()), 200);
+        });
+
+        const fileInput = this.documentModal.querySelector('.tiptap-doc-file');
+        const uploadBtn = this.documentModal.querySelector('.tiptap-doc-upload-btn');
+        const nameInput = this.documentModal.querySelector('.tiptap-doc-name');
+        const statusDiv = this.documentModal.querySelector('.tiptap-doc-status');
+
+        fileInput.addEventListener('change', () => {
+            uploadBtn.disabled = !fileInput.files.length;
+            if (fileInput.files.length) {
+                statusDiv.textContent = `Fichier choisi : ${fileInput.files[0].name}`;
+                if (!nameInput.value) {
+                    const baseName = fileInput.files[0].name.replace(/\.[^/.]+$/, '');
+                    nameInput.value = baseName;
+                }
+            }
+        });
+
+        uploadBtn.addEventListener('click', () => this.uploadDocument(fileInput, nameInput, statusDiv, uploadBtn));
+
+        this.loadDocumentList();
+        setTimeout(() => searchInput.focus(), 50);
+    }
+
+    async loadDocumentList(query = '') {
+        if (!this.documentModal) return;
+        const list = this.documentModal.querySelector('.tiptap-doc-list');
+        const empty = this.documentModal.querySelector('.tiptap-doc-empty');
+
+        list.innerHTML = '<div style="padding:0.75rem;color:#6c757d;font-size:0.85rem">Chargement...</div>';
+
+        try {
+            const params = query ? `?q=${encodeURIComponent(query)}` : '';
+            const response = await fetch(`/admin/api/document/list${params}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const documents = await response.json();
+            list.innerHTML = '';
+
+            if (!documents.length) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            list.style.display = 'block';
+            empty.style.display = 'none';
+
+            documents.forEach(doc => list.appendChild(this.renderDocumentItem(doc)));
+        } catch (err) {
+            list.innerHTML = '<div style="padding:1rem;color:#dc3545;text-align:center;font-size:0.85rem">Erreur de chargement</div>';
+            console.error('[TipTap] Document list error:', err);
+        }
+    }
+
+    renderDocumentItem(doc) {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'tiptap-doc-item';
+        item.innerHTML = `
+            <span class="tiptap-doc-item__icon"><i class="fas ${doc.icon || 'fa-file'}"></i></span>
+            <span class="tiptap-doc-item__body">
+                <span class="tiptap-doc-item__name">${this.escapeHtml(doc.name)}</span>
+                <span class="tiptap-doc-item__meta">${(doc.extension || '').toUpperCase()}${doc.size_human ? ' · ' + this.escapeHtml(doc.size_human) : ''}</span>
+            </span>
+        `;
+        item.addEventListener('click', () => this.insertDocumentNode(doc));
+        return item;
+    }
+
+    insertDocumentNode(doc) {
+        this.editor.chain().focus().insertDocument({
+            documentId: doc.id,
+            name: doc.name,
+            fileName: doc.file_name,
+            extension: doc.extension || '',
+            size: doc.size,
+            sizeHuman: doc.size_human || '',
+            icon: doc.icon || 'fa-file',
+            url: doc.url,
+        }).run();
+        this.closeDocumentModal();
+    }
+
+    async uploadDocument(fileInput, nameInput, statusDiv, uploadBtn) {
+        if (!fileInput.files.length) return;
+
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        if (nameInput.value.trim()) {
+            formData.append('name', nameInput.value.trim());
+        }
+
+        uploadBtn.disabled = true;
+        statusDiv.textContent = 'Upload en cours...';
+        statusDiv.style.color = '#6c757d';
+
+        try {
+            const response = await fetch('/admin/api/document/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || `HTTP ${response.status}`);
+            }
+
+            statusDiv.textContent = 'Document uploade. Insertion...';
+            statusDiv.style.color = '#198754';
+            this.insertDocumentNode(data);
+        } catch (err) {
+            statusDiv.textContent = 'Erreur : ' + err.message;
+            statusDiv.style.color = '#dc3545';
+            uploadBtn.disabled = false;
+        }
+    }
+
+    closeDocumentModal() {
+        if (this.documentModal) {
+            this.documentModal.remove();
+            this.documentModal = null;
+        }
+        if (this._docEscHandler) {
+            document.removeEventListener('keydown', this._docEscHandler);
+            this._docEscHandler = null;
+        }
+        this.editor?.commands.focus();
+    }
+
     // ─── Icon Modal ──────────────────────────────────────────────────────
 
     openIconModal() {
@@ -1166,6 +1352,7 @@ class TiptapEditor {
         if (this.editor) this.editor.destroy();
         this.removeTableFloatingMenu();
         this.closeMediaModal();
+        this.closeDocumentModal();
     }
 }
 
