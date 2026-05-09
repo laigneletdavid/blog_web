@@ -48,6 +48,7 @@ class ArticleCrudController extends AbstractCrudController
                 [
                     'title' => 'L\'editeur de contenu',
                     'content' => '<p>L\'editeur visuel vous permet de mettre en forme vos articles : <strong>gras</strong>, <em>italique</em>, titres, listes, images, videos YouTube, citations et blocs de code.</p>
+                    <p>Vous pouvez aussi inserer des <strong>documents telechargeables</strong> (PDF, DOCX, XLSX, ZIP...) via le bouton <em>Document</em> de la barre d\'outils ou la commande <code>/document</code>. Ils s\'affichent en carte cliquable avec icone, nom et taille.</p>
                     <p>Votre brouillon est <strong>sauvegarde automatiquement</strong> toutes les 30 secondes dans votre navigateur.</p>',
                 ],
                 [
@@ -73,6 +74,7 @@ class ArticleCrudController extends AbstractCrudController
                 'Ajoutez toujours une image mise en avant et un texte d\'accroche pour rendre vos articles plus attractifs.',
                 'Un bon titre SEO fait entre 50 et 70 caracteres, et la meta-description entre 120 et 160.',
                 'Utilisez la publication programmee pour preparer vos articles a l\'avance et maintenir un rythme regulier.',
+                'Pour partager un PDF ou une plaquette, inserez-le directement depuis l\'editeur via le bouton Document : il s\'affichera en carte cliquable.',
             ],
         ];
     }

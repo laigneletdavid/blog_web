@@ -27,7 +27,8 @@
             {# Infos contact #}
             <div class="col-lg-5">
                 <div class="art-contact-portrait mb-4 text-center">
-                    <img src="{{ site.aboutImage ? asset('documents/medias/' ~ site.aboutImage.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" loading="lazy"/>
+                    {% set _contact_img = site.contactImage ?? site.aboutImage %}
+                    <img src="{{ _contact_img ? asset('documents/medias/' ~ _contact_img.fileName) : asset('images/placeholder.jpg') }}" alt="{{ site.name|default('') }}" loading="lazy"/>
                 </div>
 
                 <div class="art-contact-info">
