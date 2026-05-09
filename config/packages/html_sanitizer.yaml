@@ -9,6 +9,12 @@ framework:
                     div: ['class', 'data-callout', 'data-columns', 'data-column']
                     mark: ['class']
                     span: ['class']
+                    a: ['class', 'href', 'target', 'rel', 'download', 'data-document-id', 'data-extension']
+                    i: ['class']
+                    # SVG inline (Bootstrap Icons via IconExtension::icon) — utilises
+                    # par le rendu front du module Documents.
+                    svg: ['class', 'width', 'height', 'fill', 'viewBox', 'xmlns']
+                    path: ['d', 'fill', 'fill-rule', 'clip-rule']
                     table: ['class']
                     thead: []
                     tbody: []

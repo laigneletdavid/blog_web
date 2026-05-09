@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Repository\MediaRepository;
+use App\Twig\IconExtension;
 
 /**
  * Convertit le JSON natif TipTap en HTML pour le cache `content`.
@@ -17,6 +18,8 @@ class BlockRenderer
     public function __construct(
         private readonly MediaRepository $mediaRepository,
         private readonly string $mediaDirectory,
+        private readonly IconExtension $iconExtension,
+        private readonly DocumentService $documentService,
     ) {
     }
 
@@ -76,6 +79,7 @@ class BlockRenderer
             'tableCell' => $this->renderTableCell('td', $attrs, $content),
             'columns' => "<div class=\"block-columns\">{$content}</div>",
             'column' => "<div class=\"block-column\">{$content}</div>",
+            'document' => $this->renderDocument($attrs),
             'hardBreak' => '<br>',
             default => $content,
         };
@@ -233,6 +237,44 @@ class BlockRenderer
         $icon = $icons[$type];
 
         return "<div class=\"block-callout block-callout--{$type}\"><span class=\"block-callout__icon\">{$icon}</span><div class=\"block-callout__content\">{$content}</div></div>";
+    }
+
+    private function renderDocument(array $attrs): string
+    {
+        $url = $attrs['url'] ?? '';
+        if ($url === '') {
+            return '';
+        }
+
+        // Encoder le path (gere les espaces dans le filename)
+        $dir = dirname($url);
+        $file = basename($url);
+        $encodedUrl = htmlspecialchars($dir . '/' . rawurlencode($file), ENT_QUOTES, 'UTF-8');
+
+        $extension = strtolower($attrs['extension'] ?? '');
+        $extensionEsc = htmlspecialchars($extension, ENT_QUOTES, 'UTF-8');
+        $name = htmlspecialchars($attrs['name'] ?? 'Document', ENT_QUOTES, 'UTF-8');
+        $sizeHuman = htmlspecialchars($attrs['sizeHuman'] ?? '', ENT_QUOTES, 'UTF-8');
+        $documentId = isset($attrs['documentId']) ? htmlspecialchars((string) $attrs['documentId'], ENT_QUOTES, 'UTF-8') : '';
+        $downloadName = htmlspecialchars($attrs['name'] ?? '', ENT_QUOTES, 'UTF-8');
+
+        // SVG Bootstrap Icons inline (le front n'a pas Font Awesome)
+        $fileIconSvg = $this->iconExtension->icon($this->documentService->biIconForExtension($extension));
+        $downloadIconSvg = $this->iconExtension->icon('download');
+
+        $meta = strtoupper($extensionEsc);
+        if ($sizeHuman !== '') {
+            $meta .= ' · ' . $sizeHuman;
+        }
+
+        return '<a class="block-document" href="' . $encodedUrl . '" target="_blank" rel="noopener noreferrer" download="' . $downloadName . '" data-document-id="' . $documentId . '" data-extension="' . $extensionEsc . '">'
+            . '<span class="block-document__icon">' . $fileIconSvg . '</span>'
+            . '<span class="block-document__body">'
+            . '<span class="block-document__name">' . $name . '</span>'
+            . '<span class="block-document__meta">' . $meta . '</span>'
+            . '</span>'
+            . '<span class="block-document__action">' . $downloadIconSvg . '</span>'
+            . '</a>';
     }
 
     private function renderTableCell(string $tag, array $attrs, string $content): string
