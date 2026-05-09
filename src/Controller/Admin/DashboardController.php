@@ -14,6 +14,7 @@ use App\Entity\Order;
 use App\Entity\PortfolioCategory;
 use App\Entity\DirectoryCategory;
 use App\Entity\DirectoryEntry;
+use App\Entity\Document;
 use App\Entity\PortfolioItem;
 use App\Entity\Product;
 use App\Entity\ProductCategory;
@@ -268,6 +269,7 @@ class DashboardController extends AbstractDashboardController
             }
             yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class);
             yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
+            yield MenuItem::linkToCrud('Documents', 'fas fa-file-arrow-down', Document::class);
 
             // Classification transverse (tags partages entre modules + familles)
             if ($this->isGranted('ROLE_ADMIN')) {

@@ -130,6 +130,8 @@ const TIPS = [
     "Vous pouvez changer les couleurs et polices de votre site dans Reglages \u2192 Apparence.",
     "Le formulaire de contact envoie les messages directement a l'adresse email configuree dans l'identite du site.",
     "Les commentaires sont visibles en temps reel. Consultez-les regulierement pour interagir avec vos lecteurs.",
+    "Pour partager un PDF, plaquette ou tarif : ajoutez-le dans Contenu → Documents et inserez-le dans vos articles via le bouton Document de l'editeur.",
+    "Si vous mettez a jour un document (ex: nouveau tarif), modifiez-le dans la bibliotheque : tous les articles qui l'incluent sont automatiquement a jour.",
     "Besoin d'aide ? Consultez le Guide complet accessible depuis le menu Aide.",
 ];
 

@@ -13,6 +13,7 @@ CMS professionnel pret a deployer pour chaque client. Site propre, securise, SEO
 - **Categories** — Organisation des articles par thematique avec couleur et image. Un article peut appartenir a plusieurs categories.
 - **Tags** — Classification fine des articles par mots-cles.
 - **Medias** — Bibliotheque d'images avec conversion WebP automatique, generation de 3 tailles responsives (480px, 800px, 1200px), texte alternatif pour l'accessibilite et le SEO.
+- **Documents** — Bibliotheque de fichiers telechargeables (PDF, DOCX, XLSX, PPTX, ODT/ODS, ZIP/RAR/7Z, CSV, TXT — max 25 Mo). Insertion directe dans l'editeur via bouton dedie ou commande `/document`, upload depuis l'editeur ou bibliotheque centrale, rendu en carte cliquable (icone + nom + taille).
 - **Commentaires** — Systeme de commentaires pour les articles, reserve aux utilisateurs connectes. Moderation dans l'admin.
 
 ### Modules activables
@@ -179,7 +180,7 @@ blog_web/
 │   ├── Controller/            # 25 controllers front + 24 CrudControllers admin (EasyAdmin)
 │   ├── Entity/                # ~20 entites Doctrine (Article, Page, Site, Product, Order, Event...)
 │   ├── Enum/                  # Module, Role, Visibility, OrderStatus, PaymentMethod, MenuLocation
-│   ├── Service/               # SiteContext, ThemeService, SEO, AdminStats, BlockRenderer, Widget, Cart, Stripe...
+│   ├── Service/               # SiteContext, ThemeService, SEO, AdminStats, BlockRenderer, Widget, Cart, Stripe, DocumentService...
 │   ├── Security/              # Authenticator, ContentVoter, CheckVerifiedUserSubscriber
 │   ├── Twig/                  # AppExtension (menus, TOC, reading time), ResponsiveImageExtension
 │   └── Command/               # CLI (client:setup, create:super-admin, modules, legal-pages, media...)
