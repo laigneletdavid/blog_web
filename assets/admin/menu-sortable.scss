@@ -195,6 +195,10 @@
     color: #fff !important;
 }
 
+.bg-purple {
+    background-color: #7C3AED !important;
+}
+
 .menu-item-actions {
     display: flex;
     gap: 0.25rem;
@@ -231,6 +235,20 @@
 
         &:hover {
             background: #f0f4f8;
+        }
+    }
+}
+
+.menu-sortable-children--l2 {
+    border-left-color: #7C3AED;
+    background: #f3f0ff;
+
+    .menu-item-row {
+        background: #f3f0ff;
+        font-size: 0.9em;
+
+        &:hover {
+            background: #ebe5ff;
         }
     }
 }

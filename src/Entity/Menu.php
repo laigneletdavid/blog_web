@@ -55,6 +55,9 @@ class Menu
     #[ORM\ManyToOne]
     private ?Page $page = null;
 
+    #[ORM\ManyToOne]
+    private ?Service $service = null;
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?self $parent = null;
@@ -268,6 +271,18 @@ class Menu
     public function setRouteParams(?array $route_params): self
     {
         $this->route_params = $route_params;
+
+        return $this;
+    }
+
+    public function getService(): ?Service
+    {
+        return $this->service;
+    }
+
+    public function setService(?Service $service): self
+    {
+        $this->service = $service;
 
         return $this;
     }
