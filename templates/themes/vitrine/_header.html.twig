@@ -23,7 +23,22 @@
                             <ul class="dropdown-menu">
                                 {% for child in menu.children %}
                                     {% if child.isVisible %}
-                                        <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                        {% if child.children|length > 0 %}
+                                            <li class="dropend">
+                                                <a class="dropdown-item dropdown-toggle" href="{{ child|menuLink }}" role="button">
+                                                    {{ child.name }}
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    {% for grandchild in child.children %}
+                                                        {% if grandchild.isVisible %}
+                                                            <li><a class="dropdown-item" href="{{ grandchild|menuLink }}">{{ grandchild.name }}</a></li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% else %}
+                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -79,7 +94,27 @@
                 </div>
                 <ul class="navbar-nav mb-4">
                     {% for menu in header_menus %}
-                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                        {% if menu.children|length > 0 %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ menu.name }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for child in menu.children %}
+                                        {% if child.isVisible %}
+                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                            {% for grandchild in child.children %}
+                                                {% if grandchild.isVisible %}
+                                                    <li><a class="dropdown-item ps-4 small" href="{{ grandchild|menuLink }}">{{ grandchild.name }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
                 {% include '_partials/_cart_badge.html.twig' %}

@@ -208,6 +208,11 @@ class AppExtension extends AbstractExtension
             return $this->router->generate('app_page_show', ['slug' => $page->getSlug()]);
         }
 
+        $service = $menu->getService();
+        if ($service !== null && $service->getSlug() !== null) {
+            return $this->router->generate('app_service_show', ['slug' => $service->getSlug()]);
+        }
+
         return '#';
     }
 }

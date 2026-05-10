@@ -113,6 +113,29 @@
             </div>
             {% endif %}
 
+            {# Services (individual) #}
+            {% if sources.services|default([])|length > 0 %}
+            <div class="source-accordion">
+                <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcServices">
+                    <i class="fas fa-concierge-bell me-1"></i>Services
+                    <i class="fas fa-chevron-down source-chevron ms-auto"></i>
+                </button>
+                <div class="collapse" id="srcServices">
+                    <div class="source-items">
+                        {% for service in sources.services %}
+                        <label class="source-item">
+                            <input type="checkbox" value="{{ service.title }}" data-service-id="{{ service.id }}" data-target="service">
+                            <span>{{ service.title }}</span>
+                        </label>
+                        {% endfor %}
+                        <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2 source-add-btn" data-source="services">
+                            <i class="fas fa-plus me-1"></i>Ajouter la sélection
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             {# Custom link #}
             <div class="source-accordion">
                 <button class="source-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#srcCustomLink">
@@ -192,6 +215,8 @@
                                     <span class="badge bg-info badge-type">Système</span>
                                 {% elseif menu.target == 'page' %}
                                     <span class="badge bg-success badge-type">Page</span>
+                                {% elseif menu.target == 'service' %}
+                                    <span class="badge bg-purple badge-type">Service</span>
                                 {% elseif menu.target == 'categorie' %}
                                     <span class="badge bg-warning badge-type">Catégorie</span>
                                 {% elseif menu.route %}
@@ -221,8 +246,12 @@
                                             <span class="badge bg-info badge-type">Système</span>
                                         {% elseif child.target == 'page' %}
                                             <span class="badge bg-success badge-type">Page</span>
+                                        {% elseif child.target == 'service' %}
+                                            <span class="badge bg-purple badge-type">Service</span>
                                         {% elseif child.target == 'categorie' %}
                                             <span class="badge bg-warning badge-type">Catégorie</span>
+                                        {% elseif child.route %}
+                                            <span class="badge bg-primary badge-type">Module</span>
                                         {% else %}
                                             <span class="badge bg-secondary badge-type">Lien</span>
                                         {% endif %}
@@ -236,6 +265,36 @@
                                             </button>
                                             {% endif %}
                                         </div>
+                                    </div>
+                                    <div class="menu-sortable-children menu-sortable-children--l2" data-sortable-children="{{ child.id }}">
+                                        {% for grandchild in child.children %}
+                                        <div class="menu-sortable-item {{ grandchild.isSystem ? 'is-system' : '' }} {{ not grandchild.isIsVisible ? 'is-hidden' : '' }}"
+                                             data-id="{{ grandchild.id }}" data-system="{{ grandchild.isSystem ? '1' : '0' }}">
+                                            <div class="menu-item-row">
+                                                <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                                                <span class="menu-item-name" data-id="{{ grandchild.id }}">{{ grandchild.name }}</span>
+                                                {% if grandchild.target == 'page' %}
+                                                    <span class="badge bg-success badge-type">Page</span>
+                                                {% elseif grandchild.target == 'service' %}
+                                                    <span class="badge bg-purple badge-type">Service</span>
+                                                {% elseif grandchild.target == 'categorie' %}
+                                                    <span class="badge bg-warning badge-type">Catégorie</span>
+                                                {% elseif grandchild.route %}
+                                                    <span class="badge bg-primary badge-type">Module</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary badge-type">Lien</span>
+                                                {% endif %}
+                                                <div class="menu-item-actions">
+                                                    <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ grandchild.id }}">
+                                                        <i class="fas {{ grandchild.isIsVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-delete-item" data-id="{{ grandchild.id }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                                 {% endfor %}

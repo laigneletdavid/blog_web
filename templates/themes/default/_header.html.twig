@@ -23,7 +23,22 @@
                             <ul class="dropdown-menu">
                                 {% for child in menu.children %}
                                     {% if child.isVisible %}
-                                        <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                        {% if child.children|length > 0 %}
+                                            <li class="dropend">
+                                                <a class="dropdown-item dropdown-toggle" href="{{ child|menuLink }}" role="button">
+                                                    {{ child.name }}
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    {% for grandchild in child.children %}
+                                                        {% if grandchild.isVisible %}
+                                                            <li><a class="dropdown-item" href="{{ grandchild|menuLink }}">{{ grandchild.name }}</a></li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% else %}
+                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -110,6 +125,11 @@
                                     {% for child in menu.children %}
                                         {% if child.isVisible %}
                                             <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                            {% for grandchild in child.children %}
+                                                {% if grandchild.isVisible %}
+                                                    <li><a class="dropdown-item ps-4 small" href="{{ grandchild|menuLink }}">{{ grandchild.name }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
