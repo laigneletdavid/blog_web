@@ -6,6 +6,7 @@ use App\Entity\Menu;
 use App\Repository\CategorieRepository;
 use App\Repository\MenuRepository;
 use App\Repository\PageRepository;
+use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -81,6 +82,7 @@ class MenuApiController extends AbstractController
         MenuRepository $menuRepository,
         PageRepository $pageRepository,
         CategorieRepository $categorieRepository,
+        ServiceRepository $serviceRepository,
         EntityManagerInterface $em,
     ): JsonResponse {
         if (!$this->isCsrfTokenValid('menu_reorder', $request->headers->get('X-CSRF-Token'))) {
@@ -114,6 +116,15 @@ class MenuApiController extends AbstractController
             if ($cat) {
                 $menu->setCategorie($cat);
                 $menu->setTarget('categorie');
+            }
+        }
+
+        // Link to service
+        if (!empty($data['serviceId'])) {
+            $service = $serviceRepository->find($data['serviceId']);
+            if ($service) {
+                $menu->setService($service);
+                $menu->setTarget('service');
             }
         }
 
@@ -152,6 +163,7 @@ class MenuApiController extends AbstractController
                 'route' => $menu->getRoute(),
                 'pageId' => $menu->getPage()?->getId(),
                 'categorieId' => $menu->getCategorie()?->getId(),
+                'serviceId' => $menu->getService()?->getId(),
             ],
         ]);
     }

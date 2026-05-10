@@ -106,6 +106,7 @@ class DashboardController extends AbstractDashboardController
         MenuRepository $menuRepository,
         \App\Repository\PageRepository $pageRepository,
         \App\Repository\CategorieRepository $categorieRepository,
+        \App\Repository\ServiceRepository $serviceRepository,
         \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfTokenManager,
     ): Response {
         $site = $this->siteContext->getCurrentSite();
@@ -143,6 +144,11 @@ class DashboardController extends AbstractDashboardController
             }
         }
 
+        $services = [];
+        if (in_array('services', $enabledModules, true)) {
+            $services = $serviceRepository->findBy(['isActive' => true], ['position' => 'ASC']);
+        }
+
         return $this->render('admin/menu/sortable.html.twig', [
             'menus' => [
                 'header' => $menuRepository->findByLocationAllItems('header'),
@@ -154,6 +160,7 @@ class DashboardController extends AbstractDashboardController
                 'custom_pages' => $pageRepository->findCustomPages(),
                 'categories' => $categorieRepository->findAll(),
                 'modules' => $moduleRoutes,
+                'services' => $services,
             ],
             'locations' => \App\Enum\MenuLocationEnum::choices(),
             'csrf_token' => $csrfTokenManager->getToken('menu_reorder')->getValue(),
