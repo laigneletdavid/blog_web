@@ -70,11 +70,30 @@ class MenuManager {
     }
 
     validateNesting(evt) {
-        if (evt.to.hasAttribute('data-sortable-children')) {
-            const childZone = evt.dragged.querySelector('[data-sortable-children]');
-            if (childZone && childZone.children.length > 0) return false;
-        }
+        const depth = this.getNestingDepth(evt.to);
+        const draggedDepth = this.getItemDepth(evt.dragged);
+        if (depth + draggedDepth > 2) return false;
         return true;
+    }
+
+    getNestingDepth(el) {
+        let depth = 0;
+        let current = el;
+        while (current && !current.hasAttribute('data-sortable-zone')) {
+            if (current.hasAttribute('data-sortable-children')) depth++;
+            current = current.parentElement;
+        }
+        return depth;
+    }
+
+    getItemDepth(item) {
+        const children = item.querySelector('[data-sortable-children]');
+        if (!children || children.children.length === 0) return 0;
+        let max = 0;
+        children.querySelectorAll(':scope > .menu-sortable-item').forEach(child => {
+            max = Math.max(max, 1 + this.getItemDepth(child));
+        });
+        return max;
     }
 
     saveOrder() {
@@ -87,10 +106,16 @@ class MenuManager {
 
         rootList.querySelectorAll(':scope > .menu-sortable-item').forEach((item, index) => {
             items.push({ id: parseInt(item.dataset.id), position: index, parentId: null });
-            const childZone = item.querySelector('[data-sortable-children]');
+            const childZone = item.querySelector(':scope > [data-sortable-children]');
             if (childZone) {
                 childZone.querySelectorAll(':scope > .menu-sortable-item').forEach((child, ci) => {
                     items.push({ id: parseInt(child.dataset.id), position: ci, parentId: parseInt(item.dataset.id) });
+                    const grandChildZone = child.querySelector(':scope > [data-sortable-children]');
+                    if (grandChildZone) {
+                        grandChildZone.querySelectorAll(':scope > .menu-sortable-item').forEach((gc, gi) => {
+                            items.push({ id: parseInt(gc.dataset.id), position: gi, parentId: parseInt(child.dataset.id) });
+                        });
+                    }
                 });
             }
         });
@@ -115,6 +140,7 @@ class MenuManager {
                     if (cb.dataset.route) data.route = cb.dataset.route;
                     if (cb.dataset.pageId) data.pageId = parseInt(cb.dataset.pageId);
                     if (cb.dataset.categorieId) data.categorieId = parseInt(cb.dataset.categorieId);
+                    if (cb.dataset.serviceId) data.serviceId = parseInt(cb.dataset.serviceId);
                     this.addItem(data);
                     cb.checked = false;
                 });
@@ -173,9 +199,11 @@ class MenuManager {
         if (!zone) return;
 
         const badgeClass = item.target === 'page' ? 'bg-success' :
+                           item.target === 'service' ? 'bg-purple' :
                            item.target === 'categorie' ? 'bg-warning' :
                            item.route ? 'bg-primary' : 'bg-secondary';
         const badgeText = item.target === 'page' ? 'Page' :
+                          item.target === 'service' ? 'Service' :
                           item.target === 'categorie' ? 'Catégorie' :
                           item.route ? 'Module' : 'Lien';
 
