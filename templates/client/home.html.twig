@@ -1,0 +1,118 @@
+{# ====== HOME — Com Web Solutions ====== #}
+
+{# ====== HERO (split texte / image) ====== #}
+<section class="home-hero">
+    <div class="container position-relative">
+        <div class="row align-items-center home-hero__row">
+            <div class="col-lg-7 home-hero__content">
+                <h1 class="home-hero__title">Le commerce qui vend,<br>le web qui convertit.</h1>
+                <p class="home-hero__desc">15 ans à vendre, 10 ans à coder. Je mets les deux au service de votre boîte. Pas de jargon, pas de slides PowerPoint, pas de chargé de compte — un seul interlocuteur, du premier appel à la mise en ligne.</p>
+                <div class="home-hero__actions">
+                    <a href="https://calendar.app.google/Fbg8eFHGt97zVENT7" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Prendre RDV (gratuit)</a>
+                    <a href="#services" class="btn btn-outline-primary btn-lg">Découvrir mes offres</a>
+                </div>
+            </div>
+            {% if site.heroImage %}
+            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
+                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', 'David Laignelet — Com Web Solutions', true) }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== PAIN POINTS (3 cartes) ====== #}
+<section class="home-features" id="services">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="home-section-title">Ça vous parle ?</h2>
+        </div>
+        <div class="home-features__grid home-features__grid--3">
+            <a href="/page/developpement-commercial" class="home-features__card home-features__card--link">
+                <h3 class="home-features__title">« On n'a personne pour prospecter »</h3>
+                <p class="home-features__desc">Vous êtes dirigeant, vous faites tout — y compris le commercial. Sauf que prospecter prend du temps, de la méthode et de la régularité. Vous savez que ça bloque, mais vous ne pouvez pas embaucher un directeur commercial.</p>
+                <span class="home-features__link">Développement commercial →</span>
+            </a>
+            <a href="/page/votre-site-web" class="home-features__card home-features__card--link">
+                <h3 class="home-features__title">« Notre site ne nous rapporte rien »</h3>
+                <p class="home-features__desc">Il est en ligne, il est "joli", mais personne ne vous contacte depuis. Il ne remonte pas sur Google, il est lent, mal maintenu, ou vous ne pouvez rien modifier sans appeler votre prestataire.</p>
+                <span class="home-features__link">Votre site web →</span>
+            </a>
+            <a href="/page/pourquoi-un-seul-interlocuteur" class="home-features__card home-features__card--link">
+                <h3 class="home-features__title">« Notre agence web ne comprend pas notre business »</h3>
+                <p class="home-features__desc">Votre agence parle pixels et responsive. Votre commercial parle pipe et closing. Personne ne fait le lien entre les deux. Résultat : un site qui ne vend pas et une prospection qui n'a pas de support digital.</p>
+                <span class="home-features__link">Pourquoi un seul interlocuteur →</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{# ====== SERVICES (fiches détaillées si module actif) ====== #}
+{% if services|default([])|length > 0 %}
+<section class="home-services">
+    <div class="container">
+        <div class="home-services__header text-center">
+            <h2 class="home-section-title">Les offres en détail</h2>
+        </div>
+        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== PORTFOLIO (si module actif + realisations) ====== #}
+{% if featuredPortfolio|default([])|length > 0 %}
+<section class="home-portfolio py-5">
+    <div class="container">
+        <h2 class="home-section-title text-center">Réalisations</h2>
+        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ (si module actif) ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="home-faq py-5" style="background: var(--surface);">
+    <div class="container">
+        <h2 class="home-section-title text-center">Questions fréquentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== TEMOIGNAGES ====== #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length > 0 %}
+<section class="home-testimonials">
+    <div class="container">
+        <h2 class="home-section-title text-center">Ils ont travaillé avec moi</h2>
+        {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== DERNIERS ARTICLES ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="home-section-title mb-1">Le journal — terrain, sans filtre</h2>
+                <p class="text-muted mb-0">Stratégie commerciale, web sans WordPress, IA souveraine, vie d'entrepreneur. Ce que j'apprends sur le terrain, partagé sans langue de bois.</p>
+            </div>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Lire le blog →</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== CTA FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center">
+        <h2 class="home-cta__title">Un échange de 30 minutes pour faire le point ?</h2>
+        <p class="home-cta__desc">Pas d'engagement, pas de présentation commerciale. On parle de votre boîte, de ce qui bloque, et je vous dis honnêtement si je peux aider — ou non.</p>
+        <a href="https://calendar.app.google/Fbg8eFHGt97zVENT7" target="_blank" rel="noopener" class="btn btn-light btn-lg">Réserver un créneau</a>
+    </div>
+</section>

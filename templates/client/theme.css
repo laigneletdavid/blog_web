@@ -1,5 +1,188 @@
-/* ====== Client CSS Override ====== */
-/* This file is loaded AFTER the theme CSS in base.html.twig.            */
-/* Use it on client branches (bw_*) to override theme styles             */
-/* without modifying CMS theme files.                                     */
-/* On main, this file stays empty.                                        */
+/* ====== Com Web Solutions — Client CSS Override ====== */
+/* Loaded AFTER vitrine theme.css — overrides only.      */
+
+/* Google Fonts Poppins (titres) — Inter loaded by theme */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Typo override: Poppins for headings */
+h1, h2, h3, h4, h5, h6,
+.home-hero__title,
+.home-section-title,
+.home-cta__title,
+.home-about__title,
+.home-features__title {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* CTA secondaire en orange accent */
+.home-hero__actions .btn-outline-primary {
+    border-color: #F59E0B;
+    color: #F59E0B;
+}
+.home-hero__actions .btn-outline-primary:hover {
+    background-color: #F59E0B;
+    border-color: #F59E0B;
+    color: #fff;
+}
+
+/* Section subtitle */
+.home-section-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Testimonial stars in accent color */
+.theme-vitrine .home-testimonial::before {
+    color: #F59E0B;
+}
+
+/* CTA final — gradient + white text */
+.home-cta {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+}
+
+/* ====== PAIN POINT CARDS ====== */
+
+/* Section background */
+.home-features {
+    background: var(--surface, #F9FAFB);
+    padding: 5rem 0;
+}
+
+/* 3-column grid */
+.home-features__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+@media (max-width: 768px) {
+    .home-features__grid--3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card base — top color bar + oversized quote */
+.home-features__card--link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid var(--border, #E5E7EB);
+    border-top: 5px solid #2563EB;
+    border-radius: 0 0 0.75rem 0.75rem;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Color variants per card */
+.home-features__card--link:nth-child(1) { border-top-color: #2563EB; }
+.home-features__card--link:nth-child(2) { border-top-color: #F59E0B; }
+.home-features__card--link:nth-child(3) { border-top-color: #1E40AF; }
+
+/* Oversized decorative quote mark */
+.home-features__card--link::before {
+    content: "\201C";
+    position: absolute;
+    top: 0.5rem;
+    right: 1.25rem;
+    font-size: 5rem;
+    font-family: Georgia, serif;
+    line-height: 1;
+    opacity: 0.07;
+    pointer-events: none;
+}
+.home-features__card--link:nth-child(1)::before { color: #2563EB; opacity: 0.12; }
+.home-features__card--link:nth-child(2)::before { color: #F59E0B; opacity: 0.15; }
+.home-features__card--link:nth-child(3)::before { color: #1E40AF; opacity: 0.12; }
+
+/* Hover — lift + colored glow */
+.home-features__card--link:hover {
+    transform: translateY(-8px);
+    color: inherit;
+}
+.home-features__card--link:nth-child(1):hover {
+    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.15);
+}
+.home-features__card--link:nth-child(2):hover {
+    box-shadow: 0 16px 40px rgba(245, 158, 11, 0.15);
+}
+.home-features__card--link:nth-child(3):hover {
+    box-shadow: 0 16px 40px rgba(30, 64, 175, 0.15);
+}
+
+/* Background tint on hover */
+.home-features__card--link::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.home-features__card--link:nth-child(1)::after { background: #2563EB; }
+.home-features__card--link:nth-child(2)::after { background: #F59E0B; }
+.home-features__card--link:nth-child(3)::after { background: #1E40AF; }
+.home-features__card--link:hover::after {
+    opacity: 0.03;
+}
+
+/* Title — the pain quote */
+.home-features__card--link .home-features__title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--text, #1F2937);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Description */
+.home-features__card--link .home-features__desc {
+    color: var(--text-muted, #6B7280);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    flex-grow: 1;
+    position: relative;
+    z-index: 1;
+}
+
+/* CTA link at bottom */
+.home-features__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border, #E5E7EB);
+    font-weight: 600;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+    transition: gap 0.3s ease;
+}
+.home-features__card--link:nth-child(1) .home-features__link { color: #2563EB; }
+.home-features__card--link:nth-child(2) .home-features__link { color: #D97706; }
+.home-features__card--link:nth-child(3) .home-features__link { color: #1E40AF; }
+
+.home-features__card--link:hover .home-features__link {
+    gap: 0.6rem;
+}
+
+/* Fix: btn-primary text must be white everywhere */
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    color: #fff !important;
+}

@@ -130,7 +130,8 @@
       "Bash(wsl -d Ubuntu -e bash -lc \"cd /home/laign/projects/blog_web && git branch --show-current\")",
       "Bash(wsl -d Ubuntu -e bash -lc \"cd /home/laign/projects/blog_web && git checkout HEAD -- CLAUDE.md .claude/docs/CLAUDE4.md\")",
       "Bash(wsl -d Ubuntu -e bash -lc \"rm -f /home/laign/projects/blog_web/.git/index.lock && cd /home/laign/projects/blog_web && git checkout HEAD -- CLAUDE.md .claude/docs/CLAUDE4.md\")",
-      "Bash(wsl -d Ubuntu -e bash -lc 'cd /home/laign/projects/blog_web && git commit -m \"\"Doc: CLAUDE.md + CLAUDE4.md — section deploiement, favicon auto, backlog a jour:*)"
+      "Bash(wsl -d Ubuntu -e bash -lc 'cd /home/laign/projects/blog_web && git commit -m \"\"Doc: CLAUDE.md + CLAUDE4.md — section deploiement, favicon auto, backlog a jour:*)",
+      "mcp__Claude_in_Chrome__browser_batch"
     ]
   }
 }
