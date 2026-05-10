@@ -141,6 +141,37 @@
   }
 }
 
+// ─── Nested dropdowns (level 2 sub-menus) ──────────────────────────────────
+.header-nav .dropdown-menu .dropend {
+  position: relative;
+
+  > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -0.5rem;
+    margin-left: 0;
+  }
+
+  > .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &::after {
+      border-top: 0.3em solid transparent;
+      border-right: 0;
+      border-bottom: 0.3em solid transparent;
+      border-left: 0.3em solid;
+      margin-left: 0.75rem;
+    }
+  }
+
+  &:hover > .dropdown-menu,
+  &:focus-within > .dropdown-menu {
+    display: block;
+  }
+}
+
 // ─── Fix alignement des liens avec sous-menu (cross-themes) ────────────────
 // Le pattern commun <div class="dropdown"><a class="<nav-link> dropdown-toggle">
 // fait que le <div> wrapper devient l'enfant direct du conteneur nav au lieu
