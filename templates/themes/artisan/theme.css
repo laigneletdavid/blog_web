@@ -102,7 +102,7 @@
     background: var(--primary);
     background-size: cover;
     background-position: center;
-    color: #fff;
+    color: var(--text, #1e293b);
 }
 .theme-artisan .art-hero__overlay {
     position: absolute;
