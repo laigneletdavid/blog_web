@@ -102,7 +102,7 @@
     background: var(--primary);
     background-size: cover;
     background-position: center;
-    color: var(--text, #1e293b);
+    color: #fff;
 }
 .theme-artisan .art-hero__overlay {
     position: absolute;
@@ -555,7 +555,7 @@
 }
 .theme-artisan .directory-card__badge {
     background: var(--accent);
-    color: #fff;
+    color: var(--text, #1e293b);
     border-radius: 1rem;
 }
 .theme-artisan .directory-detail__name {
