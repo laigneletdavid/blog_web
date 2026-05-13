@@ -60,8 +60,32 @@ if [[ "${1:-}" == "--init" ]]; then
 
     echo ""
     echo "--- Configuration Mailer ---"
-    read -rp "MAILER_DSN Brevo (laisser vide pour skip) : " MAILER_DSN
-    MAILER_DSN="${MAILER_DSN:-smtp://localhost:1025}"
+    # Chercher un MAILER_DSN existant dans les autres sites BlogWeb du meme hebergement
+    EXISTING_DSN=""
+    for envfile in "$HOME"/*/.env.local; do
+        [ -f "$envfile" ] || continue
+        [ "$envfile" = "$SITE_DIR/.env.local" ] && continue
+        DSN_FOUND=$(grep '^MAILER_DSN=' "$envfile" 2>/dev/null | head -1 | sed 's/MAILER_DSN=//')
+        if [ -n "$DSN_FOUND" ] && [ "$DSN_FOUND" != "smtp://localhost:1025" ]; then
+            EXISTING_DSN="$DSN_FOUND"
+            echo "[auto] MAILER_DSN trouve dans $(basename "$(dirname "$envfile")")/.env.local"
+            break
+        fi
+    done
+    if [ -n "$EXISTING_DSN" ]; then
+        echo "       → $EXISTING_DSN"
+        echo "       Utiliser ce DSN ? (Y/n)"
+        read -r REPLY
+        if [[ "$REPLY" =~ ^[Nn]$ ]]; then
+            read -rp "MAILER_DSN Brevo : " MAILER_DSN
+            MAILER_DSN="${MAILER_DSN:-smtp://localhost:1025}"
+        else
+            MAILER_DSN="$EXISTING_DSN"
+        fi
+    else
+        read -rp "MAILER_DSN Brevo (laisser vide pour skip) : " MAILER_DSN
+        MAILER_DSN="${MAILER_DSN:-smtp://localhost:1025}"
+    fi
 
     # Generer APP_SECRET
     APP_SECRET=$(php -r "echo bin2hex(random_bytes(16));")
