@@ -4,27 +4,17 @@ namespace App\Service;
 
 use App\Entity\Article;
 use App\Repository\SubscriberRepository;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- * Envoie un email de notification aux abonnes
- * quand un nouvel article est publie.
- */
 class ArticleNotificationService
 {
     public function __construct(
-        private readonly MailerInterface $mailer,
+        private readonly SystemMailerService $systemMailer,
         private readonly SubscriberRepository $subscriberRepository,
-        private readonly SiteContext $siteContext,
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
-    /**
-     * Notifie les subscribers actifs abonnes aux articles.
-     */
     public function notifySubscribers(Article $article): void
     {
         $subscribers = $this->subscriberRepository->findActiveArticleSubscribers();
@@ -33,13 +23,9 @@ class ArticleNotificationService
             return;
         }
 
-        $site = $this->siteContext->getCurrentSite();
-        $siteName = $site?->getName() ?? 'Blog & Web';
-        $siteEmail = $site?->getEmail() ?? 'noreply@blogweb.fr';
+        $siteName = $this->systemMailer->getSiteName();
 
         foreach ($subscribers as $subscriber) {
-            $email = $subscriber->getEmail();
-
             $unsubscribeUrl = $this->urlGenerator->generate('app_unsubscribe', [
                 'token' => $subscriber->getToken(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -48,13 +34,11 @@ class ArticleNotificationService
                 'token' => $subscriber->getToken(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-            $message = (new Email())
-                ->from($siteEmail)
-                ->to($email)
-                ->subject("{$siteName} — Nouvel article : {$article->getTitle()}")
+            $message = $this->systemMailer->createEmail("{$siteName} — Nouvel article : {$article->getTitle()}")
+                ->to($subscriber->getEmail())
                 ->html($this->buildEmailBody($article, $siteName, $unsubscribeUrl, $manageUrl));
 
-            $this->mailer->send($message);
+            $this->systemMailer->send($message);
         }
     }
 
