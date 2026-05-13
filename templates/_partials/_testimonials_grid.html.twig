@@ -8,12 +8,11 @@
             <div class="home-testimonial__quote">&ldquo;</div>
             <p class="home-testimonial__text">{{ item.content }}</p>
             <div class="home-testimonial__author">
-                {% if item.media %}
-                <img src="{{ asset('documents/medias/' ~ item.media.fileName) }}"
-                     alt="{{ item.title|default('') }}"
-                     class="home-testimonial__avatar" loading="lazy"/>
-                {% endif %}
-                <strong>{{ item.title|default('Client') }}</strong>
+                {% set _name = item.title|default('Client') %}
+                {% set _parts = _name|split(' ') %}
+                {% set _initials = _parts|first|slice(0,1)|upper ~ (_parts|length > 1 ? _parts|last|slice(0,1)|upper : '') %}
+                <span class="home-testimonial__initials">{{ _initials }}</span>
+                <strong>{{ _name }}</strong>
             </div>
         </div>
     </div>

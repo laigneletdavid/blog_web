@@ -180,6 +180,11 @@ h1, h2, h3, h4, h5, h6,
     gap: 0.6rem;
 }
 
+/* ====== TESTIMONIAL INITIALS BADGES ====== */
+.home-testimonial:nth-child(1) .home-testimonial__initials { background: #0A6BFF; }
+.home-testimonial:nth-child(2) .home-testimonial__initials { background: #F5A623; }
+.home-testimonial:nth-child(3) .home-testimonial__initials { background: #0550CC; }
+
 /* Fix: btn-primary text must be white everywhere */
 .btn-primary,
 .btn-primary:hover,
