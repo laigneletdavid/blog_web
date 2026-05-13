@@ -9,12 +9,11 @@ use App\Form\CheckoutType;
 use App\Service\CartService;
 use App\Service\SiteContext;
 use App\Service\StripeService;
+use App\Service\SystemMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 
 class CheckoutController extends AbstractController
@@ -23,7 +22,7 @@ class CheckoutController extends AbstractController
         private readonly CartService $cartService,
         private readonly SiteContext $siteContext,
         private readonly EntityManagerInterface $em,
-        private readonly MailerInterface $mailer,
+        private readonly SystemMailerService $systemMailer,
         private readonly StripeService $stripeService,
     ) {
     }
@@ -50,7 +49,6 @@ class CheckoutController extends AbstractController
             $data = $form->getData();
             $paymentMethod = PaymentMethodEnum::from($data['paymentMethod']);
 
-            // Creer la commande
             $order = new Order();
             $order->setReference(Order::generateReference());
             $order->setCustomerFirstName($data['firstName']);
@@ -68,19 +66,16 @@ class CheckoutController extends AbstractController
             $this->em->persist($order);
             $this->em->flush();
 
-            // Stripe : redirect vers Checkout Session
             if ($paymentMethod === PaymentMethodEnum::STRIPE && $this->stripeService->isConfigured()) {
                 try {
                     $checkoutUrl = $this->stripeService->createCheckoutSession($order);
                     $order->setStripeSessionId($checkoutUrl);
                     $this->em->flush();
 
-                    // Vider le panier avant redirect Stripe
                     $this->cartService->clear();
 
                     return $this->redirect($checkoutUrl);
                 } catch (\Throwable $e) {
-                    // Stripe echoue → fallback paiement manuel
                     $order->setPaymentMethod(PaymentMethodEnum::MANUAL);
                     $this->em->flush();
 
@@ -88,7 +83,6 @@ class CheckoutController extends AbstractController
                 }
             }
 
-            // Paiement manuel : emails + confirmation
             $this->sendConfirmationEmails($order);
             $this->cartService->clear();
 
@@ -140,9 +134,6 @@ class CheckoutController extends AbstractController
         ]);
     }
 
-    /**
-     * Webhook Stripe — appele par Stripe apres paiement.
-     */
     #[Route('/webhook/stripe', name: 'app_stripe_webhook', methods: ['POST'])]
     public function stripeWebhook(Request $request): Response
     {
@@ -166,7 +157,6 @@ class CheckoutController extends AbstractController
                     $order->setStripeSessionId($session->id);
                     $this->em->flush();
 
-                    // Envoyer les emails maintenant que le paiement est confirme
                     $this->sendConfirmationEmails($order);
                 }
             }
@@ -177,43 +167,32 @@ class CheckoutController extends AbstractController
 
     private function sendConfirmationEmails(Order $order): void
     {
-        $site = $this->siteContext->getCurrentSite();
-        $siteName = $site?->getName() ?? 'Mon site';
-        $siteEmail = $site?->getEmail();
+        $siteName = $this->systemMailer->getSiteName();
+        $siteEmail = $this->systemMailer->getSiteEmail();
 
-        // Email client
         try {
-            $clientEmail = (new Email())
+            $clientEmail = $this->systemMailer->createEmail("Confirmation de commande {$order->getReference()} - {$siteName}")
                 ->to($order->getCustomerEmail())
-                ->subject("Confirmation de commande {$order->getReference()} - {$siteName}")
                 ->html($this->renderView('emails/order_confirmation.html.twig', [
                     'order' => $order,
                     'siteName' => $siteName,
                 ]));
 
-            if ($siteEmail) {
-                $clientEmail->from($siteEmail);
-            }
-
-            $this->mailer->send($clientEmail);
+            $this->systemMailer->send($clientEmail);
         } catch (\Throwable) {
-            // Silent fail
         }
 
-        // Email admin
         if ($siteEmail) {
             try {
-                $adminEmail = (new Email())
+                $adminEmail = $this->systemMailer->createEmail("Nouvelle commande {$order->getReference()}")
                     ->to($siteEmail)
-                    ->subject("Nouvelle commande {$order->getReference()}")
                     ->html($this->renderView('emails/order_admin_notification.html.twig', [
                         'order' => $order,
                         'siteName' => $siteName,
                     ]));
 
-                $this->mailer->send($adminEmail);
+                $this->systemMailer->send($adminEmail);
             } catch (\Throwable) {
-                // Silent fail
             }
         }
     }

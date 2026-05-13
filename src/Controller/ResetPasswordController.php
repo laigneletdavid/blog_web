@@ -4,13 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\PassType;
+use App\Service\SystemMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
@@ -29,7 +28,7 @@ class ResetPasswordController extends AbstractController
     }
 
     #[Route('', name: 'app_forgot_password_request')]
-    public function request(Request $request, MailerInterface $mailer): Response
+    public function request(Request $request, SystemMailerService $systemMailer): Response
     {
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email', '');
@@ -40,8 +39,10 @@ class ResetPasswordController extends AbstractController
                 try {
                     $resetToken = $this->resetPasswordHelper->generateResetToken($user);
 
-                    $emailMessage = (new TemplatedEmail())
-                        ->from(new Address('noreply@blogweb.fr', 'Blog & Web'))
+                    $emailMessage = $systemMailer->createEmail('Réinitialisation de votre mot de passe');
+
+                    $templatedEmail = (new TemplatedEmail())
+                        ->from($emailMessage->getFrom()[0])
                         ->to($user->getEmail())
                         ->subject('Réinitialisation de votre mot de passe')
                         ->htmlTemplate('reset_password/email.html.twig')
@@ -49,7 +50,12 @@ class ResetPasswordController extends AbstractController
                             'resetToken' => $resetToken,
                         ]);
 
-                    $mailer->send($emailMessage);
+                    $replyTo = $emailMessage->getReplyTo();
+                    if ($replyTo) {
+                        $templatedEmail->replyTo($replyTo[0]);
+                    }
+
+                    $systemMailer->send($templatedEmail);
 
                     $this->setTokenObjectInSession($resetToken);
                 } catch (ResetPasswordExceptionInterface) {
