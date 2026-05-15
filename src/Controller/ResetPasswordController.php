@@ -34,7 +34,6 @@ class ResetPasswordController extends AbstractController
             $email = $request->request->get('email', '');
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
 
-            // Always redirect to check-email to avoid user enumeration
             if ($user) {
                 try {
                     $resetToken = $this->resetPasswordHelper->generateResetToken($user);
