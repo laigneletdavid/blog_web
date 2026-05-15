@@ -6,13 +6,12 @@ use App\Entity\Subscriber;
 use App\Form\Type\SubscribeType;
 use App\Repository\SubscriberRepository;
 use App\Service\SiteContext;
+use App\Service\SystemMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,14 +22,11 @@ class SubscribeController extends AbstractController
         private readonly SiteContext $siteContext,
         private readonly EntityManagerInterface $em,
         private readonly SubscriberRepository $subscriberRepository,
-        private readonly MailerInterface $mailer,
+        private readonly SystemMailerService $systemMailer,
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
-    /**
-     * Traitement du formulaire d'abonnement (POST uniquement).
-     */
     #[Route('/subscribe', name: 'app_subscribe', methods: ['POST'])]
     public function subscribe(
         Request $request,
@@ -45,7 +41,6 @@ class SubscribeController extends AbstractController
             // Honeypot check
             $honeypot = $form->get('website')->getData();
             if ($honeypot) {
-                // Bot detecte — on fait semblant que tout va bien
                 $this->addFlash('success', 'Un email de confirmation vous a ete envoye.');
 
                 return $this->redirect($this->getReferer($request));
@@ -63,24 +58,20 @@ class SubscribeController extends AbstractController
             $submitted = $form->getData();
             $email = $submitted->getEmail();
 
-            // Verifier si l'email existe deja
             $existing = $this->subscriberRepository->findByEmail($email);
 
             if ($existing) {
-                // Mettre a jour les preferences
                 $this->updatePreferences($existing, $submitted);
 
                 if ($existing->isActive()) {
                     $this->addFlash('success', 'Vos preferences ont ete mises a jour.');
                 } else {
-                    // Pas encore confirme — renvoyer l'email
                     $this->sendConfirmationEmail($existing);
                     $this->addFlash('info', 'Un email de confirmation vous a ete renvoye. Verifiez votre boite mail.');
                 }
 
                 $this->em->flush();
             } else {
-                // Nouvel abonne
                 $this->em->persist($submitted);
                 $this->em->flush();
 
@@ -91,15 +82,11 @@ class SubscribeController extends AbstractController
             return $this->redirect($this->getReferer($request));
         }
 
-        // Formulaire invalide — redirect avec erreur generique
         $this->addFlash('error', 'Veuillez verifier votre adresse email.');
 
         return $this->redirect($this->getReferer($request));
     }
 
-    /**
-     * Confirmation de l'abonnement via le lien email (double opt-in).
-     */
     #[Route('/subscribe/confirm/{token}', name: 'app_subscribe_confirm', methods: ['GET'])]
     public function confirm(string $token): Response
     {
@@ -123,9 +110,6 @@ class SubscribeController extends AbstractController
         ]);
     }
 
-    /**
-     * Desinscription en un clic depuis un email.
-     */
     #[Route('/unsubscribe/{token}', name: 'app_unsubscribe', methods: ['GET'])]
     public function unsubscribe(string $token): Response
     {
@@ -146,9 +130,6 @@ class SubscribeController extends AbstractController
         ]);
     }
 
-    /**
-     * Page de gestion des preferences via token (sans connexion).
-     */
     #[Route('/subscribe/manage/{token}', name: 'app_subscribe_manage', methods: ['GET', 'POST'])]
     public function manage(Request $request, string $token): Response
     {
@@ -164,7 +145,6 @@ class SubscribeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // S'assurer que le subscriber est actif s'il gere ses preferences
             if (!$subscriber->isActive()) {
                 $subscriber->confirm();
             }
@@ -184,10 +164,6 @@ class SubscribeController extends AbstractController
         ]);
     }
 
-    /**
-     * Widget formulaire d'abonnement (appele via render(controller(...))).
-     * Pas de route — utilise comme sub-request Twig.
-     */
     public function widget(): Response
     {
         $form = $this->createForm(SubscribeType::class, new Subscriber(), [
@@ -200,9 +176,6 @@ class SubscribeController extends AbstractController
         ]);
     }
 
-    /**
-     * Retourne les modules actifs utiles pour les abonnements.
-     */
     private function getActiveModules(): array
     {
         $modules = [];
@@ -217,9 +190,6 @@ class SubscribeController extends AbstractController
         return $modules;
     }
 
-    /**
-     * Met a jour les preferences d'un subscriber existant.
-     */
     private function updatePreferences(Subscriber $existing, Subscriber $submitted): void
     {
         if ($this->siteContext->hasModule('blog')) {
@@ -230,26 +200,19 @@ class SubscribeController extends AbstractController
         }
     }
 
-    /**
-     * Envoie l'email de confirmation (double opt-in).
-     */
     private function sendConfirmationEmail(Subscriber $subscriber): void
     {
-        $site = $this->siteContext->getCurrentSite();
-        $siteName = $site?->getName() ?? 'Blog & Web';
-        $siteEmail = $site?->getEmail() ?? 'noreply@blogweb.fr';
+        $siteName = $this->systemMailer->getSiteName();
 
         $confirmUrl = $this->urlGenerator->generate('app_subscribe_confirm', [
             'token' => $subscriber->getToken(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $email = (new Email())
-            ->from($siteEmail)
+        $email = $this->systemMailer->createEmail("{$siteName} — Confirmez votre abonnement")
             ->to($subscriber->getEmail())
-            ->subject("{$siteName} — Confirmez votre abonnement")
             ->html($this->buildConfirmationEmailBody($siteName, $confirmUrl));
 
-        $this->mailer->send($email);
+        $this->systemMailer->send($email);
     }
 
     private function buildConfirmationEmailBody(string $siteName, string $confirmUrl): string

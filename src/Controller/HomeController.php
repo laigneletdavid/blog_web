@@ -12,11 +12,10 @@ use App\Repository\ServiceRepository;
 use App\Service\RecaptchaValidator;
 use App\Service\SeoService;
 use App\Service\SiteContext;
+use App\Service\SystemMailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,7 +46,7 @@ class HomeController extends AbstractController
     #[Route('/contact', name: 'app_contact')]
     public function contact(
         Request $request,
-        MailerInterface $mailer,
+        SystemMailerService $systemMailer,
         SiteContext $siteContext,
         RecaptchaValidator $recaptchaValidator,
         FaqRepository $faqRepository,
@@ -83,14 +82,12 @@ class HomeController extends AbstractController
             $data = $form->getData();
 
             $site = $siteContext->getCurrentSite();
-            $recipientEmail = $site?->getEmail() ?? 'contact@blogweb.fr';
-            $siteName = $site?->getName() ?? 'Blog & Web';
+            $recipientEmail = $site?->getEmail() ?? 'contact@comwebsolutions.fr';
+            $siteName = $systemMailer->getSiteName();
 
-            $email = (new Email())
-                ->from('noreply@blogweb.fr')
+            $email = $systemMailer->createEmail("[{$siteName}] Contact : {$data['subject']}")
                 ->replyTo($data['email'])
                 ->to($recipientEmail)
-                ->subject("[{$siteName}] Contact : {$data['subject']}")
                 ->html(sprintf(
                     '<p><strong>De :</strong> %s %s (%s)</p><p><strong>Sujet :</strong> %s</p><hr><p>%s</p>',
                     htmlspecialchars($data['firstname'], ENT_QUOTES, 'UTF-8'),
@@ -100,7 +97,7 @@ class HomeController extends AbstractController
                     nl2br(htmlspecialchars($data['message'], ENT_QUOTES, 'UTF-8'))
                 ));
 
-            $mailer->send($email);
+            $systemMailer->send($email);
 
             $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
 

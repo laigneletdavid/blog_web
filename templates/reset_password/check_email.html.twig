@@ -5,12 +5,20 @@
 {% block body %}
 <div class="container">
     <div class="security mb-5">
-        <h1 class="title_form mb-3">E-mail envoyé !</h1>
-        <p>Si un compte existe avec cette adresse, un e-mail a été envoyé avec un lien pour réinitialiser votre mot de passe.</p>
+        <div class="text-center mb-4">
+            <i class="bi bi-envelope-check" style="font-size: 3rem; color: var(--bs-success);"></i>
+        </div>
+        <h1 class="title_form mb-3 text-center">E-mail envoyé !</h1>
+        <div class="alert alert-success">
+            <p class="mb-0">Si un compte existe avec cette adresse, un e-mail a été envoyé avec un lien pour réinitialiser votre mot de passe.</p>
+        </div>
         {% if tokenLifetime %}
-            <p>Ce lien expire dans <strong>{{ tokenLifetime / 3600 }} heure(s)</strong>.</p>
+            <p class="text-center text-muted">Ce lien expire dans <strong>{{ (tokenLifetime / 3600)|round }} heure(s)</strong>.</p>
         {% endif %}
-        <a href="{{ path('app_login') }}" class="btn btn-primary">Retour à la connexion</a>
+        <p class="text-center text-muted small">Pensez à vérifier vos spams si vous ne trouvez pas l'e-mail.</p>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_login') }}" class="btn btn-primary">Retour à la connexion</a>
+        </div>
     </div>
 </div>
 {% endblock %}
