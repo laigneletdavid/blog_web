@@ -23,7 +23,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="inputPassword">Votre mot de passe</label>
-                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                    <div class="input-group">
+                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                        <button class="btn btn-outline-secondary d-flex align-items-center" type="button" id="togglePassword" aria-label="Afficher le mot de passe">
+                            <span id="iconEye">{{ bi('eye') }}</span>
+                            <span id="iconEyeSlash" style="display:none;">{{ bi('eye-slash') }}</span>
+                        </button>
+                    </div>
                 </div>
                 <input type="hidden" name="_csrf_token"
                        value="{{ csrf_token('authenticate') }}"
@@ -38,4 +44,21 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            var input = document.getElementById('inputPassword');
+            var iconEye = document.getElementById('iconEye');
+            var iconEyeSlash = document.getElementById('iconEyeSlash');
+            if (input.type === 'password') {
+                input.type = 'text';
+                iconEye.style.display = 'none';
+                iconEyeSlash.style.display = '';
+            } else {
+                input.type = 'password';
+                iconEye.style.display = '';
+                iconEyeSlash.style.display = 'none';
+            }
+        });
+    </script>
 {% endblock %}

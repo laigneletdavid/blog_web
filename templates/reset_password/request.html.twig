@@ -10,6 +10,9 @@
         {% for flash_message in app.flashes('danger') %}
             <div class="alert alert-danger">{{ flash_message }}</div>
         {% endfor %}
+        {% for flash_message in app.flashes('success') %}
+            <div class="alert alert-success">{{ flash_message }}</div>
+        {% endfor %}
 
         <p>Entrez votre adresse e-mail, nous vous enverrons un lien pour réinitialiser votre mot de passe.</p>
 

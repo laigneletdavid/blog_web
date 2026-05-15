@@ -196,6 +196,24 @@ Le champ `Site.logoDark` (optionnel) est utilise dans les footers : `site.logoDa
 
 Le champ favicon manuel a ete supprime du CRUD Site.
 
+## Mailer (Brevo centralise)
+
+Un seul compte Brevo pour tous les sites BlogWeb. Le transport utilise l'API HTTP (`brevo+api://`), pas SMTP.
+
+- **`SystemMailerService`** : service centralise pour tous les envois mail
+  - `from` : `noreply@comwebsolutions.fr` (expediteur unique verifie dans Brevo)
+  - `reply-to` : dynamique, l'email du site client (pour que les reponses arrivent chez le bon client)
+  - Nom d'affichage : le nom du site client
+- **DSN** : `MAILER_DSN=brevo+api://CLE_API@default` dans `.env.local` de chaque site
+- **Variables optionnelles** : `MAILER_SENDER_EMAIL` et `MAILER_SENDER_NAME` (defaut: `noreply@comwebsolutions.fr` / `ComWeb Solutions`)
+- **Messenger** : mails en **sync** (pas de queue async — jamais consommee sur OVH mutualise)
+- **Config** : `mailer.yaml` definit `envelope.sender` + `headers.From` globalement
+- **Contrainte OVH** : les ports sortants (443, 465, 587) sont bloques en **SSH/CLI** mais ouverts depuis le **serveur web** (PHP-FPM/CGI). `mailer:test` en CLI echouera toujours sur OVH mutualise.
+- **Contrainte Brevo** : restriction IP activee — chaque IP serveur doit etre autorisee dans Brevo → Parametres → Securite → IPs autorisees
+- **DNS requis** : SPF (`include:spf.brevo.com`), DKIM (CNAME `brevo1._domainkey` + `brevo2._domainkey`), DMARC
+
+Fichiers concernes : `SystemMailerService`, `HomeController`, `ResetPasswordController`, `RegistrationController`, `SubscribeController`, `CheckoutController`, `ArticleNotificationService`, `EventNotificationService`.
+
 ## Deploiement (deploy-ovh.sh)
 
 Script unique `scripts/deploy-ovh.sh` avec 3 modes. Detail complet dans `DEPLOY_REFERENCE.md`.

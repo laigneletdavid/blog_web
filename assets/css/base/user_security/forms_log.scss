@@ -25,6 +25,14 @@
   .form-control {
     margin-bottom: 0.25rem;
   }
+
+  // Inside input-group, remove margin so field and button align
+  .input-group .form-control {
+    margin-bottom: 0;
+  }
+  .input-group .btn {
+    border-color: var(--border, #dee2e6);
+  }
 }
 
 .title_form {
