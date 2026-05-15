@@ -74,9 +74,9 @@ cp .env.local.example .env.local
 Editer `.env.local` :
 - `APP_SECRET` : generer une cle unique (`openssl rand -hex 32`)
 - `DATABASE_URL` : adapter le nom de la BDD pour ce client (`blog_client_x`)
-- `MAILER_DSN` : cle API Brevo pour les emails transactionnels
+- `MAILER_DSN` : `brevo+api://CLE_API@default` (un seul compte Brevo centralise pour tous les sites, cle API commune)
 
-> **Note pour Claude Code / agent :** les 3 valeurs ci-dessus doivent etre fournies par l'utilisateur ou generees. `APP_SECRET` peut etre genere avec `openssl rand -hex 32`. `DATABASE_URL` doit avoir un nom de BDD unique par client. `MAILER_DSN` necessite un compte Brevo.
+> **Note pour Claude Code / agent :** les 3 valeurs ci-dessus doivent etre fournies par l'utilisateur ou generees. `APP_SECRET` peut etre genere avec `openssl rand -hex 32`. `DATABASE_URL` doit avoir un nom de BDD unique par client. `MAILER_DSN` utilise le compte Brevo centralise ComWeb Solutions (meme cle API pour tous les sites). L'expediteur est `noreply@comwebsolutions.fr` avec reply-to dynamique vers l'email du site client.
 
 ### 3. Lancer Docker + BDD + Assets
 

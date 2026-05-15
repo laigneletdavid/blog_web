@@ -10,6 +10,10 @@ parameters:
         recaptcha_secret_key: '%env(default:empty_string:RECAPTCHA_SECRET_KEY)%'
         recaptcha_site_key: '%env(default:empty_string:RECAPTCHA_SITE_KEY)%'
         empty_string: ''
+        mailer_sender_email: '%env(default:default_sender_email:MAILER_SENDER_EMAIL)%'
+        mailer_sender_name: '%env(default:default_sender_name:MAILER_SENDER_NAME)%'
+        default_sender_email: 'noreply@comwebsolutions.fr'
+        default_sender_name: 'ComWeb Solutions'
 
 services:
     # default configuration for services in *this* file
@@ -78,5 +82,7 @@ services:
             $recaptchaSecretKey: '%recaptcha_secret_key%'
             $recaptchaSiteKey: '%recaptcha_site_key%'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Service\SystemMailerService:
+        arguments:
+            $senderEmail: '%mailer_sender_email%'
+            $senderName: '%mailer_sender_name%'

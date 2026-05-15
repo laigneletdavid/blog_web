@@ -4,13 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Service\SiteContext;
+use App\Service\SystemMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
@@ -23,8 +21,7 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
         VerifyEmailHelperInterface $verifyEmailHelper,
-        MailerInterface $mailer,
-        SiteContext $siteContext,
+        SystemMailerService $systemMailer,
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -48,14 +45,10 @@ class RegistrationController extends AbstractController
                 ['id' => $user->getId()],
             );
 
-            $site = $siteContext->getCurrentSite();
-            $siteName = $site?->getName() ?? 'Blog & Web';
-            $siteEmail = $site?->getEmail() ?? 'noreply@blogweb.fr';
+            $siteName = $systemMailer->getSiteName();
 
-            $email = (new Email())
-                ->from($siteEmail)
+            $email = $systemMailer->createEmail("{$siteName} — Confirmez votre adresse email")
                 ->to($user->getEmail())
-                ->subject("{$siteName} — Confirmez votre adresse email")
                 ->html(sprintf(
                     '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <h2 style="color: #2563EB;">%s</h2>
@@ -68,7 +61,7 @@ class RegistrationController extends AbstractController
                     $signatureComponents->getSignedUrl(),
                 ));
 
-            $mailer->send($email);
+            $systemMailer->send($email);
 
             $this->addFlash(
                 'success',
