@@ -135,7 +135,7 @@ A collecter avant le deploy :
 | User BDD | OVH > CloudDB > Utilisateurs | DATABASE_URL |
 | Password BDD | OVH > CloudDB > Utilisateurs | DATABASE_URL |
 | Nom BDD | OVH > CloudDB > Bases de donnees | DATABASE_URL |
-| MAILER_DSN | Brevo > SMTP & API | Emails transactionnels |
+| MAILER_DSN | `brevo+api://CLE_API@default` (cle API commune ComWeb) | Emails transactionnels (expediteur: noreply@comwebsolutions.fr) |
 | SSH host | OVH > Hebergement > FTP-SSH | Connexion SSH |
 | SSH user | OVH > Hebergement > FTP-SSH | Connexion SSH |
 | SSH password | OVH > Hebergement > FTP-SSH | Connexion SSH |
