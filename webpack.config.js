@@ -26,6 +26,7 @@ Encore
     .addEntry('admin_fonts', './assets/admin/font-picker.js')
     .addEntry('admin_icons', './assets/admin/icon-picker.js')
     .addEntry('admin_dashboard', './assets/admin/admin-dashboard.js')
+    .addEntry('admin_walkthrough', './assets/admin/admin-walkthrough.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
