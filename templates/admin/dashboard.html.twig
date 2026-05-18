@@ -34,7 +34,27 @@
 {% endblock %}
 
 {% block main %}
-<div class="bw-dashboard">
+<div class="bw-dashboard"
+     data-walkthrough-steps="{{ tourSteps|json_encode|e('html_attr') }}"
+     data-walkthrough-complete-url="{{ path('admin_tour_complete') }}">
+
+    {# --- Bouton Lancer le guide --- #}
+    {% if not tourCompleted %}
+    <div class="bw-tour-banner mb-3" data-tour="banner">
+        <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%); border: 1px solid #bfdbfe;">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-route" style="color: #2563eb; font-size: 1.3rem;"></i>
+                <div>
+                    <strong style="color: #1e40af;">Première visite ?</strong>
+                    <span class="text-muted ms-1">Découvrez l'interface en 2 minutes.</span>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" data-action="walkthrough-start">
+                <i class="fas fa-play me-1"></i>Lancer le guide
+            </button>
+        </div>
+    </div>
+    {% endif %}
 
     {# --- Tip contextuel rotatif --- #}
     <div class="bw-tip" id="dashboardTip" style="display:none;">
@@ -274,6 +294,12 @@
                         </span>
                         Consulter le guide
                     </a>
+                    <button type="button" class="bw-quick-action" data-action="walkthrough-start" style="border: none; cursor: pointer;">
+                        <span class="bw-quick-action__icon" style="background: #dbeafe; color: #2563eb;">
+                            <i class="fas fa-route"></i>
+                        </span>
+                        Visite guidée
+                    </button>
                 </div>
             </div>
         </div>

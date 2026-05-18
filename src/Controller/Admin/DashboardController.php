@@ -29,6 +29,7 @@ use App\Repository\MenuRepository;
 use App\Service\AdminStatsService;
 use App\Service\SiteContext;
 use App\Service\ThemeService;
+use App\Service\WalkthroughService;
 use App\Controller\Admin\ModulesCrudController;
 use App\Controller\Admin\SiteCrudController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,6 +40,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -52,6 +54,7 @@ class DashboardController extends AbstractDashboardController
         private ThemeService $themeService,
         private \App\Repository\OrderRepository $orderRepository,
         private AdminStatsService $adminStatsService,
+        private WalkthroughService $walkthroughService,
     ) {
     }
 
@@ -80,6 +83,10 @@ class DashboardController extends AbstractDashboardController
         $currentYear = (int) date('Y');
         $availableYears = range($currentYear, $currentYear - 3);
 
+        $tourSteps = $this->walkthroughService->getStepsForCurrentUser();
+        $user = $this->getUser();
+        $tourCompleted = $user instanceof User && $user->isTourCompleted();
+
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
@@ -88,7 +95,35 @@ class DashboardController extends AbstractDashboardController
             'topPagesPeriod' => $topPagesPeriod,
             'topPagesYear' => $topPagesYear,
             'availableYears' => $availableYears,
+            'tourSteps' => $tourSteps,
+            'tourCompleted' => $tourCompleted,
         ]);
+    }
+
+    #[Route('/admin/api/tour/complete', name: 'admin_tour_complete', methods: ['POST'])]
+    #[IsGranted('ROLE_AUTHOR')]
+    public function tourComplete(EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $user->setTourCompleted(true);
+            $em->flush();
+        }
+
+        return new JsonResponse(['ok' => true]);
+    }
+
+    #[Route('/admin/api/tour/reset', name: 'admin_tour_reset', methods: ['POST'])]
+    #[IsGranted('ROLE_AUTHOR')]
+    public function tourReset(EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $user->setTourCompleted(false);
+            $em->flush();
+        }
+
+        return new JsonResponse(['ok' => true]);
     }
 
     #[Route('/admin/guide', name: 'admin_guide')]
@@ -260,8 +295,10 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         // --- Navigation ---
-        yield MenuItem::linkToUrl('Tableau de bord', 'fa fa-gauge', $this->generateUrl('admin'));
-        yield MenuItem::linkToUrl('Aller sur le site', 'fa fa-external-link-alt', $this->generateUrl('app_home'));
+        yield MenuItem::linkToUrl('Tableau de bord', 'fa fa-gauge', $this->generateUrl('admin'))
+            ->setCssClass('tour-menu-dashboard');
+        yield MenuItem::linkToUrl('Aller sur le site', 'fa fa-external-link-alt', $this->generateUrl('app_home'))
+            ->setCssClass('tour-menu-visit-site');
 
         // --- Contenu ---
         yield MenuItem::section('Contenu');
@@ -271,19 +308,22 @@ class DashboardController extends AbstractDashboardController
                 yield MenuItem::subMenu('Blog', 'fas fa-newspaper')->setSubItems([
                     MenuItem::linkToCrud('Articles', 'fas fa-pen-to-square', Article::class),
                     MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', Categorie::class),
-                ]);
+                ])->setCssClass('tour-menu-blog');
                 // Tags geres dans Contenu > Classification (transverse multi-modules, ROLE_ADMIN)
             }
-            yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class);
-            yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class);
-            yield MenuItem::linkToCrud('Documents', 'fas fa-file-arrow-down', Document::class);
+            yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class)
+                ->setCssClass('tour-menu-pages');
+            yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class)
+                ->setCssClass('tour-menu-medias');
+            yield MenuItem::linkToCrud('Documents', 'fas fa-file-arrow-down', Document::class)
+                ->setCssClass('tour-menu-documents');
 
             // Classification transverse (tags partages entre modules + familles)
             if ($this->isGranted('ROLE_ADMIN')) {
                 yield MenuItem::subMenu('Classification', 'fas fa-layer-group')->setSubItems([
                     MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class),
                     MenuItem::linkToCrud('Familles de tags', 'fas fa-object-group', TagGroup::class),
-                ]);
+                ])->setCssClass('tour-menu-classification');
             }
         } elseif ($this->isGranted('ROLE_AUTHOR')) {
             if ($this->siteContext->hasModule('blog')) {
@@ -304,7 +344,8 @@ class DashboardController extends AbstractDashboardController
         );
 
         if ($hasModules) {
-            yield MenuItem::section('Modules');
+            yield MenuItem::section('Modules')
+                ->setCssClass('tour-menu-modules-section');
 
             if ($this->siteContext->hasModule('services')) {
                 yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Service::class);
@@ -362,9 +403,11 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::linkToCrud('Identité du site', 'fas fa-building', Site::class)
                 ->setController(SiteCrudController::class)
                 ->setAction(Crud::PAGE_EDIT)
-                ->setEntityId($this->siteContext->getCurrentSiteId());
+                ->setEntityId($this->siteContext->getCurrentSiteId())
+                ->setCssClass('tour-menu-site-identity');
 
-            yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager');
+            yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager')
+                ->setCssClass('tour-menu-navigation');
         }
 
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -384,11 +427,13 @@ class DashboardController extends AbstractDashboardController
             if ($this->isGranted('ROLE_FREELANCE')) {
                 array_unshift(
                     $apparenceItems,
-                    MenuItem::linkToRoute('Catalogue de themes', 'fas fa-swatchbook', 'admin_theme_browser'),
+                    MenuItem::linkToRoute('Catalogue de themes', 'fas fa-swatchbook', 'admin_theme_browser')
+                        ->setCssClass('tour-menu-theme-catalog'),
                 );
             }
 
-            yield MenuItem::subMenu('Apparence', 'fas fa-palette')->setSubItems($apparenceItems);
+            yield MenuItem::subMenu('Apparence', 'fas fa-palette')->setSubItems($apparenceItems)
+                ->setCssClass('tour-menu-apparence');
 
             if ($this->isGranted('ROLE_SUPER_ADMIN')) {
                 yield MenuItem::linkToCrud('Modules', 'fas fa-puzzle-piece', Site::class)
@@ -400,7 +445,8 @@ class DashboardController extends AbstractDashboardController
 
         // --- Aide ---
         yield MenuItem::section('Aide');
-        yield MenuItem::linkToRoute('Guide', 'fas fa-book-open', 'admin_guide');
+        yield MenuItem::linkToRoute('Guide', 'fas fa-book-open', 'admin_guide')
+            ->setCssClass('tour-menu-guide');
     }
 
     public function configureAssets(): Assets
@@ -410,6 +456,7 @@ class DashboardController extends AbstractDashboardController
             ->addWebpackEncoreEntry('admin_menu')
             ->addWebpackEncoreEntry('admin_fonts')
             ->addWebpackEncoreEntry('admin_icons')
-            ->addWebpackEncoreEntry('admin_dashboard');
+            ->addWebpackEncoreEntry('admin_dashboard')
+            ->addWebpackEncoreEntry('admin_walkthrough');
     }
 }
