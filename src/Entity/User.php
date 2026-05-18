@@ -61,6 +61,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isDirectoryVisible = false;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $tourCompleted = false;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -270,6 +273,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsDirectoryVisible(bool $isDirectoryVisible): self
     {
         $this->isDirectoryVisible = $isDirectoryVisible;
+
+        return $this;
+    }
+
+    public function isTourCompleted(): bool
+    {
+        return $this->tourCompleted;
+    }
+
+    public function setTourCompleted(bool $tourCompleted): self
+    {
+        $this->tourCompleted = $tourCompleted;
 
         return $this;
     }
