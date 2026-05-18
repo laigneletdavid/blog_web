@@ -185,6 +185,52 @@ Module dedie pour fichiers integrables dans l'editeur TipTap (PDF, DOCX, XLSX, P
 - **HtmlSanitizer** (`config/packages/html_sanitizer.yaml`) : `a[class, href, target, rel, download, data-document-id, data-extension]` + `i[class]`
 - **Front** : carte stylee dans `assets/css/base/blocks.scss` (`.block-document` avec custom properties theme)
 
+## Walkthrough (visite guidée admin)
+
+Tour interactif intégré au dashboard admin via **Driver.js** (~5 ko). Adaptatif selon le rôle utilisateur et les modules actifs du site.
+
+### Architecture
+
+| Composant | Fichier | Rôle |
+|-----------|---------|------|
+| Service PHP | `src/Service/WalkthroughService.php` | Génère les steps filtrés par rôle (`Security::isGranted`) et modules (`SiteContext::hasModule`) |
+| Entry JS | `assets/admin/admin-walkthrough.js` | Initialise Driver.js, gère expand submenus, marque le tour complet en AJAX |
+| Styles | `assets/admin/admin-walkthrough.scss` | Override CSS du popover Driver.js (reset text-shadow EasyAdmin) |
+| Persistance | `User::tourCompleted` (bool) | Stocke si l'utilisateur a terminé le tour |
+| Endpoints | `POST /admin/api/tour/complete` | Marque le tour comme vu |
+|  | `POST /admin/api/tour/reset` | Remet le tour à zéro |
+
+### Ancres CSS sur les MenuItems
+
+Les éléments du menu admin ont des classes `tour-menu-*` via `->setCssClass()` dans `DashboardController::configureMenuItems()` :
+
+`tour-menu-dashboard`, `tour-menu-visit-site`, `tour-menu-blog`, `tour-menu-pages`, `tour-menu-medias`, `tour-menu-documents`, `tour-menu-classification`, `tour-menu-modules-section`, `tour-menu-site-identity`, `tour-menu-navigation`, `tour-menu-apparence`, `tour-menu-theme-catalog`, `tour-menu-guide`
+
+### Steps par rôle
+
+| Étape | AUTHOR | ADMIN | FREELANCE | SUPER_ADMIN |
+|-------|:------:|:-----:|:---------:|:-----------:|
+| Dashboard (KPIs, tips, actions rapides) | ✓ | ✓ | ✓ | ✓ |
+| Blog (si module actif) | ✓ | ✓ | ✓ | ✓ |
+| Pages, Médias, Documents | ✓ | ✓ | ✓ | ✓ |
+| Classification (Tags, Familles) | — | ✓ | ✓ | ✓ |
+| Modules actifs | — | ✓ | ✓ | ✓ |
+| Identité du site, Navigation | — | ✓ | ✓ | ✓ |
+| Apparence (expand submenu auto) | — | ✓ | ✓ | ✓ |
+| Voir le site, Guide | ✓ | ✓ | ✓ | ✓ |
+
+### Déclenchement
+
+- **Bannière** « Première visite ? » affichée si `tourCompleted == false`
+- **Bouton** « Visite guidée » toujours présent dans les Actions rapides du dashboard
+- Les sous-menus EasyAdmin ciblés (Apparence) s'ouvrent automatiquement au lancement et se referment à la fin
+
+### Maintenance
+
+Les steps sont couplés aux sélecteurs CSS du menu EasyAdmin. Si un `MenuItem` est ajouté/supprimé/renommé dans `configureMenuItems()`, mettre à jour :
+1. La classe `->setCssClass('tour-menu-xxx')` sur le MenuItem
+2. Le step correspondant dans `WalkthroughService::getStepsForCurrentUser()`
+
 ## Favicon auto-generation
 
 Quand l'admin sauvegarde le Site avec un logo, `SiteLogoListener` declenche `FaviconGeneratorService` qui genere automatiquement :
