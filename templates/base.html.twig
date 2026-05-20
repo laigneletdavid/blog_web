@@ -34,6 +34,8 @@
         {% endif %}
         {% if seo.canonicalUrl|default('') is not empty %}
         <link rel="canonical" href="{{ seo.canonicalUrl }}">
+        {% elseif app.request.attributes.get('_route') is not null %}
+        <link rel="canonical" href="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}">
         {% endif %}
 
         {# Open Graph #}

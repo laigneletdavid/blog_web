@@ -53,6 +53,23 @@ class CategorieRepository extends ServiceEntityRepository
     }
 
     /**
+     * Categories indexables pour le sitemap : exclut noIndex et les categories vides.
+     *
+     * @return Categorie[]
+     */
+    public function findAllForSitemap(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.articles', 'a')
+            ->andWhere('a.published = true')
+            ->andWhere('c.noIndex = false')
+            ->groupBy('c.id')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Categorie[]
      */
     public function findByArticle(int $articleId): array

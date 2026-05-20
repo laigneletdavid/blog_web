@@ -10,6 +10,7 @@ use App\Repository\DirectoryEntryRepository;
 use App\Repository\PortfolioItemRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\TagRepository;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,16 +28,18 @@ class SitemapController extends AbstractController
         ProductRepository $productRepository,
         PortfolioItemRepository $portfolioItemRepository,
         DirectoryEntryRepository $directoryEntryRepository,
+        TagRepository $tagRepository,
         SiteContext $siteContext,
     ): Response {
         $articles = $articleRepository->findAllPublishedForSitemap();
         $pages = $pageRepository->findAllPublishedForSitemap();
-        $categories = $categorieRepository->findAll();
-        $services = $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [];
+        $categories = $categorieRepository->findAllForSitemap();
+        $services = $siteContext->hasModule('services') ? $serviceRepository->findAllActiveForSitemap() : [];
         $events = $siteContext->hasModule('events') ? $eventRepository->findAllActiveForSitemap() : [];
         $products = $siteContext->hasModule('catalogue') ? $productRepository->findForSitemap() : [];
         $portfolioItems = $siteContext->hasModule('portfolio') ? $portfolioItemRepository->findAllActiveForSitemap() : [];
         $directoryEntries = $siteContext->hasModule('directory') ? $directoryEntryRepository->findAllActiveForSitemap() : [];
+        $tags = $siteContext->hasModule('blog') ? $tagRepository->findAllForSitemap() : [];
         $hasFaq = $siteContext->hasModule('faq');
 
         $legalPages = $pageRepository->findAllSystemPages();
@@ -50,6 +53,7 @@ class SitemapController extends AbstractController
             'products' => $products,
             'portfolioItems' => $portfolioItems,
             'directoryEntries' => $directoryEntries,
+            'tags' => $tags,
             'legalPages' => $legalPages,
             'hasFaq' => $hasFaq,
         ]);

@@ -89,6 +89,14 @@
     </url>
     {% endfor %}
 
+    {% for tag in tags|default([]) %}
+    <url>
+        <loc>{{ absolute_url(path('app_tag_show', {slug: tag.slug})) }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    {% endfor %}
+
     <url>
         <loc>{{ absolute_url(path('app_article_show_all')) }}</loc>
         <changefreq>daily</changefreq>

@@ -120,9 +120,13 @@ class SeoService
             return $entity->getSeoDescription();
         }
 
-        // Fallback sur featured_text pour les articles
+        // Fallback sur featured_text (articles) ou shortDescription (services)
         if (method_exists($entity, 'getFeaturedText') && $entity->getFeaturedText()) {
             return $entity->getFeaturedText();
+        }
+
+        if (method_exists($entity, 'getShortDescription') && $entity->getShortDescription()) {
+            return $entity->getShortDescription();
         }
 
         return $site?->getDefaultSeoDescription() ?? '';

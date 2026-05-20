@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block seo %}
-    <title>{{ service.title }} — {{ site.name|default('') }}</title>
-    <meta name="description" content="{{ service.shortDescription|default(seo.description|default('')) }}">
-{% endblock %}
+{# SEO gere par SeoService via la variable seo (base.html.twig) #}
 
 {% block body %}
 <div class="container py-5">
