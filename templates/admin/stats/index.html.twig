@@ -1,4 +1,5 @@
 {% extends 'admin/stats/_layout.html.twig' %}
+{% set stats_route_name = 'admin_stats_index' %}
 
 {% block stats_title %}Vue d'ensemble{% endblock %}
 
@@ -50,7 +51,7 @@
         <div class="bw-card bw-card--full">
             <div class="bw-card__header">
                 <h3 class="bw-card__title"><i class="fas fa-chart-pie me-2"></i>Sources de trafic</h3>
-                <a href="{{ ea_url().setRoute('admin_stats_acquisition', {period: period}) }}" class="bw-card__link">Detail</a>
+                <a href="{{ path('admin', {routeName: 'admin_stats_acquisition', period: period}) }}" class="bw-card__link">Detail</a>
             </div>
             <div class="bw-card__body">
                 {% if sources|length > 0 %}
@@ -68,7 +69,7 @@
         <div class="bw-card bw-card--full">
             <div class="bw-card__header">
                 <h3 class="bw-card__title"><i class="fas fa-filter me-2"></i>Entonnoir de conversion</h3>
-                <a href="{{ ea_url().setRoute('admin_stats_conversions', {period: period}) }}" class="bw-card__link">Detail</a>
+                <a href="{{ path('admin', {routeName: 'admin_stats_conversions', period: period}) }}" class="bw-card__link">Detail</a>
             </div>
             <div class="bw-card__body">
                 {% set max = funnel.visitors > 0 ? funnel.visitors : 1 %}
@@ -101,7 +102,7 @@
         <div class="bw-card">
             <div class="bw-card__header">
                 <h3 class="bw-card__title"><i class="fas fa-ranking-star me-2"></i>Pages les plus vues</h3>
-                <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period}) }}" class="bw-card__link">Detail</a>
+                <a href="{{ path('admin', {routeName: 'admin_stats_comportement', period: period}) }}" class="bw-card__link">Detail</a>
             </div>
             <div class="bw-card__body">
                 {% if topPages|length > 0 %}
@@ -120,7 +121,7 @@
                             {% for page in topPages %}
                             <tr>
                                 <td>
-                                    <a href="{{ ea_url().setRoute('admin_stats_page_detail', {url: page.url, period: period}) }}">{{ page.url }}</a>
+                                    <a href="{{ path('admin', {routeName: 'admin_stats_page_detail', url: page.url, period: period}) }}">{{ page.url }}</a>
                                 </td>
                                 <td class="text-end fw-bold">{{ page.views }}</td>
                                 <td class="text-end">{{ page.avg_duration ? (page.avg_duration // 60 ~ ':' ~ '%02d'|format(page.avg_duration % 60)) : '—' }}</td>

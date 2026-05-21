@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #1e293b; padding: 30px; }
+        h1 { font-size: 18px; color: #0f172a; margin-bottom: 4px; }
+        .subtitle { font-size: 11px; color: #64748b; margin-bottom: 20px; }
+        .kpi-row { width: 100%; margin-bottom: 20px; }
+        .kpi-row td { padding: 8px 12px; text-align: center; border: 1px solid #e2e8f0; }
+        .kpi-label { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 20px; font-weight: bold; color: #0f172a; }
+        .section-title { font-size: 13px; font-weight: bold; color: #0f172a; margin: 18px 0 8px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; }
+        table.data { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+        table.data th { background: #f1f5f9; color: #475569; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; padding: 6px 8px; text-align: left; border-bottom: 2px solid #cbd5e1; }
+        table.data td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 10px; }
+        table.data tr:nth-child(even) td { background: #f8fafc; }
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .type-phone { color: #2563eb; }
+        .type-email { color: #d97706; }
+        .type-form { color: #16a34a; }
+        .funnel-bar { height: 22px; background: #3b82f6; color: white; font-size: 9px; line-height: 22px; padding-left: 6px; margin-bottom: 3px; border-radius: 2px; }
+        .funnel-bar--success { background: #16a34a; }
+        .funnel-row { margin-bottom: 4px; }
+        .funnel-label { display: inline-block; width: 130px; font-size: 10px; }
+        .funnel-value { font-size: 10px; color: #64748b; }
+        .footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #94a3b8; text-align: center; }
+        .muted { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <h1>Rapport de conversions</h1>
+    <div class="subtitle">Periode : {{ periodLabel }} &mdash; Genere le {{ "now"|date("d/m/Y H:i") }}</div>
+
+    {# --- KPI --- #}
+    <table class="kpi-row" cellspacing="0">
+        <tr>
+            <td style="width: 25%;">
+                <div class="kpi-value type-phone">{{ counts.phone_click }}</div>
+                <div class="kpi-label">Appels</div>
+            </td>
+            <td style="width: 25%;">
+                <div class="kpi-value type-email">{{ counts.email_click }}</div>
+                <div class="kpi-label">Emails</div>
+            </td>
+            <td style="width: 25%;">
+                <div class="kpi-value type-form">{{ counts.form_submit }}</div>
+                <div class="kpi-label">Formulaires</div>
+            </td>
+            <td style="width: 25%;">
+                <div class="kpi-value">{{ counts.total }}</div>
+                <div class="kpi-label">Total</div>
+            </td>
+        </tr>
+    </table>
+
+    {# --- Entonnoir --- #}
+    <div class="section-title">Entonnoir de conversion</div>
+    {% set max = funnel.visitors > 0 ? funnel.visitors : 1 %}
+    <table class="data">
+        <thead>
+            <tr>
+                <th>Etape</th>
+                <th class="text-end">Nombre</th>
+                <th class="text-end">Taux</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Visiteurs uniques</td>
+                <td class="text-end fw-bold">{{ funnel.visitors }}</td>
+                <td class="text-end">100%</td>
+            </tr>
+            <tr>
+                <td>> 1 page visitee</td>
+                <td class="text-end fw-bold">{{ funnel.engaged }}</td>
+                <td class="text-end">{{ (funnel.engaged / max * 100)|round(1) }}%</td>
+            </tr>
+            <tr>
+                <td>Vu page contact</td>
+                <td class="text-end fw-bold">{{ funnel.saw_contact }}</td>
+                <td class="text-end">{{ (funnel.saw_contact / max * 100)|round(1) }}%</td>
+            </tr>
+            <tr>
+                <td class="fw-bold">Conversions</td>
+                <td class="text-end fw-bold type-form">{{ funnel.converted }}</td>
+                <td class="text-end fw-bold type-form">{{ funnel.rate ?? 0 }}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {# --- Pages moteur --- #}
+    {% if pages|length > 0 %}
+    <div class="section-title">Pages moteur de conversion</div>
+    <table class="data">
+        <thead>
+            <tr>
+                <th>Page</th>
+                <th class="text-end">Conversions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pages %}
+            <tr>
+                <td>{{ p.page_url }}</td>
+                <td class="text-end fw-bold">{{ p.cnt }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {# --- Detail conversions --- #}
+    {% if rows|length > 0 %}
+    <div class="section-title">Detail des conversions</div>
+    <table class="data">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Page</th>
+                <th>Source</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td class="text-nowrap">{{ row.date }}</td>
+                <td>
+                    {% if row.type == 'phone_click' %}<span class="type-phone">Appel</span>
+                    {% elseif row.type == 'email_click' %}<span class="type-email">Email</span>
+                    {% else %}<span class="type-form">Formulaire</span>
+                    {% endif %}
+                </td>
+                <td>{{ row.page_url }}</td>
+                <td>{{ (row.source ?? 'direct')|replace({'_': ' '})|capitalize }}</td>
+                <td>{{ row.detail ?? '—' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted text-center" style="margin-top: 10px;">Aucune conversion sur cette periode.</p>
+    {% endif %}
+
+    <div class="footer">
+        BlogWeb CMS &mdash; Rapport genere automatiquement
+    </div>
+</body>
+</html>

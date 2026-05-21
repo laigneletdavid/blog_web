@@ -1,4 +1,5 @@
 {% extends 'admin/stats/_layout.html.twig' %}
+{% set stats_route_name = 'admin_stats_acquisition' %}
 
 {% block stats_title %}Acquisition{% endblock %}
 
@@ -66,7 +67,7 @@
                     <tbody>
                         {% for lp in landingPages %}
                         <tr>
-                            <td><a href="{{ ea_url().setRoute('admin_stats_page_detail', {url: lp.landing_page, period: period}) }}">{{ lp.landing_page }}</a></td>
+                            <td><a href="{{ path('admin', {routeName: 'admin_stats_page_detail', url: lp.landing_page, period: period}) }}">{{ lp.landing_page }}</a></td>
                             <td class="text-end fw-bold">{{ lp.cnt }}</td>
                         </tr>
                         {% endfor %}

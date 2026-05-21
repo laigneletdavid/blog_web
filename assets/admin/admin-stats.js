@@ -2,6 +2,8 @@
  * admin-stats.js — Charts Chart.js pour les pages stats admin.
  */
 import './admin-stats.scss';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -9,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // DONUT : Sources de trafic
     // =============================================
     const sourcesCanvas = document.getElementById('sourcesChart');
-    if (sourcesCanvas && typeof Chart !== 'undefined') {
+    if (sourcesCanvas) {
         const sources = JSON.parse(sourcesCanvas.dataset.sources || '[]');
         if (sources.length > 0) {
             const labels = sources.map(s => s.source.replace(/_/g, ' '));
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // LINE : Comportement timeline
     // =============================================
     const behaviorCanvas = document.getElementById('behaviorChart');
-    if (behaviorCanvas && typeof Chart !== 'undefined') {
+    if (behaviorCanvas) {
         const timeline = JSON.parse(behaviorCanvas.dataset.timeline || '[]');
         if (timeline.length > 0) {
             const labels = timeline.map(t => {

@@ -37,6 +37,8 @@ class PageViewSubscriber implements EventSubscriberInterface
 
     private const COOKIE_NAME = '_bw_sid';
     private const SESSION_TIMEOUT = 1800; // 30 minutes
+    private const BOT_PAGE_THRESHOLD = 30;  // pages max en SESSION_BOT_WINDOW
+    private const BOT_TIME_WINDOW = 60;     // secondes
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -136,6 +138,15 @@ class PageViewSubscriber implements EventSubscriberInterface
             $session->setEndedAt(new \DateTimeImmutable());
             $session->setExitPage($url);
             $session->incrementPageCount();
+
+            // Detection comportementale bot : > 30 pages en 60s
+            if (!$session->getIsBot()) {
+                $elapsed = time() - $session->getStartedAt()->getTimestamp();
+                if ($elapsed > 0 && $elapsed <= self::BOT_TIME_WINDOW && $session->getPageCount() >= self::BOT_PAGE_THRESHOLD) {
+                    $session->setIsBot(true);
+                    $isBot = true;
+                }
+            }
         }
 
         // --- PageView ---
@@ -172,7 +183,7 @@ class PageViewSubscriber implements EventSubscriberInterface
                 ->withValue($sessionToken)
                 ->withExpires(time() + self::SESSION_TIMEOUT)
                 ->withPath('/')
-                ->withHttpOnly(true)
+                ->withHttpOnly(false)
                 ->withSameSite('lax')
         );
     }

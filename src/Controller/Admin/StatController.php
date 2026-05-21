@@ -5,7 +5,10 @@ namespace App\Controller\Admin;
 use App\Service\StatService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -84,6 +87,74 @@ class StatController extends AbstractController
             'url' => $url,
             'period' => $period,
             'flow' => $this->statService->pageFlow($url, $period),
+        ]);
+    }
+
+    #[Route('/export/conversions', name: 'admin_stats_export_conversions')]
+    public function exportConversions(Request $request): StreamedResponse
+    {
+        $period = $request->query->getString('period', '30d');
+        $rows = $this->statService->exportConversions($period);
+
+        $response = new StreamedResponse(function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+            // BOM UTF-8 pour Excel
+            fwrite($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, ['Date', 'Type', 'Page', 'Source', 'Detail'], ';');
+
+            foreach ($rows as $row) {
+                fputcsv($handle, [
+                    $row['date'],
+                    $row['type'],
+                    $row['page_url'],
+                    $row['source'] ?? 'direct',
+                    $row['detail'] ?? '',
+                ], ';');
+            }
+
+            fclose($handle);
+        });
+
+        $filename = 'conversions_' . date('Y-m-d') . '.csv';
+        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
+        $response->headers->set('Content-Disposition', "attachment; filename=\"{$filename}\"");
+
+        return $response;
+    }
+
+    #[Route('/export/conversions.pdf', name: 'admin_stats_export_conversions_pdf')]
+    public function exportConversionsPdf(Request $request): Response
+    {
+        $period = $request->query->getString('period', '30d');
+
+        $periodLabels = [
+            'today' => "Aujourd'hui",
+            '7d' => '7 derniers jours',
+            '30d' => '30 derniers jours',
+        ];
+
+        $html = $this->renderView('admin/stats/export_conversions_pdf.html.twig', [
+            'periodLabel' => $periodLabels[$period] ?? $period,
+            'counts' => $this->statService->conversionCounts($period),
+            'funnel' => $this->statService->conversionFunnel($period),
+            'pages' => $this->statService->conversionPages($period),
+            'rows' => $this->statService->exportConversions($period),
+        ]);
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', false);
+        $options->set('defaultFont', 'DejaVu Sans');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $filename = 'conversions_' . date('Y-m-d') . '.pdf';
+
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
     }
 }

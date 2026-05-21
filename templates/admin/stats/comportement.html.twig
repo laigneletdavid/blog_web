@@ -1,4 +1,6 @@
 {% extends 'admin/stats/_layout.html.twig' %}
+{% set stats_route_name = 'admin_stats_comportement' %}
+{% set stats_extra_params = {metric: metric} %}
 
 {% block stats_title %}Comportement{% endblock %}
 
@@ -51,9 +53,9 @@
             <div class="bw-card__header d-flex align-items-center justify-content-between">
                 <h3 class="bw-card__title"><i class="fas fa-chart-line me-2"></i>Evolution sur 30 jours</h3>
                 <div class="d-flex gap-1">
-                    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period, metric: 'duration'}) }}" class="btn btn-sm {{ metric == 'duration' ? 'btn-primary' : 'btn-outline-secondary' }}">Duree</a>
-                    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period, metric: 'bounce'}) }}" class="btn btn-sm {{ metric == 'bounce' ? 'btn-primary' : 'btn-outline-secondary' }}">Rebond</a>
-                    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period, metric: 'depth'}) }}" class="btn btn-sm {{ metric == 'depth' ? 'btn-primary' : 'btn-outline-secondary' }}">Profondeur</a>
+                    <a href="{{ path('admin', {routeName: 'admin_stats_comportement', period: period, metric: 'duration'}) }}" class="btn btn-sm {{ metric == 'duration' ? 'btn-primary' : 'btn-outline-secondary' }}">Duree</a>
+                    <a href="{{ path('admin', {routeName: 'admin_stats_comportement', period: period, metric: 'bounce'}) }}" class="btn btn-sm {{ metric == 'bounce' ? 'btn-primary' : 'btn-outline-secondary' }}">Rebond</a>
+                    <a href="{{ path('admin', {routeName: 'admin_stats_comportement', period: period, metric: 'depth'}) }}" class="btn btn-sm {{ metric == 'depth' ? 'btn-primary' : 'btn-outline-secondary' }}">Profondeur</a>
                 </div>
             </div>
             <div class="bw-card__body">
@@ -87,7 +89,7 @@
                         <tbody>
                             {% for page in topPages %}
                             <tr>
-                                <td><a href="{{ ea_url().setRoute('admin_stats_page_detail', {url: page.url, period: period}) }}">{{ page.url }}</a></td>
+                                <td><a href="{{ path('admin', {routeName: 'admin_stats_page_detail', url: page.url, period: period}) }}">{{ page.url }}</a></td>
                                 <td class="text-end fw-bold">{{ page.views }}</td>
                                 <td class="text-end">{{ page.avg_duration ? (page.avg_duration // 60 ~ ':' ~ '%02d'|format(page.avg_duration % 60)) : '—' }}</td>
                                 <td class="text-end">{{ page.avg_scroll ? page.avg_scroll ~ '%' : '—' }}</td>

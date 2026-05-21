@@ -415,6 +415,33 @@ class StatService
     }
 
     // =============================================
+    // EXPORT
+    // =============================================
+
+    /**
+     * Export des conversions pour CSV.
+     * @return array<array{date: string, type: string, page_url: string, source: ?string, detail: ?string}>
+     */
+    public function exportConversions(string $period = '30d'): array
+    {
+        [$since] = $this->resolvePeriod($period);
+
+        return $this->conn->fetchAllAssociative(
+            'SELECT
+                DATE_FORMAT(c.created_at, "%d/%m/%Y %H:%i") AS date,
+                c.type,
+                c.page_url,
+                s.source,
+                c.detail
+             FROM stat_conversion c
+             LEFT JOIN stat_session s ON c.session_id = s.id
+             WHERE c.created_at >= :since
+             ORDER BY c.created_at DESC',
+            ['since' => $since],
+        );
+    }
+
+    // =============================================
     // UTILS
     // =============================================
 

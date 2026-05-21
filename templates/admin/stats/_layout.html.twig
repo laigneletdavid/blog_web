@@ -17,28 +17,30 @@
 {% block main %}
 <div class="bw-dashboard bw-stats">
 
+    {# stats_route_name est defini par chaque template enfant #}
+    {% set _sr = stats_route_name | default('admin_stats_index') %}
+
     {# --- Navigation stats --- #}
-    {% set _route = app.request.attributes.get('_route') %}
     <nav class="bw-stats-nav mb-3">
-        <a href="{{ ea_url().setRoute('admin_stats_index', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_index' ? ' is-active' }}">
+        <a href="{{ path('admin', {routeName: 'admin_stats_index', period: period}) }}" class="bw-stats-nav__item{{ _sr == 'admin_stats_index' ? ' is-active' }}">
             <i class="fas fa-chart-pie me-1"></i>Vue d'ensemble
         </a>
-        <a href="{{ ea_url().setRoute('admin_stats_acquisition', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_acquisition' ? ' is-active' }}">
+        <a href="{{ path('admin', {routeName: 'admin_stats_acquisition', period: period}) }}" class="bw-stats-nav__item{{ _sr == 'admin_stats_acquisition' ? ' is-active' }}">
             <i class="fas fa-arrow-trend-down me-1"></i>Acquisition
         </a>
-        <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_comportement' ? ' is-active' }}">
+        <a href="{{ path('admin', {routeName: 'admin_stats_comportement', period: period}) }}" class="bw-stats-nav__item{{ _sr == 'admin_stats_comportement' ? ' is-active' }}">
             <i class="fas fa-gauge-high me-1"></i>Comportement
         </a>
-        <a href="{{ ea_url().setRoute('admin_stats_conversions', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_conversions' ? ' is-active' }}">
+        <a href="{{ path('admin', {routeName: 'admin_stats_conversions', period: period}) }}" class="bw-stats-nav__item{{ _sr == 'admin_stats_conversions' ? ' is-active' }}">
             <i class="fas fa-bullseye me-1"></i>Conversions
         </a>
     </nav>
 
-    {# --- Filtre periode (conserve les autres query params, ex: metric) --- #}
+    {# --- Filtre periode (stats_extra_params permet aux enfants d'ajouter metric, url, etc.) --- #}
     <div class="mb-4">
-        {% set _qp = app.request.query.all %}
+        {% set _ep = stats_extra_params | default({}) %}
         {% for key, val in periods %}
-        <a href="{{ ea_url().setRoute(_route, _qp|merge({period: key})) }}" class="btn btn-sm {{ period == key ? 'btn-primary' : 'btn-outline-secondary' }} me-1">{{ val }}</a>
+        <a href="{{ path('admin', {routeName: _sr}|merge(_ep)|merge({period: key})) }}" class="btn btn-sm {{ period == key ? 'btn-primary' : 'btn-outline-secondary' }} me-1">{{ val }}</a>
         {% endfor %}
     </div>
 
