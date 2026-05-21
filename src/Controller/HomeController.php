@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ContactMessage;
 use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
 use App\Repository\EventRepository;
@@ -9,10 +10,12 @@ use App\Repository\FaqRepository;
 use App\Repository\PortfolioItemRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\StatSessionRepository;
 use App\Service\RecaptchaValidator;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use App\Service\SystemMailerService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,6 +53,8 @@ class HomeController extends AbstractController
         SiteContext $siteContext,
         RecaptchaValidator $recaptchaValidator,
         FaqRepository $faqRepository,
+        EntityManagerInterface $em,
+        StatSessionRepository $sessionRepository,
         #[Autowire(service: 'limiter.contact_limiter')] RateLimiterFactory $contactLimiter,
     ): Response {
         $form = $this->createForm(ContactType::class);
@@ -98,6 +103,26 @@ class HomeController extends AbstractController
                 ));
 
             $systemMailer->send($email);
+
+            // Persister le message en BDD
+            $ip = $request->getClientIp() ?? '0.0.0.0';
+            $contactMessage = new ContactMessage();
+            $contactMessage->setFirstname($data['firstname']);
+            $contactMessage->setName($data['name']);
+            $contactMessage->setEmail($data['email']);
+            $contactMessage->setSubject($data['subject']);
+            $contactMessage->setMessage($data['message']);
+            $contactMessage->setIpHash(hash('sha256', $ip . date('Y-m-d')));
+            $contactMessage->setSourcePage($request->headers->get('Referer'));
+
+            $sessionToken = $request->cookies->get('_bw_sid');
+            if ($sessionToken) {
+                $session = $sessionRepository->findOneBy(['sessionToken' => $sessionToken]);
+                $contactMessage->setSession($session);
+            }
+
+            $em->persist($contactMessage);
+            $em->flush();
 
             $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
 

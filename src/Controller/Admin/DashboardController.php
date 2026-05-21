@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Entity\Comment;
+use App\Entity\ContactMessage;
 use App\Entity\Event;
 use App\Entity\Faq;
 use App\Entity\FaqCategory;
@@ -387,6 +388,9 @@ class DashboardController extends AbstractDashboardController
         if ($hasCommunity) {
             yield MenuItem::section('Communaute');
 
+            if ($this->isGranted('ROLE_ADMIN')) {
+                yield MenuItem::linkToCrud('Messages', 'fas fa-envelope-open-text', ContactMessage::class);
+            }
             if ($this->siteContext->hasModule('blog')) {
                 yield MenuItem::linkToCrud('Commentaires', 'fas fa-comments', Comment::class);
             }
