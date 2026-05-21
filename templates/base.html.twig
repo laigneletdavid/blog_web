@@ -68,6 +68,37 @@
         {% endblock %}
 
         {# ====== JSON-LD Schema.org ====== #}
+        {% block jsonld_organization %}
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": {{ site.name|default('Blog&Web')|json_encode|raw }},
+            "url": "{{ absolute_url('/') }}"
+            {%- if site.logo %},
+            "logo": "{{ absolute_url(asset('documents/medias/' ~ site.logo.fileName)) }}"
+            {%- endif %}
+            {%- if site.email|default('') is not empty %},
+            "email": {{ site.email|json_encode|raw }}
+            {%- endif %}
+            {%- if site.phone|default('') is not empty %},
+            "telephone": {{ site.phone|json_encode|raw }}
+            {%- endif %}
+            {%- if site.address1|default('') is not empty %},
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": {{ site.address1|json_encode|raw }}
+                {%- if site.postCode|default('') is not empty %},
+                "postalCode": {{ site.postCode|json_encode|raw }}
+                {%- endif %}
+                {%- if site.town|default('') is not empty %},
+                "addressLocality": {{ site.town|json_encode|raw }}
+                {%- endif %}
+            }
+            {%- endif %}
+        }
+        </script>
+        {% endblock %}
         {% block jsonld %}{% endblock %}
 
         {# ====== Favicon (auto-genere depuis le logo) ====== #}
@@ -98,6 +129,11 @@
         {# ====== Google Fonts (non-blocking + display=swap) ====== #}
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="dns-prefetch" href="//fonts.gstatic.com">
+        {% if site.googleAnalyticsId|default('') is not empty %}
+        <link rel="dns-prefetch" href="//www.googletagmanager.com">
+        {% endif %}
         {% set _google_fonts_url = font_service.buildGoogleFontsUrl([_appearance.fontFamily, _appearance.fontFamilySecondary]) %}
         <link rel="preload" href="{{ _google_fonts_url }}&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link href="{{ _google_fonts_url }}&display=swap" rel="stylesheet"></noscript>
