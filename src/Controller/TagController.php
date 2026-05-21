@@ -7,6 +7,7 @@ use App\Repository\DirectoryEntryRepository;
 use App\Repository\PortfolioItemRepository;
 use App\Repository\ProductRepository;
 use App\Repository\TagRepository;
+use App\Service\SeoService;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,7 @@ class TagController extends AbstractController
         private ArticleRepository $articleRepository,
         private DirectoryEntryRepository $directoryEntryRepository,
         private SiteContext $siteContext,
+        private readonly SeoService $seoService,
     ) {
     }
 
@@ -62,6 +64,7 @@ class TagController extends AbstractController
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
             'directoryEntries' => $directoryEntries,
+            'seo' => $this->seoService->resolve($tag),
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\SeoTrait;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag
 {
+    use SeoTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -60,6 +63,10 @@ class Tag
         $this->product = new ArrayCollection();
         $this->portfolioItem = new ArrayCollection();
         $this->directoryEntries = new ArrayCollection();
+
+        // Les tags sont noIndex par defaut (contrairement aux autres entites).
+        // Le client choisit lesquels promouvoir en passant noIndex a false.
+        $this->noIndex = true;
     }
 
     public function getId(): ?int

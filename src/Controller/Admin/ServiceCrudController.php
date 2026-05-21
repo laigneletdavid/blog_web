@@ -80,6 +80,34 @@ class ServiceCrudController extends AbstractCrudController
             ->setHelp('Ordre d\'affichage (0 = premier)');
 
         yield BooleanField::new('isActive', 'Actif');
+
+        // --- Panel SEO ---
+        yield FormField::addPanel('SEO')
+            ->setIcon('fa fa-search')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield TextField::new('seoTitle', 'Titre SEO')
+            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Max 70 caracteres. Laissez vide = titre du service.')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
+            ->hideOnIndex();
+
+        yield TextareaField::new('seoDescription', 'Meta description')
+            ->setHelp('Texte affiche sous le titre dans les resultats Google. Max 160 caracteres.')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
+            ->hideOnIndex();
+
+        yield TextField::new('seoKeywords', 'Mots-cles')
+            ->setHelp('Mots-cles du service, separes par des virgules.')
+            ->hideOnIndex();
+
+        yield BooleanField::new('noIndex', 'Masquer des moteurs')
+            ->setHelp('Si active, Google n\'indexera pas ce service.')
+            ->hideOnIndex();
+
+        yield TextField::new('canonicalUrl', 'URL canonique')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site. Laissez vide sinon.')
+            ->hideOnIndex();
     }
 
     protected function getHelpData(): ?array
@@ -103,6 +131,7 @@ class ServiceCrudController extends AbstractCrudController
             ],
             'tips' => [
                 'L\'icone s\'affiche dans la grille des services sur la home. Trouvez les icones sur icons.getbootstrap.com.',
+                '<strong>SEO</strong> : chaque service a sa propre page. Pensez à remplir le Titre SEO (max 70 car.) et la Meta description (max 160 car.) dans le panel SEO pour un meilleur référencement.',
             ],
         ];
     }

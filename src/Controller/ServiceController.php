@@ -51,7 +51,7 @@ class ServiceController extends AbstractController
         return $this->render('service/show.html.twig', [
             'title_page' => $service->getTitle(),
             'service' => $service,
-            'seo' => $this->seoService->resolveForPage($service->getTitle()),
+            'seo' => $this->seoService->resolve($service),
         ]);
     }
 }

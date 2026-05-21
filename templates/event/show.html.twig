@@ -1,11 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block seo %}
-    <title>{{ seo.title|default(event.title) }} — {{ site.name|default('') }}</title>
-    <meta name="description" content="{{ seo.description|default(event.shortDescription|default('')) }}">
-    {% if seo.image|default(null) %}
-    <meta property="og:image" content="{{ seo.image }}">
-    {% endif %}
+{# SEO gere par SeoService via la variable seo (base.html.twig) #}
+
+{% block jsonld %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": {{ event.title|json_encode|raw }},
+    "description": {{ seo.description|default(event.shortDescription|default(''))|json_encode|raw }},
+    "startDate": "{{ event.dateStart|date('c') }}"
+    {%- if event.dateEnd %},
+    "endDate": "{{ event.dateEnd|date('c') }}"
+    {%- endif %}
+    {%- if event.location|default('') is not empty %},
+    "location": {
+        "@type": "Place",
+        "name": {{ event.location|json_encode|raw }}
+    }
+    {%- endif %}
+    {%- if event.image %},
+    "image": "{{ absolute_url(asset('documents/medias/' ~ event.image.fileName)) }}"
+    {%- endif %}
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "{{ absolute_url(path('app_home')) }}"},
+        {"@type": "ListItem", "position": 2, "name": "Événements", "item": "{{ absolute_url(path('app_event_index')) }}"},
+        {"@type": "ListItem", "position": 3, "name": {{ event.title|json_encode|raw }}}
+    ]
+}
+</script>
 {% endblock %}
 
 {% block body %}
