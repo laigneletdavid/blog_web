@@ -99,6 +99,22 @@ class TagRepository extends ServiceEntityRepository
     }
 
     /**
+     * Tags indexables pour le sitemap : exclut noIndex et les tags sans contenu publie.
+     *
+     * @return Tag[]
+     */
+    public function findAllForSitemap(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.article', 'a', 'WITH', 'a.published = true')
+            ->andWhere('t.noIndex = false')
+            ->groupBy('t.id')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Compteurs cross-modules pour un tag donne. Sert a la page /tag/{slug}
      * pour afficher des sections "Articles", "Annuaire", "Produits", etc.
      *
