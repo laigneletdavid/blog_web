@@ -6,8 +6,11 @@ use App\Entity\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -43,6 +46,34 @@ class TagCrudController extends AbstractCrudController
         yield AssociationField::new('article', 'Articles')
             ->setHelp('Articles associés à ce tag')
             ->hideOnIndex();
+
+        // --- Panel SEO ---
+        yield FormField::addPanel('SEO')
+            ->setIcon('fa fa-search')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield TextField::new('seoTitle', 'Titre SEO')
+            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Max 70 caracteres. Laissez vide = nom du tag.')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
+            ->hideOnIndex();
+
+        yield TextareaField::new('seoDescription', 'Meta description')
+            ->setHelp('Texte affiche sous le titre dans les resultats Google. Max 160 caracteres.')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
+            ->hideOnIndex();
+
+        yield TextField::new('seoKeywords', 'Mots-cles')
+            ->setHelp('Mots-cles du tag, separes par des virgules.')
+            ->hideOnIndex();
+
+        yield BooleanField::new('noIndex', 'Masquer des moteurs')
+            ->setHelp('Active par defaut pour les tags. Desactivez pour indexer un tag strategique dont vous avez rempli le titre SEO et la meta description.')
+            ->hideOnIndex();
+
+        yield TextField::new('canonicalUrl', 'URL canonique')
+            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site. Laissez vide sinon.')
+            ->hideOnIndex();
     }
 
     protected function getHelpData(): ?array
@@ -66,6 +97,7 @@ class TagCrudController extends AbstractCrudController
                 'Pour des filtres front dédiés (ex: filtrer l\'annuaire par ville), créez d\'abord une Famille puis rattachez vos tags.',
                 'Un même tag peut servir à plusieurs modules (ex: tag "Paris" sur des articles ET sur des fiches d\'annuaire).',
                 'Les tags non utilisés restent visibles dans l\'admin mais n\'apparaissent pas sur le front tant qu\'aucun contenu ne les emploie.',
+                '<strong>SEO</strong> : les tags sont masqués des moteurs de recherche par défaut (noIndex). Pour promouvoir un tag stratégique (ex: une ville, un métier), décochez « Masquer des moteurs » dans le panel SEO.',
             ],
         ];
     }

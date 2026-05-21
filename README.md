@@ -34,13 +34,17 @@ Chaque module s'active independamment selon les besoins du client :
 
 ### SEO integre
 
-- **Champs SEO** sur chaque article, page et categorie (titre SEO, meta description, mots-cles, noIndex, URL canonique)
-- **Sitemap XML** automatique (`/sitemap.xml`) avec priorites et dates de modification
+- **Champs SEO** sur chaque article, page, categorie, tag, service (titre SEO, meta description, mots-cles, noIndex, URL canonique) via SeoTrait partage
+- **Sitemap index multi-fichiers** (`/sitemap.xml` → sous-sitemaps par type : articles, pages, categories, services, products, events, portfolio, directory, tags, misc). Filtrage automatique noIndex et pages vides
 - **robots.txt** dynamique
-- **Open Graph** (Facebook, LinkedIn) et **Twitter Cards** automatiques
+- **Canonical URL automatique** sur toutes les pages (genere depuis la route, sans query params)
+- **Open Graph** (Facebook, LinkedIn) et **Twitter Cards** automatiques sur toutes les pages
 - **Image Open Graph dediee** configurable dans l'identite du site (1200x630). Fallback : `ogImage > heroImage > logo`
-- **Schema.org JSON-LD** (Article, BreadcrumbList, FAQPage)
+- **Schema.org JSON-LD** : Organization (site-wide), Article, Product (avec Offer/availability), Event (dates/location), Service, LocalBusiness (annuaire), CreativeWork (portfolio), FAQPage, BreadcrumbList (tous les templates show)
 - **Fallback chain** : champs SEO de l'entite > titre/description du contenu > valeurs par defaut du site
+- **ProductCategory noindex** : les pages de listing filtrees par categorie produit sont automatiquement en `noindex, follow`
+- **Tags noIndex par defaut** : les tags sont masques des moteurs par defaut, l'admin choisit lesquels promouvoir
+- **dns-prefetch** : Google Fonts + Google Tag Manager (conditionnel)
 - **Google Analytics** et **Google Search Console** configurables dans l'admin
 - **Images WebP** + **lazy-loading** natif pour la performance
 

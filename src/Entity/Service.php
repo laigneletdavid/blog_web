@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\SeoTrait;
 use App\Repository\ServiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['is_active'], name: 'idx_service_active')]
 class Service
 {
+    use SeoTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

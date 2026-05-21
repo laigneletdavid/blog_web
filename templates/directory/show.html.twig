@@ -1,11 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block seo %}
-    <title>{{ seo.title|default(entry.company ?? entry.displayName) }} — {{ site.name|default('') }}</title>
-    {% if seo.description|default('') is not empty %}
-    <meta name="description" content="{{ seo.description }}">
-    {% endif %}
-    {% if entry.noIndex %}<meta name="robots" content="noindex, nofollow">{% endif %}
+{# SEO gere par SeoService via la variable seo (base.html.twig) #}
+
+{% block jsonld %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": {{ (entry.company ?? entry.displayName)|json_encode|raw }}
+    {%- if seo.description|default('') is not empty %},
+    "description": {{ seo.description|json_encode|raw }}
+    {%- endif %}
+    {%- if entry.photo %},
+    "image": "{{ absolute_url(asset('documents/medias/' ~ entry.photo)) }}"
+    {%- endif %}
+    {%- if entry.email|default('') is not empty %},
+    "email": {{ entry.email|json_encode|raw }}
+    {%- endif %}
+    {%- if entry.phone|default('') is not empty %},
+    "telephone": {{ entry.phone|json_encode|raw }}
+    {%- endif %}
+    {%- if entry.website|default('') is not empty %},
+    "url": {{ entry.website|json_encode|raw }}
+    {%- endif %}
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "{{ absolute_url(path('app_home')) }}"},
+        {"@type": "ListItem", "position": 2, "name": "Annuaire", "item": "{{ absolute_url(path('app_directory')) }}"},
+        {"@type": "ListItem", "position": 3, "name": {{ (entry.company ?? entry.displayName)|json_encode|raw }}}
+    ]
+}
+</script>
 {% endblock %}
 
 {% block body %}

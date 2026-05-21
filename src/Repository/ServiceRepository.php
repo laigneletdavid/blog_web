@@ -29,6 +29,21 @@ class ServiceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Services actifs et indexables pour le sitemap.
+     *
+     * @return Service[]
+     */
+    public function findAllActiveForSitemap(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.isActive = true')
+            ->andWhere('s.noIndex = false')
+            ->orderBy('s.position', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOneActiveBySlug(string $slug): ?Service
     {
         return $this->createQueryBuilder('s')
