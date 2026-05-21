@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ContactMessage;
+use App\Entity\StatConversion;
 use App\Form\Type\ContactType;
 use App\Repository\ArticleRepository;
 use App\Repository\EventRepository;
@@ -115,6 +116,7 @@ class HomeController extends AbstractController
             $contactMessage->setIpHash(hash('sha256', $ip . date('Y-m-d')));
             $contactMessage->setSourcePage($request->headers->get('Referer'));
 
+            $session = null;
             $sessionToken = $request->cookies->get('_bw_sid');
             if ($sessionToken) {
                 $session = $sessionRepository->findOneBy(['sessionToken' => $sessionToken]);
@@ -122,6 +124,15 @@ class HomeController extends AbstractController
             }
 
             $em->persist($contactMessage);
+
+            // StatConversion form_submit
+            $conversion = new StatConversion();
+            $conversion->setSession($session);
+            $conversion->setType('form_submit');
+            $conversion->setPageUrl($request->getPathInfo());
+            $conversion->setDetail($data['subject']);
+            $em->persist($conversion);
+
             $em->flush();
 
             $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
