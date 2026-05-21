@@ -2,6 +2,16 @@
 
 > Audit realise le 20/05/2026 — remontee beta-testeur lesprodici.fr (9 643+ pages, score SEO 29/100)
 
+**Statut : TERMINE** — Toutes les phases implementees et commitees sur main (21/05/2026).
+
+| Phase | Commit | Description |
+|-------|--------|-------------|
+| P1 | `947db3e` | SeoTrait Tag/Service, filtrage sitemap, canonical auto |
+| P2 | `9976bf0` | Sitemap index multi-fichiers, JSON-LD (Organization, Product, Event, Service, LocalBusiness, CreativeWork), BreadcrumbList partout, fix blocs SEO perdus (event/portfolio/directory/faq), fix FAQPage JSON-LD orphelin |
+| P3 | `8fee975` | ProductCategory noindex, aide contextuelle admin SEO |
+
+> **Note** : dns-prefetch (prevu P3 dans le plan initial) a ete fait en P2. Les items P4 du plan initial (dns-prefetch, ProductCategory noindex, aide admin) ont ete absorbes dans P2/P3.
+
 ---
 
 ## Sommaire
