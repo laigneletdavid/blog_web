@@ -5,16 +5,6 @@
 
 {% block stats_content %}
 
-{# --- Exports --- #}
-<div class="text-end mb-3">
-    <a href="{{ path('admin_stats_export_conversions', {period: period}) }}" class="btn btn-sm btn-outline-secondary">
-        <i class="fas fa-file-csv me-1"></i>Export CSV
-    </a>
-    <a href="{{ path('admin_stats_export_conversions_pdf', {period: period}) }}" class="btn btn-sm btn-outline-secondary ms-1">
-        <i class="fas fa-file-pdf me-1"></i>Export PDF
-    </a>
-</div>
-
 {# --- KPI conversions --- #}
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">

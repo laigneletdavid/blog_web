@@ -441,6 +441,25 @@ class StatService
         );
     }
 
+    /**
+     * Rassemble toutes les donnees pour le rapport complet (CSV/PDF).
+     * @return array{behavior: array, sources: array, landingPages: array, funnel: array, counts: array, topPages: array, exitPages: array, conversionPages: array, conversions: array}
+     */
+    public function fullReportData(string $period = '30d'): array
+    {
+        return [
+            'behavior' => $this->behaviorKpi($period),
+            'sources' => $this->sourceBreakdown($period),
+            'landingPages' => $this->topLandingPages($period, 15),
+            'funnel' => $this->conversionFunnel($period),
+            'counts' => $this->conversionCounts($period),
+            'topPages' => $this->topPagesEnriched($period, 20),
+            'exitPages' => $this->topExitPages($period, 10),
+            'conversionPages' => $this->conversionPages($period, 10),
+            'conversions' => $this->exportConversions($period),
+        ];
+    }
+
     // =============================================
     // UTILS
     // =============================================

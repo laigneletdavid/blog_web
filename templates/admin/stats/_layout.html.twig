@@ -36,12 +36,22 @@
         </a>
     </nav>
 
-    {# --- Filtre periode (stats_extra_params permet aux enfants d'ajouter metric, url, etc.) --- #}
-    <div class="mb-4">
-        {% set _ep = stats_extra_params | default({}) %}
-        {% for key, val in periods %}
-        <a href="{{ path('admin', {routeName: _sr}|merge(_ep)|merge({period: key})) }}" class="btn btn-sm {{ period == key ? 'btn-primary' : 'btn-outline-secondary' }} me-1">{{ val }}</a>
-        {% endfor %}
+    {# --- Filtre periode + exports --- #}
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            {% set _ep = stats_extra_params | default({}) %}
+            {% for key, val in periods %}
+            <a href="{{ path('admin', {routeName: _sr}|merge(_ep)|merge({period: key})) }}" class="btn btn-sm {{ period == key ? 'btn-primary' : 'btn-outline-secondary' }} me-1">{{ val }}</a>
+            {% endfor %}
+        </div>
+        <div>
+            <a href="{{ path('admin_stats_export_csv', {period: period}) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-file-csv me-1"></i>Export CSV
+            </a>
+            <a href="{{ path('admin_stats_export_pdf', {period: period}) }}" class="btn btn-sm btn-outline-secondary ms-1">
+                <i class="fas fa-file-pdf me-1"></i>Export PDF
+            </a>
+        </div>
     </div>
 
     {% block stats_content %}{% endblock %}

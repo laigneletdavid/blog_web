@@ -90,55 +90,140 @@ class StatController extends AbstractController
         ]);
     }
 
-    #[Route('/export/conversions', name: 'admin_stats_export_conversions')]
-    public function exportConversions(Request $request): StreamedResponse
+    #[Route('/export/rapport.csv', name: 'admin_stats_export_csv')]
+    public function exportCsv(Request $request): StreamedResponse
     {
         $period = $request->query->getString('period', '30d');
-        $rows = $this->statService->exportConversions($period);
+        $data = $this->statService->fullReportData($period);
+        $periodLabel = $this->periodLabel($period);
 
-        $response = new StreamedResponse(function () use ($rows) {
-            $handle = fopen('php://output', 'w');
+        $response = new StreamedResponse(function () use ($data, $periodLabel) {
+            $h = fopen('php://output', 'w');
             // BOM UTF-8 pour Excel
-            fwrite($handle, "\xEF\xBB\xBF");
-            fputcsv($handle, ['Date', 'Type', 'Page', 'Source', 'Detail'], ';');
+            fwrite($h, "\xEF\xBB\xBF");
+            $sep = ';';
 
-            foreach ($rows as $row) {
-                fputcsv($handle, [
+            // --- Vue d'ensemble ---
+            fputcsv($h, ['=== VUE D\'ENSEMBLE (' . $periodLabel . ') ==='], $sep);
+            fputcsv($h, ['Indicateur', 'Valeur'], $sep);
+            $b = $data['behavior'];
+            fputcsv($h, ['Duree moyenne (s)', $b['avg_duration'] ?? ''], $sep);
+            fputcsv($h, ['Taux de rebond (%)', $b['bounce_rate'] ?? ''], $sep);
+            fputcsv($h, ['Pages / session', $b['avg_depth'] ?? ''], $sep);
+            fputcsv($h, ['Scroll moyen (%)', $b['avg_scroll'] ?? ''], $sep);
+            fputcsv($h, [], $sep);
+
+            // --- Entonnoir ---
+            fputcsv($h, ['=== ENTONNOIR DE CONVERSION ==='], $sep);
+            fputcsv($h, ['Etape', 'Nombre', 'Taux'], $sep);
+            $f = $data['funnel'];
+            fputcsv($h, ['Visiteurs uniques', $f['visitors'], '100%'], $sep);
+            fputcsv($h, ['> 1 page visitee', $f['engaged'], $f['visitors'] > 0 ? round($f['engaged'] / $f['visitors'] * 100, 1) . '%' : '0%'], $sep);
+            fputcsv($h, ['Vu page contact', $f['saw_contact'], $f['visitors'] > 0 ? round($f['saw_contact'] / $f['visitors'] * 100, 1) . '%' : '0%'], $sep);
+            fputcsv($h, ['Conversions', $f['converted'], ($f['rate'] ?? 0) . '%'], $sep);
+            fputcsv($h, [], $sep);
+
+            // --- Sources ---
+            fputcsv($h, ['=== ACQUISITION — SOURCES ==='], $sep);
+            fputcsv($h, ['Source', 'Sessions', 'Part (%)'], $sep);
+            $totalSrc = array_sum(array_column($data['sources'], 'cnt'));
+            foreach ($data['sources'] as $s) {
+                fputcsv($h, [
+                    ucfirst(str_replace('_', ' ', $s['source'])),
+                    $s['cnt'],
+                    $totalSrc > 0 ? round($s['cnt'] / $totalSrc * 100, 1) : 0,
+                ], $sep);
+            }
+            fputcsv($h, [], $sep);
+
+            // --- Pages d'entree ---
+            fputcsv($h, ['=== ACQUISITION — PAGES D\'ENTREE ==='], $sep);
+            fputcsv($h, ['Page', 'Sessions'], $sep);
+            foreach ($data['landingPages'] as $lp) {
+                fputcsv($h, [$lp['landing_page'], $lp['cnt']], $sep);
+            }
+            fputcsv($h, [], $sep);
+
+            // --- Comportement par page ---
+            fputcsv($h, ['=== COMPORTEMENT — DETAIL PAR PAGE ==='], $sep);
+            fputcsv($h, ['Page', 'Vues', 'Duree moy. (s)', 'Scroll (%)', 'Rebond (%)'], $sep);
+            foreach ($data['topPages'] as $p) {
+                fputcsv($h, [
+                    $p['url'],
+                    $p['views'],
+                    $p['avg_duration'] ?? '',
+                    $p['avg_scroll'] ?? '',
+                    $p['bounce_rate'] ?? '',
+                ], $sep);
+            }
+            fputcsv($h, [], $sep);
+
+            // --- Pages de sortie ---
+            fputcsv($h, ['=== COMPORTEMENT — PAGES DE SORTIE ==='], $sep);
+            fputcsv($h, ['Page', 'Sorties', 'Taux sortie (%)'], $sep);
+            foreach ($data['exitPages'] as $ep) {
+                fputcsv($h, [$ep['exit_page'], $ep['exit_sessions'], $ep['exit_rate']], $sep);
+            }
+            fputcsv($h, [], $sep);
+
+            // --- Conversions KPI ---
+            fputcsv($h, ['=== CONVERSIONS — RESUME ==='], $sep);
+            fputcsv($h, ['Type', 'Nombre'], $sep);
+            $c = $data['counts'];
+            fputcsv($h, ['Appels (tel)', $c['phone_click']], $sep);
+            fputcsv($h, ['Emails (mailto)', $c['email_click']], $sep);
+            fputcsv($h, ['Formulaires', $c['form_submit']], $sep);
+            fputcsv($h, ['Total', $c['total']], $sep);
+            fputcsv($h, [], $sep);
+
+            // --- Pages qui convertissent ---
+            fputcsv($h, ['=== CONVERSIONS — PAGES MOTEUR ==='], $sep);
+            fputcsv($h, ['Page', 'Conversions'], $sep);
+            foreach ($data['conversionPages'] as $cp) {
+                fputcsv($h, [$cp['page_url'], $cp['cnt']], $sep);
+            }
+            fputcsv($h, [], $sep);
+
+            // --- Detail conversions ---
+            fputcsv($h, ['=== CONVERSIONS — DETAIL ==='], $sep);
+            fputcsv($h, ['Date', 'Type', 'Page', 'Source', 'Detail'], $sep);
+            foreach ($data['conversions'] as $row) {
+                fputcsv($h, [
                     $row['date'],
                     $row['type'],
                     $row['page_url'],
                     $row['source'] ?? 'direct',
                     $row['detail'] ?? '',
-                ], ';');
+                ], $sep);
             }
 
-            fclose($handle);
+            fclose($h);
         });
 
-        $filename = 'conversions_' . date('Y-m-d') . '.csv';
+        $filename = 'rapport_stats_' . date('Y-m-d') . '.csv';
         $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
         $response->headers->set('Content-Disposition', "attachment; filename=\"{$filename}\"");
 
         return $response;
     }
 
-    #[Route('/export/conversions.pdf', name: 'admin_stats_export_conversions_pdf')]
-    public function exportConversionsPdf(Request $request): Response
+    #[Route('/export/rapport.pdf', name: 'admin_stats_export_pdf')]
+    public function exportPdf(Request $request): Response
     {
         $period = $request->query->getString('period', '30d');
+        $data = $this->statService->fullReportData($period);
 
-        $periodLabels = [
-            'today' => "Aujourd'hui",
-            '7d' => '7 derniers jours',
-            '30d' => '30 derniers jours',
-        ];
-
-        $html = $this->renderView('admin/stats/export_conversions_pdf.html.twig', [
-            'periodLabel' => $periodLabels[$period] ?? $period,
-            'counts' => $this->statService->conversionCounts($period),
-            'funnel' => $this->statService->conversionFunnel($period),
-            'pages' => $this->statService->conversionPages($period),
-            'rows' => $this->statService->exportConversions($period),
+        $html = $this->renderView('admin/stats/export_rapport_pdf.html.twig', [
+            'periodLabel' => $this->periodLabel($period),
+            'behavior' => $data['behavior'],
+            'sources' => $data['sources'],
+            'landingPages' => $data['landingPages'],
+            'funnel' => $data['funnel'],
+            'counts' => $data['counts'],
+            'topPages' => $data['topPages'],
+            'exitPages' => $data['exitPages'],
+            'conversionPages' => $data['conversionPages'],
+            'conversions' => $data['conversions'],
         ]);
 
         $options = new Options();
@@ -150,11 +235,24 @@ class StatController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $filename = 'conversions_' . date('Y-m-d') . '.pdf';
+        $filename = 'rapport_stats_' . date('Y-m-d') . '.pdf';
 
         return new Response($dompdf->output(), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
+    }
+
+    private function periodLabel(string $period): string
+    {
+        return match ($period) {
+            'today' => "Aujourd'hui",
+            '7d' => '7 derniers jours',
+            '30d' => '30 derniers jours',
+            'month' => 'Ce mois',
+            'quarter' => 'Ce trimestre',
+            'year' => "Cette annee",
+            default => $period,
+        };
     }
 }
