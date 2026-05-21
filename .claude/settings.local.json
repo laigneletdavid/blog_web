@@ -131,7 +131,11 @@
       "Bash(wsl -d Ubuntu -e bash -lc \"cd /home/laign/projects/blog_web && git checkout HEAD -- CLAUDE.md .claude/docs/CLAUDE4.md\")",
       "Bash(wsl -d Ubuntu -e bash -lc \"rm -f /home/laign/projects/blog_web/.git/index.lock && cd /home/laign/projects/blog_web && git checkout HEAD -- CLAUDE.md .claude/docs/CLAUDE4.md\")",
       "Bash(wsl -d Ubuntu -e bash -lc 'cd /home/laign/projects/blog_web && git commit -m \"\"Doc: CLAUDE.md + CLAUDE4.md — section deploiement, favicon auto, backlog a jour:*)",
-      "mcp__Claude_in_Chrome__browser_batch"
+      "Bash(wsl -e bash -c 'cd /home/laign/projects/blog_web && docker compose exec db mariadb-dump -u root -proot bw_comwebsolutions 2>/dev/null > dump_cws.sql && wc -l dump_cws.sql && head -3 dump_cws.sql')",
+      "mcp__Claude_in_Chrome__computer",
+      "Bash(npm install *)",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && npm install driver.js --save\")",
+      "PowerShell(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && cat .env.local\")"
     ]
   }
 }

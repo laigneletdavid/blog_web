@@ -6,8 +6,7 @@
       "runtimeExecutable": "docker",
       "runtimeArgs": ["compose", "logs", "-f", "nginx"],
       "port": 8080,
-      "autoPort": false,
-      "urlPath": "/"
+      "autoPort": false
     }
   ]
 }
