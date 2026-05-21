@@ -3,3 +3,18 @@
 /* Use it on client branches (bw_*) to override theme styles             */
 /* without modifying CMS theme files.                                     */
 /* On main, this file stays empty.                                        */
+
+/* Home FAQ section spacing */
+.home-faq {
+    padding: 4rem 0;
+    background: var(--bs-light, #f8f9fa);
+}
+
+/* Fix: contact portrait sizing */
+.mod-contact-portrait img,
+.team .team_img img.counter_img {
+    max-width: 250px;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}

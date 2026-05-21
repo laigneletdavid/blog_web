@@ -1,0 +1,116 @@
+{# ====== HOME — Démo Freelance BlogWeb ====== #}
+{# Override client : oriente et explique, pas commercial #}
+
+{# ====== HERO ====== #}
+<section class="home-hero"
+    {% if site.heroImage %}
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
+    {% endif %}>
+    <div class="home-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center home-hero__row">
+            <div class="col-lg-7 home-hero__content">
+                <span class="home-hero__badge">Espace de démonstration</span>
+                <h1 class="home-hero__title">Bienvenue dans l'espace de démonstration BlogWeb</h1>
+                <p class="home-hero__desc">Vous êtes ici dans un BlogWeb grandeur nature. Connectez-vous à l'administration et découvrez, en quelques minutes, comme il est simple de monter un site.</p>
+                <div class="home-hero__actions">
+                    <a href="{{ path('admin') }}" class="btn btn-primary btn-lg">Accéder à l'administration</a>
+                    {% set pinned = articles|default([])|first %}
+                    {% if pinned %}
+                    <a href="{{ path('app_article_show', { slug: pinned.slug }) }}" class="btn btn-outline-primary btn-lg">Lire le guide de démarrage</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if site.heroImage %}
+            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
+                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', 'BlogWeb Démo', true) }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== FEATURES — Ce que vous pouvez tester ====== #}
+<section class="home-features">
+    <div class="container">
+        <h2 class="home-section-title text-center">Ce que vous pouvez tester ici</h2>
+        <div class="home-features__grid">
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <h3 class="home-features__title">Créer du contenu</h3>
+                <p class="home-features__desc">Articles, pages, images : l'éditeur fonctionne comme un traitement de texte. Aucune compétence technique requise.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3 class="home-features__title">Changer l'apparence</h3>
+                <p class="home-features__desc">Thème, couleurs, polices : ajustez l'identité visuelle du site et voyez le rendu en direct.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </div>
+                <h3 class="home-features__title">Activer des modules</h3>
+                <p class="home-features__desc">Blog, FAQ, portfolio, événements, boutique… BlogWeb s'adapte aux besoins de chaque projet.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <h3 class="home-features__title">Voir le résultat en ligne</h3>
+                <p class="home-features__desc">Tout ce que vous montez dans l'admin s'affiche immédiatement sur le site public.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3 class="home-features__title">SEO intégré</h3>
+                <p class="home-features__desc">Meta tags, sitemap XML, Open Graph : votre site est optimisé pour les moteurs de recherche dès le départ.</p>
+            </div>
+            <div class="home-features__card">
+                <div class="home-features__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 class="home-features__title">Contact & notifications</h3>
+                <p class="home-features__desc">Formulaire de contact, commentaires et notifications email pour rester connecté à vos visiteurs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== DERNIERS ARTICLES ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="home-section-title mb-0">Le blog de démonstration</h2>
+            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Voir tous les articles &rarr;</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== FAQ ====== #}
+{% if faqs|default([])|length > 0 %}
+<section class="home-faq">
+    <div class="container">
+        <h2 class="home-section-title text-center">Questions fréquentes</h2>
+        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+    </div>
+</section>
+{% endif %}
+
+{# ====== CTA FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center">
+        <h2 class="home-cta__title">Prêt à tester ?</h2>
+        <p class="home-cta__desc">Connectez-vous à l'administration et explorez BlogWeb par vous-même. Le site est remis à zéro chaque nuit — testez sans retenue.</p>
+        <a href="{{ path('admin') }}" class="btn btn-light btn-lg">Accéder à l'administration</a>
+    </div>
+</section>
