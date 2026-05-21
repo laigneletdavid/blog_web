@@ -29,6 +29,7 @@ use App\Entity\User;
 use App\Repository\MenuRepository;
 use App\Service\AdminStatsService;
 use App\Service\SiteContext;
+use App\Service\StatService;
 use App\Service\ThemeService;
 use App\Service\WalkthroughService;
 use App\Controller\Admin\ModulesCrudController;
@@ -55,6 +56,7 @@ class DashboardController extends AbstractDashboardController
         private ThemeService $themeService,
         private \App\Repository\OrderRepository $orderRepository,
         private AdminStatsService $adminStatsService,
+        private StatService $statService,
         private WalkthroughService $walkthroughService,
     ) {
     }
@@ -88,10 +90,13 @@ class DashboardController extends AbstractDashboardController
         $user = $this->getUser();
         $tourCompleted = $user instanceof User && $user->isTourCompleted();
 
+        $statsSummary = $this->statService->dashboardSummary();
+
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
             'stats' => $stats,
+            'statsSummary' => $statsSummary,
             'ecommerceStats' => $ecommerceStats,
             'topPagesPeriod' => $topPagesPeriod,
             'topPagesYear' => $topPagesYear,
@@ -383,6 +388,15 @@ class DashboardController extends AbstractDashboardController
             }
         }
 
+        // --- Statistiques ---
+        if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::section('Statistiques');
+            yield MenuItem::linkToRoute('Vue d\'ensemble', 'fas fa-chart-pie', 'admin_stats_index');
+            yield MenuItem::linkToRoute('Acquisition', 'fas fa-arrow-trend-down', 'admin_stats_acquisition');
+            yield MenuItem::linkToRoute('Comportement', 'fas fa-gauge-high', 'admin_stats_comportement');
+            yield MenuItem::linkToRoute('Conversions', 'fas fa-bullseye', 'admin_stats_conversions');
+        }
+
         // --- Communaute ---
         $hasCommunity = $this->siteContext->hasModule('blog') || $this->isGranted('ROLE_ADMIN');
         if ($hasCommunity) {
@@ -461,6 +475,7 @@ class DashboardController extends AbstractDashboardController
             ->addWebpackEncoreEntry('admin_fonts')
             ->addWebpackEncoreEntry('admin_icons')
             ->addWebpackEncoreEntry('admin_dashboard')
-            ->addWebpackEncoreEntry('admin_walkthrough');
+            ->addWebpackEncoreEntry('admin_walkthrough')
+            ->addWebpackEncoreEntry('admin_stats');
     }
 }

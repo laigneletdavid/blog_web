@@ -1,0 +1,47 @@
+{# Layout commun pour les pages Stats admin #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% set periods = {
+    'today': "Aujourd'hui",
+    '7d': '7 jours',
+    '30d': '30 jours',
+    'month': 'Ce mois',
+    'quarter': 'Ce trimestre',
+    'year': 'Cette annee',
+} %}
+
+{% block content_title %}
+    <span style="font-size: 1.1rem; font-weight: 600;">{% block stats_title %}Statistiques{% endblock %}</span>
+{% endblock %}
+
+{% block main %}
+<div class="bw-dashboard bw-stats">
+
+    {# --- Navigation stats --- #}
+    {% set _route = app.request.attributes.get('_route') %}
+    <nav class="bw-stats-nav mb-3">
+        <a href="{{ ea_url().setRoute('admin_stats_index', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_index' ? ' is-active' }}">
+            <i class="fas fa-chart-pie me-1"></i>Vue d'ensemble
+        </a>
+        <a href="{{ ea_url().setRoute('admin_stats_acquisition', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_acquisition' ? ' is-active' }}">
+            <i class="fas fa-arrow-trend-down me-1"></i>Acquisition
+        </a>
+        <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_comportement' ? ' is-active' }}">
+            <i class="fas fa-gauge-high me-1"></i>Comportement
+        </a>
+        <a href="{{ ea_url().setRoute('admin_stats_conversions', {period: period}) }}" class="bw-stats-nav__item{{ _route == 'admin_stats_conversions' ? ' is-active' }}">
+            <i class="fas fa-bullseye me-1"></i>Conversions
+        </a>
+    </nav>
+
+    {# --- Filtre periode (conserve les autres query params, ex: metric) --- #}
+    <div class="mb-4">
+        {% set _qp = app.request.query.all %}
+        {% for key, val in periods %}
+        <a href="{{ ea_url().setRoute(_route, _qp|merge({period: key})) }}" class="btn btn-sm {{ period == key ? 'btn-primary' : 'btn-outline-secondary' }} me-1">{{ val }}</a>
+        {% endfor %}
+    </div>
+
+    {% block stats_content %}{% endblock %}
+</div>
+{% endblock %}

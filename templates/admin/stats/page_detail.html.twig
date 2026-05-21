@@ -1,0 +1,75 @@
+{% extends 'admin/stats/_layout.html.twig' %}
+
+{% block stats_title %}{{ url }}{% endblock %}
+
+{% block stats_content %}
+
+{# --- Mini-flux de parcours --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="bw-card">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-route me-2"></i>Parcours autour de : {{ url }}</h3>
+            </div>
+            <div class="bw-card__body">
+                <div class="bw-flow">
+                    {# --- Colonne gauche : d'ou viennent-ils --- #}
+                    <div class="bw-flow__col">
+                        <h4 class="bw-flow__heading"><i class="fas fa-arrow-left me-1"></i> D'ou viennent-ils</h4>
+                        {% if flow.prev|length > 0 %}
+                            {% set prev_total = flow.prev|reduce((c, p) => c + p.cnt, 0) %}
+                            {% for p in flow.prev %}
+                            <div class="bw-flow__item">
+                                <div class="bw-flow__bar" style="width: {{ prev_total > 0 ? (p.cnt / prev_total * 100)|round : 0 }}%;"></div>
+                                <span class="bw-flow__label">{{ p.page }}</span>
+                                <span class="bw-flow__pct">{{ prev_total > 0 ? (p.cnt / prev_total * 100)|round : 0 }}%</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">Entree directe</p>
+                        {% endif %}
+                    </div>
+
+                    {# --- Colonne centrale --- #}
+                    <div class="bw-flow__center">
+                        <div class="bw-flow__page">
+                            <i class="fas fa-file me-1"></i>{{ url }}
+                        </div>
+                        {% if flow.exit_rate is not null %}
+                        <div class="bw-flow__exit-rate">
+                            Taux de sortie : <strong>{{ flow.exit_rate }}%</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {# --- Colonne droite : ou vont-ils --- #}
+                    <div class="bw-flow__col">
+                        <h4 class="bw-flow__heading">Ou vont-ils <i class="fas fa-arrow-right ms-1"></i></h4>
+                        {% if flow.next|length > 0 %}
+                            {% set next_total = flow.next|reduce((c, p) => c + p.cnt, 0) %}
+                            {% for p in flow.next %}
+                            <div class="bw-flow__item">
+                                <div class="bw-flow__bar" style="width: {{ next_total > 0 ? (p.cnt / next_total * 100)|round : 0 }}%;"></div>
+                                <span class="bw-flow__label">
+                                    <a href="{{ ea_url().setRoute('admin_stats_page_detail', {url: p.page, period: period}) }}">{{ p.page }}</a>
+                                </span>
+                                <span class="bw-flow__pct">{{ next_total > 0 ? (p.cnt / next_total * 100)|round : 0 }}%</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">Sortie du site</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period}) }}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Retour au comportement
+    </a>
+</div>
+
+{% endblock %}

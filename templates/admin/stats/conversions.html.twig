@@ -1,0 +1,159 @@
+{% extends 'admin/stats/_layout.html.twig' %}
+
+{% block stats_title %}Conversions{% endblock %}
+
+{% block stats_content %}
+
+{# --- KPI conversions --- #}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #dbeafe; color: #2563eb;"><i class="fas fa-phone"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ counts.phone_click }}</div>
+                <div class="bw-kpi__label">Appels</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #fef3c7; color: #d97706;"><i class="fas fa-envelope"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ counts.email_click }}</div>
+                <div class="bw-kpi__label">Emails</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #dcfce7; color: #16a34a;"><i class="fas fa-file-pen"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ counts.form_submit }}</div>
+                <div class="bw-kpi__label">Formulaires</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #f3e8ff; color: #7c3aed;"><i class="fas fa-bullseye"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ counts.total }}</div>
+                <div class="bw-kpi__label">Total conversions</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Entonnoir --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-6">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-filter me-2"></i>Entonnoir</h3>
+            </div>
+            <div class="bw-card__body">
+                {% set max = funnel.visitors > 0 ? funnel.visitors : 1 %}
+                <div class="bw-funnel">
+                    <div class="bw-funnel__step">
+                        <div class="bw-funnel__bar" style="width: 100%;"><span>Visiteurs uniques</span></div>
+                        <span class="bw-funnel__value">{{ funnel.visitors }}</span>
+                    </div>
+                    <div class="bw-funnel__step">
+                        <div class="bw-funnel__bar" style="width: {{ (funnel.engaged / max * 100)|round }}%;"><span>> 1 page visitee</span></div>
+                        <span class="bw-funnel__value">{{ funnel.engaged }} <small>({{ (funnel.engaged / max * 100)|round(1) }}%)</small></span>
+                    </div>
+                    <div class="bw-funnel__step">
+                        <div class="bw-funnel__bar" style="width: {{ (funnel.saw_contact / max * 100)|round }}%;"><span>Vu page contact</span></div>
+                        <span class="bw-funnel__value">{{ funnel.saw_contact }} <small>({{ (funnel.saw_contact / max * 100)|round(1) }}%)</small></span>
+                    </div>
+                    <div class="bw-funnel__step">
+                        <div class="bw-funnel__bar bw-funnel__bar--success" style="width: {{ max(funnel.converted / max * 100, 3)|round }}%;"><span>Conversions</span></div>
+                        <span class="bw-funnel__value">{{ funnel.converted }} <small>({{ funnel.rate ?? 0 }}%)</small></span>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <span class="fw-bold" style="font-size: 1.1rem; color: #16a34a;">Taux de conversion : {{ funnel.rate ?? 0 }}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- Pages qui convertissent --- #}
+    <div class="col-12 col-lg-6">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-trophy me-2"></i>Pages moteur</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if pages|length > 0 %}
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th class="text-end">Conversions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pages %}
+                        <tr>
+                            <td>{{ p.page_url }}</td>
+                            <td class="text-end fw-bold">{{ p.cnt }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted text-center py-3 mb-0">Aucune conversion.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Conversions recentes --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="bw-card">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-clock-rotate-left me-2"></i>Conversions recentes</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if recent|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Source</th>
+                                <th>Parcours</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in recent %}
+                            <tr>
+                                <td class="text-nowrap">{{ r.date|date('d/m H:i') }}</td>
+                                <td><span class="bw-source-badge bw-source-badge--{{ r.source ?? 'direct' }}">{{ (r.source ?? 'direct')|replace({'_': ' '})|capitalize }}</span></td>
+                                <td class="text-muted" style="font-size: 0.82rem;">{{ r.journey ?: '—' }}</td>
+                                <td>
+                                    {% if r.type == 'phone_click' %}<i class="fas fa-phone text-primary" title="Appel"></i>
+                                    {% elseif r.type == 'email_click' %}<i class="fas fa-envelope text-warning" title="Email"></i>
+                                    {% else %}<i class="fas fa-file-pen text-success" title="Formulaire"></i>
+                                    {% endif %}
+                                </td>
+                                <td>{{ r.detail ?? '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3 mb-0">Aucune conversion.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

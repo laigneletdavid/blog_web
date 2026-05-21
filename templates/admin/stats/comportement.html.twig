@@ -1,0 +1,113 @@
+{% extends 'admin/stats/_layout.html.twig' %}
+
+{% block stats_title %}Comportement{% endblock %}
+
+{% block stats_content %}
+
+{# --- KPI cards --- #}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #dbeafe; color: #2563eb;"><i class="fas fa-clock"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ behavior.avg_duration ? (behavior.avg_duration // 60 ~ 'm' ~ '%02d'|format(behavior.avg_duration % 60) ~ 's') : '—' }}</div>
+                <div class="bw-kpi__label">Duree moyenne</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #fef3c7; color: #d97706;"><i class="fas fa-arrow-turn-up fa-rotate-180"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ behavior.bounce_rate is not null ? behavior.bounce_rate ~ '%' : '—' }}</div>
+                <div class="bw-kpi__label">Taux de rebond</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #f3e8ff; color: #7c3aed;"><i class="fas fa-layer-group"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ behavior.avg_depth ?? '—' }}</div>
+                <div class="bw-kpi__label">Pages / session</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #dcfce7; color: #16a34a;"><i class="fas fa-arrows-down-to-line"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ behavior.avg_scroll is not null ? behavior.avg_scroll ~ '%' : '—' }}</div>
+                <div class="bw-kpi__label">Scroll moyen</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Graphe temporel --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="bw-card">
+            <div class="bw-card__header d-flex align-items-center justify-content-between">
+                <h3 class="bw-card__title"><i class="fas fa-chart-line me-2"></i>Evolution sur 30 jours</h3>
+                <div class="d-flex gap-1">
+                    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period, metric: 'duration'}) }}" class="btn btn-sm {{ metric == 'duration' ? 'btn-primary' : 'btn-outline-secondary' }}">Duree</a>
+                    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period, metric: 'bounce'}) }}" class="btn btn-sm {{ metric == 'bounce' ? 'btn-primary' : 'btn-outline-secondary' }}">Rebond</a>
+                    <a href="{{ ea_url().setRoute('admin_stats_comportement', {period: period, metric: 'depth'}) }}" class="btn btn-sm {{ metric == 'depth' ? 'btn-primary' : 'btn-outline-secondary' }}">Profondeur</a>
+                </div>
+            </div>
+            <div class="bw-card__body">
+                <canvas id="behaviorChart" height="260" data-timeline='{{ timeline|json_encode }}'></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Tableau pages enrichi --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="bw-card">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-table me-2"></i>Detail par page</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if topPages|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Page</th>
+                                <th class="text-end">Vues</th>
+                                <th class="text-end">Duree moy.</th>
+                                <th class="text-end">Scroll</th>
+                                <th class="text-end">Rebond</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for page in topPages %}
+                            <tr>
+                                <td><a href="{{ ea_url().setRoute('admin_stats_page_detail', {url: page.url, period: period}) }}">{{ page.url }}</a></td>
+                                <td class="text-end fw-bold">{{ page.views }}</td>
+                                <td class="text-end">{{ page.avg_duration ? (page.avg_duration // 60 ~ ':' ~ '%02d'|format(page.avg_duration % 60)) : '—' }}</td>
+                                <td class="text-end">{{ page.avg_scroll ? page.avg_scroll ~ '%' : '—' }}</td>
+                                <td class="text-end">{{ page.bounce_rate is not null ? page.bounce_rate ~ '%' : '—' }}</td>
+                                <td>
+                                    {% if page.avg_duration is not null and page.avg_duration > 120 and page.avg_scroll is not null and page.avg_scroll > 70 %}
+                                    <span title="Bon engagement" style="color: #d97706;">&#9733;</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3 mb-0">Aucune donnee.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
