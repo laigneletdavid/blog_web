@@ -48,6 +48,50 @@
     </div>
 </div>
 
+{# --- Repartition appareils --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-5">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-mobile-screen-button me-2"></i>Appareils</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if devices|length > 0 %}
+                <canvas id="devicesChart" height="250" data-devices='{{ devices|json_encode }}'></canvas>
+                {% else %}
+                <p class="text-muted text-center py-4 mb-0">Pas encore de donnees.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-7">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-list me-2"></i>Detail par appareil</h3>
+            </div>
+            <div class="bw-card__body bw-card__body--list">
+                {% set devTotal = devices|reduce((c, d) => c + d.cnt, 0) %}
+                {% set deviceLabels = { desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablette', unknown: 'Inconnu' } %}
+                {% set deviceIcons = { desktop: 'fa-desktop', mobile: 'fa-mobile-screen-button', tablet: 'fa-tablet-screen-button', unknown: 'fa-question' } %}
+                {% for d in devices %}
+                <div class="bw-activity-item">
+                    <div class="bw-activity-item__content d-flex justify-content-between">
+                        <div>
+                            <i class="fas {{ deviceIcons[d.device_type] ?? 'fa-question' }} me-2 text-muted"></i>
+                            <strong>{{ deviceLabels[d.device_type] ?? d.device_type }}</strong>
+                        </div>
+                        <div class="text-end">
+                            <strong>{{ d.cnt }}</strong>
+                            <small class="text-muted ms-1">({{ devTotal > 0 ? (d.cnt / devTotal * 100)|round(1) : 0 }}%)</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {# --- Top pages d'entree --- #}
 <div class="row g-3 mb-4">
     <div class="col-12">

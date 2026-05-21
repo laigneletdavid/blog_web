@@ -38,6 +38,24 @@ class StatService
     }
 
     /**
+     * Repartition par type d'appareil (desktop, mobile, tablet).
+     * @return array<array{device_type: string, cnt: int}>
+     */
+    public function deviceBreakdown(string $period = '30d'): array
+    {
+        [$since] = $this->resolvePeriod($period);
+
+        return $this->conn->fetchAllAssociative(
+            'SELECT COALESCE(device_type, \'unknown\') AS device_type, COUNT(*) AS cnt
+             FROM stat_session
+             WHERE is_bot = 0 AND started_at >= :since
+             GROUP BY device_type
+             ORDER BY cnt DESC',
+            ['since' => $since],
+        );
+    }
+
+    /**
      * Top pages d'entree (landing pages).
      * @return array<array{landing_page: string, cnt: int}>
      */
@@ -450,6 +468,7 @@ class StatService
         return [
             'behavior' => $this->behaviorKpi($period),
             'sources' => $this->sourceBreakdown($period),
+            'devices' => $this->deviceBreakdown($period),
             'landingPages' => $this->topLandingPages($period, 15),
             'funnel' => $this->conversionFunnel($period),
             'counts' => $this->conversionCounts($period),

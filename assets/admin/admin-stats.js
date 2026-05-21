@@ -57,6 +57,64 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // =============================================
+    // DONUT : Appareils (desktop / mobile / tablet)
+    // =============================================
+    const devicesCanvas = document.getElementById('devicesChart');
+    if (devicesCanvas) {
+        const devices = JSON.parse(devicesCanvas.dataset.devices || '[]');
+        if (devices.length > 0) {
+            const deviceLabels = {
+                desktop: 'Desktop',
+                mobile: 'Mobile',
+                tablet: 'Tablette',
+                unknown: 'Inconnu',
+            };
+            const deviceColors = {
+                desktop: '#2563eb',
+                mobile: '#16a34a',
+                tablet: '#d97706',
+                unknown: '#94a3b8',
+            };
+
+            const labels = devices.map(d => deviceLabels[d.device_type] || d.device_type);
+            const data = devices.map(d => parseInt(d.cnt, 10));
+            const colors = devices.map(d => deviceColors[d.device_type] || '#64748b');
+
+            new Chart(devicesCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 }, padding: 10 },
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    var total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+                                    var pct = total > 0 ? (ctx.raw / total * 100).toFixed(1) : 0;
+                                    return ctx.label + ': ' + ctx.raw + ' (' + pct + '%)';
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+    }
+
+    // =============================================
     // LINE : Comportement timeline
     // =============================================
     const behaviorCanvas = document.getElementById('behaviorChart');

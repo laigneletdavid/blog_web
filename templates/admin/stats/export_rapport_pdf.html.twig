@@ -209,6 +209,35 @@
         {% endif %}
     </div>
 
+    {# --- Appareils --- #}
+    <div class="section">
+        <div class="section-title">Acquisition — Appareils</div>
+        {% if devices|length > 0 %}
+            {% set devTotal = devices|reduce((c, d) => c + d.cnt, 0) %}
+            {% set deviceLabels = { desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablette', unknown: 'Inconnu' } %}
+            <table class="data">
+                <thead>
+                    <tr>
+                        <th>Appareil</th>
+                        <th class="text-end" style="width: 80px;">Sessions</th>
+                        <th class="text-end" style="width: 70px;">Part</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in devices %}
+                    <tr>
+                        <td>{{ deviceLabels[d.device_type] ?? d.device_type }}</td>
+                        <td class="text-end fw-bold">{{ d.cnt }}</td>
+                        <td class="text-end">{{ devTotal > 0 ? (d.cnt / devTotal * 100)|round(1) : 0 }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="muted">Aucune donnee.</p>
+        {% endif %}
+    </div>
+
     {# --- Pages d'entree --- #}
     <div class="section">
         <div class="section-title">Acquisition — Pages d'entree</div>

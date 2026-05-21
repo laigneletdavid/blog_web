@@ -30,6 +30,7 @@ class StatController extends AbstractController
             'period' => $period,
             'behavior' => $this->statService->behaviorKpi($period),
             'sources' => $this->statService->sourceBreakdown($period),
+            'devices' => $this->statService->deviceBreakdown($period),
             'funnel' => $this->statService->conversionFunnel($period),
             'conversions' => $this->statService->conversionCounts($period),
             'topPages' => $this->statService->topPagesEnriched($period, 10),
@@ -44,6 +45,7 @@ class StatController extends AbstractController
         return $this->render('admin/stats/acquisition.html.twig', [
             'period' => $period,
             'sources' => $this->statService->sourceBreakdown($period),
+            'devices' => $this->statService->deviceBreakdown($period),
             'landingPages' => $this->statService->topLandingPages($period),
         ]);
     }
@@ -136,6 +138,20 @@ class StatController extends AbstractController
             }
             fputcsv($h, [], $sep);
 
+            // --- Appareils ---
+            fputcsv($h, ['=== ACQUISITION — APPAREILS ==='], $sep);
+            fputcsv($h, ['Appareil', 'Sessions', 'Part (%)'], $sep);
+            $deviceLabels = ['desktop' => 'Desktop', 'mobile' => 'Mobile', 'tablet' => 'Tablette', 'unknown' => 'Inconnu'];
+            $totalDev = array_sum(array_column($data['devices'], 'cnt'));
+            foreach ($data['devices'] as $d) {
+                fputcsv($h, [
+                    $deviceLabels[$d['device_type']] ?? $d['device_type'],
+                    $d['cnt'],
+                    $totalDev > 0 ? round($d['cnt'] / $totalDev * 100, 1) : 0,
+                ], $sep);
+            }
+            fputcsv($h, [], $sep);
+
             // --- Pages d'entree ---
             fputcsv($h, ['=== ACQUISITION — PAGES D\'ENTREE ==='], $sep);
             fputcsv($h, ['Page', 'Sessions'], $sep);
@@ -217,6 +233,7 @@ class StatController extends AbstractController
             'periodLabel' => $this->periodLabel($period),
             'behavior' => $data['behavior'],
             'sources' => $data['sources'],
+            'devices' => $data['devices'],
             'landingPages' => $data['landingPages'],
             'funnel' => $data['funnel'],
             'counts' => $data['counts'],

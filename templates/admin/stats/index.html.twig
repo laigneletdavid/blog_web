@@ -47,7 +47,7 @@
 
 <div class="row g-3 mb-4">
     {# --- Sources (donut) --- #}
-    <div class="col-12 col-lg-5">
+    <div class="col-12 col-lg-4">
         <div class="bw-card bw-card--full">
             <div class="bw-card__header">
                 <h3 class="bw-card__title"><i class="fas fa-chart-pie me-2"></i>Sources de trafic</h3>
@@ -64,8 +64,25 @@
         </div>
     </div>
 
+    {# --- Appareils (donut) --- #}
+    <div class="col-12 col-lg-3">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-mobile-screen-button me-2"></i>Appareils</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if devices|length > 0 %}
+                    <canvas id="devicesChart" height="220"
+                        data-devices='{{ devices|json_encode }}'></canvas>
+                {% else %}
+                    <p class="text-muted text-center py-4 mb-0">Pas encore de donnees.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
     {# --- Entonnoir conversion --- #}
-    <div class="col-12 col-lg-7">
+    <div class="col-12 col-lg-5">
         <div class="bw-card bw-card--full">
             <div class="bw-card__header">
                 <h3 class="bw-card__title"><i class="fas fa-filter me-2"></i>Entonnoir de conversion</h3>
