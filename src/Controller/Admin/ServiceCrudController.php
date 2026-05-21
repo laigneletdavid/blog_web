@@ -131,6 +131,7 @@ class ServiceCrudController extends AbstractCrudController
             ],
             'tips' => [
                 'L\'icone s\'affiche dans la grille des services sur la home. Trouvez les icones sur icons.getbootstrap.com.',
+                '<strong>SEO</strong> : chaque service a sa propre page. Pensez à remplir le Titre SEO (max 70 car.) et la Meta description (max 160 car.) dans le panel SEO pour un meilleur référencement.',
             ],
         ];
     }

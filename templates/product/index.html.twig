@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{# Les pages categorie produit sont des listings filtres, pas du contenu editorial → noindex #}
+{% block seo %}
+{{ parent() }}
+{% if currentCategory|default(null) %}
+<meta name="robots" content="noindex, follow">
+{% endif %}
+{% endblock %}
+
 {% block body %}
 <section class="catalogue-page py-5">
     <div class="container">

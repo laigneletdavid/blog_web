@@ -97,6 +97,7 @@ class TagCrudController extends AbstractCrudController
                 'Pour des filtres front dédiés (ex: filtrer l\'annuaire par ville), créez d\'abord une Famille puis rattachez vos tags.',
                 'Un même tag peut servir à plusieurs modules (ex: tag "Paris" sur des articles ET sur des fiches d\'annuaire).',
                 'Les tags non utilisés restent visibles dans l\'admin mais n\'apparaissent pas sur le front tant qu\'aucun contenu ne les emploie.',
+                '<strong>SEO</strong> : les tags sont masqués des moteurs de recherche par défaut (noIndex). Pour promouvoir un tag stratégique (ex: une ville, un métier), décochez « Masquer des moteurs » dans le panel SEO.',
             ],
         ];
     }
