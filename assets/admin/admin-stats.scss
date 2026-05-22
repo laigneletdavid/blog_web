@@ -282,6 +282,66 @@
     }
 }
 
+// ── Heatmap temporel ──
+.bw-heatmap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-x: auto;
+
+    &__row {
+        display: flex;
+        gap: 2px;
+        align-items: center;
+
+        &--header {
+            .bw-heatmap__cell {
+                background: transparent !important;
+                color: #94a3b8;
+                font-size: 0.65rem;
+                font-weight: 600;
+            }
+        }
+    }
+
+    &__label {
+        min-width: 36px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #64748b;
+        text-align: right;
+        padding-right: 4px;
+        flex-shrink: 0;
+    }
+
+    &__cell {
+        flex: 1;
+        min-width: 24px;
+        height: 28px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.1s;
+
+        &--header {
+            height: 18px;
+        }
+
+        span {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        }
+
+        &:hover {
+            transform: scale(1.15);
+            z-index: 1;
+        }
+    }
+}
+
 // ── Responsive ──
 @media (max-width: 768px) {
     .bw-stats-nav {

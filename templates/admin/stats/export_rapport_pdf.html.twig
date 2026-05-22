@@ -271,6 +271,37 @@
         {% endif %}
     </div>
 
+    {# --- Heatmap temporel --- #}
+    {% if heatmap.max > 0 %}
+    <div class="section">
+        <div class="section-title">Activite par jour et heure</div>
+        <table class="data" style="font-size: 7px;">
+            <thead>
+                <tr>
+                    <th style="width: 30px;"></th>
+                    {% for h in heatmap.hours %}
+                        <th class="text-center" style="padding: 2px; width: 18px;">{{ h }}h</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for dayIdx, dayLabel in heatmap.days %}
+                <tr>
+                    <td class="fw-bold" style="padding: 2px 4px;">{{ dayLabel }}</td>
+                    {% for hour in heatmap.hours %}
+                        {% set val = heatmap.grid[dayIdx][hour] %}
+                        {% set intensity = heatmap.max > 0 ? (val / heatmap.max) : 0 %}
+                        <td class="text-center" style="padding: 2px; background: rgba(37, 99, 235, {{ (intensity * 0.8)|round(2) }}); color: {{ intensity > 0.4 ? '#fff' : '#64748b' }}; font-size: 6px;">
+                            {{ val > 0 ? val : '' }}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
     {# --- Pages d'entree --- #}
     <div class="section">
         <div class="section-title">Acquisition — Pages d'entree</div>

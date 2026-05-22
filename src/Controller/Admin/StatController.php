@@ -35,6 +35,7 @@ class StatController extends AbstractController
             'funnel' => $this->statService->conversionFunnel($period),
             'conversions' => $this->statService->conversionCounts($period),
             'topPages' => $this->statService->topPagesEnriched($period, 10),
+            'heatmap' => $this->statService->heatmapData($period),
         ]);
     }
 
@@ -48,6 +49,7 @@ class StatController extends AbstractController
             'sources' => $this->statService->sourceBreakdown($period),
             'devices' => $this->statService->deviceBreakdown($period),
             'landingPages' => $this->statService->topLandingPages($period),
+            'heatmap' => $this->statService->heatmapData($period),
         ]);
     }
 
@@ -187,6 +189,17 @@ class StatController extends AbstractController
             }
             fputcsv($h, [], $sep);
 
+            // --- Heatmap temporel ---
+            $hm = $data['heatmap'];
+            fputcsv($h, ['=== HEATMAP — SESSIONS PAR JOUR/HEURE ==='], $sep);
+            $headerRow = array_merge(['Jour'], array_map(fn($h2) => $h2 . 'h', $hm['hours']));
+            fputcsv($h, $headerRow, $sep);
+            foreach ($hm['days'] as $dayIdx => $dayLabel) {
+                $row = array_merge([$dayLabel], $hm['grid'][$dayIdx]);
+                fputcsv($h, $row, $sep);
+            }
+            fputcsv($h, [], $sep);
+
             // --- Conversions KPI ---
             fputcsv($h, ['=== CONVERSIONS — RESUME ==='], $sep);
             fputcsv($h, ['Type', 'Nombre', 'Evolution (%)'], $sep);
@@ -264,6 +277,7 @@ class StatController extends AbstractController
             'conversionPages' => $data['conversionPages'],
             'conversionPaths' => $data['conversionPaths'],
             'criticalPages' => $data['criticalPages'],
+            'heatmap' => $data['heatmap'],
             'conversions' => $data['conversions'],
         ]);
 

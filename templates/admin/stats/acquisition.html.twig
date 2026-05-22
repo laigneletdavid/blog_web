@@ -92,6 +92,53 @@
     </div>
 </div>
 
+{# --- Heatmap temporel --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="bw-card">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-fire me-2"></i>Activite par jour et heure</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if heatmap.max > 0 %}
+                <div class="bw-heatmap">
+                    <div class="bw-heatmap__row bw-heatmap__row--header">
+                        <div class="bw-heatmap__label"></div>
+                        {% for h in heatmap.hours %}
+                            <div class="bw-heatmap__cell bw-heatmap__cell--header">{{ h }}</div>
+                        {% endfor %}
+                    </div>
+                    {% for dayIdx, dayLabel in heatmap.days %}
+                        <div class="bw-heatmap__row">
+                            <div class="bw-heatmap__label">{{ dayLabel }}</div>
+                            {% for hour in heatmap.hours %}
+                                {% set val = heatmap.grid[dayIdx][hour] %}
+                                {% set intensity = heatmap.max > 0 ? (val / heatmap.max) : 0 %}
+                                <div class="bw-heatmap__cell" style="background: rgba(37, 99, 235, {{ (intensity * 0.85 + 0.05)|round(2) }});" title="{{ dayLabel }} {{ hour }}h : {{ val }} sessions">
+                                    {% if val > 0 %}<span>{{ val }}</span>{% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="d-flex align-items-center justify-content-end gap-2 mt-2" style="font-size: 0.75rem; color: #64748b;">
+                    <span>Faible</span>
+                    <div style="display: flex; gap: 2px;">
+                        <div style="width: 16px; height: 12px; background: rgba(37, 99, 235, 0.1); border-radius: 2px;"></div>
+                        <div style="width: 16px; height: 12px; background: rgba(37, 99, 235, 0.35); border-radius: 2px;"></div>
+                        <div style="width: 16px; height: 12px; background: rgba(37, 99, 235, 0.6); border-radius: 2px;"></div>
+                        <div style="width: 16px; height: 12px; background: rgba(37, 99, 235, 0.85); border-radius: 2px;"></div>
+                    </div>
+                    <span>Fort</span>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3 mb-0">Pas encore de donnees.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {# --- Top pages d'entree --- #}
 <div class="row g-3 mb-4">
     <div class="col-12">

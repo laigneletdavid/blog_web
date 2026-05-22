@@ -478,6 +478,7 @@ class StatService
             'conversionPages' => $this->conversionPages($period, 10),
             'conversionPaths' => $this->topConversionPaths($period),
             'criticalPages' => $this->criticalPages($period),
+            'heatmap' => $this->heatmapData($period),
             'conversions' => $this->exportConversions($period),
         ];
     }
@@ -571,6 +572,53 @@ class StatService
             'sessions' => (int) $row['sessions_converties'],
             'pct' => round((int) $row['sessions_converties'] / $totalConverted * 100, 1),
         ], $rows);
+    }
+
+    // =============================================
+    // HEATMAP TEMPOREL (Phase 5c)
+    // =============================================
+
+    /**
+     * Matrice jour×heure des sessions (heatmap 7×24).
+     * DAYOFWEEK MariaDB : 1=Dim, 2=Lun...7=Sam → on remap en 0=Lun..6=Dim.
+     * @return array{grid: array<int, array<int, int>>, max: int, days: string[], hours: int[]}
+     */
+    public function heatmapData(string $period = '30d'): array
+    {
+        [$since] = $this->resolvePeriod($period);
+
+        $rows = $this->conn->fetchAllAssociative(
+            'SELECT DAYOFWEEK(started_at) AS dow, HOUR(started_at) AS hour, COUNT(*) AS sessions
+             FROM stat_session
+             WHERE is_bot = 0 AND started_at >= :since
+             GROUP BY dow, hour
+             ORDER BY dow, hour',
+            ['since' => $since],
+        );
+
+        // Initialiser grille 7 jours × 24 heures à 0
+        $grid = array_fill(0, 7, array_fill(0, 24, 0));
+        $max = 0;
+
+        // Remap DAYOFWEEK (1=Dim) → 0=Lun..6=Dim
+        $dowMap = [2 => 0, 3 => 1, 4 => 2, 5 => 3, 6 => 4, 7 => 5, 1 => 6];
+
+        foreach ($rows as $row) {
+            $dayIdx = $dowMap[(int) $row['dow']] ?? 0;
+            $hour = (int) $row['hour'];
+            $count = (int) $row['sessions'];
+            $grid[$dayIdx][$hour] = $count;
+            if ($count > $max) {
+                $max = $count;
+            }
+        }
+
+        return [
+            'grid' => $grid,
+            'max' => $max,
+            'days' => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+            'hours' => range(0, 23),
+        ];
     }
 
     // =============================================
