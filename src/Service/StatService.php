@@ -476,8 +476,101 @@ class StatService
             'topPages' => $this->topPagesEnriched($period, 20),
             'exitPages' => $this->topExitPages($period, 10),
             'conversionPages' => $this->conversionPages($period, 10),
+            'conversionPaths' => $this->topConversionPaths($period),
+            'criticalPages' => $this->criticalPages($period),
             'conversions' => $this->exportConversions($period),
         ];
+    }
+
+    // =============================================
+    // PARCOURS DE CONVERSION (Phase 5b)
+    // =============================================
+
+    /**
+     * Top parcours des sessions qui ont converti.
+     * Reconstruit le chemin page par page puis agrege les patterns.
+     * @return array<int, array{path: string, count: int, pct: float}>
+     */
+    public function topConversionPaths(string $period = '30d', int $limit = 5): array
+    {
+        [$since] = $this->resolvePeriod($period);
+
+        // Récupérer les parcours de chaque session convertie
+        $rows = $this->conn->fetchAllAssociative(
+            'SELECT pv.session_id,
+                    GROUP_CONCAT(pv.url ORDER BY pv.sequence_number SEPARATOR \' → \') AS journey
+             FROM page_view pv
+             WHERE pv.session_id IN (
+               SELECT DISTINCT session_id FROM stat_conversion WHERE created_at >= :since AND session_id IS NOT NULL
+             )
+             GROUP BY pv.session_id',
+            ['since' => $since],
+        );
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        // Agréger les parcours identiques
+        $paths = [];
+        foreach ($rows as $row) {
+            $journey = $row['journey'];
+            $paths[$journey] = ($paths[$journey] ?? 0) + 1;
+        }
+        arsort($paths);
+
+        $total = count($rows);
+        $result = [];
+        $i = 0;
+        foreach ($paths as $path => $count) {
+            if (++$i > $limit) {
+                break;
+            }
+            $result[] = [
+                'path' => $path,
+                'count' => $count,
+                'pct' => round($count / $total * 100, 1),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Pages les plus présentes dans les parcours qui convertissent.
+     * @return array<int, array{url: string, sessions: int, pct: float}>
+     */
+    public function criticalPages(string $period = '30d', int $limit = 10): array
+    {
+        [$since] = $this->resolvePeriod($period);
+
+        $totalConverted = (int) $this->conn->fetchOne(
+            'SELECT COUNT(DISTINCT session_id) FROM stat_conversion WHERE created_at >= :since AND session_id IS NOT NULL',
+            ['since' => $since],
+        );
+
+        if ($totalConverted === 0) {
+            return [];
+        }
+
+        $rows = $this->conn->fetchAllAssociative(
+            'SELECT pv.url, COUNT(DISTINCT pv.session_id) AS sessions_converties
+             FROM page_view pv
+             WHERE pv.session_id IN (
+               SELECT DISTINCT session_id FROM stat_conversion WHERE created_at >= :since AND session_id IS NOT NULL
+             )
+             GROUP BY pv.url
+             ORDER BY sessions_converties DESC
+             LIMIT :lim',
+            ['since' => $since, 'lim' => $limit],
+            ['lim' => \Doctrine\DBAL\ParameterType::INTEGER],
+        );
+
+        return array_map(fn(array $row) => [
+            'url' => $row['url'],
+            'sessions' => (int) $row['sessions_converties'],
+            'pct' => round((int) $row['sessions_converties'] / $totalConverted * 100, 1),
+        ], $rows);
     }
 
     // =============================================

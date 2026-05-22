@@ -115,6 +115,74 @@
     </div>
 </div>
 
+{# --- Parcours de conversion --- #}
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-7">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-route me-2"></i>Parcours type</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if conversionPaths|length > 0 %}
+                    {% set maxPct = conversionPaths|first.pct %}
+                    {% for cp in conversionPaths %}
+                    <div class="bw-path">
+                        <div class="bw-path__bar-bg">
+                            <div class="bw-path__bar-fill" style="width: {{ maxPct > 0 ? (cp.pct / maxPct * 100)|round : 0 }}%;"></div>
+                        </div>
+                        <div class="bw-path__label">{{ cp.path }}</div>
+                        <div class="bw-path__stats">
+                            <span class="fw-bold">{{ cp.count }}</span> sessions
+                            <span class="text-muted ms-1">({{ cp.pct }}%)</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-3 mb-0">Pas assez de conversions pour identifier des parcours.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="bw-card bw-card--full">
+            <div class="bw-card__header">
+                <h3 class="bw-card__title"><i class="fas fa-star me-2"></i>Pages critiques</h3>
+            </div>
+            <div class="bw-card__body">
+                {% if criticalPages|length > 0 %}
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th class="text-end">Sessions</th>
+                            <th class="text-end">Presence</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cp in criticalPages %}
+                        <tr>
+                            <td><a href="{{ path('admin', {routeName: 'admin_stats_page_detail', url: cp.url, period: period}) }}">{{ cp.url }}</a></td>
+                            <td class="text-end fw-bold">{{ cp.sessions }}</td>
+                            <td class="text-end">{{ cp.pct }}%</td>
+                            <td>
+                                {% if cp.pct > 50 %}
+                                <span title="Page strategique (> 50%)" style="color: #d97706;">&#9733;</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p class="text-muted text-center py-3 mb-0">Pas assez de conversions.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {# --- Conversions recentes --- #}
 <div class="row g-3 mb-4">
     <div class="col-12">

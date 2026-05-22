@@ -77,6 +77,8 @@ class StatController extends AbstractController
             'funnel' => $this->statService->conversionFunnel($period),
             'recent' => $this->statService->recentConversions(),
             'pages' => $this->statService->conversionPages($period),
+            'conversionPaths' => $this->statService->topConversionPaths($period),
+            'criticalPages' => $this->statService->criticalPages($period),
         ]);
     }
 
@@ -203,6 +205,22 @@ class StatController extends AbstractController
             }
             fputcsv($h, [], $sep);
 
+            // --- Parcours de conversion ---
+            fputcsv($h, ['=== CONVERSIONS — PARCOURS TYPE ==='], $sep);
+            fputcsv($h, ['Parcours', 'Sessions', 'Part (%)'], $sep);
+            foreach ($data['conversionPaths'] as $cp) {
+                fputcsv($h, [$cp['path'], $cp['count'], $cp['pct']], $sep);
+            }
+            fputcsv($h, [], $sep);
+
+            // --- Pages critiques ---
+            fputcsv($h, ['=== CONVERSIONS — PAGES CRITIQUES ==='], $sep);
+            fputcsv($h, ['Page', 'Sessions converties', 'Presence (%)'], $sep);
+            foreach ($data['criticalPages'] as $cp) {
+                fputcsv($h, [$cp['url'], $cp['sessions'], $cp['pct']], $sep);
+            }
+            fputcsv($h, [], $sep);
+
             // --- Detail conversions ---
             fputcsv($h, ['=== CONVERSIONS — DETAIL ==='], $sep);
             fputcsv($h, ['Date', 'Type', 'Page', 'Source', 'Detail'], $sep);
@@ -244,6 +262,8 @@ class StatController extends AbstractController
             'topPages' => $data['topPages'],
             'exitPages' => $data['exitPages'],
             'conversionPages' => $data['conversionPages'],
+            'conversionPaths' => $data['conversionPaths'],
+            'criticalPages' => $data['criticalPages'],
             'conversions' => $data['conversions'],
         ]);
 
