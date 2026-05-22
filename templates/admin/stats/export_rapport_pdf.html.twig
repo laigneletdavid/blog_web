@@ -69,6 +69,12 @@
         /* --- Engagement star --- */
         .star { color: #d97706; font-weight: bold; }
 
+        /* --- Tendances --- */
+        .trend { font-size: 8px; font-weight: bold; margin-top: 2px; }
+        .trend--up { color: #16a34a; }
+        .trend--down { color: #dc2626; }
+        .trend--stable { color: #94a3b8; }
+
         /* --- Saut de page --- */
         .page-break { page-break-before: always; }
 
@@ -85,26 +91,49 @@
     <h1>Rapport statistiques</h1>
     <div class="subtitle">Periode : {{ periodLabel }} — Genere le {{ "now"|date("d/m/Y H:i") }}</div>
 
-    {# --- KPI Comportement --- #}
+    {# --- Macro tendance PDF --- #}
+    {% macro pdf_trend(trend, invert) %}
+        {% if trend is defined and trend is not null %}
+            {% set dir = trend.direction %}
+            {% set delta = trend.delta %}
+            {% set good = (dir == 'up' and not invert) or (dir == 'down' and invert) %}
+            {% set bad = (dir == 'down' and not invert) or (dir == 'up' and invert) %}
+            <div class="trend {{ good ? 'trend--up' : (bad ? 'trend--down' : 'trend--stable') }}">
+                {% if dir == 'up' %}&#9650;{% elseif dir == 'down' %}&#9660;{% else %}={% endif %}
+                {% if delta is not null %}{{ delta > 0 ? '+' : '' }}{{ delta }}%{% elseif dir == 'up' %}Nouveau{% endif %}
+            </div>
+        {% endif %}
+    {% endmacro %}
+
+    {# --- KPI Visiteurs + Comportement --- #}
     <div class="section">
-        <div class="section-title">Indicateurs comportementaux</div>
+        <div class="section-title">Indicateurs cles</div>
         <table class="kpi-row" cellspacing="0">
             <tr>
-                <td style="width: 25%;">
+                <td style="width: 20%;">
+                    <div class="kpi-value" style="color: #4338ca;">{{ visitors.value }}</div>
+                    <div class="kpi-label">Visiteurs</div>
+                    {{ _self.pdf_trend(visitors.trend, false) }}
+                </td>
+                <td style="width: 20%;">
                     <div class="kpi-value kpi-value--blue">{{ behavior.avg_duration ? (behavior.avg_duration // 60 ~ 'm' ~ '%02d'|format(behavior.avg_duration % 60) ~ 's') : '—' }}</div>
                     <div class="kpi-label">Duree moyenne</div>
+                    {{ _self.pdf_trend(behavior.avg_duration_trend ?? null, false) }}
                 </td>
-                <td style="width: 25%;">
+                <td style="width: 20%;">
                     <div class="kpi-value kpi-value--orange">{{ behavior.bounce_rate is not null ? behavior.bounce_rate ~ '%' : '—' }}</div>
                     <div class="kpi-label">Taux de rebond</div>
+                    {{ _self.pdf_trend(behavior.bounce_rate_trend ?? null, true) }}
                 </td>
-                <td style="width: 25%;">
+                <td style="width: 20%;">
                     <div class="kpi-value kpi-value--purple">{{ behavior.avg_depth ?? '—' }}</div>
                     <div class="kpi-label">Pages / session</div>
+                    {{ _self.pdf_trend(behavior.avg_depth_trend ?? null, false) }}
                 </td>
-                <td style="width: 25%;">
+                <td style="width: 20%;">
                     <div class="kpi-value kpi-value--green">{{ behavior.avg_scroll is not null ? behavior.avg_scroll ~ '%' : '—' }}</div>
                     <div class="kpi-label">Scroll moyen</div>
+                    {{ _self.pdf_trend(behavior.avg_scroll_trend ?? null, false) }}
                 </td>
             </tr>
         </table>
@@ -155,18 +184,22 @@
                 <td style="width: 25%;">
                     <div class="kpi-value type-phone">{{ counts.phone_click }}</div>
                     <div class="kpi-label">Appels</div>
+                    {{ _self.pdf_trend(counts.phone_click_trend ?? null, false) }}
                 </td>
                 <td style="width: 25%;">
                     <div class="kpi-value type-email">{{ counts.email_click }}</div>
                     <div class="kpi-label">Emails</div>
+                    {{ _self.pdf_trend(counts.email_click_trend ?? null, false) }}
                 </td>
                 <td style="width: 25%;">
                     <div class="kpi-value type-form">{{ counts.form_submit }}</div>
                     <div class="kpi-label">Formulaires</div>
+                    {{ _self.pdf_trend(counts.form_submit_trend ?? null, false) }}
                 </td>
                 <td style="width: 25%;">
                     <div class="kpi-value">{{ counts.total }}</div>
                     <div class="kpi-label">Total</div>
+                    {{ _self.pdf_trend(counts.total_trend ?? null, false) }}
                 </td>
             </tr>
         </table>

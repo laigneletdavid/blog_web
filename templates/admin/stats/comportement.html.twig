@@ -14,6 +14,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.avg_duration ? (behavior.avg_duration // 60 ~ 'm' ~ '%02d'|format(behavior.avg_duration % 60) ~ 's') : '—' }}</div>
                 <div class="bw-kpi__label">Duree moyenne</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_duration_trend, invert: false} %}
             </div>
         </div>
     </div>
@@ -23,6 +24,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.bounce_rate is not null ? behavior.bounce_rate ~ '%' : '—' }}</div>
                 <div class="bw-kpi__label">Taux de rebond</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.bounce_rate_trend, invert: true} %}
             </div>
         </div>
     </div>
@@ -32,6 +34,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.avg_depth ?? '—' }}</div>
                 <div class="bw-kpi__label">Pages / session</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_depth_trend, invert: false} %}
             </div>
         </div>
     </div>
@@ -41,6 +44,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.avg_scroll is not null ? behavior.avg_scroll ~ '%' : '—' }}</div>
                 <div class="bw-kpi__label">Scroll moyen</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_scroll_trend, invert: false} %}
             </div>
         </div>
     </div>

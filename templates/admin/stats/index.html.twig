@@ -5,41 +5,55 @@
 
 {% block stats_content %}
 
-{# --- KPI Comportement --- #}
+{# --- KPI Comportement + Visiteurs --- #}
 <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
+        <div class="bw-kpi">
+            <div class="bw-kpi__icon" style="background: #e0e7ff; color: #4338ca;"><i class="fas fa-users"></i></div>
+            <div class="bw-kpi__data">
+                <div class="bw-kpi__value">{{ visitors.value }}</div>
+                <div class="bw-kpi__label">Visiteurs</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: visitors.trend, invert: false} %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg">
         <div class="bw-kpi">
             <div class="bw-kpi__icon" style="background: #dbeafe; color: #2563eb;"><i class="fas fa-clock"></i></div>
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.avg_duration ? (behavior.avg_duration // 60 ~ 'm' ~ '%02d'|format(behavior.avg_duration % 60) ~ 's') : '—' }}</div>
                 <div class="bw-kpi__label">Duree moyenne</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_duration_trend, invert: false} %}
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
         <div class="bw-kpi">
             <div class="bw-kpi__icon" style="background: #fef3c7; color: #d97706;"><i class="fas fa-arrow-turn-up fa-rotate-180"></i></div>
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.bounce_rate is not null ? behavior.bounce_rate ~ '%' : '—' }}</div>
                 <div class="bw-kpi__label">Taux de rebond</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.bounce_rate_trend, invert: true} %}
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
         <div class="bw-kpi">
             <div class="bw-kpi__icon" style="background: #f3e8ff; color: #7c3aed;"><i class="fas fa-layer-group"></i></div>
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.avg_depth ?? '—' }}</div>
                 <div class="bw-kpi__label">Pages / session</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_depth_trend, invert: false} %}
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
         <div class="bw-kpi">
             <div class="bw-kpi__icon" style="background: #dcfce7; color: #16a34a;"><i class="fas fa-arrows-down-to-line"></i></div>
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ behavior.avg_scroll is not null ? behavior.avg_scroll ~ '%' : '—' }}</div>
                 <div class="bw-kpi__label">Scroll moyen</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_scroll_trend, invert: false} %}
             </div>
         </div>
     </div>

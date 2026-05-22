@@ -2,6 +2,28 @@
 // Stats Admin — BlogWeb
 // ────────────────────────────────────────
 
+// ── Tendance KPI (fleche + delta) ──
+.bw-kpi__trend {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+
+    &--up {
+        color: #16a34a;
+    }
+
+    &--down {
+        color: #dc2626;
+    }
+
+    &--stable {
+        color: #94a3b8;
+    }
+}
+
 // ── Navigation onglets stats ──
 .bw-stats-nav {
     display: flex;

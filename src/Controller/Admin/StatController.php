@@ -28,7 +28,8 @@ class StatController extends AbstractController
 
         return $this->render('admin/stats/index.html.twig', [
             'period' => $period,
-            'behavior' => $this->statService->behaviorKpi($period),
+            'behavior' => $this->statService->behaviorKpiWithTrend($period),
+            'visitors' => $this->statService->visitorsWithTrend($period),
             'sources' => $this->statService->sourceBreakdown($period),
             'devices' => $this->statService->deviceBreakdown($period),
             'funnel' => $this->statService->conversionFunnel($period),
@@ -59,7 +60,7 @@ class StatController extends AbstractController
         return $this->render('admin/stats/comportement.html.twig', [
             'period' => $period,
             'metric' => $metric,
-            'behavior' => $this->statService->behaviorKpi($period),
+            'behavior' => $this->statService->behaviorKpiWithTrend($period),
             'timeline' => $this->statService->behaviorTimeline($metric),
             'topPages' => $this->statService->topPagesEnriched($period, 15),
         ]);
@@ -72,7 +73,7 @@ class StatController extends AbstractController
 
         return $this->render('admin/stats/conversions.html.twig', [
             'period' => $period,
-            'counts' => $this->statService->conversionCounts($period),
+            'counts' => $this->statService->conversionCountsWithTrend($period),
             'funnel' => $this->statService->conversionFunnel($period),
             'recent' => $this->statService->recentConversions(),
             'pages' => $this->statService->conversionPages($period),
@@ -107,12 +108,14 @@ class StatController extends AbstractController
 
             // --- Vue d'ensemble ---
             fputcsv($h, ['=== VUE D\'ENSEMBLE (' . $periodLabel . ') ==='], $sep);
-            fputcsv($h, ['Indicateur', 'Valeur'], $sep);
+            fputcsv($h, ['Indicateur', 'Valeur', 'Evolution (%)'], $sep);
             $b = $data['behavior'];
-            fputcsv($h, ['Duree moyenne (s)', $b['avg_duration'] ?? ''], $sep);
-            fputcsv($h, ['Taux de rebond (%)', $b['bounce_rate'] ?? ''], $sep);
-            fputcsv($h, ['Pages / session', $b['avg_depth'] ?? ''], $sep);
-            fputcsv($h, ['Scroll moyen (%)', $b['avg_scroll'] ?? ''], $sep);
+            $v = $data['visitors'];
+            fputcsv($h, ['Visiteurs', $v['value'], $this->formatTrendCsv($v['trend'])], $sep);
+            fputcsv($h, ['Duree moyenne (s)', $b['avg_duration'] ?? '', $this->formatTrendCsv($b['avg_duration_trend'] ?? null)], $sep);
+            fputcsv($h, ['Taux de rebond (%)', $b['bounce_rate'] ?? '', $this->formatTrendCsv($b['bounce_rate_trend'] ?? null)], $sep);
+            fputcsv($h, ['Pages / session', $b['avg_depth'] ?? '', $this->formatTrendCsv($b['avg_depth_trend'] ?? null)], $sep);
+            fputcsv($h, ['Scroll moyen (%)', $b['avg_scroll'] ?? '', $this->formatTrendCsv($b['avg_scroll_trend'] ?? null)], $sep);
             fputcsv($h, [], $sep);
 
             // --- Entonnoir ---
@@ -184,12 +187,12 @@ class StatController extends AbstractController
 
             // --- Conversions KPI ---
             fputcsv($h, ['=== CONVERSIONS — RESUME ==='], $sep);
-            fputcsv($h, ['Type', 'Nombre'], $sep);
+            fputcsv($h, ['Type', 'Nombre', 'Evolution (%)'], $sep);
             $c = $data['counts'];
-            fputcsv($h, ['Appels (tel)', $c['phone_click']], $sep);
-            fputcsv($h, ['Emails (mailto)', $c['email_click']], $sep);
-            fputcsv($h, ['Formulaires', $c['form_submit']], $sep);
-            fputcsv($h, ['Total', $c['total']], $sep);
+            fputcsv($h, ['Appels (tel)', $c['phone_click'], $this->formatTrendCsv($c['phone_click_trend'] ?? null)], $sep);
+            fputcsv($h, ['Emails (mailto)', $c['email_click'], $this->formatTrendCsv($c['email_click_trend'] ?? null)], $sep);
+            fputcsv($h, ['Formulaires', $c['form_submit'], $this->formatTrendCsv($c['form_submit_trend'] ?? null)], $sep);
+            fputcsv($h, ['Total', $c['total'], $this->formatTrendCsv($c['total_trend'] ?? null)], $sep);
             fputcsv($h, [], $sep);
 
             // --- Pages qui convertissent ---
@@ -232,6 +235,7 @@ class StatController extends AbstractController
         $html = $this->renderView('admin/stats/export_rapport_pdf.html.twig', [
             'periodLabel' => $this->periodLabel($period),
             'behavior' => $data['behavior'],
+            'visitors' => $data['visitors'],
             'sources' => $data['sources'],
             'devices' => $data['devices'],
             'landingPages' => $data['landingPages'],
@@ -258,6 +262,21 @@ class StatController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
+    }
+
+    private function formatTrendCsv(?array $trend): string
+    {
+        if ($trend === null) {
+            return '';
+        }
+        if ($trend['delta'] !== null) {
+            return ($trend['delta'] > 0 ? '+' : '') . $trend['delta'] . '%';
+        }
+        if ($trend['direction'] === 'up') {
+            return 'Nouveau';
+        }
+
+        return '=';
     }
 
     private function periodLabel(string $period): string

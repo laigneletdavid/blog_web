@@ -466,17 +466,142 @@ class StatService
     public function fullReportData(string $period = '30d'): array
     {
         return [
-            'behavior' => $this->behaviorKpi($period),
+            'behavior' => $this->behaviorKpiWithTrend($period),
+            'visitors' => $this->visitorsWithTrend($period),
             'sources' => $this->sourceBreakdown($period),
             'devices' => $this->deviceBreakdown($period),
             'landingPages' => $this->topLandingPages($period, 15),
             'funnel' => $this->conversionFunnel($period),
-            'counts' => $this->conversionCounts($period),
+            'counts' => $this->conversionCountsWithTrend($period),
             'topPages' => $this->topPagesEnriched($period, 20),
             'exitPages' => $this->topExitPages($period, 10),
             'conversionPages' => $this->conversionPages($period, 10),
             'conversions' => $this->exportConversions($period),
         ];
+    }
+
+    // =============================================
+    // TENDANCES (vs période précédente)
+    // =============================================
+
+    /**
+     * KPI comportementaux avec delta vs période précédente.
+     * Chaque KPI contient la valeur actuelle + trend (delta en %).
+     */
+    public function behaviorKpiWithTrend(string $period = '30d'): array
+    {
+        $current = $this->behaviorKpi($period);
+        [$prevSince, $prevUntil] = $this->resolvePreviousPeriod($period);
+
+        // Période précédente
+        $prevPv = $this->conn->fetchAssociative(
+            'SELECT AVG(pv.duration_seconds) AS avg_duration, AVG(pv.scroll_max_pct) AS avg_scroll
+             FROM page_view pv
+             WHERE pv.is_bot = 0 AND pv.created_at >= :since AND pv.created_at < :until AND pv.duration_seconds IS NOT NULL',
+            ['since' => $prevSince, 'until' => $prevUntil],
+        );
+
+        $prevSession = $this->conn->fetchAssociative(
+            'SELECT COUNT(*) AS total, SUM(CASE WHEN page_count = 1 THEN 1 ELSE 0 END) AS bounces, AVG(page_count) AS avg_depth
+             FROM stat_session WHERE is_bot = 0 AND started_at >= :since AND started_at < :until',
+            ['since' => $prevSince, 'until' => $prevUntil],
+        );
+
+        $prevTotal = (int) ($prevSession['total'] ?? 0);
+        $prev = [
+            'avg_duration' => $prevPv['avg_duration'] ? round((float) $prevPv['avg_duration']) : null,
+            'bounce_rate' => $prevTotal > 0 ? round((int) $prevSession['bounces'] / $prevTotal * 100, 1) : null,
+            'avg_depth' => $prevSession['avg_depth'] ? round((float) $prevSession['avg_depth'], 1) : null,
+            'avg_scroll' => $prevPv['avg_scroll'] ? round((float) $prevPv['avg_scroll']) : null,
+        ];
+
+        return [
+            'avg_duration' => $current['avg_duration'],
+            'avg_duration_trend' => $this->calcTrend($current['avg_duration'], $prev['avg_duration']),
+            'bounce_rate' => $current['bounce_rate'],
+            'bounce_rate_trend' => $this->calcTrend($current['bounce_rate'], $prev['bounce_rate']),
+            'avg_depth' => $current['avg_depth'],
+            'avg_depth_trend' => $this->calcTrend($current['avg_depth'], $prev['avg_depth']),
+            'avg_scroll' => $current['avg_scroll'],
+            'avg_scroll_trend' => $this->calcTrend($current['avg_scroll'], $prev['avg_scroll']),
+        ];
+    }
+
+    /**
+     * Compteurs de conversions avec tendance.
+     */
+    public function conversionCountsWithTrend(string $period = '30d'): array
+    {
+        $current = $this->conversionCounts($period);
+        [$prevSince, $prevUntil] = $this->resolvePreviousPeriod($period);
+
+        $prevRows = $this->conn->fetchAllAssociative(
+            'SELECT type, COUNT(*) AS cnt FROM stat_conversion WHERE created_at >= :since AND created_at < :until GROUP BY type',
+            ['since' => $prevSince, 'until' => $prevUntil],
+        );
+
+        $prev = ['phone_click' => 0, 'email_click' => 0, 'form_submit' => 0];
+        foreach ($prevRows as $row) {
+            $prev[$row['type']] = (int) $row['cnt'];
+        }
+        $prev['total'] = array_sum($prev);
+
+        return [
+            'phone_click' => $current['phone_click'],
+            'phone_click_trend' => $this->calcTrend($current['phone_click'], $prev['phone_click']),
+            'email_click' => $current['email_click'],
+            'email_click_trend' => $this->calcTrend($current['email_click'], $prev['email_click']),
+            'form_submit' => $current['form_submit'],
+            'form_submit_trend' => $this->calcTrend($current['form_submit'], $prev['form_submit']),
+            'total' => $current['total'],
+            'total_trend' => $this->calcTrend($current['total'], $prev['total']),
+        ];
+    }
+
+    /**
+     * Nombre de visiteurs avec tendance (pour la vue d'ensemble).
+     */
+    public function visitorsWithTrend(string $period = '30d'): array
+    {
+        [$since] = $this->resolvePeriod($period);
+        [$prevSince, $prevUntil] = $this->resolvePreviousPeriod($period);
+
+        $current = (int) $this->conn->fetchOne(
+            'SELECT COUNT(*) FROM stat_session WHERE is_bot = 0 AND started_at >= :since',
+            ['since' => $since],
+        );
+
+        $prev = (int) $this->conn->fetchOne(
+            'SELECT COUNT(*) FROM stat_session WHERE is_bot = 0 AND started_at >= :since AND started_at < :until',
+            ['since' => $prevSince, 'until' => $prevUntil],
+        );
+
+        return [
+            'value' => $current,
+            'trend' => $this->calcTrend($current, $prev),
+        ];
+    }
+
+    /**
+     * Calcule le delta en pourcentage entre la valeur actuelle et precedente.
+     * @return array{delta: float|null, direction: string} direction = 'up'|'down'|'stable'
+     */
+    private function calcTrend(?float $current, ?float $previous): array
+    {
+        if ($current === null || $previous === null || $previous == 0) {
+            if ($current !== null && $current > 0 && ($previous === null || $previous == 0)) {
+                return ['delta' => null, 'direction' => 'up'];
+            }
+            return ['delta' => null, 'direction' => 'stable'];
+        }
+
+        $delta = round(($current - $previous) / abs($previous) * 100, 1);
+
+        if (abs($delta) < 2.0) {
+            return ['delta' => $delta, 'direction' => 'stable'];
+        }
+
+        return ['delta' => $delta, 'direction' => $delta > 0 ? 'up' : 'down'];
     }
 
     // =============================================
@@ -501,5 +626,26 @@ class StatService
         };
 
         return [$since->format('Y-m-d H:i:s')];
+    }
+
+    /**
+     * Calcule la période précédente de même durée.
+     * Ex: 30d actuel = [now-30d, now] → précédent = [now-60d, now-30d]
+     * @return array{0: string, 1: string} [prevSince, prevUntil]
+     */
+    private function resolvePreviousPeriod(string $period): array
+    {
+        $now = new \DateTimeImmutable('now');
+
+        [$currentSince] = $this->resolvePeriod($period);
+        $currentSinceDate = new \DateTimeImmutable($currentSince);
+
+        // Durée en secondes de la période actuelle
+        $durationSeconds = $now->getTimestamp() - $currentSinceDate->getTimestamp();
+
+        $prevUntil = $currentSinceDate;
+        $prevSince = $prevUntil->modify("-{$durationSeconds} seconds");
+
+        return [$prevSince->format('Y-m-d H:i:s'), $prevUntil->format('Y-m-d H:i:s')];
     }
 }

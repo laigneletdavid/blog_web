@@ -13,6 +13,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ counts.phone_click }}</div>
                 <div class="bw-kpi__label">Appels</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: counts.phone_click_trend, invert: false} %}
             </div>
         </div>
     </div>
@@ -22,6 +23,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ counts.email_click }}</div>
                 <div class="bw-kpi__label">Emails</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: counts.email_click_trend, invert: false} %}
             </div>
         </div>
     </div>
@@ -31,6 +33,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ counts.form_submit }}</div>
                 <div class="bw-kpi__label">Formulaires</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: counts.form_submit_trend, invert: false} %}
             </div>
         </div>
     </div>
@@ -40,6 +43,7 @@
             <div class="bw-kpi__data">
                 <div class="bw-kpi__value">{{ counts.total }}</div>
                 <div class="bw-kpi__label">Total conversions</div>
+                {% include 'admin/stats/_trend.html.twig' with {trend: counts.total_trend, invert: false} %}
             </div>
         </div>
     </div>
