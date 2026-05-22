@@ -140,7 +140,7 @@ class PageViewSubscriber implements EventSubscriberInterface
             $session->incrementPageCount();
 
             // Detection comportementale bot : > 30 pages en 60s
-            if (!$session->getIsBot()) {
+            if (!$session->isBot()) {
                 $elapsed = time() - $session->getStartedAt()->getTimestamp();
                 if ($elapsed > 0 && $elapsed <= self::BOT_TIME_WINDOW && $session->getPageCount() >= self::BOT_PAGE_THRESHOLD) {
                     $session->setIsBot(true);
