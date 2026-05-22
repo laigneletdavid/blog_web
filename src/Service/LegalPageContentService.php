@@ -112,7 +112,8 @@ class LegalPageContentService
 <tbody>
 <tr><td>Session PHP</td><td>Essentiel</td><td>Authentification</td><td>Non requis</td></tr>
 <tr><td>CSRF</td><td>Essentiel</td><td>Sécurité formulaires</td><td>Non requis</td></tr>
-<tr><td>Google Analytics</td><td>Analytique</td><td>Mesure d'audience</td><td><strong>Requis</strong></td></tr>
+<tr><td>_bw_sid</td><td>Mesure d'audience</td><td>Session de visite anonyme (30 min)</td><td>Non requis (exempt CNIL)</td></tr>
+<tr><td>Google Analytics</td><td>Analytique tiers</td><td>Mesure d'audience</td><td><strong>Requis</strong></td></tr>
 <tr><td>Préférences cookies</td><td>Fonctionnel</td><td>Mémoriser votre choix</td><td>Non requis</td></tr>
 </tbody>
 </table>
@@ -188,8 +189,19 @@ HTML;
 </tbody>
 </table>
 
-<h3>2.4 Données techniques</h3>
-<p>Adresse IP (hashée SHA-256), navigateur, pages visitées — conservées 12 mois à des fins de sécurité et de statistiques anonymes.</p>
+<h3>2.4 Mesure d'audience interne</h3>
+<table>
+<thead>
+<tr><th>Donnée</th><th>Finalité</th><th>Conservation</th></tr>
+</thead>
+<tbody>
+<tr><td>IP hashée (SHA-256 + sel journalier)</td><td>Statistiques anonymes, sécurité</td><td>13 mois</td></tr>
+<tr><td>Pages visitées, parcours, durée, scroll</td><td>Amélioration du site</td><td>13 mois</td></tr>
+<tr><td>Source d'arrivée (referer, paramètres UTM)</td><td>Mesure d'acquisition</td><td>13 mois</td></tr>
+<tr><td>Type d'appareil (desktop, mobile, tablette)</td><td>Statistique technique</td><td>13 mois</td></tr>
+</tbody>
+</table>
+<p>Ces données sont <strong>100 % anonymes</strong> : aucune identification personnelle n'est possible. L'adresse IP n'est jamais stockée en clair. Aucune donnée n'est partagée avec des tiers. Ce traitement est exempt de consentement conformément aux recommandations de la CNIL relatives aux outils de mesure d'audience (délibération n°2020-091).</p>
 
 <h3>2.5 Paiement</h3>
 <p>Les données de paiement ne sont <strong>pas stockées</strong> par ce site. Elles sont gérées par Stripe (certifié PCI-DSS).</p>
@@ -211,7 +223,8 @@ HTML;
 <tbody>
 <tr><td>Compte utilisateur</td><td>Exécution du contrat (art. 6.1.b)</td></tr>
 <tr><td>Contact</td><td>Consentement (art. 6.1.a)</td></tr>
-<tr><td>Cookies analytics</td><td>Consentement (art. 6.1.a)</td></tr>
+<tr><td>Mesure d'audience interne (anonyme)</td><td>Intérêt légitime (art. 6.1.f) — exempt de consentement CNIL</td></tr>
+<tr><td>Cookies analytics tiers (Google Analytics)</td><td>Consentement (art. 6.1.a)</td></tr>
 <tr><td>Sécurité / logs</td><td>Intérêt légitime (art. 6.1.f)</td></tr>
 <tr><td>Facturation</td><td>Obligation légale (art. 6.1.c)</td></tr>
 </tbody>
@@ -227,17 +240,19 @@ HTML;
 
 <h2>6. Cookies</h2>
 
-<h3>Cookies essentiels (sans consentement)</h3>
+<h3>Cookies essentiels et de mesure exemptés (sans consentement)</h3>
 <table>
 <thead>
-<tr><th>Cookie</th><th>Finalité</th></tr>
+<tr><th>Cookie</th><th>Finalité</th><th>Durée</th></tr>
 </thead>
 <tbody>
-<tr><td>Session PHP (PHPSESSID)</td><td>Authentification, panier</td></tr>
-<tr><td>CSRF token</td><td>Sécurité des formulaires</td></tr>
-<tr><td>Préférences cookies</td><td>Mémoriser votre choix</td></tr>
+<tr><td>Session PHP (PHPSESSID)</td><td>Authentification, panier</td><td>Session</td></tr>
+<tr><td>CSRF token</td><td>Sécurité des formulaires</td><td>Session</td></tr>
+<tr><td>Préférences cookies</td><td>Mémoriser votre choix</td><td>13 mois</td></tr>
+<tr><td>_bw_sid</td><td>Mesure d'audience anonyme (session de visite)</td><td>30 minutes</td></tr>
 </tbody>
 </table>
+<p>Le cookie <strong>_bw_sid</strong> est un cookie first-party de mesure d'audience. Il ne permet aucune identification personnelle, n'est pas partagé avec des tiers et expire après 30 minutes d'inactivité. Conformément aux recommandations de la CNIL, ce type de cookie est <strong>exempt de consentement</strong>.</p>
 
 <h3>Cookies analytiques (avec consentement)</h3>
 <table>
