@@ -3,16 +3,16 @@
 namespace App\EventSubscriber;
 
 use App\Entity\PageView;
+use App\Entity\StatSession;
+use App\Repository\StatSessionRepository;
+use App\Service\SourceClassifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * Log chaque visite front dans la table page_view.
- * Exclut les admins/auteurs, detecte les bots (is_bot=true).
- */
 class PageViewSubscriber implements EventSubscriberInterface
 {
     private const EXCLUDED_PREFIXES = [
@@ -25,6 +25,7 @@ class PageViewSubscriber implements EventSubscriberInterface
         '/images/',
         '/documents/',
         '/favicon',
+        '/api/',
     ];
 
     private const BOT_PATTERNS = [
@@ -34,16 +35,23 @@ class PageViewSubscriber implements EventSubscriberInterface
         'gptbot', 'claudebot', 'lighthouse', 'pagespeed', 'gtmetrix',
     ];
 
+    private const COOKIE_NAME = '_bw_sid';
+    private const SESSION_TIMEOUT = 1800; // 30 minutes
+    private const BOT_PAGE_THRESHOLD = 30;  // pages max en SESSION_BOT_WINDOW
+    private const BOT_TIME_WINDOW = 60;     // secondes
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly Security $security,
+        private readonly StatSessionRepository $sessionRepository,
+        private readonly SourceClassifier $sourceClassifier,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::RESPONSE => ['onResponse', -100], // Basse priorité
+            KernelEvents::RESPONSE => ['onResponse', -100],
         ];
     }
 
@@ -56,7 +64,6 @@ class PageViewSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $response = $event->getResponse();
 
-        // Ne loguer que les réponses HTML 200
         if ($response->getStatusCode() !== 200) {
             return;
         }
@@ -68,39 +75,123 @@ class PageViewSubscriber implements EventSubscriberInterface
 
         $path = $request->getPathInfo();
 
-        // Exclure les routes non-front
         foreach (self::EXCLUDED_PREFIXES as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 return;
             }
         }
 
-        // Ne pas compter les admins/auteurs connectes
         if ($this->security->isGranted('ROLE_AUTHOR')) {
             return;
         }
 
         $userAgent = mb_substr($request->headers->get('User-Agent', ''), 0, 500) ?: null;
+        $isBot = $this->isBot($userAgent);
 
-        // Hasher l'IP (RGPD — on ne stocke jamais l'IP en clair)
         $ip = $request->getClientIp() ?? '0.0.0.0';
-        $ipHash = hash('sha256', $ip . date('Y-m-d')); // Salté par jour pour limiter le tracking
+        $ipHash = hash('sha256', $ip . date('Y-m-d'));
+
+        $url = mb_substr($path, 0, 500);
+        $referer = mb_substr($request->headers->get('Referer', ''), 0, 500) ?: null;
+
+        // --- Session ---
+        $session = null;
+        $sessionToken = $request->cookies->get(self::COOKIE_NAME);
+        $isNewSession = false;
+
+        if ($sessionToken) {
+            $session = $this->sessionRepository->findOneBy(['sessionToken' => $sessionToken]);
+
+            if ($session) {
+                $elapsed = time() - $session->getEndedAt()->getTimestamp();
+                if ($elapsed > self::SESSION_TIMEOUT) {
+                    $session = null;
+                }
+            }
+        }
+
+        if (!$session) {
+            $isNewSession = true;
+            $sessionToken = bin2hex(random_bytes(32));
+
+            $utmSource = $request->query->get('utm_source');
+            $utmMedium = $request->query->get('utm_medium');
+            $utmCampaign = $request->query->get('utm_campaign');
+
+            [$source, $sourceDetail] = $this->sourceClassifier->classify($referer, $utmSource, $utmMedium);
+
+            $session = new StatSession();
+            $session->setSessionToken($sessionToken);
+            $session->setSource($source);
+            $session->setSourceDetail($sourceDetail ? mb_substr($sourceDetail, 0, 500) : null);
+            $session->setUtmCampaign($utmCampaign ? mb_substr($utmCampaign, 0, 255) : null);
+            $session->setUtmMedium($utmMedium ? mb_substr($utmMedium, 0, 100) : null);
+            $session->setLandingPage($url);
+            $session->setExitPage($url);
+            $session->setIpHash($ipHash);
+            $session->setUserAgent($userAgent);
+            $session->setIsBot($isBot);
+            $session->setDeviceType($this->sourceClassifier->detectDeviceType($userAgent));
+
+            $this->em->persist($session);
+        } else {
+            $session->setEndedAt(new \DateTimeImmutable());
+            $session->setExitPage($url);
+            $session->incrementPageCount();
+
+            // Detection comportementale bot : > 30 pages en 60s
+            if (!$session->isBot()) {
+                $elapsed = time() - $session->getStartedAt()->getTimestamp();
+                if ($elapsed > 0 && $elapsed <= self::BOT_TIME_WINDOW && $session->getPageCount() >= self::BOT_PAGE_THRESHOLD) {
+                    $session->setIsBot(true);
+                    $isBot = true;
+                }
+            }
+        }
+
+        // --- PageView ---
+        $previousUrl = null;
+        $sequenceNumber = 1;
+
+        if (!$isNewSession) {
+            $sequenceNumber = $session->getPageCount();
+            $lastPageView = $this->em->getRepository(PageView::class)->findOneBy(
+                ['session' => $session],
+                ['sequenceNumber' => 'DESC'],
+            );
+            if ($lastPageView) {
+                $previousUrl = $lastPageView->getUrl();
+            }
+        }
 
         $pageView = new PageView();
-        $pageView->setUrl(mb_substr($path, 0, 500));
+        $pageView->setUrl($url);
         $pageView->setIpHash($ipHash);
         $pageView->setUserAgent($userAgent);
-        $pageView->setReferer(mb_substr($request->headers->get('Referer', ''), 0, 500) ?: null);
-        $pageView->setIsBot($this->isBot($userAgent));
+        $pageView->setReferer($referer);
+        $pageView->setIsBot($isBot);
+        $pageView->setSession($session);
+        $pageView->setPreviousUrl($previousUrl);
+        $pageView->setSequenceNumber($sequenceNumber);
 
         $this->em->persist($pageView);
         $this->em->flush();
+
+        // --- Cookie ---
+        $response->headers->setCookie(
+            Cookie::create(self::COOKIE_NAME)
+                ->withValue($sessionToken)
+                ->withExpires(time() + self::SESSION_TIMEOUT)
+                ->withPath('/')
+                ->withHttpOnly(false)
+                ->withSameSite('lax')
+        );
     }
 
     private function isBot(?string $userAgent): bool
     {
         if ($userAgent === null || $userAgent === '') {
-            return true; // Pas de User-Agent = probablement un bot
+            return true;
         }
 
         $ua = strtolower($userAgent);

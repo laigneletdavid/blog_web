@@ -157,6 +157,13 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
 
+        {# ====== STAT TRACKER (first-party, interet legitime RGPD) ====== #}
+        {% if not is_granted('ROLE_AUTHOR') %}
+            {% if encore_entry_exists('stat_tracker') %}
+                {{ encore_entry_script_tags('stat_tracker') }}
+            {% endif %}
+        {% endif %}
+
         {# Google Analytics is loaded by cookie consent controller #}
     </head>
     <body class="theme-{{ _theme }}{% if _is_preview %} is-preview{% endif %}">
