@@ -145,6 +145,40 @@
         </div>
     </div>
 
+    {# --- Resume stats mensuel --- #}
+    {% if statsSummary is defined %}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="bw-card">
+                <div class="bw-card__header">
+                    <h3 class="bw-card__title"><i class="fas fa-chart-pie me-2"></i>Resume mensuel</h3>
+                    <a href="{{ path('admin', {routeName: 'admin_stats_index'}) }}" class="bw-card__link">Voir tout &rarr;</a>
+                </div>
+                <div class="bw-card__body">
+                    <div class="bw-stats-summary">
+                        <div class="bw-stats-summary__item">
+                            <div class="bw-stats-summary__value" style="color: #2563eb;">{{ statsSummary.top_source ? (statsSummary.top_source_pct ~ '%') : '—' }}</div>
+                            <div class="bw-stats-summary__label">{{ statsSummary.top_source ? statsSummary.top_source|replace({'_': ' '})|capitalize : 'Source' }}</div>
+                        </div>
+                        <div class="bw-stats-summary__item">
+                            <div class="bw-stats-summary__value" style="color: #d97706;">{{ statsSummary.bounce_rate is not null ? statsSummary.bounce_rate ~ '%' : '—' }}</div>
+                            <div class="bw-stats-summary__label">Rebond</div>
+                        </div>
+                        <div class="bw-stats-summary__item">
+                            <div class="bw-stats-summary__value" style="color: #7c3aed;">{{ statsSummary.avg_duration ? (statsSummary.avg_duration // 60 ~ 'm' ~ '%02d'|format(statsSummary.avg_duration % 60) ~ 's') : '—' }}</div>
+                            <div class="bw-stats-summary__label">Duree</div>
+                        </div>
+                        <div class="bw-stats-summary__item">
+                            <div class="bw-stats-summary__value" style="color: #16a34a;">{{ statsSummary.conversions }}</div>
+                            <div class="bw-stats-summary__label">Leads</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {# --- Pages les plus vues --- #}
     <div class="row g-3 mb-4">
         <div class="col-12">

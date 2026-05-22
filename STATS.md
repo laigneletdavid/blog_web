@@ -783,3 +783,171 @@ Mettre a jour la page "Politique de confidentialite" (generee par le CMS) pour m
 | Fichier | Action |
 |---------|--------|
 | `src/Command/StatPurgeCommand.php` | **CREER** — purge > 13 mois (RGPD), a planifier en cron |
+
+---
+
+## 11. Evolutions prevues (Phase 5)
+
+Trois evolutions independantes, implementables separement. Aucune ne necessite de migration BDD — toutes les donnees sont deja collectees.
+
+### Phase 5a — Comparaison de periodes (~2h)
+
+**Objectif :** Repondre a « Est-ce que mes stats s'ameliorent ? »
+
+Ajouter un indicateur de tendance (fleche + delta %) sous chaque KPI existant, en comparant la periode actuelle a la periode precedente de meme duree.
+
+**Logique :**
+- 7 jours → compare aux 7 jours d'avant
+- 30 jours → compare aux 30 jours d'avant
+- Ce mois → compare au mois precedent
+
+**Metriques comparees :**
+
+| KPI | Hausse = | Pages |
+|-----|----------|-------|
+| Duree moyenne | Positif (vert) | Vue ensemble + Comportement |
+| Taux de rebond | Negatif (rouge) | Vue ensemble + Comportement |
+| Pages / session | Positif (vert) | Vue ensemble + Comportement |
+| Scroll moyen | Positif (vert) | Vue ensemble + Comportement |
+| Conversions total | Positif (vert) | Conversions |
+| Visiteurs uniques | Positif (vert) | Vue ensemble |
+
+**Rendu UX :** Sous chaque KPI card :
+- Fleche verte haut + « +12% » si evolution positive
+- Fleche rouge bas + « -5% » si evolution negative
+- Tiret gris « = » si stable (variation < 2%)
+
+**Requete SQL exemple (taux de rebond, 30j) :**
+
+```sql
+-- Periode actuelle
+SELECT SUM(CASE WHEN page_count = 1 THEN 1 ELSE 0 END) / COUNT(*) * 100
+FROM stat_session WHERE is_bot = 0 AND started_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+
+-- Periode precedente
+SELECT SUM(CASE WHEN page_count = 1 THEN 1 ELSE 0 END) / COUNT(*) * 100
+FROM stat_session WHERE is_bot = 0
+  AND started_at >= DATE_SUB(NOW(), INTERVAL 60 DAY)
+  AND started_at <  DATE_SUB(NOW(), INTERVAL 30 DAY)
+```
+
+**Fichiers a modifier :**
+
+| Fichier | Action | Detail |
+|---------|--------|--------|
+| `src/Service/StatService.php` | MODIFIER | Methodes `behaviorKpiWithTrend()` + `resolvePreviousPeriod()` |
+| `src/Service/StatService.php` | MODIFIER | Methode `conversionCountsWithTrend()` |
+| `src/Controller/Admin/StatController.php` | MODIFIER | Appeler les methodes *WithTrend |
+| `templates/admin/stats/index.html.twig` | MODIFIER | Afficher tendance sous chaque KPI |
+| `templates/admin/stats/comportement.html.twig` | MODIFIER | Idem |
+| `templates/admin/stats/conversions.html.twig` | MODIFIER | Idem |
+| `assets/admin/admin-stats.scss` | MODIFIER | Classes `.bw-kpi__trend`, `--up`, `--down`, `--stable` |
+| `templates/admin/stats/export_rapport_pdf.html.twig` | MODIFIER | Colonne Evolution dans PDF |
+| `src/Controller/Admin/StatController.php` | MODIFIER | Colonne Evolution dans CSV |
+
+---
+
+### Phase 5b — Parcours type avant conversion (~2h)
+
+**Objectif :** Repondre a « Quel chemin prennent les visiteurs qui convertissent ? »
+
+Agreger les parcours des sessions converties pour faire ressortir les patterns :
+- Les chemins les plus frequents avant conversion (ex: Accueil → Services → Contact = 42%)
+- Les pages critiques dans le tunnel (si 80% des convertis passent par /services, cette page est strategique)
+- Les chemins qui echouent (beaucoup de trafic mais zero conversion)
+
+**Requetes SQL :**
+
+```sql
+-- Etape 1 : Reconstruire les parcours des sessions converties
+SELECT pv.session_id,
+       GROUP_CONCAT(pv.url ORDER BY pv.sequence_number SEPARATOR ' > ') AS journey
+FROM page_view pv
+WHERE pv.session_id IN (
+  SELECT DISTINCT session_id FROM stat_conversion WHERE created_at >= :since
+)
+GROUP BY pv.session_id
+
+-- Etape 2 : Agreger en PHP avec array_count_values() puis tri decroissant
+
+-- Etape 3 : Pages critiques (presentes dans les parcours convertis)
+SELECT pv.url, COUNT(DISTINCT pv.session_id) AS sessions_converties
+FROM page_view pv
+WHERE pv.session_id IN (
+  SELECT DISTINCT session_id FROM stat_conversion WHERE created_at >= :since
+)
+GROUP BY pv.url
+ORDER BY sessions_converties DESC
+```
+
+**Rendu UX (page Conversions) :**
+
+1. **Top parcours convertissants** — Les 5 chemins les plus frequents avec barres horizontales proportionnelles
+2. **Pages critiques** — Tableau des pages les plus presentes dans les parcours qui convertissent, avec etoile si > 50%
+
+**Fichiers a modifier :**
+
+| Fichier | Action | Detail |
+|---------|--------|--------|
+| `src/Service/StatService.php` | MODIFIER | Methodes `topConversionPaths()` et `criticalPages()` |
+| `src/Controller/Admin/StatController.php` | MODIFIER | Passer les donnees a la vue conversions |
+| `templates/admin/stats/conversions.html.twig` | MODIFIER | Deux nouveaux blocs |
+| `assets/admin/admin-stats.scss` | MODIFIER | Styles `.bw-path` pour les barres de parcours |
+| `templates/admin/stats/export_rapport_pdf.html.twig` | MODIFIER | Section parcours dans PDF |
+| `src/Controller/Admin/StatController.php` | MODIFIER | Ajouter parcours au CSV |
+
+---
+
+### Phase 5c — Heatmap temporel jour × heure (~2h)
+
+**Objectif :** Repondre a « Quand mes visiteurs viennent-ils ? »
+
+Un heatmap 7 jours (Lun-Dim) × 24 heures (0h-23h) pour visualiser les creneaux de forte activite. Permet de :
+- Publier les articles aux moments de forte audience
+- Planifier les campagnes emailing/LinkedIn aux bons creneaux
+- Identifier les periodes mortes (maintenance, mises a jour)
+- Detecter des patterns inattendus (trafic de nuit = bots ?)
+
+**Requete SQL :**
+
+```sql
+SELECT
+  DAYOFWEEK(started_at) AS dow,     -- 1=Dim, 2=Lun...7=Sam
+  HOUR(started_at)      AS hour,
+  COUNT(*)              AS sessions
+FROM stat_session
+WHERE is_bot = 0 AND started_at >= :since
+GROUP BY dow, hour
+ORDER BY dow, hour
+```
+
+**Rendu UX :**
+- Grille 7 lignes × 24 colonnes, chaque cellule coloree selon l'intensite
+- Blanc = 0 session, bleu clair = faible, bleu fonce = forte activite
+- CSS custom (pas de librairie externe)
+- Placement : Vue d'ensemble + page Acquisition
+
+**Fichiers a modifier :**
+
+| Fichier | Action | Detail |
+|---------|--------|--------|
+| `src/Service/StatService.php` | MODIFIER | Methode `heatmapData()` |
+| `src/Controller/Admin/StatController.php` | MODIFIER | Passer heatmap aux vues |
+| `templates/admin/stats/index.html.twig` | MODIFIER | Bloc heatmap HTML/CSS |
+| `templates/admin/stats/acquisition.html.twig` | MODIFIER | Bloc heatmap detail |
+| `assets/admin/admin-stats.scss` | MODIFIER | Styles `.bw-heatmap` |
+| `templates/admin/stats/export_rapport_pdf.html.twig` | MODIFIER | Section heatmap dans PDF |
+| `src/Controller/Admin/StatController.php` | MODIFIER | Ajouter heatmap au CSV |
+
+---
+
+### Synthese Phase 5
+
+| Evolution | Estimation | Priorite | Impact |
+|-----------|-----------|----------|--------|
+| 5a. Comparaison periodes | ~2h | **Haute** | Mesurer l'evolution, justifier les actions |
+| 5b. Parcours type conversion | ~2h | **Haute** | Identifier les pages strategiques |
+| 5c. Heatmap temporel | ~2h | Moyenne | Timing publications & campagnes |
+| **Total** | **~6h** | | Zero migration BDD |
+
+**Ordre recommande :** 5a → 5b → 5c (la comparaison de periodes a un impact immediat sur toutes les pages existantes)

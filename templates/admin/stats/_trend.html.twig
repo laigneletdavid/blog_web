@@ -1,0 +1,28 @@
+{# Macro pour afficher un indicateur de tendance sous un KPI.
+   Usage : {% include 'admin/stats/_trend.html.twig' with {trend: behavior.avg_duration_trend, invert: false} %}
+   - trend : {delta: float|null, direction: 'up'|'down'|'stable'}
+   - invert : true si "up" est negatif (ex: taux de rebond)
+#}
+{% if trend is defined and trend is not null %}
+    {% set dir = trend.direction %}
+    {% set delta = trend.delta %}
+
+    {# Inverser le sens pour le rebond : up = mauvais, down = bon #}
+    {% set good = (dir == 'up' and not invert) or (dir == 'down' and invert) %}
+    {% set bad = (dir == 'down' and not invert) or (dir == 'up' and invert) %}
+
+    <div class="bw-kpi__trend {{ good ? 'bw-kpi__trend--up' : (bad ? 'bw-kpi__trend--down' : 'bw-kpi__trend--stable') }}">
+        {% if dir == 'up' %}
+            <i class="fas fa-arrow-up fa-xs"></i>
+        {% elseif dir == 'down' %}
+            <i class="fas fa-arrow-down fa-xs"></i>
+        {% else %}
+            <i class="fas fa-equals fa-xs"></i>
+        {% endif %}
+        {% if delta is not null %}
+            {{ delta > 0 ? '+' : '' }}{{ delta }}%
+        {% elseif dir == 'up' %}
+            Nouveau
+        {% endif %}
+    </div>
+{% endif %}
