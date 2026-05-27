@@ -1,6 +1,16 @@
 {# Layout commun pour les pages Stats admin #}
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{% block head_stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin_stats') }}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin_stats') }}
+{% endblock %}
+
 {% set periods = {
     'today': "Aujourd'hui",
     '7d': '7 jours',
