@@ -3,6 +3,20 @@
 
 {% block stats_title %}Vue d'ensemble{% endblock %}
 
+
+{% block stats_help_title %}Vue d'ensemble{% endblock %}
+
+{% block stats_help_content %}
+<h4>Vue d'ensemble</h4>
+<p>Cette page resume toute l'activite de votre site sur la periode selectionnee.</p>
+<p><strong>Les KPI en haut</strong> — vos indicateurs cles : visiteurs, duree moyenne, taux de rebond, profondeur de navigation et scroll moyen. Les <strong>fleches de tendance</strong> comparent avec la periode precedente.</p>
+<p><strong>Sources de trafic</strong> — d'ou viennent vos visiteurs (donut). Cliquez sur "Detail" pour approfondir.</p>
+<p><strong>Entonnoir de conversion</strong> — combien de visiteurs passent a l'action, etape par etape.</p>
+<p><strong>Heatmap</strong> — les creneaux horaires ou votre site est le plus visite.</p>
+<p><strong>Pages les plus vues</strong> — classement avec duree, scroll et rebond pour chaque page.</p>
+{% endblock %}
+
+
 {% block stats_content %}
 
 {# --- KPI Comportement + Visiteurs --- #}
@@ -219,3 +233,4 @@
 </div>
 
 {% endblock %}
+
