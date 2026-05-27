@@ -49,12 +49,13 @@
     }
 
     &--active {
-      color: #fff;
-      background: var(--primary);
+      color: var(--primary-dark, var(--primary));
+      background: var(--primary-light);
       border-color: var(--primary);
+      font-weight: 600;
 
       &:hover {
-        color: #fff;
+        color: var(--primary-dark, var(--primary));
       }
     }
   }
