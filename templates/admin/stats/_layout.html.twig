@@ -1,6 +1,16 @@
 {# Layout commun pour les pages Stats admin #}
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{% block head_stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin_stats') }}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin_stats') }}
+{% endblock %}
+
 {% set periods = {
     'today': "Aujourd'hui",
     '7d': '7 jours',
@@ -56,4 +66,79 @@
 
     {% block stats_content %}{% endblock %}
 </div>
+
+{# --- Panneau d'aide contextuelle Stats --- #}
+<button type="button" class="bw-help-toggle" id="statsHelpToggle" title="Aide sur les statistiques">
+    <i class="fas fa-question"></i>
+</button>
+<div class="bw-help-overlay" id="statsHelpOverlay"></div>
+<div class="bw-help-panel" id="statsHelpPanel">
+    <div class="bw-help-panel__header">
+        <h3 class="bw-help-panel__title">
+            <i class="fas fa-circle-question me-2"></i>Aide — {% block stats_help_title %}Statistiques{% endblock %}
+        </h3>
+        <button type="button" class="bw-help-panel__close" id="statsHelpClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="bw-help-panel__body">
+        {% block stats_help_content %}
+        <h4>A quoi servent les statistiques ?</h4>
+        <p>Ce module vous permet de comprendre comment les visiteurs utilisent votre site : d'ou ils viennent, quelles pages ils consultent, combien de temps ils restent, et s'ils vous contactent.</p>
+        <h4>Les 4 onglets</h4>
+        <p><strong><i class="fas fa-chart-pie me-1"></i>Vue d'ensemble</strong> — resume global de l'activite.</p>
+        <p><strong><i class="fas fa-arrow-trend-down me-1"></i>Acquisition</strong> — d'ou viennent vos visiteurs.</p>
+        <p><strong><i class="fas fa-gauge-high me-1"></i>Comportement</strong> — comment ils interagissent.</p>
+        <p><strong><i class="fas fa-bullseye me-1"></i>Conversions</strong> — les actions concretes (appels, emails, formulaires).</p>
+        {% endblock %}
+
+        <hr style="border-color: #e2e8f0; margin: 1rem 0;">
+
+        <details style="font-size: 0.82rem;">
+            <summary style="cursor: pointer; font-weight: 600; color: #334155; margin-bottom: 0.5rem;">
+                <i class="fas fa-book me-1"></i>Glossaire des termes
+            </summary>
+            <dl style="line-height: 1.6; margin-top: 0.5rem;">
+                <dt><strong>Visiteur</strong></dt>
+                <dd>Une personne qui visite votre site (cookie anonyme, sans donnees personnelles).</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Session</strong></dt>
+                <dd>Une visite complete. Apres 30 min d'inactivite, c'est une nouvelle session.</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Taux de rebond</strong></dt>
+                <dd>% de visiteurs qui partent apres une seule page.</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Pages / session</strong></dt>
+                <dd>Nombre moyen de pages vues par visite.</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Scroll moyen</strong></dt>
+                <dd>Jusqu'ou les visiteurs descendent (100% = tout lu).</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Conversion</strong></dt>
+                <dd>Action concrete : clic tel, clic email, ou envoi formulaire.</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Entonnoir</strong></dt>
+                <dd>Parcours visiteur etape par etape jusqu'a la conversion.</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Source de trafic</strong></dt>
+                <dd>Origine du visiteur : Google, direct, reseaux sociaux, referral, email.</dd>
+                <dt style="margin-top: 0.5rem;"><strong>Heatmap</strong></dt>
+                <dd>Carte de chaleur jour × heure montrant les pics de visites.</dd>
+            </dl>
+        </details>
+
+        <div style="margin-top: 1rem; padding: 0.75rem; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">
+            <h4 style="margin: 0 0 0.5rem; font-size: 0.85rem;"><i class="fas fa-lightbulb me-1" style="color: #d97706;"></i>Conseils</h4>
+            <ul style="font-size: 0.82rem; margin: 0; padding-left: 1.25rem; line-height: 1.6;">
+                <li>Comparez les periodes pour mesurer l'impact de vos actions.</li>
+                <li>Taux de rebond eleve sur l'accueil ? Verifiez vos appels a l'action.</li>
+                <li>Du trafic mais peu de conversions ? Regardez l'onglet Conversions → Parcours type.</li>
+                <li>Publiez aux heures de forte audience (visible sur le heatmap).</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+(function(){
+    var t=document.getElementById('statsHelpToggle'),p=document.getElementById('statsHelpPanel'),
+        o=document.getElementById('statsHelpOverlay'),c=document.getElementById('statsHelpClose');
+    if(!t||!p)return;
+    function open(){p.classList.add('is-open');o.classList.add('is-open');}
+    function shut(){p.classList.remove('is-open');o.classList.remove('is-open');}
+    t.addEventListener('click',open);c.addEventListener('click',shut);
+    o.addEventListener('click',shut);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')shut();});
+})();
+</script>
 {% endblock %}

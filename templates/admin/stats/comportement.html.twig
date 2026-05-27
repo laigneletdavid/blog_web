@@ -4,6 +4,18 @@
 
 {% block stats_title %}Comportement{% endblock %}
 
+{% block stats_help_title %}Comportement{% endblock %}
+{% block stats_help_content %}
+<h4>Comportement</h4>
+<p>Cette page montre <strong>comment les visiteurs interagissent</strong> avec votre site.</p>
+<p><strong>Duree moyenne</strong> — temps passe sur le site. Plus c'est long, plus votre contenu interesse.</p>
+<p><strong>Taux de rebond</strong> — visiteurs qui partent apres une seule page. Un taux eleve sur la page d'accueil est preoccupant ; sur une page contact, c'est normal (le visiteur a trouve l'info et vous appelle).</p>
+<p><strong>Pages / session</strong> — nombre moyen de pages visitees. Un chiffre superieur a 2 indique un bon maillage interne.</p>
+<p><strong>Scroll moyen</strong> — jusqu'ou les visiteurs descendent. Si c'est bas, vos contenus sont peut-etre trop longs ou le debut n'accroche pas.</p>
+<p><strong>Graphe d'evolution</strong> — suivez la tendance sur 30 jours pour chaque indicateur. Basculez entre Duree, Rebond et Profondeur.</p>
+<p><strong>Detail par page</strong> — chaque page avec ses propres metriques. L'etoile marque les pages a fort engagement (> 2min + > 70% scroll).</p>
+{% endblock %}
+
 {% block stats_content %}
 
 {# --- KPI cards --- #}

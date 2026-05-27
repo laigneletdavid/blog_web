@@ -100,9 +100,9 @@
                     {% set groups = {} %}
                     {% for tag in entry.tags %}
                         {% if tag.tagGroup %}
-                            {% set gid = tag.tagGroup.id %}
-                            {% set existing = groups[gid]|default({group: tag.tagGroup, tags: []}) %}
-                            {% set groups = groups|merge({(gid): {group: tag.tagGroup, tags: existing.tags|merge([tag])}}) %}
+                            {% set gid = 'g_' ~ tag.tagGroup.id %}
+                            {% set groups = groups|merge({(gid): groups[gid]|default({group: tag.tagGroup, tags: []})}) %}
+                            {% set groups = groups|merge({(gid): {group: tag.tagGroup, tags: groups[gid].tags|merge([tag])}}) %}
                         {% endif %}
                     {% endfor %}
                     {% for entry_grp in groups %}

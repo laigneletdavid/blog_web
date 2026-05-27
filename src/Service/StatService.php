@@ -126,10 +126,21 @@ class StatService
     {
         $since = (new \DateTimeImmutable("-{$days} days midnight"))->format('Y-m-d H:i:s');
 
+        // Duration : requete directe sur page_view (evite sous-requete correlee incompatible ONLY_FULL_GROUP_BY)
+        if ($metric === 'duration') {
+            return $this->conn->fetchAllAssociative(
+                'SELECT DATE(pv.created_at) AS date, ROUND(AVG(pv.duration_seconds)) AS value
+                 FROM page_view pv
+                 WHERE pv.is_bot = 0 AND pv.created_at >= :since AND pv.duration_seconds IS NOT NULL
+                 GROUP BY DATE(pv.created_at)
+                 ORDER BY date ASC',
+                ['since' => $since],
+            );
+        }
+
         $select = match ($metric) {
             'bounce' => 'ROUND(SUM(CASE WHEN s.page_count = 1 THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0) * 100, 1)',
             'depth' => 'ROUND(AVG(s.page_count), 1)',
-            default => '(SELECT ROUND(AVG(pv2.duration_seconds)) FROM page_view pv2 WHERE pv2.is_bot = 0 AND DATE(pv2.created_at) = DATE(s.started_at) AND pv2.duration_seconds IS NOT NULL)',
         };
 
         return $this->conn->fetchAllAssociative(
