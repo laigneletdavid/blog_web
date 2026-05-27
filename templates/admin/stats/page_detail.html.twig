@@ -4,6 +4,15 @@
 
 {% block stats_title %}{{ url }}{% endblock %}
 
+{% block stats_help_title %}Detail d'une page{% endblock %}
+{% block stats_help_content %}
+<h4>Detail de page</h4>
+<p>Cette page montre le <strong>parcours des visiteurs</strong> autour d'une page specifique.</p>
+<p><strong>Pages precedentes</strong> — d'ou viennent les visiteurs avant d'arriver sur cette page.</p>
+<p><strong>Pages suivantes</strong> — ou vont les visiteurs apres avoir consulte cette page.</p>
+<p><strong>Taux de sortie</strong> — pourcentage de visiteurs qui quittent le site depuis cette page. Un taux eleve sur une page de contact est normal ; sur un article, cela peut indiquer un manque de liens vers d'autres contenus.</p>
+{% endblock %}
+
 {% block stats_content %}
 
 {# --- Mini-flux de parcours --- #}
