@@ -10,6 +10,7 @@ CMS professionnel pret a deployer pour chaque client. Site propre, securise, SEO
 
 - **Articles de blog** — Editeur visuel TipTap (gras, italique, titres, listes, images, videos YouTube/Vimeo, citations, blocs de code, tableaux, colonnes, callouts). Sauvegarde automatique du brouillon toutes les 30 secondes. Publication immediate ou **programmee** (date future, publication automatique a la prochaine visite). Notification email aux abonnes.
 - **Pages** — Pages personnalisees (A propos, Nos services...) + pages systeme (mentions legales, confidentialite, CGV). 3 mises en page : standard, pleine largeur, sidebar gauche. Widgets sidebar (categories, archives, tag cloud, evenements a venir, sommaire automatique).
+- **Landing pages** — Pages d'atterrissage sans navigation (module Marketing). Layout epure (mini-header logo, footer minimal), hero plein ecran avec image de fond, CTA configurable (lien RDV externe ou formulaire integre), capture UTM automatique (source, medium, campagne), noindex par defaut, formulaire allege (nom, email, activite) avec anti-spam (reCAPTCHA + honeypot), conversions tracees dans les stats. Action "Copier l'URL" dans l'admin pour partage rapide.
 - **Categories** — Organisation des articles par thematique avec couleur et image. Un article peut appartenir a plusieurs categories.
 - **Tags** — Classification fine des articles par mots-cles.
 - **Medias** — Bibliotheque d'images avec conversion WebP automatique, generation de 3 tailles responsives (480px, 800px, 1200px), texte alternatif pour l'accessibilite et le SEO.
@@ -31,6 +32,7 @@ Chaque module s'active independamment selon les besoins du client :
 | **FAQ** | Foire aux questions en accordeon, categories, schema.org FAQPage pour le SEO |
 | **Portfolio** | Realisations/projets clients avec galerie, filtres par categorie, page detail |
 | **Pages privees** | Visibilite par role (public, membres, admin) sur les articles et pages |
+| **Marketing** | Landing pages (conversion sans navigation), stats avancees |
 
 ### SEO integre
 
@@ -64,7 +66,7 @@ Chaque module s'active independamment selon les besoins du client :
 - **Stats admin** : suivi des pages vues (filtrage automatique bots et admins, IP hashee RGPD), tableau des pages les plus vues avec filtres periode/annee, compteur de vues sur chaque article
 - **Tips contextuels** rotatifs sur le dashboard (15 astuces qui tournent a chaque visite)
 - **Aide contextuelle** : bouton `?` sur chaque section de l'admin avec panneau lateral d'aide
-- **Page Guide** complete (`/admin/guide`) avec 8 sections en accordeon
+- **Page Guide** complete (`/admin/guide`) avec sections en accordeon (dont landing pages conditionnelle au module Marketing)
 - **Menu organise** : Contenu | Modules | Communaute | Reglages | Aide
 - **Gestionnaire de navigation** drag & drop pour header, footer nav, footer legal
 

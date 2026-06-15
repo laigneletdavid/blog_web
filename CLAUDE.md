@@ -24,7 +24,7 @@ Docker (PHP-FPM + Nginx + Mailpit) / Brevo / Stripe (optionnel)
 - **client_reference_template.md** : fiche a remplir pour chaque client
 
 ## Modules (actives via `ModuleEnum` + `SiteContext::hasModule()`)
-blog, services, catalogue, ecommerce, events, directory, faq, portfolio, pages privees
+blog, services, catalogue, ecommerce, events, directory, faq, portfolio, pages privees, marketing
 
 ## Patterns cles
 - Admin : CrudControllers EasyAdmin + `AdminHelpTrait` pour l'aide contextuelle
@@ -32,6 +32,7 @@ blog, services, catalogue, ecommerce, events, directory, faq, portfolio, pages p
 - Themes : fallback Twig `client/` > `themes/X/` > `default/`
 - Stats : PageView + StatSession + StatConversion, IP hashee RGPD, cookie `_bw_sid`
 - Frontend : SCSS par feature dans `assets/css/base/`, Stimulus controllers dans `assets/controllers/`
+- Landing : layout `base_landing.html.twig` (sans nav), `LandingCrudController` separe de `PageCrudController`, `LandingContactType` avec UTM + honeypot
 
 ## Dette connue
 - Zero tests (tests/ vide)

@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -97,9 +98,18 @@ class LandingCrudController extends AbstractCrudController
             ->setHtmlAttributes(['target' => '_blank'])
             ->displayIf(fn (Page $page) => $page->isPublished());
 
+        $copyUrl = Action::new('copyUrl', 'Copier l\'URL', 'fa fa-copy')
+            ->linkToUrl(fn (Page $page) => $this->generateUrl('app_page_show', ['slug' => $page->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL))
+            ->setHtmlAttributes([
+                'onclick' => 'event.preventDefault();navigator.clipboard.writeText(this.href).then(function(){var b=event.target.closest(\'a\');var o=b.innerHTML;b.innerHTML=\'<i class="fa fa-check"></i> Copié !\';setTimeout(function(){b.innerHTML=o},1500)})',
+            ])
+            ->displayIf(fn (Page $page) => $page->isPublished());
+
         return $actions
             ->add(Crud::PAGE_INDEX, $viewOnSite)
-            ->add(Crud::PAGE_EDIT, $viewOnSite);
+            ->add(Crud::PAGE_INDEX, $copyUrl)
+            ->add(Crud::PAGE_EDIT, $viewOnSite)
+            ->add(Crud::PAGE_EDIT, $copyUrl);
     }
 
     public function configureFields(string $pageName): iterable
