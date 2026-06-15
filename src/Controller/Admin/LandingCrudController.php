@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Page;
 use App\Repository\PageViewRepository;
+use App\Service\SeoAnalyzer;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -24,12 +25,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class LandingCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
+        private readonly SeoAnalyzer $seoAnalyzer,
     ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
     }
 
     public static function getEntityFqcn(): string

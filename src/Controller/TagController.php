@@ -55,6 +55,13 @@ class TagController extends AbstractController
             $directoryEntries = $this->directoryEntryRepository->findActiveByTag($tag);
         }
 
+        $seo = $this->seoService->resolve($tag);
+
+        $totalContent = array_sum($counts);
+        if ($totalContent === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('tag/show.html.twig', [
             'tag' => $tag,
             'counts' => $counts,
@@ -64,7 +71,7 @@ class TagController extends AbstractController
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
             'directoryEntries' => $directoryEntries,
-            'seo' => $this->seoService->resolve($tag),
+            'seo' => $seo,
         ]);
     }
 }

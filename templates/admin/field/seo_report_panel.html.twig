@@ -1,0 +1,30 @@
+{% if seo_report is defined and seo_report is not null %}
+<div class="card mb-3 border-{{ { red: 'danger', orange: 'warning', green: 'success' }[seo_report.status.value] }}">
+    <div class="card-header bg-{{ { red: 'danger', orange: 'warning', green: 'success' }[seo_report.status.value] }} bg-opacity-10 d-flex align-items-center gap-2">
+        {% set icons = { red: 'fa-times-circle text-danger', orange: 'fa-exclamation-circle text-warning', green: 'fa-check-circle text-success' } %}
+        <i class="fa {{ icons[seo_report.status.value] }}"></i>
+        <strong>Score SEO : {{ seo_report.status.label() }}</strong>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <tbody>
+                {% for check in seo_report.checks %}
+                    <tr>
+                        <td class="ps-3" style="width: 30px">
+                            {% if check.status.value == 'green' %}
+                                <i class="fa fa-check-circle text-success"></i>
+                            {% elseif check.status.value == 'orange' %}
+                                <i class="fa fa-exclamation-circle text-warning"></i>
+                            {% else %}
+                                <i class="fa fa-times-circle text-danger"></i>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ check.label }}</strong></td>
+                        <td class="text-muted">{{ check.message }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}

@@ -81,7 +81,10 @@ class SearchController extends AbstractController
             'totalArticles' => $totalArticles,
             'currentPage' => $page,
             'totalPages' => $totalArticles > 0 ? (int) ceil($totalArticles / self::PER_PAGE) : 1,
-            'seo' => $seoService->resolveForPage($keyword ? 'Recherche : ' . $keyword : 'Recherche'),
+            'seo' => array_merge(
+                $seoService->resolveForPage($keyword ? 'Recherche : ' . $keyword : 'Recherche'),
+                ['noIndex' => true],
+            ),
         ]);
     }
 

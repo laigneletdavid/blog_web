@@ -35,13 +35,23 @@ class EventController extends AbstractController
         $totalPast = $eventRepository->countPast();
         $totalPages = (int) ceil($totalPast / $limit);
 
+        $seo = $this->seoService->resolveForPage('Événements');
+
+        if (count($upcoming) === 0 && count($pastEvents) === 0) {
+            $seo['noIndex'] = true;
+        }
+
+        if ($page > 1) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('event/index.html.twig', [
             'title_page' => 'Événements',
             'upcoming' => $upcoming,
             'pastEvents' => $pastEvents,
             'currentPage' => $page,
             'totalPages' => $totalPages,
-            'seo' => $this->seoService->resolveForPage('Événements'),
+            'seo' => $seo,
         ]);
     }
 

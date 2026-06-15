@@ -1,0 +1,8 @@
+{% set report = field.formattedValue %}
+{% if report is not null %}
+    {% set colors = { red: 'danger', orange: 'warning', green: 'success' } %}
+    {% set icons = { red: 'fa-times-circle', orange: 'fa-exclamation-circle', green: 'fa-check-circle' } %}
+    <span class="badge bg-{{ colors[report.status.value] }}" title="{{ report.status.label() }}">
+        <i class="fa {{ icons[report.status.value] }}"></i> {{ report.status.label() }}
+    </span>
+{% endif %}

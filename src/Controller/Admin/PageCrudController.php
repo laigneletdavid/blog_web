@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Page;
 use App\Enum\VisibilityEnum;
 use App\Repository\PageViewRepository;
+use App\Service\SeoAnalyzer;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -27,12 +28,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PageCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
+        private readonly SeoAnalyzer $seoAnalyzer,
     ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
     }
 
     public static function getEntityFqcn(): string
@@ -119,6 +127,8 @@ class PageCrudController extends AbstractCrudController
         yield FormField::addPanel('Contenu')
             ->setIcon('fa fa-pen')
             ->collapsible();
+
+        yield $this->seoScoreField();
 
         yield TextField::new('title', 'Titre de la page');
 
