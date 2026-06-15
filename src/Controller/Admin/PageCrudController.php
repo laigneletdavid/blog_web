@@ -56,7 +56,6 @@ class PageCrudController extends AbstractCrudController
                         <li><strong>Par defaut</strong> — Contenu avec sidebar droite (widgets, categories, archives)</li>
                         <li><strong>Pleine largeur</strong> — Contenu sur toute la largeur, ideal pour les presentations</li>
                         <li><strong>Sidebar gauche</strong> — Widgets a gauche, contenu a droite</li>
-                        <li><strong>Landing</strong> — Page de conversion sans menu ni navigation. Ideale pour les campagnes marketing, partenariats ou offres speciales. Inclut un bouton CTA (lien de prise de RDV ou formulaire de contact integre) et la capture UTM automatique.</li>
                     </ul>',
                 ],
                 [
@@ -81,6 +80,19 @@ class PageCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvelle page')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier la page')
             ->setDefaultSort(['created_at' => 'DESC']);
+    }
+
+    public function createIndexQueryBuilder(
+        $searchDto,
+        $entityDto,
+        $fields,
+        $filters,
+    ): \Doctrine\ORM\QueryBuilder {
+        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $qb->andWhere('entity.template != :landing')
+            ->setParameter('landing', 'landing');
+
+        return $qb;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -142,39 +154,9 @@ class PageCrudController extends AbstractCrudController
                 'Par défaut (sidebar droite)' => 'default',
                 'Pleine largeur' => 'full-width',
                 'Sidebar gauche' => 'sidebar-left',
-                'Landing (sans navigation)' => 'landing',
             ])
             ->renderExpanded(false)
-            ->setHelp('Choisissez la disposition de la page. <strong>Landing</strong> : page de conversion sans menu, idéale pour les campagnes.');
-
-        // --- Panel Landing ---
-        yield FormField::addPanel('Landing')
-            ->setIcon('fa fa-rocket')
-            ->collapsible()
-            ->renderCollapsed()
-            ->setHelp('Ces champs ne sont utilisés que pour le layout <strong>Landing (sans navigation)</strong>.');
-
-        yield TextField::new('cta_text', 'Texte du CTA')
-            ->setHelp('Texte du bouton principal. Par défaut : "Réserver un appel" (si lien RDV) ou "Nous contacter" (si formulaire).')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 100, 'placeholder' => 'Réserver un appel']])
-            ->setRequired(false)
-            ->hideOnIndex();
-
-        yield TextField::new('cta_url', 'Lien de prise de RDV')
-            ->setHelp('URL Calendly, Cal.com ou autre. Si vide, le CTA renvoie vers le formulaire de contact intégré.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 500, 'placeholder' => 'https://calendly.com/...']])
-            ->setRequired(false)
-            ->hideOnIndex();
-
-        yield BooleanField::new('show_form', 'Afficher le formulaire')
-            ->setHelp('Affiche un formulaire de contact allégé (nom, email, activité) sur la landing page.')
-            ->hideOnIndex();
-
-        yield TextField::new('form_title', 'Titre du formulaire')
-            ->setHelp('Titre au-dessus du formulaire. Par défaut : "Laissez vos coordonnées".')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 255, 'placeholder' => 'Laissez vos coordonnées']])
-            ->setRequired(false)
-            ->hideOnIndex();
+            ->setHelp('Choisissez la disposition de la page.');
 
         // --- Panel Avancé (collapsed) ---
         yield FormField::addPanel('Avancé')
