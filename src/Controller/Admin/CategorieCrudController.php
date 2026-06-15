@@ -58,7 +58,7 @@ class CategorieCrudController extends AbstractCrudController
 
         yield ColorField::new('color');
 
-        yield AssociationField::new('featured_media', 'Image')
+        yield AssociationField::new('featuredMedia', 'Image')
             ->hideOnIndex();
 
         // --- Panel SEO ---

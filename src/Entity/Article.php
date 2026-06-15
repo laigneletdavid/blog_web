@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ORM\Index(columns: ['published'], name: 'idx_article_published')]
-class Article implements TimestampedInterface
+class Article implements TimestampedInterface, SanitizableContentInterface
 {
     use SeoTrait;
 
@@ -28,16 +28,16 @@ class Article implements TimestampedInterface
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $created_at = null;
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updated_at = null;
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $published_at = null;
+    private ?\DateTimeInterface $publishedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $scheduled_at = null;
+    private ?\DateTimeInterface $scheduledAt = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
@@ -46,24 +46,24 @@ class Article implements TimestampedInterface
     private ?bool $published = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $featured_text = null;
+    private ?string $featuredText = null;
 
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'articles')]
     #[ORM\OrderBy(['name' => 'ASC'])]
     private Collection $categories;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, orphanRemoval: true)]
-    #[ORM\OrderBy(['created_at' => 'ASC'])]
+    #[ORM\OrderBy(['createdAt' => 'ASC'])]
     private Collection $comments;
 
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'article')]
     #[ORM\OrderBy(['name' => 'ASC'])]
-    private Collection $tag;
+    private Collection $tags;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    private ?Media $featured_media = null;
+    private ?Media $featuredMedia = null;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $isFeatured = false;
@@ -78,7 +78,7 @@ class Article implements TimestampedInterface
     {
         $this->categories = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->tag = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,48 +112,48 @@ class Article implements TimestampedInterface
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     public function getPublishedAt(): ?\DateTimeInterface
     {
-        return $this->published_at;
+        return $this->publishedAt;
     }
 
-    public function setPublishedAt(?\DateTimeInterface $published_at): self
+    public function setPublishedAt(?\DateTimeInterface $publishedAt): self
     {
-        $this->published_at = $published_at;
+        $this->publishedAt = $publishedAt;
 
         return $this;
     }
 
     public function getScheduledAt(): ?\DateTimeInterface
     {
-        return $this->scheduled_at;
+        return $this->scheduledAt;
     }
 
-    public function setScheduledAt(?\DateTimeInterface $scheduled_at): self
+    public function setScheduledAt(?\DateTimeInterface $scheduledAt): self
     {
-        $this->scheduled_at = $scheduled_at;
+        $this->scheduledAt = $scheduledAt;
 
         return $this;
     }
@@ -163,7 +163,7 @@ class Article implements TimestampedInterface
      */
     public function isScheduled(): bool
     {
-        return $this->scheduled_at !== null && !$this->published && $this->scheduled_at > new \DateTime();
+        return $this->scheduledAt !== null && !$this->published && $this->scheduledAt > new \DateTime();
     }
 
     /**
@@ -171,7 +171,7 @@ class Article implements TimestampedInterface
      */
     public function isScheduledReady(): bool
     {
-        return $this->scheduled_at !== null && !$this->published && $this->scheduled_at <= new \DateTime();
+        return $this->scheduledAt !== null && !$this->published && $this->scheduledAt <= new \DateTime();
     }
 
     public function getSlug(): ?string
@@ -200,12 +200,12 @@ class Article implements TimestampedInterface
 
     public function getFeaturedText(): ?string
     {
-        return $this->featured_text;
+        return $this->featuredText;
     }
 
-    public function setFeaturedText(?string $featured_text): self
+    public function setFeaturedText(?string $featuredText): self
     {
-        $this->featured_text = $featured_text;
+        $this->featuredText = $featuredText;
 
         return $this;
     }
@@ -272,15 +272,15 @@ class Article implements TimestampedInterface
     /**
      * @return Collection<int, Tag>
      */
-    public function getTag(): Collection
+    public function getTags(): Collection
     {
-        return $this->tag;
+        return $this->tags;
     }
 
     public function addTag(Tag $tag): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag->add($tag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
             $tag->addArticle($this);
         }
 
@@ -289,7 +289,7 @@ class Article implements TimestampedInterface
 
     public function removeTag(Tag $tag): self
     {
-        if ($this->tag->removeElement($tag)) {
+        if ($this->tags->removeElement($tag)) {
             $tag->removeArticle($this);
         }
 
@@ -303,12 +303,12 @@ class Article implements TimestampedInterface
 
     public function getFeaturedMedia(): ?Media
     {
-        return $this->featured_media;
+        return $this->featuredMedia;
     }
 
-    public function setFeaturedMedia(?Media $featured_media): self
+    public function setFeaturedMedia(?Media $featuredMedia): self
     {
-        $this->featured_media = $featured_media;
+        $this->featuredMedia = $featuredMedia;
 
         return $this;
     }

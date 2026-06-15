@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: PortfolioItemRepository::class)]
 #[ORM\Index(columns: ['is_active'], name: 'idx_portfolio_active')]
 #[ORM\Index(columns: ['is_featured'], name: 'idx_portfolio_featured')]
-class PortfolioItem
+class PortfolioItem implements SanitizableContentInterface
 {
     use SeoTrait;
 

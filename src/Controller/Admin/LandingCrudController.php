@@ -75,7 +75,7 @@ class LandingCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Landing pages')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvelle landing page')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier la landing page')
-            ->setDefaultSort(['created_at' => 'DESC']);
+            ->setDefaultSort(['createdAt' => 'DESC']);
     }
 
     public function createIndexQueryBuilder(
@@ -137,22 +137,22 @@ class LandingCrudController extends AbstractCrudController
             ->setIcon('fa fa-rocket')
             ->collapsible();
 
-        yield TextField::new('cta_text', 'Texte du CTA')
+        yield TextField::new('ctaText', 'Texte du CTA')
             ->setHelp('Texte du bouton principal. Défaut : "Réserver un appel" (si lien RDV) ou "Nous contacter" (si formulaire).')
             ->setFormTypeOptions(['attr' => ['maxlength' => 100, 'placeholder' => 'Réserver un appel']])
             ->setRequired(false)
             ->hideOnIndex();
 
-        yield TextField::new('cta_url', 'Lien de prise de RDV')
+        yield TextField::new('ctaUrl', 'Lien de prise de RDV')
             ->setHelp('URL Calendly, Cal.com ou autre. Si vide, le CTA renvoie vers le formulaire intégré.')
             ->setFormTypeOptions(['attr' => ['maxlength' => 500, 'placeholder' => 'https://calendly.com/...']])
             ->setRequired(false)
             ->hideOnIndex();
 
-        yield BooleanField::new('show_form', 'Afficher le formulaire')
+        yield BooleanField::new('showForm', 'Afficher le formulaire')
             ->setHelp('Formulaire de contact allégé (nom, email, activité) intégré à la landing.');
 
-        yield TextField::new('form_title', 'Titre du formulaire')
+        yield TextField::new('formTitle', 'Titre du formulaire')
             ->setHelp('Défaut : "Laissez vos coordonnées".')
             ->setFormTypeOptions(['attr' => ['maxlength' => 255, 'placeholder' => 'Laissez vos coordonnées']])
             ->setRequired(false)
@@ -163,7 +163,7 @@ class LandingCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield AssociationField::new('featured_media', 'Image hero')
+        yield AssociationField::new('featuredMedia', 'Image hero')
             ->setHelp('Image de fond du hero (section haute). Recommandé : 1920x800px minimum.');
 
         yield BooleanField::new('published', 'Publiée');
@@ -183,10 +183,10 @@ class LandingCrudController extends AbstractCrudController
                 return $pvRepo->countViewsByUrl('/page/' . $entity->getSlug());
             });
 
-        yield DateTimeField::new('created_at', 'Créée le')
+        yield DateTimeField::new('createdAt', 'Créée le')
             ->hideOnForm();
 
-        yield DateTimeField::new('updated_at', 'Modifiée le')
+        yield DateTimeField::new('updatedAt', 'Modifiée le')
             ->hideOnForm();
 
         // --- SEO ---

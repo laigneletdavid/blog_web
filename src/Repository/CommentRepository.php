@@ -57,7 +57,7 @@ class CommentRepository extends ServiceEntityRepository
             ->addSelect('a')
             ->leftJoin('c.user', 'u')
             ->addSelect('u')
-            ->orderBy('c.created_at', 'DESC')
+            ->orderBy('c.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

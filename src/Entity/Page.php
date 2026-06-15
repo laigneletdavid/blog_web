@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
-class Page implements TimestampedInterface
+class Page implements TimestampedInterface, SanitizableContentInterface
 {
     use SeoTrait;
 
@@ -37,13 +37,13 @@ class Page implements TimestampedInterface
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    private ?Media $featured_media = null;
+    private ?Media $featuredMedia = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $created_at = null;
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updated_at = null;
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $blocks = null;
@@ -52,29 +52,29 @@ class Page implements TimestampedInterface
     private string $template = 'default';
 
     #[ORM\Column(options: ['default' => false])]
-    private bool $is_system = false;
+    private bool $isSystem = false;
 
     #[ORM\Column(length: 50, nullable: true, unique: true)]
-    private ?string $system_key = null;
+    private ?string $systemKey = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $cta_text = null;
+    private ?string $ctaText = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    private ?string $cta_url = null;
+    private ?string $ctaUrl = null;
 
     #[ORM\Column(nullable: true, options: ['default' => true])]
-    private ?bool $show_form = true;
+    private ?bool $showForm = true;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $form_title = null;
+    private ?string $formTitle = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
-    private Collection $tag;
+    private Collection $tags;
 
     public function __construct()
     {
-        $this->tag = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,36 +132,36 @@ class Page implements TimestampedInterface
 
     public function getFeaturedMedia(): ?Media
     {
-        return $this->featured_media;
+        return $this->featuredMedia;
     }
 
-    public function setFeaturedMedia(?Media $featured_media): self
+    public function setFeaturedMedia(?Media $featuredMedia): self
     {
-        $this->featured_media = $featured_media;
+        $this->featuredMedia = $featuredMedia;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface|null $updated_at): self
+    public function setUpdatedAt(\DateTimeInterface|null $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -169,15 +169,15 @@ class Page implements TimestampedInterface
     /**
      * @return Collection<int, Tag>
      */
-    public function getTag(): Collection
+    public function getTags(): Collection
     {
-        return $this->tag;
+        return $this->tags;
     }
 
     public function addTag(Tag $tag): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag->add($tag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
             $tag->addPage($this);
         }
 
@@ -186,7 +186,7 @@ class Page implements TimestampedInterface
 
     public function removeTag(Tag $tag): self
     {
-        if ($this->tag->removeElement($tag)) {
+        if ($this->tags->removeElement($tag)) {
             $tag->removePage($this);
         }
 
@@ -257,72 +257,72 @@ class Page implements TimestampedInterface
 
     public function isSystem(): bool
     {
-        return $this->is_system;
+        return $this->isSystem;
     }
 
-    public function setIsSystem(bool $is_system): self
+    public function setIsSystem(bool $isSystem): self
     {
-        $this->is_system = $is_system;
+        $this->isSystem = $isSystem;
 
         return $this;
     }
 
     public function getSystemKey(): ?string
     {
-        return $this->system_key;
+        return $this->systemKey;
     }
 
-    public function setSystemKey(?string $system_key): self
+    public function setSystemKey(?string $systemKey): self
     {
-        $this->system_key = $system_key;
+        $this->systemKey = $systemKey;
 
         return $this;
     }
 
     public function getCtaText(): ?string
     {
-        return $this->cta_text;
+        return $this->ctaText;
     }
 
-    public function setCtaText(?string $cta_text): self
+    public function setCtaText(?string $ctaText): self
     {
-        $this->cta_text = $cta_text;
+        $this->ctaText = $ctaText;
 
         return $this;
     }
 
     public function getCtaUrl(): ?string
     {
-        return $this->cta_url;
+        return $this->ctaUrl;
     }
 
-    public function setCtaUrl(?string $cta_url): self
+    public function setCtaUrl(?string $ctaUrl): self
     {
-        $this->cta_url = $cta_url;
+        $this->ctaUrl = $ctaUrl;
 
         return $this;
     }
 
     public function isShowForm(): ?bool
     {
-        return $this->show_form;
+        return $this->showForm;
     }
 
-    public function setShowForm(?bool $show_form): self
+    public function setShowForm(?bool $showForm): self
     {
-        $this->show_form = $show_form;
+        $this->showForm = $showForm;
 
         return $this;
     }
 
     public function getFormTitle(): ?string
     {
-        return $this->form_title;
+        return $this->formTitle;
     }
 
-    public function setFormTitle(?string $form_title): self
+    public function setFormTitle(?string $formTitle): self
     {
-        $this->form_title = $form_title;
+        $this->formTitle = $formTitle;
 
         return $this;
     }

@@ -22,9 +22,9 @@
                 <span class="blog-card__dot"></span>
                 <span>{{ article.content|readingTime }} min de lecture</span>
             </div>
-            {% if article.tag|length > 0 %}
+            {% if article.tags|length > 0 %}
             <div class="blog-card__tags">
-                {% for tag in article.tag|slice(0, 3) %}
+                {% for tag in article.tags|slice(0, 3) %}
                     <span class="tag-pill tag-pill-sm">{{ tag.name }}</span>
                 {% endfor %}
             </div>

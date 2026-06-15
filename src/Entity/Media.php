@@ -19,18 +19,18 @@ class Media
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $file_name = null;
+    private ?string $fileName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $webpFileName = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'media')]
-    private Collection $tag;
+    private Collection $tags;
 
 
     public function __construct()
     {
-        $this->tag = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -52,12 +52,12 @@ class Media
 
     public function getFileName(): ?string
     {
-        return $this->file_name;
+        return $this->fileName;
     }
 
-    public function setFileName(string $file_name): self
+    public function setFileName(string $fileName): self
     {
-        $this->file_name = $file_name;
+        $this->fileName = $fileName;
 
         return $this;
     }
@@ -65,15 +65,15 @@ class Media
     /**
      * @return Collection<int, Tag>
      */
-    public function getTag(): Collection
+    public function getTags(): Collection
     {
-        return $this->tag;
+        return $this->tags;
     }
 
     public function addTag(Tag $tag): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag->add($tag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
             $tag->addMedium($this);
         }
 
@@ -82,7 +82,7 @@ class Media
 
     public function removeTag(Tag $tag): self
     {
-        if ($this->tag->removeElement($tag)) {
+        if ($this->tags->removeElement($tag)) {
             $tag->removeMedium($this);
         }
 

@@ -79,7 +79,7 @@ class PageCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Pages')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvelle page')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier la page')
-            ->setDefaultSort(['created_at' => 'DESC']);
+            ->setDefaultSort(['createdAt' => 'DESC']);
     }
 
     public function createIndexQueryBuilder(
@@ -138,7 +138,7 @@ class PageCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield AssociationField::new('featured_media', 'Image mise en avant');
+        yield AssociationField::new('featuredMedia', 'Image mise en avant');
 
         yield BooleanField::new('published', 'Publiée');
 
@@ -166,7 +166,7 @@ class PageCrudController extends AbstractCrudController
 
         yield $this->slugField('title');
 
-        yield BooleanField::new('is_system', 'Page système')
+        yield BooleanField::new('isSystem', 'Page système')
             ->renderAsSwitch(false)
             ->setFormTypeOption('disabled', true)
             ->hideOnIndex();
@@ -178,10 +178,10 @@ class PageCrudController extends AbstractCrudController
                 return $pvRepo->countViewsByUrl('/' . $entity->getSlug());
             });
 
-        yield DateTimeField::new('created_at', 'Créée le')
+        yield DateTimeField::new('createdAt', 'Créée le')
             ->hideOnForm();
 
-        yield DateTimeField::new('updated_at', 'Modifiée le')
+        yield DateTimeField::new('updatedAt', 'Modifiée le')
             ->hideOnForm();
 
         // --- Panel SEO ---

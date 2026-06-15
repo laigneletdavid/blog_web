@@ -103,9 +103,9 @@
                 <div class="article-detail__content">{{ article.content|toc_anchors|raw }}</div>
 
                 {# --- Tags --- #}
-                {% if article.tag|length > 0 %}
+                {% if article.tags|length > 0 %}
                 <div class="article-detail__tags">
-                    {% for tag in article.tag %}
+                    {% for tag in article.tags %}
                         <a href="{{ path('app_tag_show', { slug: tag.slug }) }}" class="tag-pill">{{ tag.name }}</a>
                     {% endfor %}
                 </div>

@@ -18,23 +18,23 @@ class Document
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $file_name = null;
+    private ?string $fileName = null;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $extension = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $mime_type = null;
+    private ?string $mimeType = null;
 
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?string $size = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
-        $this->created_at = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -56,12 +56,12 @@ class Document
 
     public function getFileName(): ?string
     {
-        return $this->file_name;
+        return $this->fileName;
     }
 
-    public function setFileName(string $file_name): self
+    public function setFileName(string $fileName): self
     {
-        $this->file_name = $file_name;
+        $this->fileName = $fileName;
 
         return $this;
     }
@@ -80,12 +80,12 @@ class Document
 
     public function getMimeType(): ?string
     {
-        return $this->mime_type;
+        return $this->mimeType;
     }
 
-    public function setMimeType(?string $mime_type): self
+    public function setMimeType(?string $mimeType): self
     {
-        $this->mime_type = $mime_type;
+        $this->mimeType = $mimeType;
 
         return $this;
     }
@@ -104,12 +104,12 @@ class Document
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -36,7 +36,4 @@ blog, services, catalogue, ecommerce, events, directory, faq, portfolio, pages p
 
 ## Dette connue
 - Zero tests (tests/ vide)
-- `getTag()` retourne Collection au lieu de `getTags()` (Article, Tag, Categorie, Page)
-- Mixed snake/camel dans certaines entites (Menu: `is_visible` vs Article: `isFeatured`)
-- `ContentSanitizeListener` : instanceof chain de 8 entites (devrait etre une interface)
 - `SiteContext::find(1)` hardcode (multi-tenant prevu mais pas implemente)
