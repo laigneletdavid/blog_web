@@ -57,6 +57,18 @@ class Page implements TimestampedInterface
     #[ORM\Column(length: 50, nullable: true, unique: true)]
     private ?string $system_key = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $cta_text = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $cta_url = null;
+
+    #[ORM\Column(nullable: true, options: ['default' => true])]
+    private ?bool $show_form = true;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $form_title = null;
+
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'page')]
     private Collection $tag;
 
@@ -263,6 +275,54 @@ class Page implements TimestampedInterface
     public function setSystemKey(?string $system_key): self
     {
         $this->system_key = $system_key;
+
+        return $this;
+    }
+
+    public function getCtaText(): ?string
+    {
+        return $this->cta_text;
+    }
+
+    public function setCtaText(?string $cta_text): self
+    {
+        $this->cta_text = $cta_text;
+
+        return $this;
+    }
+
+    public function getCtaUrl(): ?string
+    {
+        return $this->cta_url;
+    }
+
+    public function setCtaUrl(?string $cta_url): self
+    {
+        $this->cta_url = $cta_url;
+
+        return $this;
+    }
+
+    public function isShowForm(): ?bool
+    {
+        return $this->show_form;
+    }
+
+    public function setShowForm(?bool $show_form): self
+    {
+        $this->show_form = $show_form;
+
+        return $this;
+    }
+
+    public function getFormTitle(): ?string
+    {
+        return $this->form_title;
+    }
+
+    public function setFormTitle(?string $form_title): self
+    {
+        $this->form_title = $form_title;
 
         return $this;
     }
