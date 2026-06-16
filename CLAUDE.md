@@ -35,5 +35,5 @@ blog, services, catalogue, ecommerce, events, directory, faq, portfolio, pages p
 - Landing : layout `base_landing.html.twig` (sans nav), `LandingCrudController` separe de `PageCrudController`, `LandingContactType` avec UTM + honeypot
 
 ## Dette connue
-- Zero tests (tests/ vide)
+- Tests unitaires uniquement (36 tests SEO). Pas de tests fonctionnels ni d'integration
 - `SiteContext::find(1)` hardcode (multi-tenant prevu mais pas implemente)

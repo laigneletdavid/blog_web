@@ -13,7 +13,7 @@ CMS professionnel pret a deployer pour chaque client. Site propre, securise, SEO
 - **Landing pages** — Pages d'atterrissage sans navigation (module Marketing). Layout epure (mini-header logo, footer minimal), hero plein ecran avec image de fond, CTA configurable (lien RDV externe ou formulaire integre), capture UTM automatique (source, medium, campagne), noindex par defaut, formulaire allege (nom, email, activite) avec anti-spam (reCAPTCHA + honeypot), conversions tracees dans les stats. Action "Copier l'URL" dans l'admin pour partage rapide.
 - **Categories** — Organisation des articles par thematique avec couleur et image. Un article peut appartenir a plusieurs categories.
 - **Tags** — Classification fine des articles par mots-cles.
-- **Medias** — Bibliotheque d'images avec conversion WebP automatique, generation de 3 tailles responsives (480px, 800px, 1200px), texte alternatif pour l'accessibilite et le SEO.
+- **Medias** — Bibliotheque d'images avec conversion WebP automatique, generation de 3 tailles responsives (480px, 800px, 1200px), dimensions width/height stockees en base (anti-CLS), texte alternatif contextuel automatique (nom media + titre SEO de l'entite).
 - **Documents** — Bibliotheque de fichiers telechargeables (PDF, DOCX, XLSX, PPTX, ODT/ODS, ZIP/RAR/7Z, CSV, TXT — max 25 Mo). Insertion directe dans l'editeur via bouton dedie ou commande `/document`, upload depuis l'editeur ou bibliotheque centrale, rendu en carte cliquable (icone + nom + taille).
 - **Commentaires** — Systeme de commentaires pour les articles, reserve aux utilisateurs connectes. Moderation dans l'admin.
 
@@ -40,15 +40,21 @@ Chaque module s'active independamment selon les besoins du client :
 - **Sitemap index multi-fichiers** (`/sitemap.xml` → sous-sitemaps par type : articles, pages, categories, services, products, events, portfolio, directory, tags, misc). Filtrage automatique noIndex et pages vides
 - **robots.txt** dynamique
 - **Canonical URL automatique** sur toutes les pages (genere depuis la route, sans query params)
-- **Open Graph** (Facebook, LinkedIn) et **Twitter Cards** automatiques sur toutes les pages
+- **Open Graph** (Facebook, LinkedIn) et **Twitter Cards** automatiques sur toutes les pages, avec `og:image:width`, `og:image:height`, `og:image:alt` et `twitter:site`
 - **Image Open Graph dediee** configurable dans l'identite du site (1200x630). Fallback : `ogImage > heroImage > logo`
-- **Schema.org JSON-LD** : Organization (site-wide), Article, Product (avec Offer/availability), Event (dates/location), Service, LocalBusiness (annuaire), CreativeWork (portfolio), FAQPage, BreadcrumbList (tous les templates show)
+- **Schema.org JSON-LD** : Organization/LocalBusiness dynamique (site-wide, @type configurable, contactPoint, sameAs, openingHours, priceRange), Article, Product (avec Offer/availability), Event (dates/location), Service, LocalBusiness (annuaire), CreativeWork (portfolio), FAQPage, BreadcrumbList (tous les templates show)
+- **Fiche entreprise Google** : type d'activite, gamme de prix, horaires d'ouverture — injectes dans le JSON-LD Organization
+- **Reseaux sociaux** : liens Facebook, Instagram, LinkedIn, Twitter/X injectes dans `sameAs` du schema.org
 - **Fallback chain** : champs SEO de l'entite > titre/description du contenu > valeurs par defaut du site
 - **ProductCategory noindex** : les pages de listing filtrees par categorie produit sont automatiquement en `noindex, follow`
 - **Tags noIndex par defaut** : les tags sont masques des moteurs par defaut, l'admin choisit lesquels promouvoir
 - **dns-prefetch** : Google Fonts + Google Tag Manager (conditionnel)
 - **Google Analytics** et **Google Search Console** configurables dans l'admin
-- **Images WebP** + **lazy-loading** natif pour la performance
+- **Feux tricolores SEO** : score visuel sur chaque entite dans l'admin (titre, description, contenu, headings, image, slug) avec panneau de detail
+- **Auto-noindex** : pages vides ou thin automatiquement exclues des moteurs
+- **Redirections 301** : redirection automatique au changement de slug (chaine de resolution)
+- **Commande crawl simulation** (`app:seo:crawl-simulation`) : audit de toutes les entites indexables
+- **Images WebP** + **lazy-loading** natif + **dimensions width/height** natives pour la performance (anti-CLS)
 
 ### Themes et personnalisation
 
