@@ -71,11 +71,8 @@ class ResponsiveImageExtension extends AbstractExtension
     }
 
     /**
-     * Retourne un tag <img> complet avec srcset, sizes et loading="lazy".
-     */
-    /**
-     * Retourne un tag <img> complet avec srcset, sizes et loading.
-     * $eager = true pour les images LCP (hero) : loading="eager" + fetchpriority="high"
+     * Retourne un tag <img> avec srcset, sizes, loading, width/height et alt contextuel.
+     * $seoContext = entite parente (Article, Service...) pour enrichir le alt avec son titre SEO.
      */
     public function responsiveImg(
         ?Media $media,
@@ -83,23 +80,26 @@ class ResponsiveImageExtension extends AbstractExtension
         string $cssClass = '',
         ?string $alt = null,
         bool $eager = false,
+        ?object $seoContext = null,
     ): string {
         if (!$media || !$media->getFileName()) {
             return '';
         }
 
         $src = '/documents/medias/' . ($media->getWebpFileName() ?? $media->getFileName());
-        $altText = htmlspecialchars($alt ?? $media->getName() ?? '', ENT_QUOTES, 'UTF-8');
+        $altText = htmlspecialchars($this->buildAlt($media, $alt, $seoContext), ENT_QUOTES, 'UTF-8');
         $srcsetValue = $this->buildSrcset($media);
 
         $classAttr = $cssClass ? ' class="' . htmlspecialchars($cssClass, ENT_QUOTES, 'UTF-8') . '"' : '';
         $srcsetAttr = $srcsetValue ? ' srcset="' . $srcsetValue . '"' : '';
         $sizesAttr = $srcsetValue ? ' sizes="' . htmlspecialchars($sizes, ENT_QUOTES, 'UTF-8') . '"' : '';
         $loadingAttr = $eager ? ' loading="eager" fetchpriority="high"' : ' loading="lazy"';
+        $dimensionAttr = $this->buildDimensionAttr($media);
 
         return '<img src="' . htmlspecialchars($src, ENT_QUOTES, 'UTF-8') . '"'
             . $srcsetAttr . $sizesAttr
             . ' alt="' . $altText . '"'
+            . $dimensionAttr
             . $classAttr
             . $loadingAttr . '>';
     }
@@ -114,6 +114,59 @@ class ResponsiveImageExtension extends AbstractExtension
         }
 
         return $this->buildSrcset($media);
+    }
+
+    private function buildAlt(Media $media, ?string $explicitAlt, ?object $seoContext): string
+    {
+        if ($explicitAlt !== null && $explicitAlt !== '') {
+            return $explicitAlt;
+        }
+
+        $parts = [];
+
+        $mediaName = $media->getName();
+        if ($mediaName !== null && $mediaName !== '') {
+            $parts[] = $mediaName;
+        }
+
+        if ($seoContext !== null) {
+            $seoTitle = method_exists($seoContext, 'getSeoTitle') ? $seoContext->getSeoTitle() : null;
+            $entityTitle = null;
+
+            if (method_exists($seoContext, 'getTitle')) {
+                $entityTitle = $seoContext->getTitle();
+            } elseif (method_exists($seoContext, 'getName')) {
+                $entityTitle = $seoContext->getName();
+            }
+
+            $contextPart = $seoTitle ?: $entityTitle;
+
+            if ($contextPart !== null && $contextPart !== '' && $contextPart !== $mediaName) {
+                $parts[] = $contextPart;
+            }
+        }
+
+        return implode(' - ', $parts);
+    }
+
+    private function buildDimensionAttr(Media $media): string
+    {
+        $width = $media->getWidth();
+        $height = $media->getHeight();
+
+        if ($width && $height) {
+            return ' width="' . $width . '" height="' . $height . '"';
+        }
+
+        $filePath = $this->mediaDirectory . '/' . $media->getFileName();
+        if (file_exists($filePath)) {
+            $size = @getimagesize($filePath);
+            if ($size) {
+                return ' width="' . $size[0] . '" height="' . $size[1] . '"';
+            }
+        }
+
+        return '';
     }
 
     private function buildSrcset(Media $media): string

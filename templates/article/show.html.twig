@@ -48,7 +48,7 @@
 {% if article.featuredMedia %}
 <div class="container">
     <div class="article-hero">
-        {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, 900px', 'article-hero__img') }}
+        {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, 900px', 'article-hero__img', null, false, article) }}
     </div>
 </div>
 {% endif %}
