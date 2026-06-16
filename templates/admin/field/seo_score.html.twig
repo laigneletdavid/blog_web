@@ -1,8 +1,12 @@
 {% set report = field.formattedValue %}
 {% if report is not null %}
-    {% set colors = { red: 'danger', orange: 'warning', green: 'success' } %}
+    {% set styles = {
+        red: 'background-color: #e07070; color: #fff;',
+        orange: 'background-color: #e8a84c; color: #fff;',
+        green: 'background-color: #5db87e; color: #fff;',
+    } %}
     {% set icons = { red: 'fa-times-circle', orange: 'fa-exclamation-circle', green: 'fa-check-circle' } %}
-    <span class="badge bg-{{ colors[report.status.value] }}" title="{{ report.status.label() }}">
+    <span class="badge" style="{{ styles[report.status.value] }} font-weight: 500;" title="{{ report.status.label() }}">
         <i class="fa {{ icons[report.status.value] }}"></i> {{ report.status.label() }}
     </span>
 {% endif %}

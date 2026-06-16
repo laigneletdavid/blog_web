@@ -1,12 +1,12 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 
-{% block content_header %}
-    {% if seo_report is defined and seo_report is not null and ea.crud.currentPage in ['edit', 'new'] %}
-        <div class="container-fluid px-0 mb-2">
-            {% include 'admin/field/seo_report_panel.html.twig' %}
-        </div>
-    {% endif %}
+{% block content_header_wrapper %}
     {{ parent() }}
+    {% if seo_report is defined and seo_report is not null and ea.crud.currentPage in ['edit', 'new'] %}
+        <section class="px-0 mt-2">
+            {% include 'admin/field/seo_report_panel.html.twig' %}
+        </section>
+    {% endif %}
 {% endblock %}
 
 {% block body_javascript %}
