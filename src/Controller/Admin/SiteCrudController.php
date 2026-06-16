@@ -86,7 +86,8 @@ class SiteCrudController extends AbstractCrudController
         // --- Panel Identité ---
         yield FormField::addPanel('Identité')
             ->setIcon('fa fa-building')
-            ->collapsible();
+            ->collapsible()
+            ->renderCollapsed();
 
         // Sous-section : Nom et presentation
         yield FormField::addFieldset('Nom et presentation');
@@ -135,6 +136,68 @@ class SiteCrudController extends AbstractCrudController
 
         yield TextField::new('google_maps')
             ->setLabel('Lien Google Maps');
+
+        // --- Panel Fiche entreprise ---
+        yield FormField::addPanel('Fiche entreprise (Google)')
+            ->setIcon('fa fa-store')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield ChoiceField::new('businessType', 'Type d\'activite')
+            ->setChoices([
+                'Organisation (defaut)' => 'Organization',
+                'Commerce / Magasin' => 'Store',
+                'Restaurant' => 'Restaurant',
+                'Service professionnel' => 'ProfessionalService',
+                'Agence' => 'LocalBusiness',
+                'Sante / Medical' => 'MedicalBusiness',
+                'Hebergement' => 'LodgingBusiness',
+                'Sport / Loisirs' => 'SportsActivityLocation',
+            ])
+            ->setHelp('Definit le type schema.org affiche dans Google. "Organisation" par defaut.')
+            ->allowMultipleChoices(false)
+            ->renderExpanded(false)
+            ->hideOnIndex();
+
+        yield ChoiceField::new('priceRange', 'Gamme de prix')
+            ->setChoices([
+                'Non renseigne' => null,
+                '€ — Economique' => '€',
+                '€€ — Moyen' => '€€',
+                '€€€ — Haut de gamme' => '€€€',
+                '€€€€ — Luxe' => '€€€€',
+            ])
+            ->setHelp('Affiche dans la fiche Google. Laissez vide si non pertinent.')
+            ->allowMultipleChoices(false)
+            ->renderExpanded(false)
+            ->hideOnIndex();
+
+        yield TextareaField::new('openingHours', 'Horaires d\'ouverture')
+            ->setHelp('Un horaire par ligne, format : <code>Lu-Ve 09:00-18:00</code> ou <code>Sa 10:00-16:00</code>. Laissez vide si non applicable.')
+            ->setFormTypeOptions(['attr' => ['rows' => 4, 'placeholder' => "Lu-Ve 09:00-18:00\nSa 10:00-16:00"]])
+            ->hideOnIndex();
+
+        // --- Panel Reseaux sociaux ---
+        yield FormField::addPanel('Reseaux sociaux')
+            ->setIcon('fa fa-share-alt')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield TextField::new('facebookUrl', 'Facebook')
+            ->setHelp('URL complete de votre page Facebook')
+            ->hideOnIndex();
+
+        yield TextField::new('instagramUrl', 'Instagram')
+            ->setHelp('URL complete de votre profil Instagram')
+            ->hideOnIndex();
+
+        yield TextField::new('linkedinUrl', 'LinkedIn')
+            ->setHelp('URL complete de votre page LinkedIn')
+            ->hideOnIndex();
+
+        yield TextField::new('twitterHandle', 'Twitter / X')
+            ->setHelp('Votre identifiant Twitter sans le @, ex: monentreprise')
+            ->hideOnIndex();
 
         // --- Panel SEO ---
         yield FormField::addPanel('SEO')
