@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Page;
 use App\Enum\VisibilityEnum;
 use App\Repository\PageViewRepository;
+use App\Service\SeoAnalyzer;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -27,12 +28,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PageCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
+        private readonly SeoAnalyzer $seoAnalyzer,
     ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
     }
 
     public static function getEntityFqcn(): string
@@ -79,7 +87,20 @@ class PageCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Pages')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvelle page')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier la page')
-            ->setDefaultSort(['created_at' => 'DESC']);
+            ->setDefaultSort(['createdAt' => 'DESC']);
+    }
+
+    public function createIndexQueryBuilder(
+        $searchDto,
+        $entityDto,
+        $fields,
+        $filters,
+    ): \Doctrine\ORM\QueryBuilder {
+        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $qb->andWhere('entity.template != :landing')
+            ->setParameter('landing', 'landing');
+
+        return $qb;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -107,6 +128,8 @@ class PageCrudController extends AbstractCrudController
             ->setIcon('fa fa-pen')
             ->collapsible();
 
+        yield $this->seoScoreField();
+
         yield TextField::new('title', 'Titre de la page');
 
         yield TextareaField::new('blocksJson', 'Contenu de la page')
@@ -125,7 +148,7 @@ class PageCrudController extends AbstractCrudController
             ->setIcon('fa fa-cog')
             ->collapsible();
 
-        yield AssociationField::new('featured_media', 'Image mise en avant');
+        yield AssociationField::new('featuredMedia', 'Image mise en avant');
 
         yield BooleanField::new('published', 'Publiée');
 
@@ -143,7 +166,7 @@ class PageCrudController extends AbstractCrudController
                 'Sidebar gauche' => 'sidebar-left',
             ])
             ->renderExpanded(false)
-            ->setHelp('Choisissez la disposition de la page');
+            ->setHelp('Choisissez la disposition de la page.');
 
         // --- Panel Avancé (collapsed) ---
         yield FormField::addPanel('Avancé')
@@ -153,7 +176,7 @@ class PageCrudController extends AbstractCrudController
 
         yield $this->slugField('title');
 
-        yield BooleanField::new('is_system', 'Page système')
+        yield BooleanField::new('isSystem', 'Page système')
             ->renderAsSwitch(false)
             ->setFormTypeOption('disabled', true)
             ->hideOnIndex();
@@ -165,10 +188,10 @@ class PageCrudController extends AbstractCrudController
                 return $pvRepo->countViewsByUrl('/' . $entity->getSlug());
             });
 
-        yield DateTimeField::new('created_at', 'Créée le')
+        yield DateTimeField::new('createdAt', 'Créée le')
             ->hideOnForm();
 
-        yield DateTimeField::new('updated_at', 'Modifiée le')
+        yield DateTimeField::new('updatedAt', 'Modifiée le')
             ->hideOnForm();
 
         // --- Panel SEO ---

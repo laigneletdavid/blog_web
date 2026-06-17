@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ORM\Index(columns: ['is_active'], name: 'idx_service_active')]
-class Service
+class Service implements SanitizableContentInterface
 {
     use SeoTrait;
     #[ORM\Id]

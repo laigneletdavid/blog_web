@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FaqRepository::class)]
 #[ORM\Index(columns: ['is_active'], name: 'idx_faq_active')]
-class Faq
+class Faq implements SanitizableContentInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

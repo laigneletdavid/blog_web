@@ -66,7 +66,7 @@ class LinkApiController extends AbstractController
         }
 
         // Articles
-        foreach ($articleRepository->findBy(['published' => true], ['created_at' => 'DESC'], 50) as $article) {
+        foreach ($articleRepository->findBy(['published' => true], ['createdAt' => 'DESC'], 50) as $article) {
             $links[] = [
                 'type' => 'Article',
                 'title' => $article->getTitle(),

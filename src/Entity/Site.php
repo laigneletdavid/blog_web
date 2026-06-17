@@ -52,6 +52,34 @@ class Site
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $phone = null;
 
+    // --- Entreprise / Schema.org ---
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $businessType = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $priceRange = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $openingHours = null;
+
+    // --- Reseaux sociaux ---
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
+    private ?string $facebookUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
+    private ?string $instagramUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
+    private ?string $linkedinUrl = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $twitterHandle = null;
+
     // --- SEO ---
 
     #[ORM\Column(length: 70, nullable: true)]
@@ -283,6 +311,115 @@ class Site
         $this->phone = $phone;
 
         return $this;
+    }
+
+    // --- Entreprise Getters/Setters ---
+
+    public function getBusinessType(): ?string
+    {
+        return $this->businessType;
+    }
+
+    public function setBusinessType(?string $businessType): self
+    {
+        $this->businessType = $businessType;
+
+        return $this;
+    }
+
+    public function getPriceRange(): ?string
+    {
+        return $this->priceRange;
+    }
+
+    public function setPriceRange(?string $priceRange): self
+    {
+        $this->priceRange = $priceRange;
+
+        return $this;
+    }
+
+    public function getOpeningHours(): ?string
+    {
+        return $this->openingHours;
+    }
+
+    public function setOpeningHours(?string $openingHours): self
+    {
+        $this->openingHours = $openingHours;
+
+        return $this;
+    }
+
+    public function getOpeningHoursArray(): array
+    {
+        if ($this->openingHours === null || trim($this->openingHours) === '') {
+            return [];
+        }
+
+        return array_values(array_filter(
+            array_map('trim', explode("\n", $this->openingHours))
+        ));
+    }
+
+    // --- Reseaux sociaux Getters/Setters ---
+
+    public function getFacebookUrl(): ?string
+    {
+        return $this->facebookUrl;
+    }
+
+    public function setFacebookUrl(?string $facebookUrl): self
+    {
+        $this->facebookUrl = $facebookUrl;
+
+        return $this;
+    }
+
+    public function getInstagramUrl(): ?string
+    {
+        return $this->instagramUrl;
+    }
+
+    public function setInstagramUrl(?string $instagramUrl): self
+    {
+        $this->instagramUrl = $instagramUrl;
+
+        return $this;
+    }
+
+    public function getLinkedinUrl(): ?string
+    {
+        return $this->linkedinUrl;
+    }
+
+    public function setLinkedinUrl(?string $linkedinUrl): self
+    {
+        $this->linkedinUrl = $linkedinUrl;
+
+        return $this;
+    }
+
+    public function getTwitterHandle(): ?string
+    {
+        return $this->twitterHandle;
+    }
+
+    public function setTwitterHandle(?string $twitterHandle): self
+    {
+        $this->twitterHandle = $twitterHandle;
+
+        return $this;
+    }
+
+    public function getSameAsUrls(): array
+    {
+        return array_values(array_filter([
+            $this->facebookUrl,
+            $this->instagramUrl,
+            $this->linkedinUrl,
+            $this->twitterHandle ? 'https://x.com/' . ltrim($this->twitterHandle, '@') : null,
+        ]));
     }
 
     // --- SEO Getters/Setters ---

@@ -49,7 +49,7 @@ class PageRepository extends ServiceEntityRepository
             ->andWhere('p.noIndex = false')
             ->andWhere('p.visibility = :public')
             ->setParameter('public', 'public')
-            ->orderBy('p.updated_at', 'DESC')
+            ->orderBy('p.updatedAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -68,7 +68,7 @@ class PageRepository extends ServiceEntityRepository
 
     public function findSystemPage(string $systemKey): ?Page
     {
-        return $this->findOneBy(['system_key' => $systemKey]);
+        return $this->findOneBy(['systemKey' => $systemKey]);
     }
 
     /**
@@ -77,7 +77,7 @@ class PageRepository extends ServiceEntityRepository
     public function findAllSystemPages(): array
     {
         return $this->createQueryBuilder('p')
-            ->where('p.is_system = true')
+            ->where('p.isSystem = true')
             ->andWhere('p.published = true')
             ->orderBy('p.title', 'ASC')
             ->getQuery()
@@ -93,7 +93,7 @@ class PageRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.published = true')
-            ->andWhere('p.is_system = false')
+            ->andWhere('p.isSystem = false')
             ->orderBy('p.title', 'ASC')
             ->getQuery()
             ->getResult();

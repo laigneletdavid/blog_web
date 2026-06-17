@@ -46,7 +46,7 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->orderBy('a.id', 'ASC')
             ->getQuery()
@@ -61,7 +61,7 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->orderBy('a.id', 'DESC')
             ->setMaxResults(1)
@@ -77,7 +77,7 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->orderBy('a.id', 'ASC')
             ->setMaxResults(2)
@@ -101,14 +101,14 @@ class ArticleRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('a')
             ->innerJoin('a.categories', 'c')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->andWhere('a.published = TRUE')
             ->andWhere('a.id != :id')
             ->andWhere('c IN (:cats)')
             ->setParameter('id', $article->getId())
             ->setParameter('cats', $categories->toArray())
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -143,11 +143,11 @@ class ArticleRepository extends ServiceEntityRepository
         $article = $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
             ->andWhere('a.isFeatured = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->leftJoin('a.categories', 'c')
             ->addSelect('c')
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -158,11 +158,11 @@ class ArticleRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->leftJoin('a.categories', 'c')
             ->addSelect('c')
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -178,17 +178,17 @@ class ArticleRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 
         if ($month !== null && $year !== null) {
             $startDate = new \DateTime(sprintf('%d-%02d-01', $year, $month));
             $endDate = (clone $startDate)->modify('first day of next month');
-            $qb->andWhere('a.created_at >= :startDate')
-                ->andWhere('a.created_at < :endDate')
+            $qb->andWhere('a.createdAt >= :startDate')
+                ->andWhere('a.createdAt < :endDate')
                 ->setParameter('startDate', $startDate)
                 ->setParameter('endDate', $endDate);
         }
@@ -215,13 +215,13 @@ class ArticleRepository extends ServiceEntityRepository
     public function findPublishedByTag(\App\Entity\Tag $tag, int $page = 1, int $perPage = 9): \Doctrine\ORM\Tools\Pagination\Paginator
     {
         $qb = $this->createQueryBuilder('a')
-            ->innerJoin('a.tag', 't')
-            ->leftJoin('a.featured_media', 'm')
+            ->innerJoin('a.tags', 't')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
             ->andWhere('a.published = TRUE')
             ->andWhere('t = :tag')
             ->setParameter('tag', $tag)
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 
@@ -244,9 +244,9 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
-            ->leftJoin('a.featured_media', 'm')
+            ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -262,8 +262,8 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = FALSE')
-            ->andWhere('a.scheduled_at IS NOT NULL')
-            ->andWhere('a.scheduled_at <= :now')
+            ->andWhere('a.scheduledAt IS NOT NULL')
+            ->andWhere('a.scheduledAt <= :now')
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
@@ -286,7 +286,7 @@ class ArticleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.published = true')
             ->andWhere('a.noIndex = false')
-            ->orderBy('a.updated_at', 'DESC')
+            ->orderBy('a.updatedAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

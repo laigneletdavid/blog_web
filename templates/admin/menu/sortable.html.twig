@@ -206,7 +206,7 @@
 
                     <div class="menu-zone-list" data-sortable-zone="{{ value }}">
                         {% for menu in menus[value] %}
-                        <div class="menu-sortable-item {{ menu.isSystem ? 'is-system' : '' }} {{ not menu.isIsVisible ? 'is-hidden' : '' }}"
+                        <div class="menu-sortable-item {{ menu.isSystem ? 'is-system' : '' }} {{ not menu.isVisible ? 'is-hidden' : '' }}"
                              data-id="{{ menu.id }}" data-system="{{ menu.isSystem ? '1' : '0' }}">
                             <div class="menu-item-row">
                                 <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
@@ -225,8 +225,8 @@
                                     <span class="badge bg-secondary badge-type">Lien</span>
                                 {% endif %}
                                 <div class="menu-item-actions">
-                                    <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ menu.id }}" title="{{ menu.isIsVisible ? 'Masquer' : 'Afficher' }}">
-                                        <i class="fas {{ menu.isIsVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                    <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ menu.id }}" title="{{ menu.isVisible ? 'Masquer' : 'Afficher' }}">
+                                        <i class="fas {{ menu.isVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                                     </button>
                                     {% if not menu.isSystem %}
                                     <button type="button" class="btn btn-sm btn-delete-item" data-id="{{ menu.id }}" title="Supprimer">
@@ -237,7 +237,7 @@
                             </div>
                             <div class="menu-sortable-children" data-sortable-children="{{ menu.id }}">
                                 {% for child in menu.children %}
-                                <div class="menu-sortable-item {{ child.isSystem ? 'is-system' : '' }} {{ not child.isIsVisible ? 'is-hidden' : '' }}"
+                                <div class="menu-sortable-item {{ child.isSystem ? 'is-system' : '' }} {{ not child.isVisible ? 'is-hidden' : '' }}"
                                      data-id="{{ child.id }}" data-system="{{ child.isSystem ? '1' : '0' }}">
                                     <div class="menu-item-row">
                                         <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
@@ -257,7 +257,7 @@
                                         {% endif %}
                                         <div class="menu-item-actions">
                                             <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ child.id }}">
-                                                <i class="fas {{ child.isIsVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                                <i class="fas {{ child.isVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                                             </button>
                                             {% if not child.isSystem %}
                                             <button type="button" class="btn btn-sm btn-delete-item" data-id="{{ child.id }}">
@@ -268,7 +268,7 @@
                                     </div>
                                     <div class="menu-sortable-children menu-sortable-children--l2" data-sortable-children="{{ child.id }}">
                                         {% for grandchild in child.children %}
-                                        <div class="menu-sortable-item {{ grandchild.isSystem ? 'is-system' : '' }} {{ not grandchild.isIsVisible ? 'is-hidden' : '' }}"
+                                        <div class="menu-sortable-item {{ grandchild.isSystem ? 'is-system' : '' }} {{ not grandchild.isVisible ? 'is-hidden' : '' }}"
                                              data-id="{{ grandchild.id }}" data-system="{{ grandchild.isSystem ? '1' : '0' }}">
                                             <div class="menu-item-row">
                                                 <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
@@ -286,7 +286,7 @@
                                                 {% endif %}
                                                 <div class="menu-item-actions">
                                                     <button type="button" class="btn btn-sm btn-toggle-visibility" data-id="{{ grandchild.id }}">
-                                                        <i class="fas {{ grandchild.isIsVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                                        <i class="fas {{ grandchild.isVisible ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                                                     </button>
                                                     <button type="button" class="btn btn-sm btn-delete-item" data-id="{{ grandchild.id }}">
                                                         <i class="fas fa-trash"></i>
