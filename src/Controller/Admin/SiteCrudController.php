@@ -40,28 +40,40 @@ class SiteCrudController extends AbstractCrudController
             'title' => 'Aide — Identite du site',
             'sections' => [
                 [
-                    'title' => 'Informations essentielles',
-                    'content' => '<p>Cette page contient les informations de base de votre site :</p>
+                    'title' => 'Identite',
+                    'content' => '<p>Les informations de base de votre site :</p>
                     <ul>
                         <li><strong>Nom du site</strong> — Affiche dans le header, le footer et les onglets du navigateur</li>
-                        <li><strong>Description</strong> — Texte de presentation utilise par defaut pour le SEO</li>
-                        <li><strong>Coordonnees</strong> — Email de contact, telephone, adresse</li>
-                        <li><strong>Logo</strong> — Affiche dans le header du site</li>
+                        <li><strong>Phrase d\'accroche</strong> — Texte de presentation visible sur la page d\'accueil</li>
+                        <li><strong>Logo</strong> — Affiche dans le header. Le <em>Logo fond sombre</em> est utilise dans le footer</li>
+                        <li><strong>Image Open Graph</strong> — Image par defaut lors du partage sur les reseaux sociaux (1200x630 px recommande)</li>
+                        <li><strong>Coordonnees</strong> — Email, telephone, adresse. Utilises dans le footer et le schema.org</li>
                     </ul>',
                 ],
                 [
-                    'title' => 'SEO global',
-                    'content' => '<p>Les champs <em>Titre SEO par defaut</em> et <em>Description SEO par defaut</em> sont utilises comme valeurs de repli quand un article ou une page n\'a pas ses propres champs SEO remplis.</p>',
+                    'title' => 'Fiche entreprise (Google)',
+                    'content' => '<p>Ces informations alimentent la <strong>fiche entreprise Google</strong> (schema.org) :</p>
+                    <ul>
+                        <li><strong>Type d\'activite</strong> — Definit comment Google categorise votre entreprise (commerce, restaurant, service...)</li>
+                        <li><strong>Gamme de prix</strong> — Indicateur affiche dans la fiche Google (€ a €€€€)</li>
+                        <li><strong>Horaires</strong> — Un horaire par ligne, ex: <code>Lu-Ve 09:00-18:00</code>. Transmis directement a Google</li>
+                    </ul>',
                 ],
                 [
-                    'title' => 'Google Analytics & Search Console',
-                    'content' => '<p>Collez votre <strong>ID Google Analytics</strong> (format G-XXXXXXXXXX) pour activer le suivi de visites Google.</p>
-                    <p>Le champ <strong>Google Search Console</strong> sert a la verification de propriete du site.</p>',
+                    'title' => 'Reseaux sociaux',
+                    'content' => '<p>Vos liens vers les reseaux sociaux. Ils sont affiches dans le footer et transmis a Google via le champ <code>sameAs</code> du schema.org, ce qui renforce votre presence en ligne.</p>',
+                ],
+                [
+                    'title' => 'SEO global',
+                    'content' => '<p>Les champs <em>Titre SEO par defaut</em> et <em>Description SEO par defaut</em> sont utilises comme valeurs de repli quand un article ou une page n\'a pas ses propres champs SEO remplis.</p>
+                    <p><strong>Google Analytics</strong> (format G-XXXXXXXXXX) active le suivi de visites. <strong>Search Console</strong> sert a prouver que vous etes proprietaire du site.</p>',
                 ],
             ],
             'tips' => [
-                'Commencez par remplir le nom, la description et l\'email de contact. Ce sont les 3 champs les plus importants.',
+                'Commencez par remplir le nom, la description et l\'email de contact.',
                 'Le logo est affiche en petit dans le header. Privilegiez un format horizontal ou carre, en PNG transparent.',
+                'Remplir la fiche entreprise et les reseaux sociaux ameliore votre visibilite dans les resultats Google.',
+                'Les horaires doivent respecter le format <code>Lu-Ve 09:00-18:00</code> (un par ligne) pour etre compris par Google.',
             ],
         ];
     }
@@ -86,7 +98,8 @@ class SiteCrudController extends AbstractCrudController
         // --- Panel Identité ---
         yield FormField::addPanel('Identité')
             ->setIcon('fa fa-building')
-            ->collapsible();
+            ->collapsible()
+            ->renderCollapsed();
 
         // Sous-section : Nom et presentation
         yield FormField::addFieldset('Nom et presentation');
@@ -135,6 +148,68 @@ class SiteCrudController extends AbstractCrudController
 
         yield TextField::new('google_maps')
             ->setLabel('Lien Google Maps');
+
+        // --- Panel Fiche entreprise ---
+        yield FormField::addPanel('Fiche entreprise (Google)')
+            ->setIcon('fa fa-store')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield ChoiceField::new('businessType', 'Type d\'activite')
+            ->setChoices([
+                'Organisation (defaut)' => 'Organization',
+                'Commerce / Magasin' => 'Store',
+                'Restaurant' => 'Restaurant',
+                'Service professionnel' => 'ProfessionalService',
+                'Agence' => 'LocalBusiness',
+                'Sante / Medical' => 'MedicalBusiness',
+                'Hebergement' => 'LodgingBusiness',
+                'Sport / Loisirs' => 'SportsActivityLocation',
+            ])
+            ->setHelp('Definit le type schema.org affiche dans Google. "Organisation" par defaut.')
+            ->allowMultipleChoices(false)
+            ->renderExpanded(false)
+            ->hideOnIndex();
+
+        yield ChoiceField::new('priceRange', 'Gamme de prix')
+            ->setChoices([
+                'Non renseigne' => null,
+                '€ — Economique' => '€',
+                '€€ — Moyen' => '€€',
+                '€€€ — Haut de gamme' => '€€€',
+                '€€€€ — Luxe' => '€€€€',
+            ])
+            ->setHelp('Affiche dans la fiche Google. Laissez vide si non pertinent.')
+            ->allowMultipleChoices(false)
+            ->renderExpanded(false)
+            ->hideOnIndex();
+
+        yield TextareaField::new('openingHours', 'Horaires d\'ouverture')
+            ->setHelp('Un horaire par ligne, format : <code>Lu-Ve 09:00-18:00</code> ou <code>Sa 10:00-16:00</code>. Laissez vide si non applicable.')
+            ->setFormTypeOptions(['attr' => ['rows' => 4, 'placeholder' => "Lu-Ve 09:00-18:00\nSa 10:00-16:00"]])
+            ->hideOnIndex();
+
+        // --- Panel Reseaux sociaux ---
+        yield FormField::addPanel('Reseaux sociaux')
+            ->setIcon('fa fa-share-alt')
+            ->collapsible()
+            ->renderCollapsed();
+
+        yield TextField::new('facebookUrl', 'Facebook')
+            ->setHelp('URL complete de votre page Facebook')
+            ->hideOnIndex();
+
+        yield TextField::new('instagramUrl', 'Instagram')
+            ->setHelp('URL complete de votre profil Instagram')
+            ->hideOnIndex();
+
+        yield TextField::new('linkedinUrl', 'LinkedIn')
+            ->setHelp('URL complete de votre page LinkedIn')
+            ->hideOnIndex();
+
+        yield TextField::new('twitterHandle', 'Twitter / X')
+            ->setHelp('Votre identifiant Twitter sans le @, ex: monentreprise')
+            ->hideOnIndex();
 
         // --- Panel SEO ---
         yield FormField::addPanel('SEO')

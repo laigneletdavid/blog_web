@@ -33,7 +33,7 @@ class MenuCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Navigation')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter un lien de menu')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier un lien de menu')
-            ->setDefaultSort(['location' => 'ASC', 'menu_order' => 'ASC']);
+            ->setDefaultSort(['location' => 'ASC', 'menuOrder' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -62,7 +62,7 @@ class MenuCrudController extends AbstractCrudController
             ->renderExpanded(false)
             ->setHelp('Où afficher ce lien : header, footer navigation ou footer légal');
 
-        yield NumberField::new('menu_order', 'Ordre')
+        yield NumberField::new('menuOrder', 'Ordre')
             ->setHelp('Plus le nombre est petit, plus le lien apparaît en premier');
 
         yield ChoiceField::new('target', 'Type de lien')
@@ -92,9 +92,9 @@ class MenuCrudController extends AbstractCrudController
             ->setHelp('Sélectionnez la catégorie (si type = Catégorie)')
             ->hideOnIndex();
 
-        yield BooleanField::new('is_visible', 'Visible');
+        yield BooleanField::new('isVisible', 'Visible');
 
-        yield BooleanField::new('is_system', 'Système')
+        yield BooleanField::new('isSystem', 'Système')
             ->setHelp('Les éléments système ne peuvent pas être supprimés')
             ->renderAsSwitch(false)
             ->setFormTypeOption('disabled', true);

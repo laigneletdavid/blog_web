@@ -74,6 +74,12 @@ class DirectoryController extends AbstractController
             $activeTagIds
         );
 
+        $seo = $this->seoService->resolveForPage('Annuaire');
+
+        if (count($entries) === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('directory/index.html.twig', [
             'title_page' => 'Annuaire',
             'entries' => $entries,
@@ -82,7 +88,7 @@ class DirectoryController extends AbstractController
             'search' => $search,
             'activeTagGroups' => $activeTagGroups,
             'activeTagSlugs' => $activeTagSlugs,
-            'seo' => $this->seoService->resolveForPage('Annuaire'),
+            'seo' => $seo,
         ]);
     }
 

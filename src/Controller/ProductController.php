@@ -48,6 +48,14 @@ class ProductController extends AbstractController
 
         $titlePage = $category ? $category->getName() : 'Catalogue';
 
+        $seo = $category
+            ? $this->seoService->resolveForPage($category->getName())
+            : $this->seoService->resolveForPage('Catalogue');
+
+        if (count($products) === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('product/index.html.twig', [
             'title_page' => $titlePage,
             'products' => $products,
@@ -55,9 +63,7 @@ class ProductController extends AbstractController
             'currentCategory' => $category,
             'currentSort' => $sort,
             'site' => $this->siteContext->getCurrentSite(),
-            'seo' => $category
-                ? $this->seoService->resolveForPage($category->getName())
-                : $this->seoService->resolveForPage('Catalogue'),
+            'seo' => $seo,
         ]);
     }
 

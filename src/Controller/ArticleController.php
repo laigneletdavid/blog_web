@@ -60,6 +60,12 @@ class ArticleController extends AbstractController
             $titlePage = sprintf('Articles de %s %d', $monthNames[$month] ?? '', $year);
         }
 
+        $seo = $this->seoService->resolveForPage($titlePage);
+
+        if ($page > 1 || count($paginator) === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('article/show_all.html.twig', [
             'title_page' => $titlePage,
             'text_page' => 'Blog',
@@ -72,7 +78,7 @@ class ArticleController extends AbstractController
             'featuredArticle' => $featuredArticle,
             'blogCategories' => $blogCategories,
             'totalArticles' => count($paginator),
-            'seo' => $this->seoService->resolveForPage($titlePage),
+            'seo' => $seo,
         ]);
     }
 

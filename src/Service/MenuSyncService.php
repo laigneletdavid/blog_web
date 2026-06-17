@@ -99,7 +99,7 @@ class MenuSyncService
     public function hideModuleItems(string $moduleName): int
     {
         $count = 0;
-        $systemItems = $this->menuRepository->findBy(['is_system' => true]);
+        $systemItems = $this->menuRepository->findBy(['isSystem' => true]);
 
         foreach ($systemItems as $item) {
             // Check if this item's route corresponds to the module

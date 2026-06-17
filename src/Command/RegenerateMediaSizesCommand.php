@@ -69,10 +69,14 @@ class RegenerateMediaSizesCommand extends Command
                 continue;
             }
 
-            $webpFileName = $this->mediaProcessor->process($media, $force);
+            $result = $this->mediaProcessor->process($media, $force);
 
-            if ($webpFileName) {
-                $media->setWebpFileName($webpFileName);
+            if ($result) {
+                $media->setWebpFileName($result['webp']);
+                if ($result['width']) {
+                    $media->setWidth($result['width']);
+                    $media->setHeight($result['height']);
+                }
                 $processed++;
             } else {
                 $failed++;

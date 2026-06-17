@@ -1,0 +1,35 @@
+{% if seo_report is defined and seo_report is not null %}
+{% set panel_styles = {
+    red: 'border-color: #e07070;',
+    orange: 'border-color: #e8a84c;',
+    green: 'border-color: #5db87e;',
+} %}
+{% set header_styles = {
+    red: 'background-color: #e07070; color: #fff;',
+    orange: 'background-color: #e8a84c; color: #fff;',
+    green: 'background-color: #5db87e; color: #fff;',
+} %}
+{% set icon_colors = { red: '#e07070', orange: '#e8a84c', green: '#5db87e' } %}
+<div class="card mb-3" style="{{ panel_styles[seo_report.status.value] }}">
+    <div class="card-header d-flex align-items-center gap-2" style="{{ header_styles[seo_report.status.value] }}">
+        {% set icons = { red: 'fa-times-circle', orange: 'fa-exclamation-circle', green: 'fa-check-circle' } %}
+        <i class="fa {{ icons[seo_report.status.value] }}"></i>
+        <strong>Score SEO : {{ seo_report.status.label() }}</strong>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <tbody>
+                {% for check in seo_report.checks %}
+                    <tr>
+                        <td class="ps-3" style="width: 30px">
+                            <i class="fa {{ icons[check.status.value] }}" style="color: {{ icon_colors[check.status.value] }};"></i>
+                        </td>
+                        <td><strong>{{ check.label }}</strong></td>
+                        <td class="text-muted">{{ check.message }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}

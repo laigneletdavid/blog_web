@@ -103,7 +103,7 @@
                 <div class="search-result-card d-flex">
                     {% if article.featuredMedia %}
                         <div class="search-result-thumb-wrapper flex-shrink-0">
-                            {{ responsive_img(article.featuredMedia, '120px', 'search-result-thumb', article.title) }}
+                            {{ responsive_img(article.featuredMedia, '120px', 'search-result-thumb', null, false, article) }}
                         </div>
                     {% endif %}
                     <div class="flex-grow-1">

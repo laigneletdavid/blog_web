@@ -10,6 +10,16 @@
 | P2 | `9976bf0` | Sitemap index multi-fichiers, JSON-LD (Organization, Product, Event, Service, LocalBusiness, CreativeWork), BreadcrumbList partout, fix blocs SEO perdus (event/portfolio/directory/faq), fix FAQPage JSON-LD orphelin |
 | P3 | `8fee975` | ProductCategory noindex, aide contextuelle admin SEO |
 
+### Bloc 2 — SEO avance (branche develop, 16/06/2026)
+
+| Sous-phase | Commits | Description |
+|------------|---------|-------------|
+| Tests | `f4406d0` | 36 tests unitaires (SeoAnalyzer, SlugChangeListener, SlugRedirectListener) |
+| Media | `79f0d0b` | Dimensions width/height sur Media, alt contextuel automatique (Media.name + titre SEO), templates enrichis |
+| SEO UI | `38bb5fe` | Couleurs feux tricolores adoucies, panneau SEO repositionne, commande crawl simulation |
+| Schema.org | `3bb4ffb` | Fiche entreprise Google (businessType, priceRange, openingHours), reseaux sociaux (sameAs), OG image enrichi (width/height/alt), JSON-LD Organization dynamique |
+| Aide | `f334a5f` | Aide contextuelle Site mise a jour (fiche entreprise, reseaux sociaux, tips horaires) |
+
 > **Note** : dns-prefetch (prevu P3 dans le plan initial) a ete fait en P2. Les items P4 du plan initial (dns-prefetch, ProductCategory noindex, aide admin) ont ete absorbes dans P2/P3.
 
 ---
@@ -341,30 +351,18 @@ Google a deprecie `rel="next/prev"` en 2019. Le canonical vers page 1 est la bon
 
 ---
 
-### 3.3 JSON-LD Organization (site-wide)
+### 3.3 JSON-LD Organization (site-wide) — IMPLEMENTE Bloc 2
 
-**`templates/base.html.twig`** — Dans le bloc `jsonld`, ajouter un schema Organization par defaut :
-```twig
-{% block jsonld %}
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "{{ site.name|default('') }}",
-    "url": "{{ absolute_url('/') }}",
-    {% if site.logo %}
-    "logo": "{{ absolute_url(asset('documents/medias/' ~ site.logo.fileName)) }}",
-    {% endif %}
-    {% if site.email|default('') is not empty %}
-    "email": "{{ site.email }}",
-    {% endif %}
-    {% if site.phone|default('') is not empty %}
-    "telephone": "{{ site.phone }}"
-    {% endif %}
-}
-</script>
-{% endblock %}
-```
+**`templates/base.html.twig`** — JSON-LD Organization dynamique avec @type configurable :
+
+- `@type` dynamique depuis `site.businessType` (Organization, Store, Restaurant, ProfessionalService, etc.)
+- `contactPoint` structure (telephone + email)
+- `sameAs` alimente par les URLs Facebook, Instagram, LinkedIn, Twitter/X
+- `priceRange` (€ a €€€€)
+- `openingHours` (un horaire par ligne, format `Lu-Ve 09:00-18:00`)
+- `address` avec `addressCountry: "FR"`
+
+Les champs sont configurables dans l'admin : panneau "Fiche entreprise (Google)" + panneau "Reseaux sociaux" (collapsibles).
 
 Les pages enfant (article, product, etc.) surchargeront ce bloc avec leur propre schema + l'Organization.
 

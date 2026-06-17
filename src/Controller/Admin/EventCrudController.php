@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Event;
 use App\Service\EventNotificationService;
+use App\Service\SeoAnalyzer;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
@@ -23,11 +24,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EventCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly EventNotificationService $notificationService,
+        private readonly SeoAnalyzer $seoAnalyzer,
     ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
     }
 
     public static function getEntityFqcn(): string
@@ -80,6 +88,8 @@ class EventCrudController extends AbstractCrudController
         yield FormField::addPanel('Contenu')
             ->setIcon('fa fa-pen')
             ->collapsible();
+
+        yield $this->seoScoreField();
 
         yield TextField::new('title', 'Titre');
 

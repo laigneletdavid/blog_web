@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: DirectoryEntryRepository::class)]
 #[ORM\Index(name: 'idx_directory_active', columns: ['is_active'])]
 #[ORM\Index(name: 'idx_directory_featured', columns: ['is_featured'])]
-class DirectoryEntry
+class DirectoryEntry implements SanitizableContentInterface
 {
     use SeoTrait;
 
