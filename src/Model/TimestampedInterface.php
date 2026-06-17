@@ -6,10 +6,10 @@ interface TimestampedInterface
 {
     public function getCreatedAt();
 
-    public function setCreatedAt(\DateTimeInterface $created_at);
+    public function setCreatedAt(\DateTimeInterface $createdAt);
 
     public function getUpdatedAt();
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at);
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt);
 
 }

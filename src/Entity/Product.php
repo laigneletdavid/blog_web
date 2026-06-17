@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['is_active'], name: 'idx_product_active')]
 #[ORM\Index(columns: ['is_featured'], name: 'idx_product_featured')]
 #[ORM\Index(columns: ['availability'], name: 'idx_product_availability')]
-class Product
+class Product implements SanitizableContentInterface
 {
     use SeoTrait;
 

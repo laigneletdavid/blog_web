@@ -27,9 +27,9 @@ class MediaProcessorService
 
     /**
      * Convert an image to WebP and generate responsive sizes.
-     * Returns the WebP filename or null on failure.
+     * Returns ['webp' => filename, 'width' => int, 'height' => int] or null on failure.
      */
-    public function process(Media $media, bool $force = false): ?string
+    public function process(Media $media, bool $force = false): ?array
     {
         $fileName = $media->getFileName();
         if (!$fileName || !$this->isSupported($fileName)) {
@@ -41,8 +41,9 @@ class MediaProcessorService
             return null;
         }
 
-        // Downscale original if wider than MAX_WIDTH
         $this->downscaleOriginal($sourcePath);
+
+        $dimensions = $this->readDimensions($sourcePath);
 
         $baseName = pathinfo($fileName, PATHINFO_FILENAME);
         $webpFileName = $baseName . '.webp';
@@ -55,7 +56,7 @@ class MediaProcessorService
         if (!$needsConversion) {
             $this->generateResponsiveSizes($sourcePath, $baseName, $force);
 
-            return $webpFileName;
+            return ['webp' => $webpFileName, ...$dimensions];
         }
 
         try {
@@ -66,10 +67,20 @@ class MediaProcessorService
 
             $this->generateResponsiveSizes($sourcePath, $baseName, $force);
 
-            return $webpFileName;
+            return ['webp' => $webpFileName, ...$dimensions];
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    public function readDimensions(string $sourcePath): array
+    {
+        $size = @getimagesize($sourcePath);
+        if ($size) {
+            return ['width' => $size[0], 'height' => $size[1]];
+        }
+
+        return ['width' => null, 'height' => null];
     }
 
     private function downscaleOriginal(string $sourcePath): void

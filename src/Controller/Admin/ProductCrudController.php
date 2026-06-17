@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Entity\ProductImage;
 use App\Enum\AvailabilityEnum;
 use App\Service\MediaProcessorService;
+use App\Service\SeoAnalyzer;
 use App\Service\SiteContext;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -33,12 +34,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProductCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly SiteContext $siteContext,
         private readonly MediaProcessorService $mediaProcessor,
+        private readonly SeoAnalyzer $seoAnalyzer,
     ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
     }
 
     public static function getEntityFqcn(): string
@@ -86,6 +94,8 @@ class ProductCrudController extends AbstractCrudController
         yield FormField::addPanel('Contenu')
             ->setIcon('fa fa-pen')
             ->collapsible();
+
+        yield $this->seoScoreField();
 
         yield TextField::new('title', 'Titre')
             ->setHelp('Nom du produit ou de la prestation.')

@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['is_active'], name: 'idx_event_active')]
 #[ORM\Index(columns: ['date_start'], name: 'idx_event_date_start')]
 #[ORM\Index(columns: ['is_featured'], name: 'idx_event_featured')]
-class Event
+class Event implements SanitizableContentInterface
 {
     use SeoTrait;
 

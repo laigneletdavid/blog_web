@@ -2,14 +2,7 @@
 
 namespace App\EventListener;
 
-use App\Entity\Article;
-use App\Entity\DirectoryEntry;
-use App\Entity\Event;
-use App\Entity\Faq;
-use App\Entity\Page;
-use App\Entity\PortfolioItem;
-use App\Entity\Product;
-use App\Entity\Service;
+use App\Entity\SanitizableContentInterface;
 use App\Service\BlockRenderer;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
@@ -39,23 +32,20 @@ class ContentSanitizeListener
 
     private function process(object $entity): void
     {
-        if (!$entity instanceof Article && !$entity instanceof Page && !$entity instanceof Service && !$entity instanceof Event && !$entity instanceof Product && !$entity instanceof Faq && !$entity instanceof PortfolioItem && !$entity instanceof DirectoryEntry) {
+        if (!$entity instanceof SanitizableContentInterface) {
             return;
         }
 
         $blocks = $entity->getBlocks();
 
         if (!empty($blocks)) {
-            // Compiler le JSON TipTap → HTML et stocker dans content (cache)
             $html = $this->blockRenderer->toHtml($blocks);
             $entity->setContent($this->appContentSanitizer->sanitize($html));
         } else {
-            // Pas de blocks → sanitiser le content brut (rétrocompatibilité)
             $content = $entity->getContent();
             if ($content !== null && $content !== '') {
                 $entity->setContent($this->appContentSanitizer->sanitize($content));
             } elseif ($content === null) {
-                // Nouvel article sans contenu — éviter une erreur DB (colonne NOT NULL)
                 $entity->setContent('');
             }
         }

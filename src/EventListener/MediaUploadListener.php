@@ -32,7 +32,6 @@ class MediaUploadListener
 
     private function processMedia(Media $media): void
     {
-        // Guard against infinite loop (flush triggers postUpdate again)
         if ($this->processing) {
             return;
         }
@@ -40,10 +39,26 @@ class MediaUploadListener
         $this->processing = true;
 
         try {
-            $webpFileName = $this->mediaProcessor->process($media);
+            $result = $this->mediaProcessor->process($media);
 
-            if ($webpFileName && $webpFileName !== $media->getWebpFileName()) {
-                $media->setWebpFileName($webpFileName);
+            if ($result === null) {
+                return;
+            }
+
+            $changed = false;
+
+            if ($result['webp'] && $result['webp'] !== $media->getWebpFileName()) {
+                $media->setWebpFileName($result['webp']);
+                $changed = true;
+            }
+
+            if ($result['width'] && $result['width'] !== $media->getWidth()) {
+                $media->setWidth($result['width']);
+                $media->setHeight($result['height']);
+                $changed = true;
+            }
+
+            if ($changed) {
                 $this->em->flush();
             }
         } finally {

@@ -26,7 +26,8 @@ class SeoService
 
         $title = $this->resolveTitle($entity, $site);
         $description = $this->resolveDescription($entity, $site);
-        $image = $this->resolveImage($entity);
+        $imageMedia = $this->resolveImageMedia($entity);
+        $image = $imageMedia?->getFileName() ?? $this->resolveSiteImage($site);
 
         return [
             'title' => $title,
@@ -35,6 +36,9 @@ class SeoService
             'noIndex' => method_exists($entity, 'isNoIndex') ? $entity->isNoIndex() : false,
             'canonicalUrl' => method_exists($entity, 'getCanonicalUrl') ? $entity->getCanonicalUrl() : null,
             'image' => $image,
+            'imageWidth' => $imageMedia?->getWidth(),
+            'imageHeight' => $imageMedia?->getHeight(),
+            'imageAlt' => $title,
             'type' => $this->resolveType($entity),
             'publishedAt' => method_exists($entity, 'getPublishedAt') ? $entity->getPublishedAt() : null,
             'createdAt' => method_exists($entity, 'getCreatedAt') ? $entity->getCreatedAt() : null,
@@ -48,6 +52,7 @@ class SeoService
     public function resolveForHome(): array
     {
         $site = $this->siteContext->getCurrentSite();
+        $imageMedia = $site?->getOgImage() ?? $site?->getHeroImage() ?? $site?->getLogo();
 
         return [
             'title' => $site?->getDefaultSeoTitle() ?? $site?->getName() ?? 'Blog&Web',
@@ -55,7 +60,10 @@ class SeoService
             'keywords' => '',
             'noIndex' => false,
             'canonicalUrl' => null,
-            'image' => $this->resolveSiteImage($site),
+            'image' => $imageMedia?->getFileName(),
+            'imageWidth' => $imageMedia?->getWidth(),
+            'imageHeight' => $imageMedia?->getHeight(),
+            'imageAlt' => $site?->getName() ?? 'Blog&Web',
             'type' => 'website',
             'publishedAt' => null,
             'createdAt' => null,
@@ -70,6 +78,7 @@ class SeoService
     {
         $site = $this->siteContext->getCurrentSite();
         $siteName = $site?->getName() ?? 'Blog&Web';
+        $imageMedia = $site?->getOgImage() ?? $site?->getHeroImage() ?? $site?->getLogo();
 
         return [
             'title' => $pageTitle . ' - ' . $siteName,
@@ -77,7 +86,10 @@ class SeoService
             'keywords' => '',
             'noIndex' => false,
             'canonicalUrl' => null,
-            'image' => $this->resolveSiteImage($site),
+            'image' => $imageMedia?->getFileName(),
+            'imageWidth' => $imageMedia?->getWidth(),
+            'imageHeight' => $imageMedia?->getHeight(),
+            'imageAlt' => $pageTitle . ' - ' . $siteName,
             'type' => 'website',
             'publishedAt' => null,
             'createdAt' => null,
@@ -132,13 +144,19 @@ class SeoService
         return $site?->getDefaultSeoDescription() ?? '';
     }
 
-    private function resolveImage(object $entity): ?string
+    private function resolveImageMedia(object $entity): ?\App\Entity\Media
     {
         if (method_exists($entity, 'getFeaturedMedia') && $entity->getFeaturedMedia()) {
-            return $entity->getFeaturedMedia()->getFileName();
+            return $entity->getFeaturedMedia();
         }
 
-        return $this->resolveSiteImage($this->siteContext->getCurrentSite());
+        if (method_exists($entity, 'getImage') && $entity->getImage()) {
+            return $entity->getImage();
+        }
+
+        $site = $this->siteContext->getCurrentSite();
+
+        return $site?->getOgImage() ?? $site?->getHeroImage() ?? $site?->getLogo();
     }
 
     /**

@@ -81,7 +81,10 @@ class SearchController extends AbstractController
             'totalArticles' => $totalArticles,
             'currentPage' => $page,
             'totalPages' => $totalArticles > 0 ? (int) ceil($totalArticles / self::PER_PAGE) : 1,
-            'seo' => $seoService->resolveForPage($keyword ? 'Recherche : ' . $keyword : 'Recherche'),
+            'seo' => array_merge(
+                $seoService->resolveForPage($keyword ? 'Recherche : ' . $keyword : 'Recherche'),
+                ['noIndex' => true],
+            ),
         ]);
     }
 
@@ -149,12 +152,12 @@ class SearchController extends AbstractController
         $qb = $this->em->createQueryBuilder();
         $qb->from(Article::class, 'a')
             ->select('a')
-            ->leftJoin('a.featured_media', 'm')->addSelect('m')
+            ->leftJoin('a.featuredMedia', 'm')->addSelect('m')
             ->leftJoin('a.categories', 'c')->addSelect('c')
             ->where('a.published = TRUE')
-            ->andWhere('a.title LIKE :kw OR a.content LIKE :kw OR a.featured_text LIKE :kw')
+            ->andWhere('a.title LIKE :kw OR a.content LIKE :kw OR a.featuredText LIKE :kw')
             ->setParameter('kw', '%' . $keyword . '%')
-            ->orderBy('a.created_at', 'DESC')
+            ->orderBy('a.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * self::PER_PAGE)
             ->setMaxResults(self::PER_PAGE);
 

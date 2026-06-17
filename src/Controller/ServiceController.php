@@ -24,10 +24,17 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException();
         }
 
+        $services = $serviceRepository->findAllActive();
+        $seo = $this->seoService->resolveForPage('Services');
+
+        if (count($services) === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('service/index.html.twig', [
             'title_page' => 'Nos services',
-            'services' => $serviceRepository->findAllActive(),
-            'seo' => $this->seoService->resolveForPage('Services'),
+            'services' => $services,
+            'seo' => $seo,
         ]);
     }
 

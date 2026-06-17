@@ -41,7 +41,7 @@
 {% if page.featuredMedia %}
 <div class="container">
     <div class="page-hero">
-        {{ responsive_img(page.featuredMedia, '(max-width: 768px) 100vw, 900px', 'page-hero__img') }}
+        {{ responsive_img(page.featuredMedia, '(max-width: 768px) 100vw, 900px', 'page-hero__img', null, false, page) }}
         <div class="page-hero__overlay">
             <h1 class="page-hero__title">{{ page.title }}</h1>
         </div>

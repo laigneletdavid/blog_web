@@ -24,16 +24,16 @@ class Tag
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
-    #[ORM\ManyToMany(targetEntity: Article::class, inversedBy: 'tag')]
+    #[ORM\ManyToMany(targetEntity: Article::class, inversedBy: 'tags')]
     private Collection $article;
 
-    #[ORM\ManyToMany(targetEntity: Page::class, inversedBy: 'tag')]
+    #[ORM\ManyToMany(targetEntity: Page::class, inversedBy: 'tags')]
     private Collection $page;
 
-    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'tag')]
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'tags')]
     private Collection $categorie;
 
-    #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'tag')]
+    #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'tags')]
     private Collection $media;
 
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'tags')]
