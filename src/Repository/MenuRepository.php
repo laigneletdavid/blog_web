@@ -47,9 +47,9 @@ class MenuRepository extends ServiceEntityRepository
     public function findByLocation(string $location): array
     {
         return $this->createQueryBuilder('m')
-            ->leftJoin('m.children', 'c', 'WITH', 'c.is_visible = true')
+            ->leftJoin('m.children', 'c', 'WITH', 'c.isVisible = true')
             ->addSelect('c')
-            ->leftJoin('c.children', 'gc', 'WITH', 'gc.is_visible = true')
+            ->leftJoin('c.children', 'gc', 'WITH', 'gc.isVisible = true')
             ->addSelect('gc')
             ->leftJoin('m.article', 'ma')->addSelect('ma')
             ->leftJoin('m.categorie', 'mc')->addSelect('mc')
@@ -63,13 +63,13 @@ class MenuRepository extends ServiceEntityRepository
             ->leftJoin('gc.categorie', 'gca')->addSelect('gca')
             ->leftJoin('gc.page', 'gp')->addSelect('gp')
             ->leftJoin('gc.service', 'gs')->addSelect('gs')
-            ->where('m.is_visible = true')
+            ->where('m.isVisible = true')
             ->andWhere('m.parent IS NULL')
             ->andWhere('m.location = :location')
             ->setParameter('location', $location)
-            ->orderBy('m.menu_order', 'ASC')
-            ->addOrderBy('c.menu_order', 'ASC')
-            ->addOrderBy('gc.menu_order', 'ASC')
+            ->orderBy('m.menuOrder', 'ASC')
+            ->addOrderBy('c.menuOrder', 'ASC')
+            ->addOrderBy('gc.menuOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -82,9 +82,9 @@ class MenuRepository extends ServiceEntityRepository
     public function findAllLocationsCached(): array
     {
         $menus = $this->createQueryBuilder('m')
-            ->leftJoin('m.children', 'c', 'WITH', 'c.is_visible = true')
+            ->leftJoin('m.children', 'c', 'WITH', 'c.isVisible = true')
             ->addSelect('c')
-            ->leftJoin('c.children', 'gc', 'WITH', 'gc.is_visible = true')
+            ->leftJoin('c.children', 'gc', 'WITH', 'gc.isVisible = true')
             ->addSelect('gc')
             ->leftJoin('m.article', 'ma')->addSelect('ma')
             ->leftJoin('m.categorie', 'mc')->addSelect('mc')
@@ -98,11 +98,11 @@ class MenuRepository extends ServiceEntityRepository
             ->leftJoin('gc.categorie', 'gca')->addSelect('gca')
             ->leftJoin('gc.page', 'gp')->addSelect('gp')
             ->leftJoin('gc.service', 'gs')->addSelect('gs')
-            ->where('m.is_visible = true')
+            ->where('m.isVisible = true')
             ->andWhere('m.parent IS NULL')
-            ->orderBy('m.menu_order', 'ASC')
-            ->addOrderBy('c.menu_order', 'ASC')
-            ->addOrderBy('gc.menu_order', 'ASC')
+            ->orderBy('m.menuOrder', 'ASC')
+            ->addOrderBy('c.menuOrder', 'ASC')
+            ->addOrderBy('gc.menuOrder', 'ASC')
             ->getQuery()
             ->getResult();
 
@@ -118,7 +118,7 @@ class MenuRepository extends ServiceEntityRepository
     {
         return $this->findOneBy([
             'location' => $location,
-            'system_key' => $systemKey,
+            'systemKey' => $systemKey,
         ]);
     }
 
@@ -130,7 +130,7 @@ class MenuRepository extends ServiceEntityRepository
     public function findRootMenuVisible(): array
     {
         return $this->createQueryBuilder('m')
-            ->leftJoin('m.children', 'c', 'WITH', 'c.is_visible = true')
+            ->leftJoin('m.children', 'c', 'WITH', 'c.isVisible = true')
             ->addSelect('c')
             ->leftJoin('m.article', 'ma')->addSelect('ma')
             ->leftJoin('m.categorie', 'mc')->addSelect('mc')
@@ -138,10 +138,10 @@ class MenuRepository extends ServiceEntityRepository
             ->leftJoin('c.article', 'ca')->addSelect('ca')
             ->leftJoin('c.categorie', 'cc')->addSelect('cc')
             ->leftJoin('c.page', 'cp')->addSelect('cp')
-            ->where('m.is_visible = true')
+            ->where('m.isVisible = true')
             ->andWhere('m.parent IS NULL')
-            ->orderBy('m.menu_order', 'ASC')
-            ->addOrderBy('c.menu_order', 'ASC')
+            ->orderBy('m.menuOrder', 'ASC')
+            ->addOrderBy('c.menuOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -157,8 +157,8 @@ class MenuRepository extends ServiceEntityRepository
             ->leftJoin('m.children', 'c')
             ->addSelect('c')
             ->where('m.parent IS NULL')
-            ->orderBy('m.menu_order', 'ASC')
-            ->addOrderBy('c.menu_order', 'ASC')
+            ->orderBy('m.menuOrder', 'ASC')
+            ->addOrderBy('c.menuOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -187,9 +187,9 @@ class MenuRepository extends ServiceEntityRepository
             ->where('m.parent IS NULL')
             ->andWhere('m.location = :location')
             ->setParameter('location', $location)
-            ->orderBy('m.menu_order', 'ASC')
-            ->addOrderBy('c.menu_order', 'ASC')
-            ->addOrderBy('gc.menu_order', 'ASC')
+            ->orderBy('m.menuOrder', 'ASC')
+            ->addOrderBy('c.menuOrder', 'ASC')
+            ->addOrderBy('gc.menuOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -200,7 +200,7 @@ class MenuRepository extends ServiceEntityRepository
     public function getNextOrder(string $location): int
     {
         $result = $this->createQueryBuilder('m')
-            ->select('MAX(m.menu_order)')
+            ->select('MAX(m.menuOrder)')
             ->where('m.location = :location')
             ->setParameter('location', $location)
             ->getQuery()
@@ -223,9 +223,9 @@ class MenuRepository extends ServiceEntityRepository
     public function findByVisible($visible): array
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.is_visible = :val')
+            ->andWhere('m.isVisible = :val')
             ->setParameter('val', $visible)
-            ->orderBy('m.menu_order', 'ASC')
+            ->orderBy('m.menuOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }

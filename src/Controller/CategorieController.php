@@ -30,12 +30,19 @@ class CategorieController extends AbstractController
             throw $this->createNotFoundException('Catégorie introuvable.');
         }
 
+        $articles = $categorie->getArticles()->toArray();
+        $seo = $this->seoService->resolve($categorie);
+
+        if (count($articles) === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('categorie/show.html.twig', [
             'categorie' => $categorie,
-            'articles' => $categorie->getArticles()->toArray(),
+            'articles' => $articles,
             'categories' => $categorieRepository->findAll(),
             'title_page' => $categorie->getName(),
-            'seo' => $this->seoService->resolve($categorie),
+            'seo' => $seo,
         ]);
     }
 }

@@ -635,6 +635,85 @@
         </div>
         {% endif %}
 
+        {# ── 8f. Landing pages (Marketing) ── #}
+        {% if site.hasModule('marketing') %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideLanding">
+              <i class="fas fa-bullhorn me-2 text-primary"></i> Landing pages (Marketing)
+            </button>
+          </h2>
+          <div id="guideLanding" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+            <div class="accordion-body">
+              <h5>Qu'est-ce qu'une landing page ?</h5>
+              <p>Une <strong>landing page</strong> (page d'atterrissage) est une page speciale concue pour <strong>convertir</strong> : pas de menu de navigation, pas de liens de distraction, un seul objectif clair. Le visiteur arrive (depuis une pub, un email, un post LinkedIn...) et n'a qu'un choix : passer a l'action.</p>
+              <p>Ideale pour vos campagnes marketing, offres speciales, partenariats ou prospection ciblee.</p>
+
+              <h5>Creer une landing page</h5>
+              <p>Dans <strong>Marketing &rarr; Landing pages</strong>, cliquez sur <em>Creer</em>. Le formulaire comporte plusieurs panneaux :</p>
+
+              <p><strong>Contenu :</strong></p>
+              <ul>
+                <li><strong>Titre</strong> &mdash; Affiche en gros dans le hero (section haute de la page)</li>
+                <li><strong>Contenu</strong> &mdash; Editeur visuel pour detailler votre offre : probleme, solution, benefices, temoignages, FAQ...</li>
+              </ul>
+
+              <p><strong>CTA &amp; Conversion :</strong></p>
+              <ul>
+                <li><strong>Texte du CTA</strong> &mdash; Le texte du bouton d'action (ex: "Reserver un appel", "Obtenir mon devis"). Defaut automatique selon la configuration</li>
+                <li><strong>Lien de prise de RDV</strong> &mdash; URL vers votre calendrier (Calendly, Cal.com...). Si renseigne, le bouton CTA renvoie directement vers ce lien</li>
+                <li><strong>Afficher le formulaire</strong> &mdash; Active le formulaire de contact allege integre a la page</li>
+                <li><strong>Titre du formulaire</strong> &mdash; Personnalisez le titre au-dessus du formulaire (defaut : "Laissez vos coordonnees")</li>
+              </ul>
+
+              <p><strong>Parametres :</strong></p>
+              <ul>
+                <li><strong>Image hero</strong> &mdash; Image de fond de la section haute. Format recommande : 1920x800 px minimum</li>
+                <li><strong>Publiee</strong> &mdash; Active/desactive la page</li>
+              </ul>
+
+              <h5>Logique du CTA</h5>
+              <p>Le bouton d'appel a l'action s'adapte automatiquement :</p>
+              <ul>
+                <li><strong>Lien RDV renseigne</strong> &rarr; Le bouton renvoie vers le calendrier. Le formulaire peut etre affiche en complement ("Pas encore pret ? Laissez vos coordonnees")</li>
+                <li><strong>Lien RDV vide</strong> &rarr; Le bouton scrolle vers le formulaire de contact, qui devient l'element central de conversion</li>
+              </ul>
+
+              <h5>Suivi UTM automatique</h5>
+              <p>Les <strong>parametres UTM</strong> de l'URL sont captures automatiquement. Si un visiteur arrive via :</p>
+              <p><code>votre-site.fr/ma-landing?utm_source=linkedin&amp;utm_campaign=offre-ete</code></p>
+              <ul>
+                <li>Les UTM sont enregistres avec le message de contact (source, medium, campagne)</li>
+                <li>Si un lien RDV est configure, les UTM sont aussi ajoutes a l'URL du calendrier</li>
+                <li>Vous retrouvez ces informations dans les <strong>messages de contact</strong> et les <strong>conversions</strong> (stats)</li>
+              </ul>
+
+              <h5>Ce qui est automatique</h5>
+              <ul>
+                <li>La page est <strong>noindex</strong> par defaut (invisible pour Google)</li>
+                <li>Le layout est <strong>sans navigation</strong> : mini-header avec logo, footer minimal</li>
+                <li>Les <strong>couleurs et polices</strong> de votre theme sont heritees automatiquement</li>
+                <li>Le formulaire integre un <strong>anti-spam</strong> (reCAPTCHA + honeypot)</li>
+                <li>Chaque soumission cree une <strong>conversion</strong> tracee dans les statistiques</li>
+              </ul>
+
+              <div class="bw-guide-tip">
+                <i class="fas fa-lightbulb me-1 text-warning"></i>
+                <strong>Astuce :</strong> Un seul objectif par landing page ! Ne proposez pas a la fois un RDV, un telechargement et une inscription newsletter. Choisissez l'action la plus importante.
+              </div>
+              <div class="bw-guide-tip">
+                <i class="fas fa-lightbulb me-1 text-warning"></i>
+                <strong>Astuce :</strong> Utilisez la meta description comme sous-titre du hero. Redigez une phrase accrocheuse qui resume votre offre en une ligne.
+              </div>
+              <div class="bw-guide-tip">
+                <i class="fas fa-lightbulb me-1 text-warning"></i>
+                <strong>Astuce :</strong> Testez vos UTM en ajoutant <code>?utm_source=test</code> a l'URL de votre landing. Soumettez le formulaire et verifiez dans les messages de contact que la source est bien capturee.
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
         {# ── 9. Personnalisation ── #}
         {% if is_granted('ROLE_FREELANCE') %}
         <div class="accordion-item">

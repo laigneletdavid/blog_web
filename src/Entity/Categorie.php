@@ -29,18 +29,18 @@ class Categorie
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    private ?Media $featured_media = null;
+    private ?Media $featuredMedia = null;
 
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'categories')]
     private Collection $articles;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'categorie')]
-    private Collection $tag;
+    private Collection $tags;
 
     public function __construct()
     {
         $this->articles = new ArrayCollection();
-        $this->tag = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,12 +86,12 @@ class Categorie
 
     public function getFeaturedMedia(): ?Media
     {
-        return $this->featured_media;
+        return $this->featuredMedia;
     }
 
-    public function setFeaturedMedia(?Media $featured_media): self
+    public function setFeaturedMedia(?Media $featuredMedia): self
     {
-        $this->featured_media = $featured_media;
+        $this->featuredMedia = $featuredMedia;
 
         return $this;
     }
@@ -123,15 +123,15 @@ class Categorie
     /**
      * @return Collection<int, Tag>
      */
-    public function getTag(): Collection
+    public function getTags(): Collection
     {
-        return $this->tag;
+        return $this->tags;
     }
 
     public function addTag(Tag $tag): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag->add($tag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
             $tag->addCategorie($this);
         }
 
@@ -140,7 +140,7 @@ class Categorie
 
     public function removeTag(Tag $tag): self
     {
-        if ($this->tag->removeElement($tag)) {
+        if ($this->tags->removeElement($tag)) {
             $tag->removeCategorie($this);
         }
 

@@ -23,10 +23,10 @@ class Menu
     private ?string $name = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $menu_order = null;
+    private ?int $menuOrder = null;
 
     #[ORM\Column]
-    private ?bool $is_visible = null;
+    private ?bool $isVisible = null;
 
     #[ORM\Column(length: 255)]
     private ?string $target = null;
@@ -35,16 +35,16 @@ class Menu
     private string $location = 'header';
 
     #[ORM\Column(options: ['default' => false])]
-    private bool $is_system = false;
+    private bool $isSystem = false;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $system_key = null;
+    private ?string $systemKey = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $route = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $route_params = null;
+    private ?array $routeParams = null;
 
     #[ORM\ManyToOne]
     private ?Article $article = null;
@@ -64,7 +64,7 @@ class Menu
 
     /** @var Collection<int, self> */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    #[ORM\OrderBy(['menu_order' => 'ASC'])]
+    #[ORM\OrderBy(['menuOrder' => 'ASC'])]
     private Collection $children;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -94,24 +94,24 @@ class Menu
 
     public function getMenuOrder(): ?int
     {
-        return $this->menu_order;
+        return $this->menuOrder;
     }
 
-    public function setMenuOrder(?int $menu_order): self
+    public function setMenuOrder(?int $menuOrder): self
     {
-        $this->menu_order = $menu_order;
+        $this->menuOrder = $menuOrder;
 
         return $this;
     }
 
-    public function isIsVisible(): ?bool
+    public function isVisible(): ?bool
     {
-        return $this->is_visible;
+        return $this->isVisible;
     }
 
-    public function setIsVisible(bool $is_visible): self
+    public function setIsVisible(bool $isVisible): self
     {
-        $this->is_visible = $is_visible;
+        $this->isVisible = $isVisible;
 
         return $this;
     }
@@ -229,24 +229,24 @@ class Menu
 
     public function isSystem(): bool
     {
-        return $this->is_system;
+        return $this->isSystem;
     }
 
-    public function setIsSystem(bool $is_system): self
+    public function setIsSystem(bool $isSystem): self
     {
-        $this->is_system = $is_system;
+        $this->isSystem = $isSystem;
 
         return $this;
     }
 
     public function getSystemKey(): ?string
     {
-        return $this->system_key;
+        return $this->systemKey;
     }
 
-    public function setSystemKey(?string $system_key): self
+    public function setSystemKey(?string $systemKey): self
     {
-        $this->system_key = $system_key;
+        $this->systemKey = $systemKey;
 
         return $this;
     }
@@ -265,12 +265,12 @@ class Menu
 
     public function getRouteParams(): ?array
     {
-        return $this->route_params;
+        return $this->routeParams;
     }
 
-    public function setRouteParams(?array $route_params): self
+    public function setRouteParams(?array $routeParams): self
     {
-        $this->route_params = $route_params;
+        $this->routeParams = $routeParams;
 
         return $this;
     }

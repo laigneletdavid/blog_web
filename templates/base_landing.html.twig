@@ -1,0 +1,139 @@
+{% set site = seo_service.currentSite %}
+{% set _theme = site.template|default('default') %}
+{% set _theme_config = theme_service.getConfig(_theme) %}
+{% set _theme_vars = theme_service.getThemeVars(_theme) %}
+{% set _appearance = theme_service.resolveAppearance() %}
+
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {# ====== SEO ====== #}
+        {% block seo %}
+        <title>{{ seo.title|default(site.defaultSeoTitle|default(site.name|default('Blog&Web'))) }}</title>
+        {% if seo.description|default(site.defaultSeoDescription|default('')) is not empty %}
+        <meta name="description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        {% endif %}
+        {% if seo.keywords|default('') is not empty %}
+        <meta name="keywords" content="{{ seo.keywords }}">
+        {% endif %}
+        <meta name="robots" content="noindex, nofollow">
+        {% if seo.canonicalUrl|default('') is not empty %}
+        <link rel="canonical" href="{{ seo.canonicalUrl }}">
+        {% endif %}
+
+        {# Open Graph #}
+        <meta property="og:title" content="{{ seo.title|default(site.name|default('Blog&Web')) }}">
+        <meta property="og:description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ app.request.uri }}">
+        <meta property="og:site_name" content="{{ site.name|default('Blog&Web') }}">
+        <meta property="og:locale" content="fr_FR">
+        {% if seo.image|default('') is not empty %}
+        <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% else %}
+        <meta property="og:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
+        {% endif %}
+        {% endblock %}
+
+        {% block jsonld %}{% endblock %}
+
+        {# ====== Favicon ====== #}
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/site.webmanifest">
+
+        {# ====== CSS Custom Properties ====== #}
+        <style>:root {
+            --primary: {{ _appearance.primaryColor }};
+            --secondary: {{ _appearance.secondaryColor }};
+            --accent: {{ _appearance.accentColor }};
+            --font-family: {{ _appearance.fontFamily|raw }};
+            {% if _appearance.fontFamilySecondary is not null %}
+            --font-family-secondary: {{ _appearance.fontFamilySecondary|raw }};
+            {% endif %}
+            {% for varName, varValue in _theme_vars %}
+            {% if varName starts with '--' %}{{ varName }}{% else %}--{{ varName }}{% endif %}: {{ varValue }};
+            {% endfor %}
+        }</style>
+
+        {# ====== Google Fonts ====== #}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        {% set _google_fonts_url = font_service.buildGoogleFontsUrl([_appearance.fontFamily, _appearance.fontFamilySecondary]) %}
+        <link rel="preload" href="{{ _google_fonts_url }}&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link href="{{ _google_fonts_url }}&display=swap" rel="stylesheet"></noscript>
+
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {# ====== Theme CSS ====== #}
+        {% if _theme != 'default' and theme_service.hasTemplate(_theme, 'theme.css') %}
+        <style>{{ source('themes/' ~ _theme ~ '/theme.css') }}</style>
+        {% endif %}
+
+        {# ====== Client CSS override ====== #}
+        {% set _client_css = source('client/theme.css', true) %}
+        {% if _client_css is not empty %}
+        <style>{{ _client_css }}</style>
+        {% endif %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+
+        {# ====== STAT TRACKER ====== #}
+        {% if not is_granted('ROLE_AUTHOR') %}
+            {% if encore_entry_exists('stat_tracker') %}
+                {{ encore_entry_script_tags('stat_tracker') }}
+            {% endif %}
+        {% endif %}
+    </head>
+    <body class="theme-{{ _theme }} is-landing">
+
+        {# ====== MINI HEADER — logo uniquement ====== #}
+        <header class="landing-header">
+            <div class="container">
+                <a href="{{ path('app_home') }}" class="landing-header__logo" title="Retour à l'accueil">
+                    {% if site.logo %}
+                        <img src="{{ asset('documents/medias/' ~ site.logo.fileName) }}" alt="{{ site.name|default('Accueil') }}" height="40">
+                    {% else %}
+                        <span class="landing-header__sitename">{{ site.name|default('Blog&Web') }}</span>
+                    {% endif %}
+                </a>
+            </div>
+        </header>
+
+        {# ====== FLASH MESSAGES ====== #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="container mt-3">
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <main>{% block body %}{% endblock %}</main>
+
+        {# ====== FOOTER MINIMAL ====== #}
+        <footer class="landing-footer">
+            <div class="container text-center">
+                <p>&copy; {{ 'now'|date('Y') }} {{ site.name|default('Blog&Web') }} &mdash;
+                    <a href="{{ path('app_page_show', {slug: 'mentions-legales'}) }}">Mentions légales</a>
+                </p>
+            </div>
+        </footer>
+
+        {# ====== COOKIE CONSENT ====== #}
+        {% include '_partials/_cookie_consent.html.twig' %}
+
+    </body>
+</html>

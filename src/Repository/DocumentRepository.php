@@ -27,11 +27,11 @@ class DocumentRepository extends ServiceEntityRepository
     public function search(?string $query = null, int $limit = 100): array
     {
         $qb = $this->createQueryBuilder('d')
-            ->orderBy('d.created_at', 'DESC')
+            ->orderBy('d.createdAt', 'DESC')
             ->setMaxResults($limit);
 
         if ($query) {
-            $qb->andWhere('d.name LIKE :q OR d.file_name LIKE :q')
+            $qb->andWhere('d.name LIKE :q OR d.fileName LIKE :q')
                 ->setParameter('q', '%' . $query . '%');
         }
 

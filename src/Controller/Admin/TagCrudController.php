@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Tag;
+use App\Service\SeoAnalyzer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -18,7 +19,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TagCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
+
+    public function __construct(
+        private readonly SeoAnalyzer $seoAnalyzer,
+    ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
+    }
 
     public static function getEntityFqcn(): string
     {
@@ -36,6 +48,7 @@ class TagCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
+        yield $this->seoScoreField();
         yield TextField::new('name', 'Nom');
         yield $this->slugField('name', null, false);
 

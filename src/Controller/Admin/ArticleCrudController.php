@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Enum\VisibilityEnum;
 use App\Repository\PageViewRepository;
 use App\Service\ArticleNotificationService;
+use App\Service\SeoAnalyzer;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -26,13 +27,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ArticleCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
 
     public function __construct(
         private readonly ArticleNotificationService $notificationService,
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
+        private readonly SeoAnalyzer $seoAnalyzer,
     ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
     }
 
     public static function getEntityFqcn(): string
@@ -85,7 +93,7 @@ class ArticleCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Articles')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouvel article')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l\'article')
-            ->setDefaultSort(['created_at' => 'DESC']);
+            ->setDefaultSort(['createdAt' => 'DESC']);
     }
 
     public function configureActions(Actions $actions): Actions
@@ -107,6 +115,8 @@ class ArticleCrudController extends AbstractCrudController
             ->setIcon('fa fa-pen')
             ->collapsible();
 
+        yield $this->seoScoreField();
+
         yield TextField::new('title', 'Titre de l\'article');
 
         yield TextareaField::new('blocksJson', 'Contenu de l\'article')
@@ -127,25 +137,25 @@ class ArticleCrudController extends AbstractCrudController
 
         yield AssociationField::new('categories', 'Catégories');
 
-        // Article::tag est en mappedBy (cote inverse). Sans by_reference=false,
+        // Article::tags est en mappedBy (cote inverse). Sans by_reference=false,
         // Symfony Forms modifie la collection sans appeler addTag()/removeTag(),
         // donc rien n'est persiste cote owning (Tag). Ce flag force l'utilisation
         // des methodes add*/remove* qui propagent au cote proprietaire.
-        yield AssociationField::new('tag', 'Tags')
+        yield AssociationField::new('tags', 'Tags')
             ->setHelp('Associez des tags pour organiser vos articles par thématique')
             ->setFormTypeOption('by_reference', false)
             ->hideOnIndex();
 
-        yield AssociationField::new('featured_media', 'Image mise en avant');
+        yield AssociationField::new('featuredMedia', 'Image mise en avant');
 
-        yield TextField::new('featured_text', 'Texte mis en avant')
+        yield TextField::new('featuredText', 'Texte mis en avant')
             ->setHelp('Court résumé affiché dans les listes d\'articles')
             ->hideOnIndex();
 
         yield BooleanField::new('published', 'Publié')
             ->setHelp('Si une date de programmation est définie dans le futur, l\'article sera publié automatiquement à cette date.');
 
-        yield DateTimeField::new('scheduled_at', 'Publication programmée')
+        yield DateTimeField::new('scheduledAt', 'Publication programmée')
             ->setHelp('Laissez vide pour publier manuellement. Si une date future est définie, l\'article sera publié automatiquement.')
             ->hideOnIndex()
             ->setRequired(false);
@@ -177,13 +187,13 @@ class ArticleCrudController extends AbstractCrudController
                 return $pvRepo->countViewsByUrl('/article/' . $entity->getSlug());
             });
 
-        yield DateTimeField::new('created_at', 'Créé le')
+        yield DateTimeField::new('createdAt', 'Créé le')
             ->hideOnForm();
 
-        yield DateTimeField::new('updated_at', 'Modifié le')
+        yield DateTimeField::new('updatedAt', 'Modifié le')
             ->hideOnForm();
 
-        yield DateTimeField::new('published_at', 'Date de publication')
+        yield DateTimeField::new('publishedAt', 'Date de publication')
             ->setHelp('Rempli automatiquement à la première publication')
             ->hideOnIndex();
 

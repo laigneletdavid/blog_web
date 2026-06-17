@@ -1,0 +1,157 @@
+{% extends 'base_landing.html.twig' %}
+
+{% block jsonld %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": {{ page.title|json_encode|raw }},
+    "url": "{{ app.request.uri }}"
+}
+</script>
+{% endblock %}
+
+{% block body %}
+
+{# ====== HERO ====== #}
+<section class="landing-hero{% if page.featuredMedia %} landing-hero--with-image{% endif %}">
+    {% if page.featuredMedia %}
+    <div class="landing-hero__bg" style="background-image: url('{{ asset('documents/medias/' ~ page.featuredMedia.fileName) }}')"></div>
+    {% endif %}
+    <div class="landing-hero__overlay">
+        <div class="container">
+            <div class="landing-hero__content">
+                <h1 class="landing-hero__title">{{ page.title }}</h1>
+
+                {% if page.seoDescription %}
+                <p class="landing-hero__subtitle">{{ page.seoDescription }}</p>
+                {% endif %}
+
+                {% if page.ctaUrl %}
+                    {% set _cta_href = page.ctaUrl %}
+                    {# Passe les UTM au lien RDV #}
+                    {% if app.request.query.get('utm_source') %}
+                        {% set _utm_params = {
+                            utm_source: app.request.query.get('utm_source', ''),
+                            utm_medium: app.request.query.get('utm_medium', ''),
+                            utm_campaign: app.request.query.get('utm_campaign', '')
+                        }|filter(v => v is not empty) %}
+                        {% if _utm_params is not empty %}
+                            {% set _sep = '?' in _cta_href ? '&' : '?' %}
+                            {% set _cta_href = _cta_href ~ _sep ~ _utm_params|url_encode %}
+                        {% endif %}
+                    {% endif %}
+                    <a href="{{ _cta_href }}" class="landing-cta" target="_blank" rel="noopener">
+                        {{ page.ctaText|default('Réserver un appel') }}
+                    </a>
+                {% elseif page.showForm is not same as(false) %}
+                    <a href="#landing-form" class="landing-cta">
+                        {{ page.ctaText|default('Nous contacter') }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== CONTENU TIPTAP ====== #}
+{% if page.content is not empty %}
+<section class="landing-section">
+    <div class="container">
+        <div class="landing-content article-detail__content">
+            {{ page.content|raw }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== FORMULAIRE INTÉGRÉ ====== #}
+{% if page.showForm is not same as(false) and landingForm is defined %}
+<section class="landing-section landing-section--form" id="landing-form">
+    <div class="container">
+        <div class="landing-form">
+            <h2 class="landing-form__title">
+                {{ page.formTitle|default(page.ctaUrl ? 'Pas encore prêt ? Laissez vos coordonnées' : 'Laissez vos coordonnées') }}
+            </h2>
+
+            {{ form_start(landingForm, {attr: {class: 'landing-form__body', novalidate: 'novalidate'}}) }}
+                <div class="mb-3">
+                    {{ form_label(landingForm.name) }}
+                    {{ form_widget(landingForm.name) }}
+                    {{ form_errors(landingForm.name) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(landingForm.email) }}
+                    {{ form_widget(landingForm.email) }}
+                    {{ form_errors(landingForm.email) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(landingForm.activity) }}
+                    {{ form_widget(landingForm.activity) }}
+                    {{ form_errors(landingForm.activity) }}
+                </div>
+
+                {# Honeypot #}
+                {{ form_widget(landingForm.website) }}
+
+                {# UTM — préremplis via JS #}
+                {{ form_widget(landingForm.utm_source) }}
+                {{ form_widget(landingForm.utm_medium) }}
+                {{ form_widget(landingForm.utm_campaign) }}
+
+                {% if recaptcha_site_key %}
+                <input type="hidden" name="g-recaptcha-response" id="recaptchaResponse">
+                {% endif %}
+
+                <button type="submit" class="landing-cta landing-cta--form w-100">
+                    Envoyer
+                </button>
+            {{ form_end(landingForm) }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== CTA FINAL (répété si lien RDV) ====== #}
+{% if page.ctaUrl %}
+<section class="landing-section landing-section--cta-final">
+    <div class="container text-center">
+        <a href="{{ _cta_href|default(page.ctaUrl) }}" class="landing-cta landing-cta--lg" target="_blank" rel="noopener">
+            {{ page.ctaText|default('Réserver un appel') }}
+        </a>
+    </div>
+</section>
+{% endif %}
+
+{# ====== UTM auto-fill + reCAPTCHA ====== #}
+<script>
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function(key) {
+        var val = params.get(key);
+        if (val) {
+            var input = document.querySelector('input[name$="[' + key + ']"]');
+            if (input) input.value = val;
+        }
+    });
+})();
+</script>
+
+{% if recaptcha_site_key %}
+<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+<script>
+grecaptcha.ready(function() {
+    var form = document.querySelector('.landing-form__body');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'landing_contact'}).then(function(token) {
+            document.getElementById('recaptchaResponse').value = token;
+            form.submit();
+        });
+    });
+});
+</script>
+{% endif %}
+
+{% endblock %}

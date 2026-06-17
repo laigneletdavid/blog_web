@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Categorie;
+use App\Service\SeoAnalyzer;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -17,7 +18,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CategorieCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
+
+    public function __construct(
+        private readonly SeoAnalyzer $seoAnalyzer,
+    ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
+    }
 
     public static function getEntityFqcn(): string
     {
@@ -52,13 +64,15 @@ class CategorieCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        yield $this->seoScoreField();
+
         yield TextField::new('name');
 
         yield $this->slugField('name', null, false);
 
         yield ColorField::new('color');
 
-        yield AssociationField::new('featured_media', 'Image')
+        yield AssociationField::new('featuredMedia', 'Image')
             ->hideOnIndex();
 
         // --- Panel SEO ---
