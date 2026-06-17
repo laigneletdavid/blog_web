@@ -388,9 +388,11 @@ class DashboardController extends AbstractDashboardController
             }
         }
 
-        // --- Statistiques ---
-        if ($this->isGranted('ROLE_ADMIN')) {
-            yield MenuItem::section('Statistiques');
+        // --- Marketing (module) ---
+        if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('marketing')) {
+            yield MenuItem::section('Marketing');
+            yield MenuItem::linkToCrud('Landing pages', 'fas fa-rocket', Page::class)
+                ->setController(LandingCrudController::class);
             yield MenuItem::linkToRoute('Vue d\'ensemble', 'fas fa-chart-pie', 'admin_stats_index');
             yield MenuItem::linkToRoute('Acquisition', 'fas fa-arrow-trend-down', 'admin_stats_acquisition');
             yield MenuItem::linkToRoute('Comportement', 'fas fa-gauge-high', 'admin_stats_comportement');

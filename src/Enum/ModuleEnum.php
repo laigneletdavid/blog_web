@@ -14,6 +14,7 @@ enum ModuleEnum: string
     case DIRECTORY = 'directory';
     case FAQ = 'faq';
     case PORTFOLIO = 'portfolio';
+    case MARKETING = 'marketing';
 
     public function label(): string
     {
@@ -28,6 +29,7 @@ enum ModuleEnum: string
             self::DIRECTORY => 'Annuaire',
             self::FAQ => 'FAQ',
             self::PORTFOLIO => 'Portfolio / Réalisations',
+            self::MARKETING => 'Marketing (landing pages, stats avancées)',
         };
     }
 

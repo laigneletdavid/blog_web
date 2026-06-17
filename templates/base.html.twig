@@ -47,6 +47,13 @@
         <meta property="og:locale" content="fr_FR">
         {% if seo.image|default('') is not empty %}
         <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% if seo.imageWidth|default(0) > 0 %}
+        <meta property="og:image:width" content="{{ seo.imageWidth }}">
+        <meta property="og:image:height" content="{{ seo.imageHeight }}">
+        {% endif %}
+        {% if seo.imageAlt|default('') is not empty %}
+        <meta property="og:image:alt" content="{{ seo.imageAlt }}">
+        {% endif %}
         {% else %}
         <meta property="og:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
         {% endif %}
@@ -55,6 +62,9 @@
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ seo.title|default(site.name|default('Blog&Web')) }}">
         <meta name="twitter:description" content="{{ seo.description|default(site.defaultSeoDescription|default('')) }}">
+        {% if site.twitterHandle|default('') is not empty %}
+        <meta name="twitter:site" content="@{{ site.twitterHandle }}">
+        {% endif %}
         {% if seo.image|default('') is not empty %}
         <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
         {% else %}
@@ -72,17 +82,23 @@
         <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "Organization",
+            "@type": {{ (site.businessType|default('Organization'))|json_encode|raw }},
             "name": {{ site.name|default('Blog&Web')|json_encode|raw }},
             "url": "{{ absolute_url('/') }}"
             {%- if site.logo %},
             "logo": "{{ absolute_url(asset('documents/medias/' ~ site.logo.fileName)) }}"
             {%- endif %}
-            {%- if site.email|default('') is not empty %},
-            "email": {{ site.email|json_encode|raw }}
-            {%- endif %}
-            {%- if site.phone|default('') is not empty %},
-            "telephone": {{ site.phone|json_encode|raw }}
+            {%- if site.email|default('') is not empty or site.phone|default('') is not empty %},
+            "contactPoint": {
+                "@type": "ContactPoint"
+                {%- if site.phone|default('') is not empty %},
+                "telephone": {{ site.phone|json_encode|raw }},
+                "contactType": "customer service"
+                {%- endif %}
+                {%- if site.email|default('') is not empty %},
+                "email": {{ site.email|json_encode|raw }}
+                {%- endif %}
+            }
             {%- endif %}
             {%- if site.address1|default('') is not empty %},
             "address": {
@@ -92,9 +108,19 @@
                 "postalCode": {{ site.postCode|json_encode|raw }}
                 {%- endif %}
                 {%- if site.town|default('') is not empty %},
-                "addressLocality": {{ site.town|json_encode|raw }}
+                "addressLocality": {{ site.town|json_encode|raw }},
+                "addressCountry": "FR"
                 {%- endif %}
             }
+            {%- endif %}
+            {%- if site.sameAsUrls|default([])|length > 0 %},
+            "sameAs": {{ site.sameAsUrls|json_encode|raw }}
+            {%- endif %}
+            {%- if site.priceRange|default('') is not empty %},
+            "priceRange": {{ site.priceRange|json_encode|raw }}
+            {%- endif %}
+            {%- if site.openingHoursArray|default([])|length > 0 %},
+            "openingHours": {{ site.openingHoursArray|json_encode|raw }}
             {%- endif %}
         }
         </script>

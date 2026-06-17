@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Service;
 use App\Field\IconPickerField;
+use App\Service\SeoAnalyzer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -19,7 +20,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ServiceCrudController extends AbstractCrudController
 {
     use Trait\AdminHelpTrait;
+    use Trait\SeoScoreTrait;
     use Trait\SlugFieldHelperTrait;
+
+    public function __construct(
+        private readonly SeoAnalyzer $seoAnalyzer,
+    ) {
+    }
+
+    private function getSeoAnalyzer(): SeoAnalyzer
+    {
+        return $this->seoAnalyzer;
+    }
 
     public static function getEntityFqcn(): string
     {
@@ -41,6 +53,8 @@ class ServiceCrudController extends AbstractCrudController
         yield FormField::addPanel('Contenu')
             ->setIcon('fa fa-pen')
             ->collapsible();
+
+        yield $this->seoScoreField();
 
         yield TextField::new('title', 'Titre');
 

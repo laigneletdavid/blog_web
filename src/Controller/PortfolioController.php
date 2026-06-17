@@ -46,12 +46,18 @@ class PortfolioController extends AbstractController
             ? $portfolioItemRepository->findActiveByCategory($activeCategory)
             : $portfolioItemRepository->findAllActive();
 
+        $seo = $this->seoService->resolveForPage('Portfolio');
+
+        if (count($items) === 0) {
+            $seo['noIndex'] = true;
+        }
+
         return $this->render('portfolio/index.html.twig', [
             'title_page' => 'Nos realisations',
             'items' => $items,
             'portfolioCategories' => $portfolioCategories,
             'activeCategory' => $activeCategory,
-            'seo' => $this->seoService->resolveForPage('Portfolio'),
+            'seo' => $seo,
         ]);
     }
 
