@@ -1211,3 +1211,117 @@
         display: none;
     }
 }
+
+/* ======================================================================
+   20. PAGES DE CONTENU (Tarifs, pages libres)
+   Le bloc .bw-fees est ecrit dans le contenu de la page Tarifs, editable
+   depuis l'admin : le CSS ne fait que l'habiller.
+   ====================================================================== */
+.theme-corporate .bw-fees {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0;
+    border-top: var(--bw-rule);
+    border-left: var(--bw-rule);
+    margin: 3rem 0 3.5rem;
+}
+
+.theme-corporate .bw-fee {
+    padding: 2.5rem 2rem;
+    border-right: var(--bw-rule);
+    border-bottom: var(--bw-rule);
+}
+
+.theme-corporate .bw-fee__share {
+    display: block;
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+    line-height: 1;
+    color: var(--primary);
+    margin-bottom: 1.2rem;
+}
+
+.theme-corporate .bw-fee__unit {
+    font-size: .42em;
+    color: var(--text-muted);
+    margin-left: .08em;
+}
+
+/* Le theme cible .article-detail__content h3 (0,2,1) : il faut trois classes
+   pour reprendre la main sur la police de ce titre. */
+.theme-corporate .page-detail__content .bw-fee__title {
+    font-family: var(--font-family);
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .76rem;
+    font-weight: 500;
+    margin: 0 0 .9rem;
+}
+
+.theme-corporate .bw-fee__text {
+    color: var(--text-muted);
+    font-size: .93rem;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* Confort de lecture des pages longues */
+.theme-corporate .page-detail__content .lead {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 2.5rem;
+}
+
+.theme-corporate .page-detail__content h2 {
+    margin-top: 3.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.theme-corporate .page-detail__content p {
+    line-height: 1.9;
+    color: var(--text-muted);
+}
+
+.theme-corporate .page-detail__content strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* ======================================================================
+   21. GRILLE DES EXPERTISES (module services)
+   ====================================================================== */
+.theme-corporate .service-card {
+    padding: 2.5rem 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+}
+
+.theme-corporate .service-card__icon {
+    color: var(--primary);
+    margin-bottom: .6rem;
+}
+
+.theme-corporate .service-card__icon svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.2;
+}
+
+.theme-corporate .service-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: 1.45rem;
+    font-weight: 400;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.theme-corporate .service-card__text {
+    color: var(--text-muted);
+    font-size: .95rem;
+    line-height: 1.8;
+    margin: 0;
+}
