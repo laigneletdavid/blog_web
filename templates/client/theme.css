@@ -1114,13 +1114,15 @@
 
 /* ======================================================================
    19. LOGO
-   Le logo de l'etude est un bloc plein : monogramme et signature en clair
-   sur un aplat taupe. Deux consequences.
+   Monogramme BM detoure sur fond transparent, en deux teintes :
+   taupe pour le header clair (site.logo), blanc pour le footer sombre
+   (site.logoDark). Le fichier d'origine, lettres claires sur aplat taupe,
+   reste en medias comme source de redecoupe.
    ====================================================================== */
 
 /* Le theme blanchit le logo du footer (brightness(0) invert(1)) en supposant
-   un logo sombre sur fond transparent. Applique au notre, le filtre le
-   transformerait en rectangle blanc uni. */
+   un logo sombre. Le notre est deja blanc : on neutralise le filtre pour que
+   la version claire ne depende pas de lui. */
 .theme-corporate .footer--corporate .footer-logo img {
     filter: none;
     height: auto;
