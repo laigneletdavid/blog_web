@@ -93,6 +93,12 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException('Article introuvable.');
         }
 
+        // Un brouillon n'est pas en ligne. Il reste ouvert a qui peut editer le
+        // contenu, pour relire un article avant publication.
+        if ($article->isPublished() !== true && !$this->isGranted('ROLE_AUTHOR')) {
+            throw $this->createNotFoundException('Article introuvable.');
+        }
+
         if (!$this->isGranted(ContentVoter::VIEW, $article)) {
             return $this->render('_partials/_restricted_access.html.twig', [
                 'title' => $article->getTitle(),
