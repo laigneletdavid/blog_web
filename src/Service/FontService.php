@@ -3,7 +3,7 @@
 namespace App\Service;
 
 /**
- * Curated list of 20 Google Fonts for site customization.
+ * Curated list of 22 Google Fonts for site customization.
  * Base: fonts used in the 6 themes + top Google Fonts 2025.
  *
  * Key = CSS value stored in DB. Value = [label, Google Fonts URL name, weights, category].
@@ -136,6 +136,21 @@ class FontService
             'google' => 'Outfit',
             'weights' => '400;500;600;700',
             'category' => 'Sans-serif',
+        ],
+
+        // ===== Serifs editoriaux (2) =====
+        "'Cormorant Garamond', serif" => [
+            'label' => 'Cormorant Garamond',
+            'google' => 'Cormorant+Garamond',
+            'weights' => '300;400;500;600;700',
+            'category' => 'Serif',
+        ],
+        // Vidaloka n'existe qu'en un seul graisse (400) chez Google Fonts.
+        "'Vidaloka', serif" => [
+            'label' => 'Vidaloka',
+            'google' => 'Vidaloka',
+            'weights' => '400',
+            'category' => 'Serif',
         ],
     ];
 
