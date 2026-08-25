@@ -170,13 +170,13 @@
 
         {# ====== Theme CSS (inlined to avoid render-blocking Symfony route) ====== #}
         {% if _theme != 'default' and theme_service.hasTemplate(_theme, 'theme.css') %}
-        <style>{{ source('themes/' ~ _theme ~ '/theme.css') }}</style>
+        <style>{{ source('themes/' ~ _theme ~ '/theme.css')|raw }}</style>
         {% endif %}
 
         {# ====== Client CSS override (loaded last, highest priority) ====== #}
         {% set _client_css = source('client/theme.css', true) %}
         {% if _client_css is not empty %}
-        <style>{{ _client_css }}</style>
+        <style>{{ _client_css|raw }}</style>
         {% endif %}
 
         {% block javascripts %}
