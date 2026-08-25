@@ -690,3 +690,422 @@
         display: none;
     }
 }
+
+/* ======================================================================
+   18. HOME CLIENT (templates/client/home.html.twig)
+   Structure transposee de blnotaires.fr : hero + expertises + office +
+   valeurs + notaire + actualites + contact.
+   ====================================================================== */
+
+/* --- Elements partages --- */
+.theme-corporate .bw-eyebrow {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-family: var(--font-family);
+    font-size: .72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.theme-corporate .bw-section-title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(2.1rem, 3.7vw, 3.3rem);
+    font-weight: 300;
+    line-height: 1.15;
+    margin: 0 0 1.5rem;
+}
+
+.theme-corporate .bw-section-intro {
+    color: var(--text-muted);
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    max-width: 44rem;
+    margin: 0;
+}
+
+.theme-corporate .bw-section-header {
+    margin-bottom: 4rem;
+}
+
+.theme-corporate .bw-section-header--center {
+    text-align: center;
+}
+
+.theme-corporate .bw-section-header--center .bw-section-intro {
+    margin-inline: auto;
+}
+
+/* Lien texte avec fleche et soulignement anime */
+.theme-corporate .bw-link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .74rem;
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: none;
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--border);
+    transition: border-color var(--bw-ease), color var(--bw-ease);
+}
+
+.theme-corporate .bw-link-arrow::after {
+    content: "\2192";
+    transition: transform var(--bw-ease);
+}
+
+.theme-corporate .bw-link-arrow:hover {
+    border-bottom-color: var(--primary);
+}
+
+.theme-corporate .bw-link-arrow:hover::after {
+    transform: translateX(.35rem);
+}
+
+/* Aplats de reserve tant que les images ne sont pas livrees */
+.theme-corporate .bw-office__img--placeholder,
+.theme-corporate .bw-notary__img--placeholder {
+    background: repeating-linear-gradient(
+        135deg,
+        var(--surface),
+        var(--surface) 12px,
+        #EDEBE7 12px,
+        #EDEBE7 24px
+    );
+    border: var(--bw-rule);
+}
+
+/* --- 1. Hero --- */
+/* Le lien "Continuer" remplace l'indicateur en pseudo-element */
+.theme-corporate .bw-hero::after {
+    display: none;
+}
+
+.theme-corporate .bw-hero__title {
+    color: #FFFFFF;
+    margin-bottom: 1.4rem;
+}
+
+.theme-corporate .bw-hero__kicker {
+    display: block;
+    font-family: var(--font-family);
+    text-transform: uppercase;
+    letter-spacing: .3em;
+    font-size: .8rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .75);
+    margin-bottom: 1.4rem;
+}
+
+.theme-corporate .bw-hero__place {
+    display: block;
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: .01em;
+}
+
+.theme-corporate .bw-hero__tagline {
+    color: rgba(255, 255, 255, .85);
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(1.2rem, 2vw, 1.7rem);
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 2.8rem;
+}
+
+.theme-corporate .bw-hero__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.theme-corporate .bw-hero__continue {
+    position: absolute;
+    left: 50%;
+    bottom: 2.2rem;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .8rem;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .68rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .8);
+    text-decoration: none;
+    z-index: 2;
+    transition: color var(--bw-ease);
+}
+
+.theme-corporate .bw-hero__continue:hover {
+    color: #FFFFFF;
+}
+
+.theme-corporate .bw-hero__continue-line {
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, .1), rgba(255, 255, 255, .9));
+    transform-origin: top;
+    animation: bw-scroll-hint 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-corporate .bw-hero__continue-line { animation: none; }
+}
+
+/* --- 2. Expertises --- */
+.theme-corporate .bw-expertises {
+    padding: var(--bw-section-y) 0;
+    background: #FFFFFF;
+}
+
+.theme-corporate .bw-doors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 0;
+    border-top: var(--bw-rule);
+    border-left: var(--bw-rule);
+}
+
+.theme-corporate .bw-door {
+    padding: 3rem 2.5rem 2.5rem;
+    border-right: var(--bw-rule);
+    border-bottom: var(--bw-rule);
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    transition: background-color var(--bw-ease);
+}
+
+.theme-corporate .bw-door:hover {
+    background: var(--surface);
+}
+
+.theme-corporate .bw-door__index {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-muted);
+}
+
+.theme-corporate .bw-door__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: 1.6rem;
+    font-weight: 300;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.theme-corporate .bw-door__text {
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.85;
+    margin: 0;
+    flex: 1;
+}
+
+.theme-corporate .bw-door__link {
+    align-self: flex-start;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .72rem;
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: none;
+    padding-bottom: .3rem;
+    border-bottom: 1px solid var(--primary);
+}
+
+.theme-corporate .bw-door__link:hover {
+    color: var(--text-muted);
+    border-bottom-color: var(--text-muted);
+}
+
+/* --- 3. L'Office --- */
+.theme-corporate .bw-office {
+    padding: var(--bw-section-y) 0;
+    background: var(--surface);
+}
+
+.theme-corporate .bw-office__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 4rem;
+    align-items: center;
+}
+
+.theme-corporate .bw-office__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: var(--bw-img-filter);
+    transition: filter var(--bw-ease);
+}
+
+.theme-corporate .bw-office__img:hover {
+    filter: var(--bw-img-filter-hover);
+}
+
+.theme-corporate .bw-office__text {
+    color: var(--text-muted);
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.95;
+    max-width: 40rem;
+}
+
+.theme-corporate .bw-office__location {
+    margin: 2.5rem 0;
+    padding-top: 1.5rem;
+    border-top: var(--bw-rule);
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: 1.35rem;
+    font-weight: 300;
+}
+
+.theme-corporate .bw-office__location .bw-eyebrow {
+    margin-bottom: .5rem;
+}
+
+/* --- 4. Valeurs (bande sombre) --- */
+.theme-corporate .bw-values {
+    padding: calc(var(--bw-section-y) * 1.15) 0;
+    background: var(--primary);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.theme-corporate .bw-values__quote {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(1.5rem, 3vw, 2.6rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    color: #FFFFFF;
+    max-width: 48rem;
+    margin: 0 auto 3.5rem;
+}
+
+.theme-corporate .bw-values__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 3.5rem;
+}
+
+.theme-corporate .bw-values__list li {
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    font-size: .76rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .7);
+}
+
+/* --- 5. Le notaire --- */
+.theme-corporate .bw-notary {
+    padding: var(--bw-section-y) 0;
+    background: #FFFFFF;
+}
+
+.theme-corporate .bw-notary__card {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 3.5rem;
+    align-items: center;
+    max-width: 62rem;
+    margin: 0 auto;
+    border: var(--bw-rule);
+    padding: 3rem;
+}
+
+.theme-corporate .bw-notary__img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    filter: var(--bw-img-filter);
+    transition: filter var(--bw-ease);
+}
+
+.theme-corporate .bw-notary__img:hover {
+    filter: var(--bw-img-filter-hover);
+}
+
+.theme-corporate .bw-notary__name {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin: 0 0 .6rem;
+}
+
+.theme-corporate .bw-notary__role {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 1.6rem;
+}
+
+.theme-corporate .bw-notary__text {
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.9;
+    margin-bottom: 2rem;
+}
+
+/* --- 6. Actualites --- */
+.theme-corporate .bw-news__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3.5rem;
+}
+
+.theme-corporate .bw-news__header .bw-section-title {
+    margin-bottom: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 991.98px) {
+    .theme-corporate .bw-office__grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .theme-corporate .bw-notary__card {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .theme-corporate .bw-notary__portrait {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    .theme-corporate .bw-link-arrow {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .theme-corporate .bw-hero__continue { display: none; }
+    .theme-corporate .bw-door { padding: 2.2rem 1.6rem; }
+    .theme-corporate .bw-values__list { gap: .8rem 2rem; }
+}

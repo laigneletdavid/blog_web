@@ -1,0 +1,198 @@
+{# ======================================================================
+   HOME — Maître Mainguy, notaire à Saint-Martory
+   Override client : ce fichier est prioritaire sur themes/*/home.html.twig
+   et sur home/_home_generic.html.twig (voir templates/home/index.html.twig).
+
+   Structure transposée de blnotaires.fr (site de référence du client) :
+     1. Hero        — visuel plein écran, titre display, « Continuer »
+     2. Expertises  — chapô + 2 portes d'entrée
+     3. L'Office    — présentation + ancrage territorial
+     4. Valeurs     — bande sombre pleine largeur
+     5. Le notaire  — portrait + accroche (remplace l'équipe : office individuel)
+     6. Actualités  — module blog
+     7. Contact     — bande finale
+
+   /!\ Les textes marqués BROUILLON sont reconstruits, pas le verbatim du
+   client. Profession réglementée : à valider avant mise en ligne.
+   ====================================================================== #}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero bw-hero"
+    {% if site.heroImage %}
+    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
+    {% endif %}>
+    <div class="home-hero__overlay"></div>
+    <div class="container position-relative">
+        <div class="home-hero__content bw-hero__content">
+            <h1 class="bw-hero__title">
+                <span class="bw-hero__kicker">Notaire</span>
+                <span class="bw-hero__place">{{ site.town|default('Saint-Martory') }}</span>
+            </h1>
+            {# BROUILLON — accroche à remplacer par le verbatim client #}
+            <p class="bw-hero__tagline">Un accompagnement sur-mesure</p>
+            <div class="bw-hero__actions">
+                <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Prendre rendez-vous</a>
+                {% if services|default([])|length > 0 %}
+                <a href="{{ path('app_service_index') }}" class="btn btn-outline-primary btn-lg">Nos expertises</a>
+                {% else %}
+                <a href="#expertises" class="btn btn-outline-primary btn-lg">Nos expertises</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <a href="#expertises" class="bw-hero__continue">
+        <span>Continuer</span>
+        <span class="bw-hero__continue-line" aria-hidden="true"></span>
+    </a>
+</section>
+
+{# ====== 2. EXPERTISES ====== #}
+<section class="bw-expertises" id="expertises">
+    <div class="container">
+        <div class="bw-section-header">
+            <span class="bw-eyebrow">Expertises</span>
+            {# BROUILLON — titre et chapô à valider #}
+            <h2 class="bw-section-title">Des expertises adaptées à vos projets</h2>
+            <p class="bw-section-intro">
+                Une étude à taille humaine, où l'on prend le temps de vous écouter, de vous conseiller
+                et de vous accompagner, en offrant sécurité juridique et efficacité.
+            </p>
+        </div>
+
+        {% if services|default([])|length > 0 %}
+            {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {% else %}
+            {# FALLBACK — remplacé automatiquement dès que des services sont créés
+               dans Admin > Services. Contenu BROUILLON issu du cache du site client. #}
+            <div class="bw-doors">
+                <article class="bw-door">
+                    <span class="bw-door__index">01</span>
+                    <h3 class="bw-door__title">Vous achetez pour la première fois</h3>
+                    <p class="bw-door__text">
+                        Chaque étape vous est expliquée, sans jargon, pour aborder votre acquisition
+                        avec sérénité et en connaissance de cause.
+                    </p>
+                    <a href="{{ path('app_contact') }}" class="bw-door__link">Accéder</a>
+                </article>
+                <article class="bw-door">
+                    <span class="bw-door__index">02</span>
+                    <h3 class="bw-door__title">Vous investissez</h3>
+                    <p class="bw-door__text">
+                        Sécurisation de vos montages, conseil patrimonial et préparation de la
+                        transmission, au service de vos objectifs de long terme.
+                    </p>
+                    <a href="{{ path('app_contact') }}" class="bw-door__link">Accéder</a>
+                </article>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{# ====== 3. L'OFFICE ====== #}
+<section class="bw-office">
+    <div class="container">
+        <div class="bw-office__grid">
+            <div class="bw-office__visual">
+                {% if site.aboutImage %}
+                    {{ responsive_img(site.aboutImage, '(max-width: 991px) 100vw, 45vw', 'bw-office__img', site.name|default(''), false, site) }}
+                {% else %}
+                <div class="bw-office__img bw-office__img--placeholder" aria-hidden="true"></div>
+                {% endif %}
+            </div>
+            <div class="bw-office__content">
+                <span class="bw-eyebrow">L'Office</span>
+                {# BROUILLON — présentation à remplacer par le verbatim client #}
+                <h2 class="bw-section-title">Un notaire proche de vous</h2>
+                <p class="bw-office__text">
+                    Un notaire n'est pas seulement un signataire : c'est un conseil. Notre rôle est de
+                    sécuriser juridiquement vos décisions et de vous éclairer, en toute impartialité,
+                    pour que vous choisissiez en connaissance de cause.
+                </p>
+                {% if site.town %}
+                <p class="bw-office__location">
+                    <span class="bw-eyebrow">Implantation</span>
+                    {{ site.town }}{% if site.postCode %} — {{ site.postCode }}{% endif %}
+                </p>
+                {% endif %}
+                <a href="{{ path('app_contact') }}" class="bw-link-arrow">Nous rencontrer</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 4. VALEURS (bande sombre) ====== #}
+<section class="bw-values">
+    <div class="container">
+        {# BROUILLON — valeurs repérées sur le site du client, à confirmer #}
+        <p class="bw-values__quote">
+            Derrière chaque dossier, il y a une histoire de vie.
+            Nous prenons le temps de comprendre la vôtre pour vous conseiller au plus juste.
+        </p>
+        <ul class="bw-values__list">
+            <li>Humanité</li>
+            <li>Écoute</li>
+            <li>Réactivité</li>
+            <li>Empathie</li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 5. LE NOTAIRE ====== #}
+<section class="bw-notary">
+    <div class="container">
+        <div class="bw-section-header bw-section-header--center">
+            <span class="bw-eyebrow">Le notaire</span>
+            <h2 class="bw-section-title">À votre écoute</h2>
+        </div>
+        <div class="bw-notary__card">
+            <div class="bw-notary__portrait">
+                {% if site.contactImage %}
+                    {{ responsive_img(site.contactImage, '(max-width: 767px) 100vw, 320px', 'bw-notary__img', site.name|default(''), false, site) }}
+                {% else %}
+                <div class="bw-notary__img bw-notary__img--placeholder" aria-hidden="true"></div>
+                {% endif %}
+            </div>
+            <div class="bw-notary__body">
+                <h3 class="bw-notary__name">{{ site.name|default('') }}</h3>
+                <span class="bw-notary__role">Notaire{% if site.town %} à {{ site.town }}{% endif %}</span>
+                {# BROUILLON — présentation du notaire à écrire avec le client #}
+                <p class="bw-notary__text">
+                    Un office moderne : signature électronique, rendez-vous en visioconférence et
+                    dossiers dématérialisés, au service d'une relation qui reste avant tout humaine.
+                </p>
+                <a href="{{ path('app_contact') }}" class="bw-link-arrow">Prendre rendez-vous</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 6. ACTUALITES ====== #}
+{% if articles|default([])|length > 0 %}
+<section class="home-articles bw-news">
+    <div class="container">
+        <div class="bw-news__header">
+            <div>
+                <span class="bw-eyebrow">Actualités</span>
+                <h2 class="bw-section-title">Les publications de l'Étude</h2>
+            </div>
+            <a href="{{ path('app_article_show_all') }}" class="bw-link-arrow">Toutes les actualités</a>
+        </div>
+        <div class="row">
+            {% include 'article/article_liste.html.twig' with { articles } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== 7. CONTACT ====== #}
+<section class="home-cta bw-contact">
+    <div class="container text-center">
+        {# BROUILLON — accroche finale à valider #}
+        <h2 class="home-cta__title">Un projet, une question ? Parlons-en.</h2>
+        <p class="home-cta__desc">
+            L'Étude vous reçoit sur rendez-vous pour faire le point sur votre situation
+            et vous orienter vers la solution la plus adaptée.
+        </p>
+        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Prendre rendez-vous</a>
+    </div>
+</section>
