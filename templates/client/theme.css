@@ -13,10 +13,10 @@
    ====================================================================== */
 :root {
     /* Palette monochrome (primary / secondary / accent viennent de l'admin) */
-    --surface: #F7F6F4;          /* off-white : fond alterne */
-    --border: #E5E3DF;           /* filets 1px */
-    --text: #0F0F0F;
-    --text-muted: #6B6B6B;
+    --surface: #EEF3F3;          /* gris-vert clair : fond de page et sections alternees */
+    --border: #DCE3E3;           /* filets 1px, gris froid */
+    --text: #14191A;
+    --text-muted: #6B7576;
 
     /* Pas d'arrondis, pas d'ombres : l'ADN est anguleux et plat */
     --radius: 0;
@@ -27,7 +27,7 @@
     --shadow-lg: none;
 
     /* Fallback hero quand aucune image n'est definie (pas de degrade colore) */
-    --gradient-hero: #0F0F0F;
+    --gradient-hero: #273133;
 
     /* Tokens locaux */
     --bw-section-y: 7rem;        /* air vertical des sections */
@@ -43,13 +43,15 @@
 
 /* ======================================================================
    2. TYPOGRAPHIE - serif editorial pour les titres, sans neutre pour le reste
-   Titres : Cormorant Garamond. Sa hauteur de capitale vaut ~94 % de celle
-   de Playfair Display (x-height ~87 %), d'ou les tailles de titres
-   remontees d'environ 8 % par rapport a un reglage Playfair.
+   Titres : Vidaloka, le didone du site de reference. Une seule graisse
+   disponible (400), d'ou l'absence de poids 300 dans tout ce fichier.
+   Sa capitale vaut 104,5 % de celle de Cormorant Garamond et sa hauteur
+   d'x 109 % : les tailles de titres sont donc reduites d'environ 7 %.
    ====================================================================== */
 .theme-corporate {
     color: var(--text);
     font-family: var(--font-family);
+    background: var(--surface);
 }
 
 .theme-corporate h1,
@@ -66,8 +68,8 @@
 }
 
 .theme-corporate .home-section-title {
-    font-size: clamp(2.1rem, 3.7vw, 3.3rem);
-    font-weight: 300;
+    font-size: clamp(1.95rem, 3.45vw, 3.05rem);
+    font-weight: 400;
     margin-bottom: 3rem;
 }
 
@@ -222,15 +224,15 @@
 
 .theme-corporate .home-hero__title {
     color: #FFFFFF;
-    font-size: clamp(2.9rem, 6.5vw, 5.5rem);
-    font-weight: 300;
+    font-size: clamp(2.7rem, 6.05vw, 5.1rem);
+    font-weight: 400;
     margin-bottom: 1.6rem;
 }
 
 .theme-corporate .home-hero__desc {
     color: rgba(255, 255, 255, .85);
     font-size: 1.05rem;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.8;
     max-width: 38rem;
     margin-bottom: 2.6rem;
@@ -399,8 +401,8 @@
 
 .theme-corporate .home-metrics__value {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(3rem, 5.4vw, 4.8rem);
-    font-weight: 300;
+    font-size: clamp(2.8rem, 5vw, 4.45rem);
+    font-weight: 400;
     line-height: 1;
     color: var(--primary);
     margin-bottom: .9rem;
@@ -443,14 +445,14 @@
 }
 
 .theme-corporate .home-about__title {
-    font-size: clamp(2rem, 3.3vw, 2.9rem);
-    font-weight: 300;
+    font-size: clamp(1.85rem, 3.05vw, 2.7rem);
+    font-weight: 400;
 }
 
 .theme-corporate .home-about__text {
     color: var(--text-muted);
     font-size: 1.02rem;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.9;
     max-width: 44rem;
 }
@@ -529,14 +531,14 @@
 
 .theme-corporate .home-cta__title {
     color: #FFFFFF;
-    font-size: clamp(2.2rem, 4.3vw, 3.5rem);
-    font-weight: 300;
+    font-size: clamp(2.05rem, 4vw, 3.25rem);
+    font-weight: 400;
     margin-bottom: 1.2rem;
 }
 
 .theme-corporate .home-cta__desc {
     color: rgba(255, 255, 255, .72);
-    font-weight: 300;
+    font-weight: 400;
     font-size: 1.02rem;
     line-height: 1.8;
     max-width: 40rem;
@@ -619,7 +621,7 @@
 .theme-corporate .corp-service-card__title,
 .theme-corporate .corp-blog-card__title {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: .005em;
 }
 
@@ -645,7 +647,7 @@
 
 .theme-corporate .corp-stat__value {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .theme-corporate .corp-services,
@@ -711,15 +713,15 @@
 
 .theme-corporate .bw-section-title {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(2.1rem, 3.7vw, 3.3rem);
-    font-weight: 300;
+    font-size: clamp(1.95rem, 3.45vw, 3.05rem);
+    font-weight: 400;
     line-height: 1.15;
     margin: 0 0 1.5rem;
 }
 
 .theme-corporate .bw-section-intro {
     color: var(--text-muted);
-    font-weight: 300;
+    font-weight: 400;
     font-size: 1.05rem;
     line-height: 1.9;
     max-width: 44rem;
@@ -774,8 +776,8 @@
         135deg,
         var(--surface),
         var(--surface) 12px,
-        #EDEBE7 12px,
-        #EDEBE7 24px
+        #E3EAEA 12px,
+        #E3EAEA 24px
     );
     border: var(--bw-rule);
 }
@@ -805,8 +807,8 @@
 .theme-corporate .bw-hero__place {
     display: block;
     font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-weight: 300;
+    font-size: clamp(2.8rem, 7.45vw, 6.5rem);
+    font-weight: 400;
     line-height: 1.05;
     letter-spacing: .01em;
 }
@@ -815,7 +817,7 @@
     color: rgba(255, 255, 255, .85);
     font-family: var(--font-family-secondary, var(--font-family));
     font-size: clamp(1.2rem, 2vw, 1.7rem);
-    font-weight: 300;
+    font-weight: 400;
     font-style: italic;
     margin-bottom: 2.8rem;
 }
@@ -892,21 +894,21 @@
 .theme-corporate .bw-door__index {
     font-family: var(--font-family-secondary, var(--font-family));
     font-size: 1.5rem;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--text-muted);
 }
 
 .theme-corporate .bw-door__title {
     font-family: var(--font-family-secondary, var(--font-family));
     font-size: 1.6rem;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.25;
     margin: 0;
 }
 
 .theme-corporate .bw-door__text {
     color: var(--text-muted);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.85;
     margin: 0;
     flex: 1;
@@ -956,7 +958,7 @@
 
 .theme-corporate .bw-office__text {
     color: var(--text-muted);
-    font-weight: 300;
+    font-weight: 400;
     font-size: 1.05rem;
     line-height: 1.95;
     max-width: 40rem;
@@ -968,7 +970,7 @@
     border-top: var(--bw-rule);
     font-family: var(--font-family-secondary, var(--font-family));
     font-size: 1.35rem;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .theme-corporate .bw-office__location .bw-eyebrow {
@@ -985,8 +987,8 @@
 
 .theme-corporate .bw-values__quote {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.5rem, 3vw, 2.6rem);
-    font-weight: 300;
+    font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+    font-weight: 400;
     font-style: italic;
     line-height: 1.5;
     color: #FFFFFF;
@@ -1043,8 +1045,8 @@
 
 .theme-corporate .bw-notary__name {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
-    font-weight: 300;
+    font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+    font-weight: 400;
     line-height: 1.2;
     margin: 0 0 .6rem;
 }
@@ -1061,7 +1063,7 @@
 
 .theme-corporate .bw-notary__text {
     color: var(--text-muted);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.9;
     margin-bottom: 2rem;
 }
