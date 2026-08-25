@@ -1,5 +1,689 @@
-/* ====== Client CSS Override ====== */
-/* This file is loaded AFTER the theme CSS in base.html.twig.            */
-/* Use it on client branches (bw_*) to override theme styles             */
-/* without modifying CMS theme files.                                     */
-/* On main, this file stays empty.                                        */
+/* ======================================================================
+   ADN VISUEL - Etude Mainguy (branche bw_mainguy)
+   Inspiration : blnotaires.fr - monochrome noir & blanc, institutionnel,
+   beaucoup d'air. La photo porte la couleur, la typo porte l'elegance.
+
+   Charge en dernier dans le <head> (base.html.twig), apres themes/corporate/theme.css.
+   Ne jamais modifier le CSS des themes ni le core : tout se passe ici.
+   Theme : corporate - hooks reels de templates/home/_home_generic.html.twig
+   ====================================================================== */
+
+/* ======================================================================
+   1. TOKENS - surcharge des variables du theme corporate
+   ====================================================================== */
+:root {
+    /* Palette monochrome (primary / secondary / accent viennent de l'admin) */
+    --surface: #F7F6F4;          /* off-white : fond alterne */
+    --border: #E5E3DF;           /* filets 1px */
+    --text: #0F0F0F;
+    --text-muted: #6B6B6B;
+
+    /* Pas d'arrondis, pas d'ombres : l'ADN est anguleux et plat */
+    --radius: 0;
+    --radius-sm: 0;
+    --radius-lg: 0;
+    --shadow-sm: none;
+    --shadow: none;
+    --shadow-lg: none;
+
+    /* Fallback hero quand aucune image n'est definie (pas de degrade colore) */
+    --gradient-hero: #0F0F0F;
+
+    /* Tokens locaux */
+    --bw-section-y: 7rem;        /* air vertical des sections */
+    --bw-rule: 1px solid var(--border);
+    --bw-track: .15em;           /* letter-spacing des labels uppercase */
+    --bw-ease: .35s cubic-bezier(.22, .61, .36, 1);
+
+    /* Traitement des images editoriales.
+       Pour revenir a la couleur naturelle partout : passer --bw-img-filter a "none". */
+    --bw-img-filter: grayscale(1);
+    --bw-img-filter-hover: grayscale(0);
+}
+
+/* ======================================================================
+   2. TYPOGRAPHIE - serif editorial pour les titres, sans neutre pour le reste
+   ====================================================================== */
+.theme-corporate {
+    color: var(--text);
+    font-family: var(--font-family);
+}
+
+.theme-corporate h1,
+.theme-corporate h2,
+.theme-corporate h3,
+.theme-corporate .home-section-title,
+.theme-corporate .home-hero__title,
+.theme-corporate .home-about__title,
+.theme-corporate .home-cta__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 400;
+    letter-spacing: .005em;
+    line-height: 1.18;
+}
+
+.theme-corporate .home-section-title {
+    font-size: clamp(1.9rem, 3.4vw, 3rem);
+    font-weight: 300;
+    margin-bottom: 3rem;
+}
+
+/* Eyebrows / labels de section : uppercase, tracee, grise, petite */
+.theme-corporate .home-hero__badge,
+.theme-corporate .home-about__overtitle,
+.theme-corporate .home-logos__title,
+.theme-corporate .home-metrics__label {
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .75rem;
+    font-weight: 500;
+    font-family: var(--font-family);
+    color: var(--text-muted);
+}
+
+/* ======================================================================
+   3. RYTHME VERTICAL & ALTERNANCE DE FONDS
+   ====================================================================== */
+.theme-corporate .home-features,
+.theme-corporate .home-services,
+.theme-corporate .home-events,
+.theme-corporate .home-portfolio,
+.theme-corporate .home-faq,
+.theme-corporate .home-metrics,
+.theme-corporate .home-articles,
+.theme-corporate .home-about,
+.theme-corporate .home-gallery,
+.theme-corporate .home-testimonials,
+.theme-corporate .home-logos,
+.theme-corporate .home-cta {
+    padding-top: var(--bw-section-y);
+    padding-bottom: var(--bw-section-y);
+}
+
+/* Alternance blanc / off-white pour le rythme editorial */
+.theme-corporate .home-features,
+.theme-corporate .home-portfolio,
+.theme-corporate .home-articles,
+.theme-corporate .home-gallery,
+.theme-corporate .home-logos {
+    background: #FFFFFF;
+}
+
+.theme-corporate .home-services,
+.theme-corporate .home-events,
+.theme-corporate .home-about,
+.theme-corporate .home-testimonials {
+    background: var(--surface);
+}
+
+.theme-corporate .home-metrics {
+    background: #FFFFFF;
+    border-top: var(--bw-rule);
+    border-bottom: var(--bw-rule);
+}
+
+/* ======================================================================
+   4. BOUTONS - rectangulaires, uppercase traces, inversion au hover
+   ====================================================================== */
+.theme-corporate .btn {
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .78rem;
+    font-weight: 500;
+    padding: .9rem 2rem;
+    border-width: 1px;
+    transition: background-color var(--bw-ease), color var(--bw-ease), border-color var(--bw-ease);
+}
+
+.theme-corporate .btn-lg {
+    padding: 1rem 2.4rem;
+    font-size: .8rem;
+}
+
+.theme-corporate .btn-sm {
+    padding: .55rem 1.2rem;
+    font-size: .7rem;
+}
+
+/* Noir plein -> inversion vers outline noir */
+.theme-corporate .btn-primary {
+    --bs-btn-bg: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-color: var(--primary);
+    --bs-btn-hover-border-color: var(--primary);
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-color: var(--primary);
+    --bs-btn-active-border-color: var(--primary);
+}
+
+/* Outline noir -> inversion vers noir plein */
+.theme-corporate .btn-outline-primary,
+.theme-corporate .btn-outline-secondary {
+    --bs-btn-color: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-bg: var(--primary);
+    --bs-btn-hover-color: #FFFFFF;
+    --bs-btn-hover-border-color: var(--primary);
+}
+
+/* ======================================================================
+   5. LIENS - soulignement anime
+   ====================================================================== */
+.theme-corporate .home-articles a:not(.btn),
+.theme-corporate .article-detail__content a:not(.btn) {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--bw-ease);
+}
+
+.theme-corporate .home-articles a:not(.btn):hover,
+.theme-corporate .article-detail__content a:not(.btn):hover {
+    background-size: 100% 1px;
+}
+
+/* ======================================================================
+   6. HERO - image plein ecran, overlay, titre serif blanc, indicateur scroll
+   ====================================================================== */
+.theme-corporate .home-hero {
+    position: relative;
+    min-height: 88vh;
+}
+
+.theme-corporate .home-hero__row {
+    min-height: 88vh;
+    padding: 8rem 0 6rem;
+}
+
+.theme-corporate .home-hero__overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, .55) 0%, rgba(0, 0, 0, .42) 45%, rgba(0, 0, 0, .62) 100%);
+}
+
+.theme-corporate .home-hero__content {
+    max-width: 46rem;
+}
+
+.theme-corporate .home-hero__badge {
+    display: inline-block;
+    background: transparent;
+    color: rgba(255, 255, 255, .78);
+    padding: 0;
+    margin-bottom: 1.6rem;
+    border: 0;
+}
+
+.theme-corporate .home-hero__title {
+    color: #FFFFFF;
+    font-size: clamp(2.6rem, 6vw, 5rem);
+    font-weight: 300;
+    margin-bottom: 1.6rem;
+}
+
+.theme-corporate .home-hero__desc {
+    color: rgba(255, 255, 255, .85);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.8;
+    max-width: 38rem;
+    margin-bottom: 2.6rem;
+}
+
+.theme-corporate .home-hero__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Sur photo sombre, les boutons passent en blanc */
+.theme-corporate .home-hero .btn-primary {
+    --bs-btn-bg: #FFFFFF;
+    --bs-btn-color: var(--primary);
+    --bs-btn-border-color: #FFFFFF;
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-color: #FFFFFF;
+    --bs-btn-hover-border-color: #FFFFFF;
+}
+
+.theme-corporate .home-hero .btn-outline-primary {
+    --bs-btn-color: #FFFFFF;
+    --bs-btn-border-color: rgba(255, 255, 255, .55);
+    --bs-btn-hover-bg: #FFFFFF;
+    --bs-btn-hover-color: var(--primary);
+    --bs-btn-hover-border-color: #FFFFFF;
+}
+
+/* Trust badges a emojis du template generique : hors ADN (icones monochromes only) */
+.theme-corporate .home-hero__badges {
+    display: none;
+}
+
+/* Indicateur "continuer" : filet vertical anime en bas du hero */
+.theme-corporate .home-hero::after {
+    display: block;
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 2.5rem;
+    width: 1px;
+    height: 3.5rem;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, .85));
+    transform-origin: top;
+    animation: bw-scroll-hint 2.4s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes bw-scroll-hint {
+    0%   { transform: scaleY(.2); opacity: .2; }
+    50%  { transform: scaleY(1);  opacity: .9; }
+    100% { transform: scaleY(.2); opacity: .2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-corporate .home-hero::after { animation: none; }
+}
+
+/* ======================================================================
+   7. HEADER - sobre, filet 1px, nav uppercase tracee
+   ====================================================================== */
+.theme-corporate .header--corporate {
+    border-bottom: var(--bw-rule);
+    background: #FFFFFF;
+}
+
+.theme-corporate .header--corporate .header-main {
+    padding: 1.15rem 0;
+}
+
+.theme-corporate .header--corporate .nav-link {
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-size: .76rem;
+    font-weight: 500;
+    color: var(--text);
+    padding: .5rem .9rem;
+}
+
+.theme-corporate .header--corporate .nav-link:hover {
+    color: var(--text-muted);
+}
+
+.theme-corporate .header--corporate .search-input,
+.theme-corporate .header--corporate .form-control {
+    border-radius: 0;
+    border-color: var(--border);
+}
+
+/* Le CTA du header reste discret : outline, pas d'aplat */
+.theme-corporate .header--corporate .btn-primary {
+    --bs-btn-bg: transparent;
+    --bs-btn-color: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-bg: var(--primary);
+    --bs-btn-hover-color: #FFFFFF;
+    font-weight: 500;
+}
+
+/* ======================================================================
+   8. CARTES - bordures fines, zero ombre, hover discret
+   ====================================================================== */
+.theme-corporate .home-features__card,
+.theme-corporate .card,
+.theme-corporate .service-card,
+.theme-corporate .blog-card {
+    border: var(--bw-rule);
+    border-radius: 0;
+    box-shadow: none;
+    background: #FFFFFF;
+    transition: border-color var(--bw-ease), transform var(--bw-ease);
+}
+
+.theme-corporate .home-features__card:hover,
+.theme-corporate .card:hover,
+.theme-corporate .service-card:hover,
+.theme-corporate .blog-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: none;
+}
+
+.theme-corporate .home-features__card {
+    padding: 2.5rem 2rem;
+}
+
+.theme-corporate .home-features__icon {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.theme-corporate .home-features__icon svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.25;
+}
+
+.theme-corporate .home-features__title {
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin-bottom: .8rem;
+}
+
+.theme-corporate .home-features__desc {
+    color: var(--text-muted);
+    font-size: .95rem;
+    line-height: 1.75;
+}
+
+/* Images : angles droits partout */
+.theme-corporate img,
+.theme-corporate .card-img-top,
+.theme-corporate .rounded,
+.theme-corporate .rounded-3 {
+    border-radius: 0 !important;
+}
+
+/* ======================================================================
+   9. METRICS - chiffres geants et fins, labels uppercase gris
+   ====================================================================== */
+.theme-corporate .home-metrics__item {
+    text-align: center;
+    padding: 1.5rem .5rem;
+}
+
+.theme-corporate .home-metrics__value {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(2.8rem, 5vw, 4.4rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--primary);
+    margin-bottom: .9rem;
+}
+
+.theme-corporate .home-metrics__label {
+    font-size: .72rem;
+    line-height: 1.6;
+}
+
+/* ======================================================================
+   10. A PROPOS - portrait rectangulaire, texte aere
+   ====================================================================== */
+.theme-corporate .home-about__img,
+.theme-corporate .home-about__img.rounded-circle {
+    border-radius: 0 !important;
+    box-shadow: none;
+    filter: var(--bw-img-filter);
+    transition: filter var(--bw-ease);
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    height: auto;
+}
+
+.theme-corporate .home-about__img:hover {
+    filter: var(--bw-img-filter-hover);
+}
+
+.theme-corporate .home-about__content {
+    align-items: flex-start !important;
+    text-align: left;
+    gap: 1.4rem;
+}
+
+.theme-corporate .home-about__overtitle {
+    display: block;
+    margin-bottom: .4rem;
+}
+
+.theme-corporate .home-about__title {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 300;
+}
+
+.theme-corporate .home-about__text {
+    color: var(--text-muted);
+    font-size: 1.02rem;
+    font-weight: 300;
+    line-height: 1.9;
+    max-width: 44rem;
+}
+
+/* ======================================================================
+   11. TEMOIGNAGES - sobres, gros guillemets typographiques
+   ====================================================================== */
+.theme-corporate .home-testimonial,
+.theme-corporate .testimonial-card {
+    background: #FFFFFF;
+    border: var(--bw-rule);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 2.5rem 2rem;
+    position: relative;
+}
+
+.theme-corporate .home-testimonial::before,
+.theme-corporate .testimonial-card::before {
+    content: "\201C";
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: 4.5rem;
+    line-height: 1;
+    color: var(--border);
+    position: absolute;
+    top: 1rem;
+    left: 1.4rem;
+}
+
+.theme-corporate .testimonial-card__author,
+.theme-corporate .home-testimonial__author {
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .72rem;
+    color: var(--text-muted);
+}
+
+/* ======================================================================
+   12. LOGOS CLIENTS / GALERIE - grayscale, couleur au hover
+   ====================================================================== */
+.theme-corporate .home-logos__title {
+    margin-bottom: 2.5rem;
+}
+
+.theme-corporate .home-logos img {
+    filter: grayscale(1);
+    opacity: .55;
+    transition: filter var(--bw-ease), opacity var(--bw-ease);
+}
+
+.theme-corporate .home-logos img:hover {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+.theme-corporate .home-gallery img,
+.theme-corporate .home-articles .card-img-top,
+.theme-corporate .home-portfolio img {
+    filter: var(--bw-img-filter);
+    transition: filter var(--bw-ease), transform var(--bw-ease);
+}
+
+.theme-corporate .home-gallery img:hover,
+.theme-corporate .home-articles .card:hover .card-img-top,
+.theme-corporate .home-portfolio img:hover {
+    filter: var(--bw-img-filter-hover);
+}
+
+/* ======================================================================
+   13. CTA FINAL - bande noire pleine largeur, bouton outline blanc
+   ====================================================================== */
+.theme-corporate .home-cta {
+    background: var(--primary);
+    color: #FFFFFF;
+}
+
+.theme-corporate .home-cta__title {
+    color: #FFFFFF;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    margin-bottom: 1.2rem;
+}
+
+.theme-corporate .home-cta__desc {
+    color: rgba(255, 255, 255, .72);
+    font-weight: 300;
+    font-size: 1.02rem;
+    line-height: 1.8;
+    max-width: 40rem;
+    margin: 0 auto 2.6rem;
+}
+
+/* home.scss pose background/color/border en dur sur .home-cta .btn-light :
+   on surcharge les proprietes directement, pas via les vars --bs-btn-*. */
+.theme-corporate .home-cta .btn-light {
+    background: transparent;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, .6);
+    border-radius: 0;
+    font-weight: 500;
+    padding: 1rem 2.4rem;
+}
+
+.theme-corporate .home-cta .btn-light:hover {
+    background: #FFFFFF;
+    color: var(--primary);
+    border-color: #FFFFFF;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ======================================================================
+   14. FOOTER - noir, labels uppercase
+   ====================================================================== */
+.theme-corporate .footer--corporate {
+    background: var(--primary);
+    border-top: 0;
+}
+
+.theme-corporate .footer--corporate .footer-section {
+    letter-spacing: var(--bw-track);
+}
+
+/* ======================================================================
+   15. FILETS & FORMULAIRES
+   ====================================================================== */
+.theme-corporate hr,
+.theme-corporate .border-top,
+.theme-corporate .border-bottom {
+    border-color: var(--border) !important;
+    opacity: 1;
+}
+
+.theme-corporate .form-control,
+.theme-corporate .form-select {
+    border-radius: 0;
+    border-color: var(--border);
+}
+
+.theme-corporate .form-control:focus,
+.theme-corporate .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: none;
+}
+
+.theme-corporate .badge {
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-weight: 500;
+}
+
+/* ======================================================================
+   16. PAGES INTERNES DU THEME (.corp-*) - blog, contact, services
+   Les composants .corp-* consomment deja --radius / --border / --surface,
+   donc ils heritent des tokens ci-dessus. Restent le poids des titres
+   (700 par defaut) et l'ombre au hover des cartes blog.
+   ====================================================================== */
+.theme-corporate .corp-hero__title,
+.theme-corporate .corp-section-title,
+.theme-corporate .corp-cta__title,
+.theme-corporate .corp-contact-hero__title,
+.theme-corporate .corp-blog-featured__title,
+.theme-corporate .corp-blog-grid__title,
+.theme-corporate .corp-contact-form__title,
+.theme-corporate .corp-service-card__title,
+.theme-corporate .corp-blog-card__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 300;
+    letter-spacing: .005em;
+}
+
+.theme-corporate .corp-hero__tagline,
+.theme-corporate .corp-blog-featured__cat,
+.theme-corporate .corp-blog-card__cat,
+.theme-corporate .corp-blog-featured__meta,
+.theme-corporate .corp-blog-card__meta,
+.theme-corporate .corp-stat__label,
+.theme-corporate .corp-logos__title {
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-family: var(--font-family);
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.theme-corporate .corp-blog-card:hover,
+.theme-corporate .corp-blog-featured__card:hover {
+    box-shadow: none;
+    border-color: var(--primary);
+}
+
+.theme-corporate .corp-stat__value {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-weight: 300;
+}
+
+.theme-corporate .corp-services,
+.theme-corporate .corp-about,
+.theme-corporate .corp-testimonials,
+.theme-corporate .corp-logos,
+.theme-corporate .corp-articles,
+.theme-corporate .corp-cta,
+.theme-corporate .corp-contact-content {
+    padding-top: var(--bw-section-y);
+    padding-bottom: var(--bw-section-y);
+}
+
+.theme-corporate .corp-contact-hero {
+    padding: 5rem 0 4rem;
+}
+
+/* ======================================================================
+   17. RESPONSIVE - l'air se resserre sans disparaitre
+   ====================================================================== */
+@media (max-width: 991.98px) {
+    :root { --bw-section-y: 4.5rem; }
+
+    .theme-corporate .home-hero,
+    .theme-corporate .home-hero__row {
+        min-height: 72vh;
+    }
+
+    .theme-corporate .home-hero__row {
+        padding: 6rem 0 5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    :root { --bw-section-y: 3.5rem; }
+
+    .theme-corporate .btn {
+        padding: .8rem 1.5rem;
+    }
+
+    .theme-corporate .home-hero::after {
+        display: none;
+    }
+}
