@@ -7,7 +7,7 @@ import './font-picker.scss';
  * Targets: select[name*="fontFamily"], select[name*="fontFamilySecondary"]
  */
 
-// All 20 fonts with their CSS values and Google Fonts URL names
+// All 22 fonts with their CSS values and Google Fonts URL names
 const FONTS = {
     "'Inter', sans-serif": { label: 'Inter', google: 'Inter' },
     "'Poppins', sans-serif": { label: 'Poppins', google: 'Poppins' },
@@ -29,12 +29,15 @@ const FONTS = {
     "'Manrope', sans-serif": { label: 'Manrope', google: 'Manrope' },
     "'Plus Jakarta Sans', sans-serif": { label: 'Plus Jakarta Sans', google: 'Plus+Jakarta+Sans' },
     "'Outfit', sans-serif": { label: 'Outfit', google: 'Outfit' },
+    "'Cormorant Garamond', serif": { label: 'Cormorant Garamond', google: 'Cormorant+Garamond' },
+    // Vidaloka n'existe qu'en 400 : demander 700 ferait echouer toute la requete Google Fonts.
+    "'Vidaloka', serif": { label: 'Vidaloka', google: 'Vidaloka', weights: '400' },
 };
 
-// Load all 20 Google Fonts for preview
+// Load all 22 Google Fonts for preview
 function loadAllFonts() {
     const families = Object.values(FONTS)
-        .map(f => 'family=' + f.google + ':wght@400;700')
+        .map(f => 'family=' + f.google + ':wght@' + (f.weights || '400;700'))
         .join('&');
 
     const link = document.createElement('link');

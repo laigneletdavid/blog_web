@@ -60,7 +60,7 @@ Chaque module s'active independamment selon les besoins du client :
 
 - **6 themes inclus** : Default, Corporate, Artisan, Vitrine, Starter, Moderne
 - **Home page generique** : un template unique (`_home_generic.html.twig`) adapte par le CSS de chaque theme via des selecteurs `.theme-{name} .home-*`. Les sections (hero, services, articles, evenements, produits, FAQ, portfolio) s'affichent conditionnellement selon les modules actives.
-- **Personnalisation sans code** : couleurs (primaire, secondaire, accent), polices (20 Google Fonts), logo, favicon (7 tailles auto-generees depuis le logo + PWA manifest + Windows tiles)
+- **Personnalisation sans code** : couleurs (primaire, secondaire, accent), polices (22 Google Fonts), logo, favicon (7 tailles auto-generees depuis le logo + PWA manifest + Windows tiles)
 - **CSS custom properties** : la personnalisation s'applique a tous les themes sans rebuild
 - **Preview live** des themes avant activation (desktop, tablette, mobile)
 - **Images du theme** : hero, about, galerie configurables dans l'admin (slots gallery, logo, testimonial)
