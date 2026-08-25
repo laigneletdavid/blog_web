@@ -56,6 +56,7 @@
                 {% if site.googleMaps %}
                 <div class="art-contact-map mt-4">
                     <iframe src="{{ site.googleMaps }}" height="250" style="border:0; width:100%; border-radius: var(--radius);" allowfullscreen="" loading="lazy"></iframe>
+                    {% include '_partials/_directions_link.html.twig' %}
                 </div>
                 {% endif %}
             </div>
