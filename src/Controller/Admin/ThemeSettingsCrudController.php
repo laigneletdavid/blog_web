@@ -160,7 +160,7 @@ class ThemeSettingsCrudController extends AbstractCrudController
         // --- Panel Typographie ---
         yield FormField::addPanel('Typographie')
             ->setIcon('fa fa-font')
-            ->setHelp('21 polices Google Fonts disponibles. Defaut du theme : ' . $defaultFontLabel . '.')
+            ->setHelp('22 polices Google Fonts disponibles. Defaut du theme : ' . $defaultFontLabel . '.')
             ->collapsible();
 
         yield ChoiceField::new('fontFamily', 'Police principale')
@@ -227,7 +227,7 @@ class ThemeSettingsCrudController extends AbstractCrudController
                         <li><strong>Couleur primaire</strong> — boutons, liens, elements d\'accentuation</li>
                         <li><strong>Couleur secondaire</strong> — fonds, bordures, elements complementaires</li>
                         <li><strong>Couleur d\'accent</strong> — details, survols, call-to-action</li>
-                        <li><strong>Polices</strong> — 21 Google Fonts disponibles</li>
+                        <li><strong>Polices</strong> — 22 Google Fonts disponibles</li>
                     </ul>
                     <p>Laissez un champ vide pour utiliser la valeur par defaut du theme.</p>',
                 ],
