@@ -1166,3 +1166,47 @@
         right: -34px;
     }
 }
+
+/* Le meme monogramme en filigrane dans le hero, cote oppose au bloc de texte.
+   Le pseudo-element sert d'indicateur de scroll dans la home generique ; ici le
+   lien Continuer joue ce role, donc on le reaffecte entierement : position,
+   dimensions, fond et animation sont tous redefinis. */
+.theme-corporate .bw-hero {
+    overflow: hidden;
+}
+
+.theme-corporate .bw-hero::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -80px;
+    bottom: auto;
+    left: auto;
+    width: 560px;
+    height: 400px;
+    transform: translateY(-50%);
+    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
+    background-size: contain;
+    opacity: .1;
+    animation: none;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@media (max-width: 991.98px) {
+    .theme-corporate .bw-hero::after {
+        width: 340px;
+        height: 250px;
+        right: -70px;
+        opacity: .08;
+    }
+}
+
+/* Sous 768px le filigrane passerait derriere le titre et les deux boutons :
+   la lisibilite prime sur la decoration. */
+@media (max-width: 767.98px) {
+    .theme-corporate .bw-hero::after {
+        display: none;
+    }
+}
