@@ -1,0 +1,11 @@
+{# Page 404 : surcharge les libelles de error.html.twig, qui porte la mise en page. #}
+{% extends '@Twig/Exception/error.html.twig' %}
+
+{% block error_title %}Page introuvable{% endblock %}
+
+{% block error_heading %}Cette page n’existe pas{% endblock %}
+
+{% block error_text %}
+    La page que vous cherchez a peut-être été déplacée, renommée, ou n’est plus
+    en ligne. Le lien qui vous a mené ici est sans doute périmé.
+{% endblock %}
