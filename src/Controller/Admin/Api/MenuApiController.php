@@ -70,10 +70,10 @@ class MenuApiController extends AbstractController
             return $this->json(['error' => 'Menu not found'], 404);
         }
 
-        $menu->setIsVisible(!$menu->isIsVisible());
+        $menu->setIsVisible(!$menu->isVisible());
         $em->flush();
 
-        return $this->json(['success' => true, 'visible' => $menu->isIsVisible()]);
+        return $this->json(['success' => true, 'visible' => $menu->isVisible()]);
     }
 
     #[Route('/admin/api/menu/add', name: 'admin_api_menu_add', methods: ['POST'])]
@@ -158,7 +158,7 @@ class MenuApiController extends AbstractController
                 'target' => $menu->getTarget(),
                 'location' => $menu->getLocation(),
                 'isSystem' => $menu->isSystem(),
-                'isVisible' => $menu->isIsVisible(),
+                'isVisible' => $menu->isVisible(),
                 'url' => $menu->getUrl(),
                 'route' => $menu->getRoute(),
                 'pageId' => $menu->getPage()?->getId(),
