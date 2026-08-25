@@ -43,6 +43,9 @@
 
 /* ======================================================================
    2. TYPOGRAPHIE - serif editorial pour les titres, sans neutre pour le reste
+   Titres : Cormorant Garamond. Sa hauteur de capitale vaut ~94 % de celle
+   de Playfair Display (x-height ~87 %), d'ou les tailles de titres
+   remontees d'environ 8 % par rapport a un reglage Playfair.
    ====================================================================== */
 .theme-corporate {
     color: var(--text);
@@ -63,7 +66,7 @@
 }
 
 .theme-corporate .home-section-title {
-    font-size: clamp(1.9rem, 3.4vw, 3rem);
+    font-size: clamp(2.1rem, 3.7vw, 3.3rem);
     font-weight: 300;
     margin-bottom: 3rem;
 }
@@ -219,7 +222,7 @@
 
 .theme-corporate .home-hero__title {
     color: #FFFFFF;
-    font-size: clamp(2.6rem, 6vw, 5rem);
+    font-size: clamp(2.9rem, 6.5vw, 5.5rem);
     font-weight: 300;
     margin-bottom: 1.6rem;
 }
@@ -396,7 +399,7 @@
 
 .theme-corporate .home-metrics__value {
     font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(2.8rem, 5vw, 4.4rem);
+    font-size: clamp(3rem, 5.4vw, 4.8rem);
     font-weight: 300;
     line-height: 1;
     color: var(--primary);
@@ -440,7 +443,7 @@
 }
 
 .theme-corporate .home-about__title {
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-size: clamp(2rem, 3.3vw, 2.9rem);
     font-weight: 300;
 }
 
@@ -526,7 +529,7 @@
 
 .theme-corporate .home-cta__title {
     color: #FFFFFF;
-    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-size: clamp(2.2rem, 4.3vw, 3.5rem);
     font-weight: 300;
     margin-bottom: 1.2rem;
 }
