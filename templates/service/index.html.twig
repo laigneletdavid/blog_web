@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block seo %}
-    <title>{{ seo.title|default('Nos services') }} — {{ site.name|default('') }}</title>
+    <title>{{ seo.title|default(title_page) }} — {{ site.name|default('') }}</title>
     <meta name="description" content="{{ seo.description|default('Découvrez nos services') }}">
 {% endblock %}
 
@@ -10,11 +10,18 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Services</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
         </ol>
     </nav>
 
     <h1 class="title-one mb-4">{{ title_page }}</h1>
+
+    {# Introduction facultative : page systeme "services_intro", editable dans l'admin #}
+    {% if intro|default(null) %}
+    <div class="services-intro page-detail__content article-detail__content mb-5">
+        {{ intro.content|raw }}
+    </div>
+    {% endif %}
 
     {% include '_partials/_services_grid.html.twig' with { services: services } %}
 
