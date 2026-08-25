@@ -1143,3 +1143,26 @@
         max-height: 52px;
     }
 }
+
+/* Le theme decore la bande CTA d'un disque blanc a 5 %, en haut a droite,
+   sous overflow: hidden. On garde l'emplacement et on y pose le monogramme
+   en filigrane a la place du disque. */
+.theme-corporate .home-cta::before {
+    width: 460px;
+    height: 330px;
+    top: -24px;
+    right: -56px;
+    border-radius: 0;
+    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
+    background-size: contain;
+    opacity: .075;
+}
+
+@media (max-width: 767.98px) {
+    .theme-corporate .home-cta::before {
+        width: 260px;
+        height: 190px;
+        top: -12px;
+        right: -34px;
+    }
+}
