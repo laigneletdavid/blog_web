@@ -1386,44 +1386,45 @@
 /* ======================================================================
    23. PAGE CONTACT
    Le filigrane general tombe juste sous le bandeau sombre : on le retire ici
-   et on le repose en bas de la colonne du formulaire. Le formulaire a un
-   fond opaque de la meme teinte que la page, donc un filigrane place derriere
-   ressortirait coupe par la bordure : on lui ménage la place en dessous.
+   et on le repose dans le vide de la colonne des coordonnees, sous l'adresse.
+   Cet espace est celui de la carte Google : si elle est renseignee un jour,
+   le filigrane s'efface de lui-meme.
    ====================================================================== */
 .theme-corporate main:has(.corp-contact-content)::after {
     display: none;
 }
 
-.theme-corporate .corp-contact-content {
+.theme-corporate .corp-contact-content .col-lg-5 {
     position: relative;
-    padding-bottom: 11rem;
 }
 
-.theme-corporate .corp-contact-content > .container {
-    position: relative;
-    z-index: 1;
-}
-
-.theme-corporate .corp-contact-content::after {
+.theme-corporate .corp-contact-content .col-lg-5::after {
     content: "";
     position: absolute;
-    right: 0;
-    bottom: .5rem;
-    width: 220px;
-    height: 150px;
-    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
+    left: 24px;
+    bottom: 0;
+    width: 360px;
+    height: 245px;
+    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat left bottom;
     background-size: contain;
     opacity: .35;
     pointer-events: none;
     z-index: 0;
 }
 
-@media (max-width: 991.98px) {
-    .theme-corporate .corp-contact-content {
-        padding-bottom: var(--bw-section-y);
-    }
+/* La carte Google occupe cet espace des qu'elle est renseignee. */
+.theme-corporate .corp-contact-content .col-lg-5:has(.corp-contact-map)::after {
+    display: none;
+}
 
-    .theme-corporate .corp-contact-content::after {
+.theme-corporate .corp-contact-info {
+    position: relative;
+    z-index: 1;
+}
+
+/* Sous 992px les colonnes s'empilent : plus d'espace libre sous l'adresse. */
+@media (max-width: 991.98px) {
+    .theme-corporate .corp-contact-content .col-lg-5::after {
         display: none;
     }
 }
