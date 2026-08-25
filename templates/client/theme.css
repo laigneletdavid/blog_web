@@ -1480,36 +1480,3 @@
         max-width: 150px;
     }
 }
-
-/* Filigrane dans la carte du formulaire, en tete a droite du titre, comme sur
-   un papier a en-tete. overflow: hidden pour qu'il ne deborde pas du cadre ;
-   le contenu du formulaire passe devant. */
-.theme-corporate .corp-contact-form {
-    position: relative;
-    overflow: hidden;
-}
-
-.theme-corporate .corp-contact-form::before {
-    content: "";
-    position: absolute;
-    top: 1.8rem;
-    right: 1.8rem;
-    width: 165px;
-    height: 113px;
-    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat right top;
-    background-size: contain;
-    opacity: .35;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.theme-corporate .corp-contact-form > * {
-    position: relative;
-    z-index: 1;
-}
-
-@media (max-width: 575.98px) {
-    .theme-corporate .corp-contact-form::before {
-        display: none;
-    }
-}
