@@ -1188,7 +1188,7 @@
     transform: translateY(-50%);
     background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
     background-size: contain;
-    opacity: .22;
+    opacity: .35;
     animation: none;
     pointer-events: none;
     z-index: 0;
@@ -1199,7 +1199,7 @@
         width: 340px;
         height: 250px;
         right: -70px;
-        opacity: .18;
+        opacity: .28;
     }
 }
 
