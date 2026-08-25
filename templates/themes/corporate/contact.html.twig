@@ -53,11 +53,7 @@
                 </div>
 
                 {# Carte Google Maps #}
-                {% if site.googleMaps %}
-                <div class="corp-contact-map">
-                    <iframe src="{{ site.googleMaps }}" height="280" style="border:0; width:100%; border-radius: var(--radius);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-                {% endif %}
+                {% include '_partials/_contact_map.html.twig' with { wrapperClass: 'corp-contact-map', height: 280 } %}
                 {% include '_partials/_directions_link.html.twig' %}
             </div>
 
