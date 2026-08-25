@@ -1382,3 +1382,48 @@
         display: none;
     }
 }
+
+/* ======================================================================
+   23. PAGE CONTACT
+   Le filigrane general tombe juste sous le bandeau sombre : on le retire ici
+   et on le repose en bas de la colonne du formulaire. Le formulaire a un
+   fond opaque de la meme teinte que la page, donc un filigrane place derriere
+   ressortirait coupe par la bordure : on lui ménage la place en dessous.
+   ====================================================================== */
+.theme-corporate main:has(.corp-contact-content)::after {
+    display: none;
+}
+
+.theme-corporate .corp-contact-content {
+    position: relative;
+    padding-bottom: 11rem;
+}
+
+.theme-corporate .corp-contact-content > .container {
+    position: relative;
+    z-index: 1;
+}
+
+.theme-corporate .corp-contact-content::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: .5rem;
+    width: 220px;
+    height: 150px;
+    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
+    background-size: contain;
+    opacity: .35;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@media (max-width: 991.98px) {
+    .theme-corporate .corp-contact-content {
+        padding-bottom: var(--bw-section-y);
+    }
+
+    .theme-corporate .corp-contact-content::after {
+        display: none;
+    }
+}
