@@ -43,6 +43,12 @@ class PageController extends AbstractController
             throw $this->createNotFoundException('Page introuvable.');
         }
 
+        // Un brouillon n'est pas en ligne. Il reste ouvert a qui peut editer le
+        // contenu, pour relire une page avant publication.
+        if ($page->isPublished() !== true && !$this->isGranted('ROLE_AUTHOR')) {
+            throw $this->createNotFoundException('Page introuvable.');
+        }
+
         if (!$this->isGranted(ContentVoter::VIEW, $page)) {
             return $this->render('_partials/_restricted_access.html.twig', [
                 'title' => $page->getTitle(),
