@@ -1,0 +1,38 @@
+{# ======================================================================
+   Bloc carte de la page contact.
+
+   Le champ site.googleMaps accepte deux formes :
+
+     - une URL d'integration (Google Maps Embed API avec cle, ou tout autre
+       fournisseur qui autorise l'affichage en cadre) : rendue en iframe ;
+     - un chemin d'image (png, jpg, webp, avif) : rendu en balise img.
+
+   La seconde forme evite toute dependance a un service tiers a l'affichage,
+   donc aucun cookie tiers et aucun risque de cadre vide si le fournisseur
+   change ses conditions. Une carte statique peut etre fabriquee en assemblant
+   des tuiles OpenStreetMap.
+
+   Parametres : wrapperClass, height (pour l'iframe uniquement), alt.
+   ====================================================================== #}
+{% if site.googleMaps|default('') is not empty %}
+    {% set _map = site.googleMaps %}
+    {% set _isImage = _map|lower matches '/\\.(png|jpe?g|webp|avif)$/' %}
+
+    <div class="{{ wrapperClass|default('contact-map') }}">
+        {% if _isImage %}
+            <img src="{{ _map starts with 'http' ? _map : asset(_map) }}"
+                 alt="{{ alt|default('Plan d’accès') }}"
+                 class="contact-map__img"
+                 loading="lazy"
+                 style="width: 100%; height: auto; display: block; border-radius: var(--radius);">
+        {% else %}
+            <iframe src="{{ _map }}"
+                    height="{{ height|default(280) }}"
+                    style="border:0; width:100%; border-radius: var(--radius);"
+                    title="{{ alt|default('Plan d’accès') }}"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+        {% endif %}
+    </div>
+{% endif %}

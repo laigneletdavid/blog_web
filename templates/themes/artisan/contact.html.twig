@@ -53,11 +53,7 @@
                     {% endif %}
                 </div>
 
-                {% if site.googleMaps %}
-                <div class="art-contact-map mt-4">
-                    <iframe src="{{ site.googleMaps }}" height="250" style="border:0; width:100%; border-radius: var(--radius);" allowfullscreen="" loading="lazy"></iframe>
-                </div>
-                {% endif %}
+                {% include '_partials/_contact_map.html.twig' with { wrapperClass: 'art-contact-map mt-4', height: 250 } %}
                 {% include '_partials/_directions_link.html.twig' %}
             </div>
         </div>
