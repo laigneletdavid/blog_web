@@ -1,0 +1,68 @@
+{# ======================================================================
+   Page d'erreur generique (500, 403, 503...).
+   Etend base.html.twig : elle herite donc du theme, du logo, du menu et du
+   pied de page de chaque client, sans configuration.
+   La 404 surcharge les blocs ci-dessous dans error404.html.twig.
+   Ces templates ne sont rendus qu'en environnement de production ; en dev,
+   Symfony affiche sa page de debogage.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block seo %}
+    <title>{% block error_title %}Une erreur est survenue{% endblock %} — {{ site.name|default('') }}</title>
+    <meta name="robots" content="noindex, follow">
+{% endblock %}
+
+{% block body %}
+<style>
+    .error-page {
+        padding: clamp(4rem, 12vh, 9rem) 0;
+        text-align: center;
+    }
+    .error-page__code {
+        font-family: var(--font-family-secondary, var(--font-family, inherit));
+        font-size: clamp(4rem, 14vw, 9rem);
+        line-height: 1;
+        color: var(--primary, #222);
+        opacity: .18;
+        margin: 0 0 1rem;
+    }
+    .error-page__title {
+        font-family: var(--font-family-secondary, var(--font-family, inherit));
+        font-size: clamp(1.6rem, 4vw, 2.6rem);
+        margin: 0 0 1rem;
+    }
+    .error-page__text {
+        color: var(--text-muted, #666);
+        max-width: 34rem;
+        margin: 0 auto 2.5rem;
+        line-height: 1.8;
+    }
+    .error-page__actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+</style>
+
+<section class="error-page">
+    <div class="container">
+        <p class="error-page__code">{{ status_code|default(500) }}</p>
+
+        <h1 class="error-page__title">{% block error_heading %}Une erreur est survenue{% endblock %}</h1>
+
+        <p class="error-page__text">
+            {% block error_text %}
+            Le site a rencontré un problème inattendu. Nos équipes en sont informées.
+            Vous pouvez réessayer dans quelques instants ou revenir à l’accueil.
+            {% endblock %}
+        </p>
+
+        <div class="error-page__actions">
+            <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l’accueil</a>
+            <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">Nous contacter</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
