@@ -1428,3 +1428,55 @@
         display: none;
     }
 }
+
+/* ======================================================================
+   24. BOUTON D'APPEL DU HEADER (.bw-cta)
+   Aplat anthracite, seul element plein de la barre : il doit se distinguer
+   de la navigation sans rompre la sobriete. Fleche qui glisse au survol,
+   inversion vers un contour comme le reste des boutons.
+   ====================================================================== */
+.theme-corporate .header--corporate .bw-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    background: var(--primary);
+    color: #FFFFFF;
+    border: 1px solid var(--primary);
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: var(--bw-track);
+    font-size: .72rem;
+    font-weight: 500;
+    padding: .8rem 1.4rem;
+    text-decoration: none;
+    transition: background-color var(--bw-ease), color var(--bw-ease);
+}
+
+.theme-corporate .header--corporate .bw-cta:hover,
+.theme-corporate .header--corporate .bw-cta:focus-visible {
+    background: transparent;
+    color: var(--primary);
+}
+
+.theme-corporate .bw-cta__arrow {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--bw-ease);
+}
+
+.theme-corporate .bw-cta:hover .bw-cta__arrow {
+    transform: translateX(.3rem);
+}
+
+/* Version pleine largeur du menu mobile */
+.theme-corporate .bw-cta--block {
+    justify-content: center;
+    padding: 1rem 1.4rem;
+}
+
+/* La barre d'actions se resserre : le champ de recherche cede la place */
+@media (max-width: 1199.98px) {
+    .theme-corporate .header--corporate .header-search .search-input {
+        max-width: 150px;
+    }
+}
