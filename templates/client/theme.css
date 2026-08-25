@@ -1111,3 +1111,33 @@
     .theme-corporate .bw-door { padding: 2.2rem 1.6rem; }
     .theme-corporate .bw-values__list { gap: .8rem 2rem; }
 }
+
+/* ======================================================================
+   19. LOGO
+   Le logo de l'etude est un bloc plein : monogramme et signature en clair
+   sur un aplat taupe. Deux consequences.
+   ====================================================================== */
+
+/* Le theme blanchit le logo du footer (brightness(0) invert(1)) en supposant
+   un logo sombre sur fond transparent. Applique au notre, le filtre le
+   transformerait en rectangle blanc uni. */
+.theme-corporate .footer--corporate .footer-logo img {
+    filter: none;
+    height: auto;
+    width: auto;
+    max-height: 64px;
+}
+
+/* A 42px de haut, la signature « Bruno Mainguy | NOTAIRE » n'est plus
+   lisible : on laisse le bloc respirer dans le header. */
+.theme-corporate .header--corporate .header-logo img {
+    height: auto;
+    width: auto;
+    max-height: 72px;
+}
+
+@media (max-width: 991.98px) {
+    .theme-corporate .header--corporate .header-logo img {
+        max-height: 52px;
+    }
+}
