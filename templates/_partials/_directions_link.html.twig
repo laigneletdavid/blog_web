@@ -1,0 +1,27 @@
+{# ======================================================================
+   Lien d'itineraire, sous la carte de la page contact.
+
+   L'URL est composee a partir de l'adresse du site : aucun champ a remplir,
+   aucune cle d'API. Le format dir/?api=1 est le point d'entree officiel de
+   Google pour lancer un itineraire ; sur mobile il ouvre directement
+   l'application de navigation.
+
+   S'affiche seulement si une adresse est renseignee.
+   ====================================================================== #}
+{% set _destination = [
+    site.address1|default(''),
+    site.address2|default(''),
+    site.postCode|default(''),
+    site.town|default('')
+]|filter(part => part is not empty)|join(' ') %}
+
+{% if _destination is not empty %}
+    <a href="https://www.google.com/maps/dir/?api=1&destination={{ _destination|url_encode }}"
+       class="btn btn-sm btn-outline-primary contact-directions mt-3"
+       target="_blank"
+       rel="noopener"
+       aria-label="Ouvrir l'itinéraire vers {{ _destination }} dans Google Maps">
+        {{ bi('geo-alt') }}
+        <span>Itinéraire</span>
+    </a>
+{% endif %}
