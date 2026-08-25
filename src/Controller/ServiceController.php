@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\MenuRepository;
+use App\Repository\PageRepository;
 use App\Repository\ServiceRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
@@ -18,22 +20,38 @@ class ServiceController extends AbstractController
     }
 
     #[Route('/services', name: 'app_service_index')]
-    public function index(ServiceRepository $serviceRepository): Response
-    {
+    public function index(
+        ServiceRepository $serviceRepository,
+        MenuRepository $menuRepository,
+        PageRepository $pageRepository,
+    ): Response {
         if (!$this->siteContext->hasModule('services')) {
             throw $this->createNotFoundException();
         }
 
         $services = $serviceRepository->findAllActive();
-        $seo = $this->seoService->resolveForPage('Services');
+
+        // Le titre suit l'intitule du menu : un site qui renomme "Services" en
+        // "Expertises" ou "Prestations" attend le meme mot sur la page.
+        $title = $menuRepository->findSystemByLocationAndKey('header', 'services')?->getName()
+            ?? 'Services';
+
+        // Introduction editable, facultative : page systeme de cle "services_intro".
+        // Absente par defaut, donc aucun changement pour les sites qui n'en creent pas.
+        // Elle est affichee meme non publiee : c'est un fragment de cette page, pas
+        // une page autonome, et la laisser depubliee evite le contenu duplique.
+        $intro = $pageRepository->findSystemPage('services_intro');
+
+        $seo = $this->seoService->resolveForPage($title);
 
         if (count($services) === 0) {
             $seo['noIndex'] = true;
         }
 
         return $this->render('service/index.html.twig', [
-            'title_page' => 'Nos services',
+            'title_page' => $title,
             'services' => $services,
+            'intro' => $intro,
             'seo' => $seo,
         ]);
     }
