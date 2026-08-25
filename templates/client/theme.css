@@ -1342,3 +1342,43 @@
 .theme-corporate .services-intro h2:first-of-type {
     margin-top: 2.5rem;
 }
+
+/* ======================================================================
+   22. FILIGRANE DES PAGES INTERNES
+   Le monogramme blanc a 35 % sur le gris-vert du fond donne un effet de
+   gaufrage. Pose sur main sauf sur la home, qui a deja ses deux filigranes.
+   overflow-x: clip plutot que hidden : n'affecte ni le scroll ni les
+   elements sticky.
+   ====================================================================== */
+.theme-corporate main {
+    position: relative;
+    overflow-x: clip;
+}
+
+.theme-corporate main:not(:has(.home-hero))::after {
+    content: "";
+    position: absolute;
+    top: 5rem;
+    right: -70px;
+    width: 420px;
+    height: 290px;
+    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
+    background-size: contain;
+    opacity: .35;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Le contenu passe devant le filigrane */
+.theme-corporate main > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Sous 1400px l'espace a droite du texte disparait : le filigrane passerait
+   derriere la colonne de lecture. */
+@media (max-width: 1399.98px) {
+    .theme-corporate main:not(:has(.home-hero))::after {
+        display: none;
+    }
+}
