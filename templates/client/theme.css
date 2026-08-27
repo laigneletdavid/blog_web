@@ -206,7 +206,7 @@
 }
 
 .theme-corporate .home-hero__overlay {
-    background: linear-gradient(180deg, rgba(0, 0, 0, .55) 0%, rgba(0, 0, 0, .42) 45%, rgba(0, 0, 0, .62) 100%);
+    background: linear-gradient(180deg, rgba(0, 0, 0, .38) 0%, rgba(0, 0, 0, .24) 45%, rgba(0, 0, 0, .5) 100%);
 }
 
 .theme-corporate .home-hero__content {
@@ -1631,4 +1631,9 @@
     .theme-corporate .bw-hero__video {
         display: none;
     }
+}
+
+/* La video occupe le hero : un filigrane par-dessus ferait doublon. */
+.theme-corporate .bw-hero::after {
+    display: none;
 }
