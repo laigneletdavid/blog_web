@@ -16,6 +16,13 @@
 
     <h1 class="title-one mb-4">{{ title_page }}</h1>
 
+    {# Image mise en avant de la page d'introduction, si elle en porte une #}
+    {% if intro|default(null) and intro.featuredMedia %}
+    <div class="services-intro__media mb-4">
+        {{ responsive_img(intro.featuredMedia, '(max-width: 991px) 100vw, 1100px', 'services-intro__img', intro.title, false, intro) }}
+    </div>
+    {% endif %}
+
     {# Introduction facultative : page systeme "services_intro", editable dans l'admin #}
     {% if intro|default(null) %}
     <div class="services-intro page-detail__content article-detail__content mb-5">
