@@ -57,8 +57,11 @@ class ServiceController extends AbstractController
     }
 
     #[Route('/service/{slug}', name: 'app_service_show')]
-    public function show(string $slug, ServiceRepository $serviceRepository): Response
-    {
+    public function show(
+        string $slug,
+        ServiceRepository $serviceRepository,
+        MenuRepository $menuRepository,
+    ): Response {
         if (!$this->siteContext->hasModule('services')) {
             throw $this->createNotFoundException();
         }
@@ -76,6 +79,9 @@ class ServiceController extends AbstractController
         return $this->render('service/show.html.twig', [
             'title_page' => $service->getTitle(),
             'service' => $service,
+            // Le fil d'ariane reprend l'intitule du menu, comme la page d'index.
+            'section_title' => $menuRepository->findSystemByLocationAndKey('header', 'services')?->getName()
+                ?? 'Services',
             'seo' => $this->seoService->resolve($service),
         ]);
     }
