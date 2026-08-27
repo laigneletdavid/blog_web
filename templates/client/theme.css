@@ -1697,6 +1697,7 @@
    n'avaient pas d'equivalent.
    ====================================================================== */
 .theme-corporate .page-hero__img,
+.theme-corporate .article-hero__img,
 .theme-corporate .service-detail__image img {
     display: block;
     width: 100%;
@@ -1705,10 +1706,20 @@
     object-position: center;
     /* meme traitement editorial que les cartes d'expertise */
     filter: var(--bw-img-filter);
+    transition: filter var(--bw-ease);
+}
+
+/* Le survol porte sur le cadre, pas sur l'image : sur un bandeau a titre, le
+   texte occupe le bas et l'image ne recevrait jamais le pointeur. */
+.theme-corporate .page-hero:hover .page-hero__img,
+.theme-corporate .article-hero:hover .article-hero__img,
+.theme-corporate .service-detail__image:hover img {
+    filter: var(--bw-img-filter-hover);
 }
 
 @media (max-width: 767.98px) {
     .theme-corporate .page-hero__img,
+    .theme-corporate .article-hero__img,
     .theme-corporate .service-detail__image img {
         max-height: 260px;
     }
