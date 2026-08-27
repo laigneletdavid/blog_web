@@ -36,7 +36,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_service_index') }}">Services</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_service_index') }}">{{ section_title|default('Services') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
         </ol>
     </nav>
