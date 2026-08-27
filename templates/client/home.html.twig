@@ -12,8 +12,9 @@
      6. Actualités  — module blog
      7. Contact     — bande finale
 
-   /!\ Les textes marqués BROUILLON sont reconstruits, pas le verbatim du
-   client. Profession réglementée : à valider avant mise en ligne.
+   Les textes proviennent du verbatim de l'ancien site bm-notaire.fr, recupere
+   via son API WordPress. Profession reglementee : a faire revalider par
+   l'office avant mise en ligne.
    ====================================================================== #}
 
 {# ====== 1. HERO ====== #}
@@ -21,15 +22,22 @@
     {% if site.heroImage %}
     style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
     {% endif %}>
+    {# Video de fond fournie par l'office. L'image hero sert d'affiche : elle
+       s'affiche immediatement, la video prend le relais une fois chargee.
+       Masquee sous 768px, ou elle couterait 7 Mo de donnees mobiles. #}
+    <video class="bw-hero__video" autoplay muted loop playsinline preload="metadata"
+           {% if site.heroImage %}poster="{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}"{% endif %}
+           aria-hidden="true" tabindex="-1">
+        <source src="{{ asset('documents/medias/hero-bm-notaire.mp4') }}" type="video/mp4">
+    </video>
     <div class="home-hero__overlay"></div>
     <div class="container position-relative">
         <div class="home-hero__content bw-hero__content">
             <h1 class="bw-hero__title">
-                <span class="bw-hero__kicker">Notaire</span>
+                <span class="bw-hero__kicker">Office notarial</span>
                 <span class="bw-hero__place">{{ site.town|default('Saint-Martory') }}</span>
             </h1>
-            {# BROUILLON — accroche à remplacer par le verbatim client #}
-            <p class="bw-hero__tagline">Un accompagnement sur-mesure</p>
+            <p class="bw-hero__tagline">Anticiper les événements de votre vie en toute sérénité</p>
             <div class="bw-hero__actions">
                 <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Prendre rendez-vous</a>
                 {% if services|default([])|length > 0 %}
@@ -51,11 +59,10 @@
     <div class="container">
         <div class="bw-section-header">
             <span class="bw-eyebrow">Expertises</span>
-            {# BROUILLON — titre et chapô à valider #}
-            <h2 class="bw-section-title">Des expertises adaptées à vos projets</h2>
+            <h2 class="bw-section-title">BM Notaire vous accompagne dans tous vos projets</h2>
             <p class="bw-section-intro">
-                Une étude à taille humaine, où l'on prend le temps de vous écouter, de vous conseiller
-                et de vous accompagner, en offrant sécurité juridique et efficacité.
+                Notre raison d’être est de vous permettre d’anticiper tous les événements
+                de votre vie en toute sérénité.
             </p>
         </div>
 
@@ -101,12 +108,12 @@
             </div>
             <div class="bw-office__content">
                 <span class="bw-eyebrow">L'Office</span>
-                {# BROUILLON — présentation à remplacer par le verbatim client #}
-                <h2 class="bw-section-title">Un notaire proche de vous</h2>
+                <h2 class="bw-section-title">Sur l’Office</h2>
                 <p class="bw-office__text">
-                    Un notaire n'est pas seulement un signataire : c'est un conseil. Notre rôle est de
-                    sécuriser juridiquement vos décisions et de vous éclairer, en toute impartialité,
-                    pour que vous choisissiez en connaissance de cause.
+                    L’Étude vous reçoit au 379 rue des Villas. L’office BM Notaire a conscience que ses
+                    clients évoluent dans un environnement toujours plus complexe et mouvant. Il est
+                    garant de la sécurité juridique et apporte son expertise dans l’élaboration des
+                    contrats qui lui sont confiés.
                 </p>
                 {% if site.town %}
                 <p class="bw-office__location">
@@ -123,14 +130,13 @@
 {# ====== 4. VALEURS (bande sombre) ====== #}
 <section class="bw-values">
     <div class="container">
-        {# BROUILLON — valeurs repérées sur le site du client, à confirmer #}
         <p class="bw-values__quote">
-            Derrière chaque dossier, il y a une histoire de vie.
-            Nous prenons le temps de comprendre la vôtre pour vous conseiller au plus juste.
+            L’accompagnement avec humanité, rendre le droit accessible au plus grand nombre :
+            ce sont les qualités qui traduisent notre philosophie.
         </p>
         <ul class="bw-values__list">
             <li>Humanité</li>
-            <li>Écoute</li>
+            <li>Écoute attentive</li>
             <li>Réactivité</li>
             <li>Empathie</li>
         </ul>
@@ -142,7 +148,7 @@
     <div class="container">
         <div class="bw-section-header bw-section-header--center">
             <span class="bw-eyebrow">Le notaire</span>
-            <h2 class="bw-section-title">À votre écoute</h2>
+            <h2 class="bw-section-title">Un office moderne</h2>
         </div>
         <div class="bw-notary__card">
             <div class="bw-notary__portrait">
@@ -155,10 +161,10 @@
             <div class="bw-notary__body">
                 <h3 class="bw-notary__name">{{ site.name|default('') }}</h3>
                 <span class="bw-notary__role">Notaire{% if site.town %} à {{ site.town }}{% endif %}</span>
-                {# BROUILLON — présentation du notaire à écrire avec le client #}
                 <p class="bw-notary__text">
-                    Un office moderne : signature électronique, rendez-vous en visioconférence et
-                    dossiers dématérialisés, au service d'une relation qui reste avant tout humaine.
+                    L’Office met à disposition ses nouvelles technologies : signature des actes sur
+                    support électronique, visioconférence, procuration à distance. Soucieux de
+                    l’environnement, nous privilégions une gestion dématérialisée des actes.
                 </p>
                 <a href="{{ path('app_contact') }}" class="bw-link-arrow">Prendre rendez-vous</a>
             </div>
@@ -187,11 +193,10 @@
 {# ====== 7. CONTACT ====== #}
 <section class="home-cta bw-contact">
     <div class="container text-center">
-        {# BROUILLON — accroche finale à valider #}
-        <h2 class="home-cta__title">Un projet, une question ? Parlons-en.</h2>
+        <h2 class="home-cta__title">Un projet ? Une question ?</h2>
         <p class="home-cta__desc">
-            L'Étude vous reçoit sur rendez-vous pour faire le point sur votre situation
-            et vous orienter vers la solution la plus adaptée.
+            N’hésitez pas à nous contacter. Le conseil est gratuit : nous avons à cœur de fournir
+            un accompagnement de qualité et d’établir une relation de confiance.
         </p>
         <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Prendre rendez-vous</a>
     </div>
