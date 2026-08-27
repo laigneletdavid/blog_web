@@ -1696,18 +1696,41 @@
    .page-hero__img ; l'ouverture des Expertises et l'image d'un service
    n'avaient pas d'equivalent.
    ====================================================================== */
-.theme-corporate .services-intro__img,
+.theme-corporate .page-hero__img,
 .theme-corporate .service-detail__image img {
     display: block;
     width: 100%;
     max-height: 400px;
     object-fit: cover;
     object-position: center;
+    /* meme traitement editorial que les cartes d'expertise */
+    filter: var(--bw-img-filter);
 }
 
 @media (max-width: 767.98px) {
-    .theme-corporate .services-intro__img,
+    .theme-corporate .page-hero__img,
     .theme-corporate .service-detail__image img {
         max-height: 260px;
+    }
+}
+
+/* Bandeau titre sur image : degrade plus present que celui du CMS pour que le
+   serif blanc tienne sur un visuel clair, et titre a la charte du site. */
+.theme-corporate .page-hero__overlay {
+    background: linear-gradient(transparent 20%, rgba(20, 25, 26, .78) 100%);
+    padding: 5rem 2.5rem 2rem;
+}
+
+.theme-corporate .page-hero__title {
+    font-family: var(--font-family-secondary, var(--font-family));
+    font-size: clamp(1.95rem, 3.45vw, 3.05rem);
+    font-weight: 400;
+    letter-spacing: .005em;
+    text-shadow: none;
+}
+
+@media (max-width: 767.98px) {
+    .theme-corporate .page-hero__overlay {
+        padding: 3rem 1.4rem 1.4rem;
     }
 }
