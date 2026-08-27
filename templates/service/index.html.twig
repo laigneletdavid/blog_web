@@ -14,13 +14,17 @@
         </ol>
     </nav>
 
-    <h1 class="title-one mb-4">{{ title_page }}</h1>
-
-    {# Image mise en avant de la page d'introduction, si elle en porte une #}
+    {# Avec une image mise en avant, le titre passe dessus, comme sur une page.
+       Sans image, il reste un titre ordinaire. #}
     {% if intro|default(null) and intro.featuredMedia %}
-    <div class="services-intro__media mb-4">
-        {{ responsive_img(intro.featuredMedia, '(max-width: 991px) 100vw, 1100px', 'services-intro__img', intro.title, false, intro) }}
-    </div>
+        <div class="page-hero services-hero">
+            {{ responsive_img(intro.featuredMedia, '(max-width: 991px) 100vw, 1100px', 'page-hero__img', intro.title, false, intro) }}
+            <div class="page-hero__overlay">
+                <h1 class="page-hero__title">{{ title_page }}</h1>
+            </div>
+        </div>
+    {% else %}
+        <h1 class="title-one mb-4">{{ title_page }}</h1>
     {% endif %}
 
     {# Introduction facultative : page systeme "services_intro", editable dans l'admin #}
