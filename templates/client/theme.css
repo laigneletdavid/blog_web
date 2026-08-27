@@ -1727,14 +1727,20 @@
 
 /* Bandeau titre sur image : degrade plus present que celui du CMS pour que le
    serif blanc tienne sur un visuel clair, et titre a la charte du site.
-   L'overlay porte deux lignes depuis que le fil d'Ariane l'a rejoint : le
-   voile monte donc plus tot, sinon le fil flotte sur la partie claire. */
+   L'overlay couvre toute l'image et repartit ses deux lignes aux extremites :
+   le fil d'Ariane en haut, le titre en bas. Le voile se dedouble donc, sombre
+   en haut et en bas, clair au centre ou l'image doit rester lisible. */
 .theme-corporate .page-hero__overlay {
-    background: linear-gradient(transparent, rgba(20, 25, 26, .42) 45%, rgba(20, 25, 26, .82) 100%);
-    padding: 5rem 2.5rem 2rem;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(rgba(20, 25, 26, .5), rgba(20, 25, 26, .1) 28%, rgba(20, 25, 26, .38) 68%, rgba(20, 25, 26, .84));
+    padding: 1.6rem 2.5rem 2rem;
 }
 
 .theme-corporate .page-hero__breadcrumb {
+    margin-bottom: 0;
     font-size: .82rem;
     letter-spacing: .09em;
     text-transform: uppercase;
@@ -1757,7 +1763,7 @@
 
 @media (max-width: 767.98px) {
     .theme-corporate .page-hero__overlay {
-        padding: 3rem 1.4rem 1.4rem;
+        padding: 1.1rem 1.4rem 1.4rem;
     }
 }
 
@@ -1781,6 +1787,14 @@
 .theme-corporate .page-hero__img,
 .theme-corporate .article-hero__img {
     max-height: 440px;
+}
+
+/* Le bandeau ouvre la page : il monte au contact du header, la bande de fond
+   qui s'intercalait n'ayant plus rien a porter depuis que le fil d'Ariane est
+   passe sur l'image. */
+.theme-corporate .container:has(> .page-hero:first-child) {
+    /* py-5 est un utilitaire Bootstrap, donc deja !important */
+    padding-top: 0 !important;
 }
 
 /* 1116px : largeur utile du container a partir de 1200px de fenetre */
