@@ -7,23 +7,28 @@
 
 {% block body %}
 <div class="container py-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
-        </ol>
-    </nav>
+    {% set bandeau = intro|default(null) and intro.featuredMedia %}
+    {% set fil_ariane %}
+        <nav aria-label="breadcrumb" class="{{ bandeau ? 'page-hero__breadcrumb' : '' }}">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
+            </ol>
+        </nav>
+    {% endset %}
 
-    {# Avec une image mise en avant, le titre passe dessus, comme sur une page.
-       Sans image, il reste un titre ordinaire. #}
-    {% if intro|default(null) and intro.featuredMedia %}
+    {# Avec une image mise en avant, le titre et le fil d'Ariane passent dessus,
+       comme sur une page. Sans image, ils restent ordinaires. #}
+    {% if bandeau %}
         <div class="page-hero services-hero">
             {{ responsive_img(intro.featuredMedia, '(max-width: 991px) 100vw, 1100px', 'page-hero__img', intro.title, false, intro) }}
             <div class="page-hero__overlay">
+                {{ fil_ariane|raw }}
                 <h1 class="page-hero__title">{{ title_page }}</h1>
             </div>
         </div>
     {% else %}
+        {{ fil_ariane|raw }}
         <h1 class="title-one mb-4">{{ title_page }}</h1>
     {% endif %}
 
