@@ -46,9 +46,13 @@
            l'index des services. Sans image, il reste un titre ordinaire. #}
         {% if service.image %}
             <div class="page-hero service-detail__hero">
+                {# width et height reservent la place avant le chargement :
+                   sans eux le bandeau nait a zero et la page saute. #}
                 <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}"
                      alt="{{ service.title }}"
                      class="page-hero__img"
+                     {% if service.image.width %}width="{{ service.image.width }}"{% endif %}
+                     {% if service.image.height %}height="{{ service.image.height }}"{% endif %}
                      loading="lazy">
                 <div class="page-hero__overlay">
                     <h1 class="page-hero__title">{{ service.title }}</h1>
