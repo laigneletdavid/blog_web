@@ -1745,3 +1745,45 @@
         padding: 3rem 1.4rem 1.4rem;
     }
 }
+
+/* ======================================================================
+   29. BANDEAUX PLEINE LARGEUR
+   L'ADN veut des images qui debordent des marges. Les bandeaux sortent donc
+   de leur container, mais le titre reste aligne sur la grille du contenu :
+   sans ce calage il viendrait se coller au bord de l'ecran.
+   main porte deja overflow-x: clip, ce qui absorbe la largeur de la barre de
+   defilement comprise dans 100vw.
+   ====================================================================== */
+.theme-corporate .page-hero,
+.theme-corporate .article-hero {
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+/* Plus large, donc un peu plus haut, sinon le cadrage devient une meurtriere */
+.theme-corporate .page-hero__img,
+.theme-corporate .article-hero__img {
+    max-height: 440px;
+}
+
+/* 1116px : largeur utile du container a partir de 1200px de fenetre */
+.theme-corporate .page-hero__overlay {
+    padding-left: max(1.5rem, calc((100vw - 1116px) / 2));
+    padding-right: max(1.5rem, calc((100vw - 1116px) / 2));
+}
+
+@media (max-width: 767.98px) {
+    .theme-corporate .page-hero__img,
+    .theme-corporate .article-hero__img {
+        max-height: 280px;
+    }
+
+    /* 1rem : le padding du container en mobile, pour que le titre tombe
+       exactement sur la marge du texte qui suit */
+    .theme-corporate .page-hero__overlay {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
