@@ -1637,3 +1637,54 @@
 .theme-corporate .bw-hero::after {
     display: none;
 }
+
+/* ======================================================================
+   27. IMAGE DES CARTES D'EXPERTISE
+   Les cartes portent desormais une photo au lieu d'une icone : cadrage
+   uniforme, traitement editorial identique au reste du site.
+   ====================================================================== */
+.theme-corporate .service-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.theme-corporate .service-card__image {
+    margin: 0;
+    line-height: 0;
+}
+
+.theme-corporate .service-card__image img {
+    width: 100%;
+    /* le theme fixe height: 160px, ce qui neutralise le ratio tant que la
+       hauteur reste explicite */
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: var(--bw-img-filter);
+    transition: filter var(--bw-ease), transform var(--bw-ease);
+}
+
+.theme-corporate .service-card:hover .service-card__image img {
+    filter: var(--bw-img-filter-hover);
+}
+
+/* Le texte reprend le retrait que la carte a perdu */
+.theme-corporate .service-card__title,
+.theme-corporate .service-card__text,
+.theme-corporate .service-card__link {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.theme-corporate .service-card__title {
+    padding-top: 1.8rem;
+}
+
+.theme-corporate .service-card__link {
+    padding-bottom: 2rem;
+    display: inline-block;
+}
+
+.theme-corporate .service-card__text {
+    padding-bottom: .4rem;
+}
