@@ -42,15 +42,20 @@
     </nav>
 
     <article class="service-detail">
-        <h1 class="title-one mb-4">{{ service.title }}</h1>
-
+        {# Avec une image, le titre passe dessus, comme sur une page ou sur
+           l'index des services. Sans image, il reste un titre ordinaire. #}
         {% if service.image %}
-        <div class="service-detail__image mb-4">
-            <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}"
-                 alt="{{ service.title }}"
-                 class="img-fluid rounded"
-                 loading="lazy">
-        </div>
+            <div class="page-hero service-detail__hero">
+                <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}"
+                     alt="{{ service.title }}"
+                     class="page-hero__img"
+                     loading="lazy">
+                <div class="page-hero__overlay">
+                    <h1 class="page-hero__title">{{ service.title }}</h1>
+                </div>
+            </div>
+        {% else %}
+            <h1 class="title-one mb-4">{{ service.title }}</h1>
         {% endif %}
 
         {% if service.shortDescription %}
