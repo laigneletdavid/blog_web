@@ -33,16 +33,18 @@
 
 {% block body %}
 <div class="container py-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_service_index') }}">{{ section_title|default('Services') }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
-        </ol>
-    </nav>
+    {% set fil_ariane %}
+        <nav aria-label="breadcrumb" class="{{ service.image ? 'page-hero__breadcrumb' : '' }}">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_service_index') }}">{{ section_title|default('Services') }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
+            </ol>
+        </nav>
+    {% endset %}
 
-    {# Avec une image, le titre passe dessus, comme sur une page ou sur
-       l'index des services. Sans image, il reste un titre ordinaire. #}
+    {# Avec une image, le titre et le fil d'Ariane passent dessus, comme sur une
+       page ou sur l'index des services. Sans image, ils restent ordinaires. #}
     {% if service.image %}
         <div class="page-hero service-detail__hero">
             {# width et height reservent la place avant le chargement :
@@ -54,10 +56,12 @@
                  {% if service.image.height %}height="{{ service.image.height }}"{% endif %}
                  loading="lazy">
             <div class="page-hero__overlay">
+                {{ fil_ariane|raw }}
                 <h1 class="page-hero__title">{{ service.title }}</h1>
             </div>
         </div>
     {% else %}
+        {{ fil_ariane|raw }}
         <h1 class="title-one mb-4">{{ service.title }}</h1>
     {% endif %}
 

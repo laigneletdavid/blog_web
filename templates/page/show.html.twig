@@ -27,15 +27,17 @@
 
 {% block body %}
 
-{# --- Breadcrumbs --- #}
-<div class="container">
-    <nav aria-label="breadcrumb" class="mt-3 mb-4">
+{# --- Breadcrumbs ---
+   Avec une image mise en avant, le fil d'Ariane passe dans le bandeau : le
+   laisser au-dessus le coincerait entre le header et l'image. #}
+{% set fil_ariane %}
+    <nav aria-label="breadcrumb" class="{{ page.featuredMedia ? 'page-hero__breadcrumb' : 'mt-3 mb-4' }}">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
         </ol>
     </nav>
-</div>
+{% endset %}
 
 {# --- Featured image hero --- #}
 {% if page.featuredMedia %}
@@ -43,10 +45,13 @@
     <div class="page-hero">
         {{ responsive_img(page.featuredMedia, '(max-width: 768px) 100vw, 900px', 'page-hero__img', null, false, page) }}
         <div class="page-hero__overlay">
+            {{ fil_ariane|raw }}
             <h1 class="page-hero__title">{{ page.title }}</h1>
         </div>
     </div>
 </div>
+{% else %}
+<div class="container">{{ fil_ariane|raw }}</div>
 {% endif %}
 
 <div class="container">
