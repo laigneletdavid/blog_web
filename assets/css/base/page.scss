@@ -29,6 +29,39 @@
     }
   }
 
+  // Fil d'Ariane pose sur l'image : il reprend le blanc du titre, en retrait,
+  // et son fond Bootstrap disparait au profit du degrade du bandeau.
+  &__breadcrumb {
+    margin-bottom: 0.75rem;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+
+    .breadcrumb {
+      margin-bottom: 0;
+      background: none;
+      padding: 0;
+    }
+
+    .breadcrumb-item,
+    .breadcrumb-item.active {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .breadcrumb-item a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        color: #fff;
+        text-decoration: underline;
+      }
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+      color: rgba(255, 255, 255, 0.55);
+    }
+  }
+
   &__title {
     color: #fff;
     font-size: clamp(1.75rem, 4vw, 2.5rem);
