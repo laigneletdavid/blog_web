@@ -1726,10 +1726,25 @@
 }
 
 /* Bandeau titre sur image : degrade plus present que celui du CMS pour que le
-   serif blanc tienne sur un visuel clair, et titre a la charte du site. */
+   serif blanc tienne sur un visuel clair, et titre a la charte du site.
+   L'overlay porte deux lignes depuis que le fil d'Ariane l'a rejoint : le
+   voile monte donc plus tot, sinon le fil flotte sur la partie claire. */
 .theme-corporate .page-hero__overlay {
-    background: linear-gradient(transparent 20%, rgba(20, 25, 26, .78) 100%);
+    background: linear-gradient(transparent, rgba(20, 25, 26, .42) 45%, rgba(20, 25, 26, .82) 100%);
     padding: 5rem 2.5rem 2rem;
+}
+
+.theme-corporate .page-hero__breadcrumb {
+    font-size: .82rem;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    text-shadow: none;
+}
+
+.theme-corporate .page-hero__breadcrumb .breadcrumb-item,
+.theme-corporate .page-hero__breadcrumb .breadcrumb-item.active,
+.theme-corporate .page-hero__breadcrumb .breadcrumb-item a {
+    color: rgba(255, 255, 255, .88);
 }
 
 .theme-corporate .page-hero__title {
