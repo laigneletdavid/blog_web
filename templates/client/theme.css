@@ -1688,3 +1688,26 @@
 .theme-corporate .service-card__text {
     padding-bottom: .4rem;
 }
+
+/* ======================================================================
+   28. IMAGES MISES EN AVANT
+   Sans borne, une image prend sa hauteur naturelle et repousse le contenu
+   hors de l'ecran. Le CMS borne deja celles des pages a 420px via
+   .page-hero__img ; l'ouverture des Expertises et l'image d'un service
+   n'avaient pas d'equivalent.
+   ====================================================================== */
+.theme-corporate .services-intro__img,
+.theme-corporate .service-detail__image img {
+    display: block;
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 767.98px) {
+    .theme-corporate .services-intro__img,
+    .theme-corporate .service-detail__image img {
+        max-height: 260px;
+    }
+}
