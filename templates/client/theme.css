@@ -1797,22 +1797,46 @@
     padding-top: 0 !important;
 }
 
-/* 1116px : largeur utile du container a partir de 1200px de fenetre */
+/* Le texte du bandeau doit tomber sur la meme gouttiere que le texte de la
+   page. Le bandeau etant sorti du container, on la recalcule : demi-marge du
+   container, plus son padding. Les deux 100vw de l'operation -- celui du
+   debordement, celui d'ici -- s'annulent, donc la barre de defilement ne
+   fausse rien ; en revanche la largeur du container change par palier, et une
+   valeur en dur decalait le titre des la fenetre passee a 1400px. */
 .theme-corporate .page-hero__overlay {
-    padding-left: max(1.5rem, calc((100vw - 1116px) / 2));
-    padding-right: max(1.5rem, calc((100vw - 1116px) / 2));
+    --bw-container: 100vw;
+    --bw-gouttiere: 1rem; /* padding du container en mobile, cf. global.scss */
+    padding-left: calc((100vw - var(--bw-container)) / 2 + var(--bw-gouttiere));
+    padding-right: calc((100vw - var(--bw-container)) / 2 + var(--bw-gouttiere));
+}
+
+/* Paliers Bootstrap */
+@media (min-width: 576px) {
+    .theme-corporate .page-hero__overlay { --bw-container: 540px; }
+}
+@media (min-width: 768px) {
+    .theme-corporate .page-hero__overlay { --bw-container: 720px; --bw-gouttiere: .75rem; }
+}
+@media (min-width: 992px) {
+    .theme-corporate .page-hero__overlay { --bw-container: 960px; }
+}
+@media (min-width: 1200px) {
+    .theme-corporate .page-hero__overlay { --bw-container: 1140px; }
+}
+@media (min-width: 1400px) {
+    .theme-corporate .page-hero__overlay { --bw-container: 1320px; }
+}
+
+/* Titre pousse a droite : le fil ouvre en haut a gauche, le titre ferme en bas
+   a droite, et le regard traverse la photo au lieu de longer son bord. */
+.theme-corporate .page-hero__title {
+    align-self: flex-end;
+    text-align: right;
 }
 
 @media (max-width: 767.98px) {
     .theme-corporate .page-hero__img,
     .theme-corporate .article-hero__img {
         max-height: 280px;
-    }
-
-    /* 1rem : le padding du container en mobile, pour que le titre tombe
-       exactement sur la marge du texte qui suit */
-    .theme-corporate .page-hero__overlay {
-        padding-left: 1rem;
-        padding-right: 1rem;
     }
 }
