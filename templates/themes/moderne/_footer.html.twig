@@ -25,7 +25,7 @@
                 <h6 class="mod-footer-heading">Contact</h6>
                 <ul class="nav flex-column">
                     {% if site.email %}<li><a href="mailto:{{ site.email }}" class="nav-link">{{ site.email }}</a></li>{% endif %}
-                    {% if site.phone %}<li><a href="tel:{{ site.phone }}" class="nav-link">{{ site.phone }}</a></li>{% endif %}
+                    {% if site.phone %}<li><a href="tel:{{ site.phone }}" class="nav-link">{{ site.phone|phone }}</a></li>{% endif %}
                 </ul>
             </div>
             <div class="col-lg-2">
