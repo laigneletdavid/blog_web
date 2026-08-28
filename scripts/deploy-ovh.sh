@@ -13,6 +13,35 @@ cd "$SITE_DIR"
 export APP_ENV=prod
 export APP_DEBUG=0
 
+# --- 0 bis. Trouver un PHP en ligne de commande ---
+# Sur OVH mutualise, « php » est le binaire CGI : il refuse -r avec
+# « Error in argument 1, char 2: option not found r ». Le CLI existe, mais
+# sous un autre nom selon l'offre. On prend le premier qui sait executer -r.
+detecter_php() {
+    local candidat
+    for candidat in "${PHP_BIN:-}" php php-cli php8.4 php84         /usr/local/php8.4/bin/php /usr/local/php/8.4/bin/php         /usr/local/bin/php-cli /usr/bin/php-cli; do
+        [ -n "$candidat" ] || continue
+        command -v "$candidat" >/dev/null 2>&1 || [ -x "$candidat" ] || continue
+        # On compare la sortie, pas le code retour : le CGI peut sortir 0
+        # tout en emettant ses en-tetes HTTP a la place du resultat.
+        if [ "$("$candidat" -r 'echo "ok";' 2>/dev/null)" = "ok" ]; then
+            printf '%s' "$candidat"
+            return 0
+        fi
+    done
+    return 1
+}
+
+if ! PHP_BIN=$(detecter_php); then
+    echo "ERREUR: aucun PHP en ligne de commande utilisable."
+    echo "Le « php » du PATH est le binaire CGI : il ne comprend pas -r."
+    echo "Chercher le CLI avec : ls /usr/local/php*/bin/php"
+    echo "puis relancer avec :   PHP_BIN=/chemin/vers/php $0 ${*:-}"
+    exit 1
+fi
+echo "[php] $PHP_BIN"
+
+
 # =============================================================================
 # MODE --init : Premier deploiement (genere .env.local, teste BDD, etc.)
 # =============================================================================
@@ -20,7 +49,7 @@ if [[ "${1:-}" == "--init" ]]; then
     echo "=== BlogWeb — Init OVH ==="
 
     # Verifier PHP
-    PHP_VER=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
+    PHP_VER=$("$PHP_BIN" -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
     echo "[check] PHP $PHP_VER"
     if [[ "$PHP_VER" != "8.4" ]]; then
         echo "ERREUR: PHP 8.4 requis (actuel: $PHP_VER)"
@@ -50,7 +79,7 @@ if [[ "${1:-}" == "--init" ]]; then
     # Tester la connexion BDD
     echo ""
     echo "[test] Connexion BDD..."
-    if php -r "new PDO('mysql:host=$DB_HOST;port=$DB_PORT;dbname=$DB_NAME', '$DB_USER', '$DB_PASS');" 2>/dev/null; then
+    if "$PHP_BIN" -r "new PDO('mysql:host=$DB_HOST;port=$DB_PORT;dbname=$DB_NAME', '$DB_USER', '$DB_PASS');" 2>/dev/null; then
         echo "[OK] Connexion BDD reussie"
     else
         echo "ERREUR: Impossible de se connecter a la BDD."
@@ -88,7 +117,7 @@ if [[ "${1:-}" == "--init" ]]; then
     fi
 
     # Generer APP_SECRET
-    APP_SECRET=$(php -r "echo bin2hex(random_bytes(16));")
+    APP_SECRET=$("$PHP_BIN" -r "echo bin2hex(random_bytes(16));")
 
     # Ecrire .env.local
     cat > .env.local << ENVEOF
@@ -213,7 +242,7 @@ fi
 echo "=== BlogWeb — Deploy OVH ==="
 
 # --- 1. Verifier PHP ---
-PHP_VER=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
+PHP_VER=$("$PHP_BIN" -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
 echo "[check] PHP $PHP_VER"
 if [[ "$PHP_VER" != "8.4" ]]; then
     echo "ERREUR: PHP 8.4 requis (actuel: $PHP_VER)"
@@ -238,7 +267,7 @@ if [ ! -f .env.local ]; then
     exit 1
 fi
 if grep -q 'APP_SECRET=$' .env.local || grep -q 'APP_SECRET=CHANGE_ME' .env.local; then
-    SECRET=$(php -r "echo bin2hex(random_bytes(16));")
+    SECRET=$("$PHP_BIN" -r "echo bin2hex(random_bytes(16));")
     sed -i "s|APP_SECRET=.*|APP_SECRET=$SECRET|" .env.local
     echo "       APP_SECRET genere automatiquement"
 fi
@@ -252,7 +281,7 @@ if [ ! -f composer.phar ]; then
     echo "       Installation de composer..."
     curl -sS https://getcomposer.org/installer | php
 fi
-php composer.phar install --no-dev --optimize-autoloader --no-interaction
+"$PHP_BIN" composer.phar install --no-dev --optimize-autoloader --no-interaction
 
 # --- 6. Node + Assets ---
 echo "[4/7] Installation Node (nvm)..."
@@ -281,8 +310,8 @@ NODE_ENV=production npm run build
 
 # --- 7. Symfony ---
 echo "[6/7] Cache Symfony..."
-APP_ENV=prod php bin/console cache:clear --env=prod --no-debug
-APP_ENV=prod php bin/console cache:warmup --env=prod --no-debug
+APP_ENV=prod "$PHP_BIN" bin/console cache:clear --env=prod --no-debug
+APP_ENV=prod "$PHP_BIN" bin/console cache:warmup --env=prod --no-debug
 
 if [ "$SKIP_MIGRATIONS" = true ]; then
     echo "[7/7] Skip migrations (dump prevu)..."
@@ -292,7 +321,7 @@ if [ "$SKIP_MIGRATIONS" = true ]; then
     fi
 else
     echo "[7/7] Migrations BDD..."
-    APP_ENV=prod php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+    APP_ENV=prod "$PHP_BIN" bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 fi
 
 echo ""
