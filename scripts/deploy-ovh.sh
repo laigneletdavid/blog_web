@@ -425,8 +425,68 @@ if [ "$SKIP_MIGRATIONS" = true ]; then
         exec "$0" --import "$DUMP_TO_IMPORT"
     fi
 else
-    echo "[7/7] Migrations BDD..."
-    APP_ENV=prod "$PHP_BIN" bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+    echo "[7/7] Base de donnees..."
+
+    # Etat de la base : vide, ou deja construite ?
+    NB_TABLES=$(APP_ENV=prod "$PHP_BIN" bin/console dbal:run-sql         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE()" 2>/dev/null         | grep -oE '[0-9]+' | head -1)
+    NB_TABLES="${NB_TABLES:-0}"
+
+    # Un dump livre avec la branche a la priorite : il porte le schema ET les
+    # numeros de migration deja appliques, la ou les migrations rejouees a
+    # blanc echouent a mi-course et laissent la base a moitie construite.
+    DUMP_LIVRE=$(ls -1 scripts/*_dump.sql 2>/dev/null | head -1 || true)
+
+    if [ "$NB_TABLES" = "0" ] && [ -n "$DUMP_LIVRE" ]; then
+        echo "       Base vide, dump trouve : $DUMP_LIVRE"
+        exec "$0" --import "$DUMP_LIVRE"
+    fi
+
+    if [ "$NB_TABLES" = "0" ]; then
+        # MySQL < 8 ne sait pas donner de valeur par defaut a une colonne JSON,
+        # ce que font nos migrations. Les lancer la casse a mi-parcours sans
+        # rien inscrire dans doctrine_migration_versions : la base reste dans
+        # un etat batard dont on ne sort qu'en la vidant. Autant refuser avant.
+        VERSION_SGBD=$(APP_ENV=prod "$PHP_BIN" bin/console dbal:run-sql "SELECT VERSION()" 2>/dev/null             | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[^ |]*' | head -1)
+        echo "       Serveur : ${VERSION_SGBD:-inconnu}"
+        case "$VERSION_SGBD" in
+            *MariaDB*|*mariadb*) COMPATIBLE=1 ;;
+            8.*|9.*|1[0-9].*)    COMPATIBLE=1 ;;
+            *)                   COMPATIBLE=0 ;;
+        esac
+        if [ "$COMPATIBLE" = "0" ]; then
+            echo ""
+            echo "ERREUR: base vide, aucun dump, et ce serveur ne peut pas jouer les migrations."
+            echo "        MySQL avant la version 8 refuse une valeur par defaut sur une"
+            echo "        colonne JSON, ce que font nos migrations : elles casseraient en"
+            echo "        cours de route en laissant la base inutilisable."
+            echo ""
+            echo "        Fabriquer le dump en local puis le livrer avec la branche :"
+            echo "          ./scripts/make-deploy-dump.sh"
+            echo "          git add -f scripts/*_dump.sql && git commit && git push"
+            echo "        Puis ici : git pull && ./scripts/deploy-ovh.sh"
+            exit 1
+        fi
+    fi
+
+    if ! APP_ENV=prod "$PHP_BIN" bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration; then
+        echo ""
+        echo "ERREUR: les migrations ont echoue."
+        echo "        Si elles se sont arretees en cours de route, la base est a"
+        echo "        moitie construite et toute relance butera sur des tables"
+        echo "        deja existantes. Repartir proprement :"
+        echo "          ./scripts/deploy-ovh.sh --reset-db"
+        echo "          ./scripts/deploy-ovh.sh"
+        exit 1
+    fi
+fi
+
+# Le dump de deploiement ne transporte aucun compte : sans cet avertissement,
+# le site se retrouve en ligne sans acces a son administration.
+NB_COMPTES=$(APP_ENV=prod "$PHP_BIN" bin/console dbal:run-sql "SELECT COUNT(*) FROM user" 2>/dev/null     | grep -oE '[0-9]+' | head -1)
+if [ "${NB_COMPTES:-1}" = "0" ]; then
+    echo ""
+    echo "[!] Aucun compte d'administration. En creer un avant de livrer le site :"
+    echo "    $PHP_BIN bin/console app:create-super-admin --email=... --password=..."
 fi
 
 echo ""
