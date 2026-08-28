@@ -1,6 +1,6 @@
 {
-    "name": "BlogWeb",
-    "short_name": "BlogWeb",
+    "name": "Ma\u00eetre Bruno Mainguy, notaire \u00e0 Saint-Martory",
+    "short_name": "Ma\u00eetre Bruno Mainguy, notaire \u00e0 Saint-Martory",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -15,7 +15,7 @@
             "purpose": "maskable"
         }
     ],
-    "theme_color": "#2563eb",
+    "theme_color": "#273133",
     "background_color": "#ffffff",
     "display": "standalone"
 }
