@@ -289,6 +289,26 @@ export NVM_DIR="$HOME/.nvm"
 if [ ! -s "$NVM_DIR/nvm.sh" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 fi
+
+# Sans profil de connexion, l'installateur de nvm renonce a s'y declarer et
+# nvm reste introuvable des qu'on ouvre une session SSH : node et npm ne
+# vivent alors que le temps de ce script. On pose les deux fichiers que bash
+# lit -- .bashrc en session interactive, .profile en shell de login -- sans
+# jamais ecraser ceux qui existent deja.
+for profil in "$HOME/.bashrc" "$HOME/.profile"; do
+    if [ ! -f "$profil" ]; then
+        printf '%s
+' 'export NVM_DIR="$HOME/.nvm"'             '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' > "$profil"
+        chmod 644 "$profil"
+        echo "       $(basename "$profil") cree (chargement de nvm)"
+    elif ! grep -q 'NVM_DIR' "$profil"; then
+        printf '
+%s
+' 'export NVM_DIR="$HOME/.nvm"'             '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> "$profil"
+        echo "       $(basename "$profil") complete (chargement de nvm)"
+    fi
+done
+
 . "$NVM_DIR/nvm.sh"
 nvm install 20 2>/dev/null || true
 nvm use 20
