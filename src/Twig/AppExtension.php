@@ -28,6 +28,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('toc_anchors', [$this, 'addTocAnchors'], ['is_safe' => ['html']]),
             new TwigFilter('menuVisible', [$this, 'menuVisible']),
             new TwigFilter('plaintext', [$this, 'plaintext']),
+            new TwigFilter('phone', [$this, 'phone']),
         ];
     }
 
@@ -146,6 +147,38 @@ class AppExtension extends AbstractExtension
         }
 
         return html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
+    /**
+     * Met en forme un numero de telephone pour l'affichage.
+     *
+     * Le champ ne retient que les chiffres : rendu tel quel, un numero
+     * francais sort en « 0561902040 », illisible. On le regroupe par paires,
+     * comme il s'ecrit. Un format non reconnu ressort inchange, plutot que
+     * decoupe n'importe comment.
+     */
+    public function phone(?string $number): string
+    {
+        $brut = preg_replace('/[^\d+]/', '', (string) $number);
+        if ($brut === '') {
+            return '';
+        }
+
+        if (str_starts_with($brut, '0033')) {
+            $brut = '+33' . substr($brut, 4);
+        }
+
+        // +33 5 61 90 20 40 : l'indicatif, puis le chiffre isole, puis les paires
+        if (preg_match('/^\+33(\d{9})$/', $brut, $m)) {
+            return '+33 ' . $m[1][0] . ' ' . implode(' ', str_split(substr($m[1], 1), 2));
+        }
+
+        // 05 61 90 20 40
+        if (preg_match('/^0\d{9}$/', $brut)) {
+            return implode(' ', str_split($brut, 2));
+        }
+
+        return (string) $number;
     }
 
     /**

@@ -92,7 +92,7 @@
             "contactPoint": {
                 "@type": "ContactPoint"
                 {%- if site.phone|default('') is not empty %},
-                "telephone": {{ site.phone|json_encode|raw }},
+                "telephone": {{ site.phone|phone|json_encode|raw }},
                 "contactType": "customer service"
                 {%- endif %}
                 {%- if site.email|default('') is not empty %},
