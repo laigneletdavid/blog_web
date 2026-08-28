@@ -294,10 +294,31 @@ nvm install 20 2>/dev/null || true
 nvm use 20
 
 echo "[5/7] Build des assets..."
+
+# OVH mutualise plafonne bas le nombre de fichiers ouverts simultanement. npm
+# en ouvre beaucoup pour son cache et s'arrete sur « EMFILE: too many open
+# files ». On remonte a la limite dure du compte et on serre la concurrence.
+LIMITE_DURE=$(ulimit -Hn 2>/dev/null || echo "")
+if [ -n "$LIMITE_DURE" ]; then
+    if [ "$LIMITE_DURE" = "unlimited" ]; then
+        ulimit -n 8192 2>/dev/null || true
+    else
+        ulimit -n "$LIMITE_DURE" 2>/dev/null || true
+    fi
+fi
+echo "       fichiers ouverts autorises : $(ulimit -n)"
+npm config set maxsockets 1 >/dev/null 2>&1 || true
+
 # npm install (et pas npm ci) : sur OVH mutualise, npm ci echoue
 # systematiquement avec "Missing X from lock file" (peer deps resolues
 # differemment selon l'env). npm install est plus tolerant et fonctionne.
-npm install
+if ! npm install --no-audit --no-fund; then
+    echo ""
+    echo "ERREUR: npm install a echoue."
+    echo "Si le message parle de EMFILE, vider le cache et reessayer :"
+    echo "  npm cache clean --force && ./scripts/deploy-ovh.sh"
+    exit 1
+fi
 
 # Patch sync-rpc (contournement restriction ports OVH mutualise)
 ESLINT_FILE="node_modules/@symfony/webpack-encore/lib/plugins/eslint.js"
