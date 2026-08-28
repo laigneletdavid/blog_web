@@ -4,6 +4,8 @@
 #   Premier deploy : ./scripts/deploy-ovh.sh --init
 #   Mises a jour   : ./scripts/deploy-ovh.sh
 #   Import dump    : ./scripts/deploy-ovh.sh --import dump.sql
+#   Vider la BDD   : ./scripts/deploy-ovh.sh --reset-db
+#   Sans migrations: ./scripts/deploy-ovh.sh --skip-migrations
 set -euo pipefail
 
 SITE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -167,6 +169,68 @@ ENVEOF
     else
         exec "$0"
     fi
+fi
+
+# =============================================================================
+# MODE --reset-db : Vider entierement la base
+# =============================================================================
+# Une migration qui echoue en cours de route laisse des tables derriere elle
+# sans rien inscrire dans doctrine_migration_versions : Doctrine croit alors
+# n'avoir rien fait et bute sur « Table already exists » a chaque relance. On
+# repart d'une base vide plutot que de demeler cet etat batard.
+if [[ "${1:-}" == "--reset-db" ]]; then
+    if [ ! -f .env.local ]; then
+        echo "ERREUR: .env.local manquant. Lancer --init d'abord."
+        exit 1
+    fi
+
+    DB_URL=$(grep '^DATABASE_URL=' .env.local | head -1 | sed 's/^DATABASE_URL=//' | tr -d '"')
+    DB_USER=$(echo "$DB_URL" | sed 's|mysql://||' | cut -d: -f1)
+    DB_PASS=$(echo "$DB_URL" | sed 's|mysql://||' | cut -d: -f2 | cut -d@ -f1)
+    DB_HOST=$(echo "$DB_URL" | cut -d@ -f2 | cut -d: -f1)
+    DB_PORT=$(echo "$DB_URL" | cut -d@ -f2 | cut -d: -f2 | cut -d/ -f1)
+    DB_NAME=$(echo "$DB_URL" | cut -d/ -f4 | cut -d? -f1)
+
+    NB=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" -N -B \
+        -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$DB_NAME';" 2>/dev/null)
+
+    echo "=== Vidage de la base ==="
+    echo "BDD    : $DB_NAME@$DB_HOST:$DB_PORT"
+    echo "Tables : ${NB:-?}"
+    echo ""
+    if [ "${NB:-0}" = "0" ]; then
+        echo "[OK] La base est deja vide."
+        exit 0
+    fi
+    echo "ATTENTION: les $NB tables et leurs donnees vont etre supprimees. Continuer ? (y/N)"
+    read -r REPLY
+    if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
+        echo "Vidage annule."
+        exit 0
+    fi
+
+    # Les cles etrangeres imposent un ordre de suppression ; on les desactive
+    # le temps du DROP plutot que de calculer cet ordre.
+    mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" -N -B \
+        -e "SELECT CONCAT('DROP TABLE IF EXISTS \`', table_name, '\`;') FROM information_schema.tables WHERE table_schema='$DB_NAME';" \
+        > /tmp/drop_all.sql
+
+    {
+        echo "SET FOREIGN_KEY_CHECKS=0;"
+        cat /tmp/drop_all.sql
+        echo "SET FOREIGN_KEY_CHECKS=1;"
+    } | mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME"
+    rm -f /tmp/drop_all.sql
+
+    RESTE=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" -N -B \
+        -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$DB_NAME';" 2>/dev/null)
+    if [ "${RESTE:-1}" = "0" ]; then
+        echo "[OK] Base videe. Enchainer avec --import <dump.sql>, ou --init pour les migrations."
+    else
+        echo "ERREUR: $RESTE table(s) subsistent."
+        exit 1
+    fi
+    exit 0
 fi
 
 # =============================================================================
