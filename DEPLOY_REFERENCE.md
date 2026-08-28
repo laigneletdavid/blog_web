@@ -73,6 +73,30 @@ git commit -m "Feat: bw_nom_client - setup initial"
 git push -u origin bw_nom_client
 ```
 
+### 2 bis. Fabriquer le dump de deploiement (avant le push)
+
+```bash
+./scripts/make-deploy-dump.sh
+git add -f scripts/bw_nom_client_dump.sql
+git commit -m "chore: dump de deploiement" && git push
+```
+
+Le depot etant **public**, ce dump est construit pour pouvoir y figurer : il
+emporte la structure complete, le contenu editorial et les numeros de migration
+deja appliques, mais **aucun compte, aucune empreinte de mot de passe, aucun
+message de contact, aucun abonne, aucune donnee de navigation**. Le script
+refuse d'ecrire le fichier s'il y detecte l'un de ces elements.
+
+Consequence : **le compte d'administration n'est pas dans le dump**. Il se cree
+sur le serveur, une fois l'import passe :
+
+```bash
+php bin/console app:create-super-admin --email=... --password=...
+```
+
+Ne jamais livrer un `mysqldump` brut : il contient les empreintes de mots de
+passe, et sur un depot public une empreinte faible tombe en quelques secondes.
+
 ### 3. Sur OVH (premier deploy)
 
 ```bash
@@ -83,14 +107,18 @@ ssh user@ssh.clusterXXX.hosting.ovh.net
 git clone -b bw_nom_client https://github.com/laigneletdavid/blog_web.git .
 
 # Deploy complet (tout-en-un)
-chmod +x scripts/deploy-ovh.sh
 ./scripts/deploy-ovh.sh --init
 ```
+
+> Le `chmod +x` n'est plus necessaire : les scripts sont executables dans le
+> depot. En faire un rendrait le `git pull` suivant impossible, git voyant le
+> changement de mode comme une modification locale.
 
 Le `--init` demande interactivement :
 - Host BDD, port, user, password, nom BDD → genere .env.local
 - MAILER_DSN Brevo
 - Chemin du dump SQL → **donner `scripts/bw_nom_client_dump.sql`**
+  (les deploys suivants le trouvent seuls dans `scripts/`)
 - Teste la connexion BDD avant de continuer
 - Lance le deploy : composer + nvm/node + build assets + cache + import dump
 
