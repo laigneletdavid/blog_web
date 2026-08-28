@@ -135,7 +135,21 @@
       "mcp__Claude_in_Chrome__computer",
       "Bash(npm install *)",
       "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && npm install driver.js --save\")",
-      "PowerShell(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && cat .env.local\")"
+      "PowerShell(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && cat .env.local\")",
+      "Bash(find //wsl.localhost/Ubuntu/home/laign/projects/blog_web/src -name \"SiteContext*\" -o -name \"Site.php\" | head -5)",
+      "Bash(grep -r \"LocalBusiness\\\\|Service.*@type\\\\|ContactPoint\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/templates --include=\"*.twig\" 2>/dev/null | head -10)",
+      "Bash(grep -r \"jsonld\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/templates --include=\"*.twig\" | wc -l)",
+      "Bash(grep -r \"class.*Entity\\\\|use SeoTrait\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/src/Entity | grep -E \"\\(Article|Page|Categorie|Tag|Service|Product|Event|Portfolio|Directory|Faq\\)\" | head -30)",
+      "Bash(grep -r \"class ProductCategory\\\\|class FaqCategory\\\\|class PortfolioCategory\\\\|class DirectoryCategory\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/src/Entity --include=\"*.php\" -A 5 | grep -E \"\\(class|SeoTrait\\)\")",
+      "Bash(grep -r \"Product\\\\|Faq\\\\|Tag\" //wsl.localhost/Ubuntu/home/laign/projects/blog_web/templates --include=\"*.twig\" | grep \"@type\" | sort -u)",
+      "Bash(ls -la //wsl.localhost/Ubuntu/home/laign/projects/blog_web/config/packages/ 2>/dev/null | head -30)",
+      "PowerShell(wsl -d Ubuntu -e bash -c \"cd /home/laign/projects/blog_web && rm -f nul && ls -la nul 2>&1\")",
+      "Bash(wsl -e bash -c \"cd /home/laign/projects/blog_web && npm run build 2>&1 | tail -15\")",
+      "Bash(wsl -e bash -lc \"cd /home/laign/projects/blog_web && npm run build 2>&1 | tail -15\")",
+      "Bash(wsl -d Ubuntu bash -lc \"cd /home/laign/projects/blog_web && npx encore production 2>&1 | tail -15\")",
+      "Bash(wsl -d Ubuntu bash -lc \"which node && node --version && which npm\")",
+      "Bash(wsl -d Ubuntu bash -lc \"source ~/.nvm/nvm.sh 2>/dev/null; which node && node --version\")",
+      "Bash(wsl -d Ubuntu bash -lc \"source ~/.nvm/nvm.sh && cd /home/laign/projects/blog_web && npx encore production 2>&1 | tail -20\")"
     ]
   }
 }
