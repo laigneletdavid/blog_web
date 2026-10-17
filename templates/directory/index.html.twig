@@ -16,68 +16,53 @@
 
     <h1 class="title-one mb-4">{{ title_page }}</h1>
 
-    {# --- Recherche --- #}
-    <form class="directory-search mb-4" method="get" action="{{ path('app_directory') }}">
-        <div class="input-group" style="max-width: 480px;">
-            <input type="text" name="q" class="form-control" placeholder="Rechercher un nom, metier, ville..." value="{{ search }}" autocomplete="off">
-            <button class="btn btn-primary" type="submit">{{ bi('search') }}</button>
+    {# --- Recherche + filtres par famille de tags --- #}
+    <form class="directory-search mb-4" method="get" action="{{ path('app_directory') }}" data-controller="auto-submit">
+        {% if activeCategory %}<input type="hidden" name="categorie" value="{{ activeCategory.slug }}">{% endif %}
+        <div class="directory-search__row">
+            <div class="input-group directory-search__input">
+                <input type="text" name="q" class="form-control" placeholder="Rechercher un nom, metier, ville..." value="{{ search }}" autocomplete="off">
+                <button class="btn btn-primary" type="submit" aria-label="Rechercher">{{ bi('search') }}</button>
+            </div>
+            {% for filter in tagFilterGroups %}
+                <div class="directory-search__filter">
+                    <label class="visually-hidden" for="tag-filter-{{ filter.group.slug }}">{{ filter.group.name }}</label>
+                    <select id="tag-filter-{{ filter.group.slug }}"
+                            name="tags[]"
+                            class="form-select directory-search__select"
+                            style="--tg-color: {{ filter.group.color }};"
+                            data-action="change->auto-submit#submit">
+                        <option value="">{{ filter.group.name }} : tous</option>
+                        {% for row in filter.tags %}
+                            <option value="{{ row.tag.slug }}"{% if row.tag.slug in activeTagSlugs %} selected{% endif %}>{{ row.tag.name }} ({{ row.count }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+            <noscript>
+                <button type="submit" class="btn btn-outline-primary">Filtrer</button>
+            </noscript>
         </div>
+        {% if search != '' or activeTagSlugs is not empty %}
+            <a href="{{ path('app_directory', {categorie: activeCategory ? activeCategory.slug : null}) }}"
+               class="directory-search__clear">{{ bi('x-lg', 'me-1') }}Effacer les filtres</a>
+        {% endif %}
     </form>
 
     {# --- Filtres categories --- #}
     {% if directoryCategories|length > 1 %}
     <div class="directory-filters mb-4">
-        <a href="{{ path('app_directory') }}"
-           class="directory-filters__pill{% if not activeCategory and search == '' and activeTagSlugs is empty %} directory-filters__pill--active{% endif %}">
+        <a href="{{ path('app_directory', {q: search ?: null, tags: activeTagSlugs}) }}"
+           class="directory-filters__pill{% if not activeCategory %} directory-filters__pill--active{% endif %}">
             Tous
         </a>
         {% for cat in directoryCategories %}
-        <a href="{{ path('app_directory', {categorie: cat.slug}) }}"
+        <a href="{{ path('app_directory', {categorie: cat.slug, q: search ?: null, tags: activeTagSlugs}) }}"
            class="directory-filters__pill{% if activeCategory and activeCategory.id == cat.id %} directory-filters__pill--active{% endif %}">
             {% if cat.icon %}{{ bi(cat.icon, 'me-1') }}{% endif %}
             {{ cat.name }}
         </a>
         {% endfor %}
-    </div>
-    {% endif %}
-
-    {# --- Filtres par familles de tags (genere automatiquement) --- #}
-    {% if activeTagGroups is not empty %}
-    <div class="directory-tag-filters mb-4">
-        {% for group in activeTagGroups %}
-            {% set groupTags = group.tags|filter(t => t.directoryEntries|filter(d => d.isActive)|length > 0) %}
-            {% if groupTags|length > 0 %}
-                <div class="directory-tag-filters__group mb-2">
-                    <span class="directory-tag-filters__label" style="--tg-color: {{ group.color }};">
-                        {{ group.name }}
-                    </span>
-                    {% for tag in groupTags %}
-                        {% set isActiveTag = tag.slug in activeTagSlugs %}
-                        {% set newTags = isActiveTag
-                            ? activeTagSlugs|filter(s => s != tag.slug)
-                            : activeTagSlugs|merge([tag.slug]) %}
-                        <a href="{{ path('app_directory', {
-                                q: search ?: null,
-                                categorie: activeCategory ? activeCategory.slug : null,
-                                tags: newTags
-                            }) }}"
-                           class="directory-tag-filters__pill{% if isActiveTag %} directory-tag-filters__pill--active{% endif %}"
-                           style="--tg-color: {{ group.color }};">
-                            {{ tag.name }}
-                        </a>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endfor %}
-        {% if activeTagSlugs is not empty %}
-            <a href="{{ path('app_directory', {
-                    q: search ?: null,
-                    categorie: activeCategory ? activeCategory.slug : null
-                }) }}"
-               class="directory-tag-filters__clear">
-                Effacer les filtres tags
-            </a>
-        {% endif %}
     </div>
     {% endif %}
 
