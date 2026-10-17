@@ -136,6 +136,14 @@ class DirectoryEntryCrudController extends AbstractCrudController
             ->setHelp('URL du profil Instagram')
             ->hideOnIndex();
 
+        yield TextField::new('tiktok', 'TikTok')
+            ->setHelp('URL du profil TikTok')
+            ->hideOnIndex();
+
+        yield TextField::new('bookingUrl', 'Agenda')
+            ->setHelp('Lien de prise de rendez-vous (Calendly, Google Agenda...)')
+            ->hideOnIndex();
+
         // --- Panel Referencement ---
         yield FormField::addPanel('Referencement')
             ->setIcon('fa fa-search')

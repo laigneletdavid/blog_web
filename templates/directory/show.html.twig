@@ -159,7 +159,7 @@
                     {% endif %}
 
                     {# Carte reseaux sociaux #}
-                    {% if entry.website or entry.linkedin or entry.facebook or entry.instagram %}
+                    {% if entry.website or entry.linkedin or entry.facebook or entry.instagram or entry.tiktok or entry.bookingUrl %}
                     <div class="directory-sidebar__card">
                         <h3 class="directory-sidebar__title">{{ bi('link-45deg', 'me-2') }}Liens</h3>
                         <div class="directory-sidebar__links">
@@ -181,6 +181,16 @@
                             {% if entry.instagram %}
                             <a href="{{ entry.instagram }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link">
                                 {{ bi('instagram') }}<span>Instagram</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
+                            </a>
+                            {% endif %}
+                            {% if entry.tiktok %}
+                            <a href="{{ entry.tiktok }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link">
+                                {{ bi('tiktok') }}<span>TikTok</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
+                            </a>
+                            {% endif %}
+                            {% if entry.bookingUrl %}
+                            <a href="{{ entry.bookingUrl }}" target="_blank" rel="noopener noreferrer" class="directory-sidebar__link directory-sidebar__link--booking">
+                                {{ bi('calendar3') }}<span>Prendre rendez-vous</span>{{ bi('box-arrow-up-right', 'ms-auto') }}
                             </a>
                             {% endif %}
                         </div>
