@@ -6,7 +6,6 @@ use App\Entity\DirectoryEntry;
 use App\Form\DirectoryEntryType;
 use App\Repository\DirectoryCategoryRepository;
 use App\Repository\DirectoryEntryRepository;
-use App\Repository\TagGroupRepository;
 use App\Repository\TagRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
@@ -32,7 +31,6 @@ class DirectoryController extends AbstractController
         Request $request,
         DirectoryEntryRepository $entryRepository,
         DirectoryCategoryRepository $categoryRepository,
-        TagGroupRepository $tagGroupRepository,
         TagRepository $tagRepository,
     ): Response {
         if (!$this->siteContext->hasModule('directory')) {
@@ -64,9 +62,9 @@ class DirectoryController extends AbstractController
             : [];
         $activeTagIds = array_map(static fn ($t) => $t->getId(), $activeTags);
 
-        // Familles ayant au moins un tag utilise par une fiche active.
-        // Sert a generer dynamiquement les groupes de filtres.
-        $activeTagGroups = $tagGroupRepository->findActiveForDirectory();
+        // Une liste deroulante par famille de tags (Metier, Ville...), limitee
+        // aux tags reellement portes par une fiche active.
+        $tagFilterGroups = $tagRepository->findDirectoryFilterGroups();
 
         $entries = $entryRepository->findFiltered(
             $search !== '' ? $search : null,
@@ -86,7 +84,7 @@ class DirectoryController extends AbstractController
             'directoryCategories' => $directoryCategories,
             'activeCategory' => $activeCategory,
             'search' => $search,
-            'activeTagGroups' => $activeTagGroups,
+            'tagFilterGroups' => $tagFilterGroups,
             'activeTagSlugs' => $activeTagSlugs,
             'seo' => $seo,
         ]);
