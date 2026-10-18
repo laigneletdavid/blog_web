@@ -71,16 +71,21 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Article[] Returns an array of All Published Articles
+     * Articles de la page d'accueil : les vedettes d'abord, puis les plus
+     * recents. Sans date de publication, on retombe sur la date de creation.
+     *
+     * @return Article[]
      */
-    public function homeArticles(): array
+    public function homeArticles(int $limit = 2): array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.published = TRUE')
             ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(2)
+            ->addSelect('COALESCE(a.publishedAt, a.createdAt) AS HIDDEN publicationDate')
+            ->orderBy('a.isFeatured', 'DESC')
+            ->addOrderBy('publicationDate', 'DESC')
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
             ;
@@ -147,7 +152,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->addSelect('m')
             ->leftJoin('a.categories', 'c')
             ->addSelect('c')
-            ->orderBy('a.createdAt', 'DESC')
+            ->addSelect('COALESCE(a.publishedAt, a.createdAt) AS HIDDEN publicationDate')
+            ->orderBy('publicationDate', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -162,7 +168,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->addSelect('m')
             ->leftJoin('a.categories', 'c')
             ->addSelect('c')
-            ->orderBy('a.createdAt', 'DESC')
+            ->addSelect('COALESCE(a.publishedAt, a.createdAt) AS HIDDEN publicationDate')
+            ->orderBy('publicationDate', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
