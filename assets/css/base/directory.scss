@@ -7,7 +7,7 @@
   min-height: 60vh;
 }
 
-// Search
+// Search + filtres par famille de tags (une liste deroulante par famille)
 .directory-search {
   .form-control {
     border-color: var(--border);
@@ -19,8 +19,62 @@
     }
   }
 
-  .btn {
+  .input-group .btn {
     border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__input {
+    flex: 1 1 18rem;
+    max-width: 30rem;
+  }
+
+  &__filter {
+    flex: 1 1 12rem;
+    min-width: 11rem;
+    max-width: 16rem;
+  }
+
+  &__select {
+    border-color: var(--border);
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    color: var(--text);
+    background-color: var(--surface);
+
+    &:focus {
+      border-color: var(--tg-color, var(--primary));
+      box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--tg-color, var(--primary)) 20%, transparent);
+    }
+  }
+
+  &__clear {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
+  // Mobile : chaque champ sur sa propre ligne, plus de liste a rallonge
+  @media (max-width: 575.98px) {
+    &__input,
+    &__filter {
+      flex: 1 1 100%;
+      min-width: 0;
+      max-width: none;
+    }
   }
 }
 
