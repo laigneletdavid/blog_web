@@ -41,6 +41,50 @@ class TagRepository extends ServiceEntityRepository
     }
 
     /**
+     * Familles de tags utilisables comme filtres de l'annuaire : uniquement
+     * les tags portes par au moins une fiche active, avec le nombre de fiches.
+     * Une seule requete, la ou le template comptait fiche par fiche.
+     *
+     * @return array<int, array{group: TagGroup, tags: array<int, array{tag: Tag, count: int}>}>
+     */
+    public function findDirectoryFilterGroups(): array
+    {
+        $rows = $this->createQueryBuilder('t')
+            ->select('t', 'g', 'COUNT(DISTINCT d.id) AS entryCount')
+            ->innerJoin('t.tagGroup', 'g')
+            ->innerJoin('t.directoryEntries', 'd')
+            ->andWhere('d.isActive = true')
+            ->groupBy('t.id')
+            ->addGroupBy('g.id')
+            ->orderBy('g.displayOrder', 'ASC')
+            ->addOrderBy('g.name', 'ASC')
+            ->addOrderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $groups = [];
+
+        foreach ($rows as $row) {
+            $tag = $row[0];
+            $group = $tag->getTagGroup();
+
+            if ($group === null) {
+                continue;
+            }
+
+            $groupId = $group->getId();
+
+            if (!isset($groups[$groupId])) {
+                $groups[$groupId] = ['group' => $group, 'tags' => []];
+            }
+
+            $groups[$groupId]['tags'][] = ['tag' => $tag, 'count' => (int) $row['entryCount']];
+        }
+
+        return array_values($groups);
+    }
+
+    /**
      * @return array<array{0: Tag, articleCount: int}>
      */
     public function findAllWithArticleCount(): array
