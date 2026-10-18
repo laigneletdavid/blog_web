@@ -78,6 +78,17 @@ class DirectoryEntry implements SanitizableContentInterface
     #[Assert\Url]
     private ?string $instagram = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
+    private ?string $tiktok = null;
+
+    /**
+     * Lien de prise de rendez-vous (Calendly, Google Agenda, module metier...).
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
+    private ?string $bookingUrl = null;
+
     #[ORM\ManyToOne(targetEntity: DirectoryCategory::class, inversedBy: 'entries')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?DirectoryCategory $category = null;
@@ -322,6 +333,30 @@ class DirectoryEntry implements SanitizableContentInterface
     public function setInstagram(?string $instagram): self
     {
         $this->instagram = $instagram;
+
+        return $this;
+    }
+
+    public function getTiktok(): ?string
+    {
+        return $this->tiktok;
+    }
+
+    public function setTiktok(?string $tiktok): self
+    {
+        $this->tiktok = $tiktok;
+
+        return $this;
+    }
+
+    public function getBookingUrl(): ?string
+    {
+        return $this->bookingUrl;
+    }
+
+    public function setBookingUrl(?string $bookingUrl): self
+    {
+        $this->bookingUrl = $bookingUrl;
 
         return $this;
     }

@@ -2,7 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\DirectoryCategory;
 use App\Entity\DirectoryEntry;
+use App\Repository\DirectoryCategoryRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -20,6 +23,19 @@ class DirectoryEntryType extends AbstractType
             ->add('firstName', TextType::class, ['label' => 'Prenom', 'required' => true])
             ->add('lastName', TextType::class, ['label' => 'Nom', 'required' => true])
             ->add('jobTitle', TextType::class, ['label' => 'Poste / Metier', 'required' => false])
+            ->add('category', EntityType::class, [
+                'class' => DirectoryCategory::class,
+                'choice_label' => 'name',
+                'label' => 'Categorie',
+                'required' => true,
+                'placeholder' => 'Choisir une categorie',
+                'help' => 'Affichee en badge sur votre fiche et utilisee comme filtre dans l\'annuaire.',
+                'query_builder' => static fn (DirectoryCategoryRepository $repository) => $repository
+                    ->createQueryBuilder('c')
+                    ->where('c.isActive = :active')
+                    ->setParameter('active', true)
+                    ->orderBy('c.position', 'ASC'),
+            ])
             ->add('company', TextType::class, [
                 'label' => 'Entreprise',
                 'required' => true,
@@ -40,6 +56,12 @@ class DirectoryEntryType extends AbstractType
             ->add('linkedin', UrlType::class, ['label' => 'LinkedIn', 'required' => false])
             ->add('facebook', UrlType::class, ['label' => 'Facebook', 'required' => false])
             ->add('instagram', UrlType::class, ['label' => 'Instagram', 'required' => false])
+            ->add('tiktok', UrlType::class, ['label' => 'TikTok', 'required' => false])
+            ->add('bookingUrl', UrlType::class, [
+                'label' => 'Agenda / prise de rendez-vous',
+                'required' => false,
+                'help' => 'Lien vers votre agenda en ligne (Calendly, Google Agenda...).',
+            ])
             ->add('photoFile', FileType::class, [
                 'label' => 'Photo',
                 'mapped' => false,
