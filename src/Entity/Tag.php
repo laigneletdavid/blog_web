@@ -66,6 +66,9 @@ class Tag
 
         // Les tags sont noIndex par defaut (contrairement aux autres entites).
         // Le client choisit lesquels promouvoir en passant noIndex a false.
+        // La regle vit ici et nulle part ailleurs : SeoTrait declare la colonne
+        // avec DEFAULT 0 et PHP refuse qu'une classe redeclare la propriete
+        // d'un trait avec une autre valeur initiale.
         $this->noIndex = true;
     }
 

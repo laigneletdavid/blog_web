@@ -95,10 +95,17 @@ class Tag
 ```
 
 Particularite : mettre `noIndex = true` par defaut pour les tags (contrairement aux autres entites ou c'est `false`).
-Surcharger la propriete dans Tag.php :
+
+Attention : on ne peut pas surcharger la propriete dans Tag.php. PHP refuse qu'une
+classe redeclare la propriete d'un trait avec une autre valeur initiale (fatal
+error : « define the same property [...] considered incompatible »). La regle est
+donc portee par le constructeur, et le defaut SQL reste celui de SeoTrait (0) :
 ```php
-#[ORM\Column(type: 'boolean', options: ['default' => true])]
-private bool $noIndex = true;
+public function __construct()
+{
+    // ...
+    $this->noIndex = true;
+}
 ```
 
 **`src/Controller/Admin/TagCrudController.php`** — Ajouter le panel SEO (copier le pattern de `CategorieCrudController`) :
