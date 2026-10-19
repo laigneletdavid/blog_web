@@ -1282,6 +1282,32 @@ main { overflow-x: clip; }
 /* L'en-tete etant fixe, les pages a fond clair doivent lui laisser sa place. */
 .bm-nav--plein ~ main { padding-top: 92px; }
 
+/* --- Passe le visuel, l'en-tete se pose --- */
+/* L'en-tete transparent ne tient que tant qu'un fond sombre le porte. Des
+   que le visiteur a depasse le bandeau, il se retrouvait creme sur creme :
+   logo fantome et liens invisibles. Il reprend donc ici le fond plein. */
+.bm-nav--clair {
+    transition: background .35s ease, color .35s ease, border-color .35s ease;
+}
+
+.bm-nav--clair.bm-nav--pose {
+    background: var(--bm-creme);
+    color: var(--bm-encre);
+    border-bottom: 1px solid var(--bm-filet);
+}
+
+.bm-nav--clair.bm-nav--pose .bm-nav__marque img {
+    filter: none;
+}
+
+.bm-nav--clair.bm-nav--pose .bm-nav__bouton { border-color: var(--bm-filet); }
+
+.bm-nav--clair.bm-nav--pose .bm-nav__bouton--plein {
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+    border-color: var(--bm-encre);
+}
+
 @media (max-width: 1100px) {
     .bm-nav__liens { gap: 22px; }
     .bm-nav__long { display: none; }
@@ -1509,4 +1535,697 @@ main { overflow-x: clip; }
     .bm-portal .checklist .grid article {min-height:auto}
     .bm-portal .deposit-cta {grid-template-columns:1fr;padding:28px 24px;gap:24px}
     .bm-portal .deposit-cta a {justify-content:center;white-space:normal;text-align:center}
+}
+
+
+/* ======================================================================
+   19. PARCOURS GUIDES — rendez-vous et demarrage de dossier
+
+   Ces deux pages viennent du lot avec leur propre feuille (v9.css), qui a
+   son vocabulaire de variables. Comme pour les pages de parcours, on relie
+   ce vocabulaire au notre plutot que de reprendre son :root, qui aurait
+   repeint tout le site.
+   ====================================================================== */
+
+.bm-dossier {
+    --cream: var(--bm-creme);
+    --ink: var(--bm-encre);
+    --deep: #101A14;
+    --paper: #EEE7DD;
+    --muted: #69736D;
+    --line: rgba(20, 32, 25, .2);
+    --serif: var(--bm-serif);
+    --sans: var(--bm-sans);
+
+    background: var(--paper);
+    color: var(--ink);
+}
+
+/* Les titres suivent la couleur de leur section : creme sur les fonds
+   sombres, encre ailleurs. Faute de quoi le CMS impose la sienne, plus
+   specifique que l'heritage, et le texte disparait sur le fond fonce. */
+.bm-dossier h1,
+.bm-dossier h2,
+.bm-dossier h3,
+.bm-dossier p,
+.bm-dossier a,
+.bm-dossier label,
+.bm-dossier small,
+.bm-dossier strong {
+    color: inherit;
+}
+
+/* Le lot cache ses etapes tant qu'un projet n'est pas choisi. La regle est
+   sans classe dans v9.css, elle n'a donc pas suivi l'extraction. */
+.bm-dossier [hidden] {
+    display: none !important;
+}
+
+.bm-dossier textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+
+/* ----------------------------------------------------------------------
+   19 bis. COLLISIONS AVEC LE CMS
+
+   Le lot emploie quatre noms que le CMS et Bootstrap connaissent deja.
+   On leur rend leur neutralite ici, et nulle part ailleurs : les autres
+   clients continuent d'en profiter.
+   ---------------------------------------------------------------------- */
+
+/* .hero est un alias historique de .home-hero, qui pose deux disques flous
+   en decoration. Le fond en degrade du lot est plus specifique et l'emporte,
+   mais les disques, eux, restaient visibles par-dessus. */
+.bm-dossier .hero::before,
+.bm-dossier .hero::after {
+    content: none;
+}
+
+/* Bootstrap fait de .row une gouttiere en marges negatives, et donne a ses
+   enfants une marge et des retraits. Le lot, lui, en fait une grille. */
+.bm-dossier .row {
+    margin: 0;
+}
+
+.bm-dossier .row > * {
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 0;
+    width: auto;
+}
+
+/* Bootstrap fait de .progress une barre arrondie en flex. Ici c'est un trait
+   d'un pixel dont on remplit la largeur. */
+.bm-dossier .progress {
+    display: block;
+    overflow: visible;
+    border-radius: 0;
+}
+
+/* Sous 768px, le CMS impose aux boutons une hauteur de 44px en inline-flex,
+   pour le confort tactile. Le bouton d'envoi, lui, occupe toute la largeur
+   et son texte doit rester centre. */
+.bm-dossier .btn {
+    text-align: center;
+    justify-content: center;
+}
+
+
+/* ======================================================================
+   19 ter. REGLES REPRISES DE V9.CSS
+   Regles de v9.css, prefixees par .bm-dossier et gardees dans leurs media
+   queries d'origine. Ne pas aplatir : une regle ecrite pour les petits
+   ecrans appliquee partout avait deja casse l'accueil.
+   ====================================================================== */
+
+.bm-dossier .hero {
+    min-height:72vh;
+    background:radial-gradient(circle at 75% 20%,#455749,#26362b 30%,#101a14 75%);
+    color:var(--cream);
+    padding:0 6vw 9vh;
+    display:flex;
+    align-items:flex-end;
+}
+
+.bm-dossier .ey {
+    font-size:10px;
+    letter-spacing:.24em;
+}
+
+.bm-dossier .hero h1,
+.bm-dossier .section h2,
+.bm-dossier .final h2 {
+    font:500 clamp(58px,8vw,128px)/.87 var(--serif);
+    letter-spacing:-.055em;
+    margin:20px 0 26px;
+}
+
+.bm-dossier .hero p {
+    font:500 22px/1.5 var(--serif);
+    max-width:720px;
+    color:#d8d9d5;
+}
+
+.bm-dossier .section {
+    padding:100px 6vw;
+}
+
+.bm-dossier .section.alt {
+    background:var(--deep);
+    color:var(--cream);
+}
+
+.bm-dossier .section h2 {
+    font-size:clamp(45px,5.5vw,84px);
+}
+
+.bm-dossier .layout {
+    display:grid;
+    grid-template-columns:.55fr 1.45fr;
+    gap:7vw;
+}
+
+.bm-dossier .form {
+    max-width:900px;
+}
+
+.bm-dossier .row {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.bm-dossier .field {
+    margin-bottom:17px;
+}
+
+.bm-dossier .field label {
+    display:block;
+    font-size:10px;
+    letter-spacing:.14em;
+    margin:0 0 8px;
+}
+
+.bm-dossier .field input,
+.bm-dossier .field select,
+.bm-dossier .field textarea {
+    width:100%;
+    border:1px solid var(--line);
+    background:transparent;
+    padding:16px;
+    font:14px var(--sans);
+    color:inherit;
+    border-radius:0;
+}
+
+.bm-dossier .alt .field input,
+.bm-dossier .alt .field select,
+.bm-dossier .alt .field textarea {
+    border-color:rgba(242,234,223,.3);
+    color:var(--cream);
+}
+
+.bm-dossier .choicegrid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:24px 0;
+}
+
+.bm-dossier .choice {
+    border:1px solid var(--line);
+    padding:22px;
+    cursor:pointer;
+    transition:.25s;
+    min-height:120px;
+}
+
+.bm-dossier .choice:hover,
+.bm-dossier .choice.active {
+    background:var(--ink);
+    color:var(--cream);
+}
+
+.bm-dossier .choice strong {
+    font:500 22px var(--serif);
+    display:block;
+    margin-bottom:8px;
+}
+
+.bm-dossier .choice small {
+    line-height:1.5;
+    opacity:.7;
+}
+
+.bm-dossier .btn {
+    display:inline-block;
+    border:1px solid currentColor;
+    border-radius:99px;
+    padding:15px 22px;
+    background:transparent;
+    color:inherit;
+    font:12px var(--sans);
+    cursor:pointer;
+}
+
+.bm-dossier .btn.solid {
+    background:var(--ink);
+    color:var(--cream);
+    border-color:var(--ink);
+}
+
+.bm-dossier .alt .btn.solid {
+    background:var(--cream);
+    color:var(--ink);
+    border-color:var(--cream);
+}
+
+.bm-dossier .note {
+    font-size:11px;
+    line-height:1.7;
+    color:var(--muted);
+    max-width:720px;
+}
+
+.bm-dossier .alt .note {
+    color:#aeb7b1;
+}
+
+.bm-dossier .result {
+    display:none;
+    margin-top:28px;
+    padding:28px;
+    border:1px solid var(--line);
+}
+
+.bm-dossier .result h3 {
+    font:500 32px var(--serif);
+    margin:0 0 12px;
+}
+
+.bm-dossier .final {
+    padding:110px 6vw;
+    background:#d8d0c5;
+}
+
+.bm-dossier .final h2 {
+    font-size:clamp(50px,6vw,95px);
+}
+
+.bm-dossier .wizard-hero {
+    min-height:82vh;
+}
+
+.bm-dossier .hero-meta {
+    display:flex;
+    gap:28px;
+    margin-top:42px;
+    font-size:9px;
+    letter-spacing:.18em;
+    opacity:.62;
+}
+
+.bm-dossier .wizard-shell {
+    padding-top:120px;
+}
+
+.bm-dossier .wizard-intro {
+    display:grid;
+    grid-template-columns:.65fr 1.35fr;
+    gap:7vw;
+    align-items:end;
+    margin-bottom:55px;
+}
+
+.bm-dossier .wizard-intro h2 {
+    margin:18px 0 0;
+}
+
+.bm-dossier .wizard-intro p {
+    max-width:570px;
+    line-height:1.8;
+    color:var(--muted);
+    margin:0 0 12px;
+}
+
+.bm-dossier .choicegrid button.choice {
+    appearance:none;
+    text-align:left;
+    font-family:inherit;
+    color:inherit;
+    background:transparent;
+}
+
+.bm-dossier .choice span {
+    font-size:9px;
+    letter-spacing:.18em;
+    opacity:.45;
+}
+
+.bm-dossier .choice.active {
+    background:var(--ink);
+    color:var(--cream);
+    transform:translateY(-3px);
+}
+
+.bm-dossier .dynamic-section {
+    scroll-margin-top:0;
+}
+
+.bm-dossier .sticky-copy {
+    position:sticky;
+    top:45px;
+    align-self:start;
+}
+
+.bm-dossier .sticky-copy h2 {
+    margin-bottom:25px;
+}
+
+.bm-dossier .sticky-copy p {
+    font-size:12px;
+    line-height:1.7;
+    opacity:.68;
+    max-width:330px;
+}
+
+.bm-dossier .progress {
+    width:180px;
+    height:1px;
+    background:rgba(242,234,223,.2);
+    margin:38px 0 10px;
+}
+
+.bm-dossier .progress i {
+    display:block;
+    height:1px;
+    width:0;
+    background:var(--cream);
+    transition:.6s;
+}
+
+.bm-dossier .dynamic-form .field {
+    padding-bottom:19px;
+    margin-bottom:22px;
+    border-bottom:1px solid rgba(242,234,223,.12);
+}
+
+.bm-dossier .dynamic-form .field label {
+    font-size:11px;
+    line-height:1.45;
+    letter-spacing:.08em;
+}
+
+.bm-dossier .dynamic-form select {
+    appearance:none;
+}
+
+.bm-dossier .identity-block {
+    margin:65px 0 30px;
+    padding-top:38px;
+    border-top:1px solid rgba(242,234,223,.35);
+}
+
+.bm-dossier .identity-block h3 {
+    font:500 36px var(--serif);
+    margin:0 0 30px;
+}
+
+.bm-dossier .result-section {
+    background:#d9d1c6;
+    padding-top:120px;
+    scroll-margin-top:0;
+}
+
+.bm-dossier .result-head {
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:7vw;
+    align-items:end;
+    margin-bottom:55px;
+}
+
+.bm-dossier .result-head h2 {
+    margin:18px 0 0;
+}
+
+.bm-dossier .result-head>p {
+    line-height:1.8;
+    color:#58635c;
+    max-width:520px;
+}
+
+.bm-dossier .result-layout {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-top:1px solid var(--line);
+    border-left:1px solid var(--line);
+}
+
+.bm-dossier .summary-card,
+.bm-dossier .check-card {
+    padding:42px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    min-height:430px;
+}
+
+.bm-dossier .summary-card h3,
+.bm-dossier .check-card h3 {
+    font:500 40px/1.05 var(--serif);
+    margin:22px 0 35px;
+}
+
+.bm-dossier .answer {
+    display:grid;
+    grid-template-columns:1fr 1.3fr;
+    gap:20px;
+    border-top:1px solid var(--line);
+    padding:14px 0;
+}
+
+.bm-dossier .answer small {
+    font-size:9px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    opacity:.55;
+}
+
+.bm-dossier .answer p {
+    margin:0;
+    font-size:12px;
+    line-height:1.55;
+}
+
+.bm-dossier .check {
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    padding:14px 0;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    line-height:1.55;
+    cursor:pointer;
+}
+
+.bm-dossier .check input {
+    margin-top:3px;
+    accent-color:var(--ink);
+}
+
+.bm-dossier .result-actions {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:35px;
+}
+
+.bm-dossier .result-actions .btn.solid {
+    background:var(--ink);
+    color:var(--cream);
+}
+
+.bm-dossier .textlink {
+    font-size:11px;
+    text-decoration:underline;
+    margin-left:8px;
+}
+
+.bm-dossier .result-email-panel {
+    margin-top:38px;
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:48px;
+    padding:34px 36px;
+    background:var(--ink);
+    color:var(--cream);
+}
+
+.bm-dossier .result-email-copy h3 {
+    font:500 clamp(28px,3vw,44px)/1.05 var(--serif);
+    letter-spacing:-.035em;
+    margin:15px 0 16px;
+}
+
+.bm-dossier .result-email-copy p {
+    margin:0;
+    max-width:560px;
+    font-size:12px;
+    line-height:1.72;
+    color:#c6cdc8;
+}
+
+.bm-dossier .result-email-controls {
+    position:relative;
+    align-self:center;
+}
+
+.bm-dossier .mail-option {
+    display:flex;
+    gap:11px;
+    align-items:flex-start;
+    margin:0 0 14px;
+    font-size:11px;
+    line-height:1.55;
+    color:#d5dad6;
+}
+
+.bm-dossier .mail-option input {
+    margin-top:3px;
+    accent-color:var(--cream);
+}
+
+.bm-dossier .mail-option a {
+    text-decoration:underline;
+}
+
+.bm-dossier .mail-send-btn {
+    width:100%;
+    margin-top:9px;
+    background:var(--cream)!important;
+    color:var(--ink)!important;
+    border-color:var(--cream)!important;
+}
+
+.bm-dossier .mail-send-btn:disabled {
+    opacity:.6;
+    cursor:wait;
+}
+
+.bm-dossier .mail-status {
+    min-height:21px;
+    margin-top:13px;
+    font-size:11px;
+    line-height:1.55;
+    color:#c5cdc7;
+}
+
+.bm-dossier .mail-status.success {
+    color:#e8f1ea;
+}
+
+.bm-dossier .mail-status.error {
+    color:#f0c7bd;
+}
+
+@media (max-width:850px) {
+    .bm-dossier .hero {
+        padding:0 22px 60px;
+    }
+
+    .bm-dossier .hero h1 {
+        font-size:17vw;
+    }
+
+    .bm-dossier .section,
+    .bm-dossier .final {
+        padding:75px 22px;
+    }
+
+    .bm-dossier .layout,
+    .bm-dossier .row {
+        grid-template-columns:1fr;
+    }
+
+    .bm-dossier .choicegrid {
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width:850px) {
+    .bm-dossier .wizard-intro,
+    .bm-dossier .result-head,
+    .bm-dossier .result-layout {
+        grid-template-columns:1fr;
+    }
+
+    .bm-dossier .wizard-intro {
+        gap:18px;
+    }
+
+    .bm-dossier .sticky-copy {
+        position:static;
+    }
+
+    .bm-dossier .summary-card,
+    .bm-dossier .check-card {
+        padding:28px;
+    }
+
+    .bm-dossier .answer {
+        grid-template-columns:1fr;
+    }
+
+    .bm-dossier .hero-meta {
+        gap:14px;
+        flex-wrap:wrap;
+    }
+}
+
+@media (max-width:850px) {
+    .bm-dossier .result-email-panel {
+        grid-template-columns:1fr;
+        gap:26px;
+        padding:28px 24px;
+    }
+}
+
+/* ----------------------------------------------------------------------
+   19 quater. AVIS DU FORMULAIRE ET IMPRESSION
+   ---------------------------------------------------------------------- */
+
+/* Le CMS affiche ses alertes au-dessus du contenu, donc par-dessus le
+   bandeau sombre de ces pages. Les messages du formulaire restent donc
+   dans le formulaire, ou le visiteur regarde deja. */
+.bm-dossier__avis {
+    margin: 0 0 20px;
+    padding: 15px 18px;
+    border-left: 2px solid currentColor;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.bm-dossier__avis--ok {
+    background: rgba(20, 32, 25, .06);
+}
+
+.bm-dossier__avis--ko {
+    background: rgba(176, 74, 56, .08);
+    color: #8C3A28;
+}
+
+/* La preparation s'imprime seule : le reste de la page n'a pas a suivre
+   le visiteur sur le papier. */
+@media print {
+    .bm-nav,
+    .footer,
+    .bm-dossier .hero,
+    .bm-dossier .wizard-shell,
+    .bm-dossier .dynamic-section,
+    .bm-dossier .result-email-panel,
+    .bm-dossier .result-actions {
+        display: none !important;
+    }
+
+    .bm-dossier .result-section {
+        display: block !important;
+        padding: 20px !important;
+        background: #FFF !important;
+    }
+
+    .bm-dossier .result-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .bm-dossier .summary-card,
+    .bm-dossier .check-card {
+        min-height: 0;
+    }
+
+    .bm-dossier .check input {
+        display: none;
+    }
 }

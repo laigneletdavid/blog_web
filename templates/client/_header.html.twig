@@ -11,7 +11,7 @@
    ====================================================================== #}
 
 {% set _route = app.request.attributes.get('_route') %}
-{% set _routes_sombres = ['app_home', 'app_votre_projet'] %}
+{% set _routes_sombres = ['app_home', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier'] %}
 {% set _sur_visuel = _route in _routes_sombres or (_route == 'app_service_show' and service is defined and service.children|default([])|length > 0) %}
 
 <header class="bm-nav{{ _sur_visuel ? ' bm-nav--clair' : ' bm-nav--plein' }}">
@@ -47,6 +47,41 @@
             <span></span><span></span>
         </button>
     </div>
+
+    {% if _sur_visuel %}
+        {# L'en-tete transparent ne tient que tant qu'un fond sombre le porte.
+           Passe le bandeau, il reprend son fond creme : sans cela le visiteur
+           se retrouvait avec un logo fantome et des liens invisibles. #}
+        <script>
+            (function () {
+                var barre = document.currentScript.closest('.bm-nav');
+                var repere = null;
+                var attente = false;
+
+                function regarder() {
+                    attente = false;
+                    repere = repere || document.querySelector(
+                        '.bm-cine .stage, .ph, .bm-dossier .hero, .bm-xp-hero'
+                    );
+                    if (!repere) { return; }
+                    barre.classList.toggle(
+                        'bm-nav--pose',
+                        repere.getBoundingClientRect().bottom <= barre.offsetHeight
+                    );
+                }
+
+                function planifier() {
+                    if (attente) { return; }
+                    attente = true;
+                    requestAnimationFrame(regarder);
+                }
+
+                document.addEventListener('DOMContentLoaded', regarder);
+                window.addEventListener('scroll', planifier, { passive: true });
+                window.addEventListener('resize', planifier, { passive: true });
+            })();
+        </script>
+    {% endif %}
 
     {# Menu deroulant pour les petits ecrans : la barre n'y tient pas. #}
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">

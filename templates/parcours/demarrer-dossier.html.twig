@@ -1,0 +1,378 @@
+{# ======================================================================
+   DEMARRER UN DOSSIER — BM NOTAIRE
+   Transpose du lot. Le balisage et les styles viennent de v9.css, repris
+   sous .bm-dossier.
+
+   Le questionnaire reste rendu par le navigateur : il s'adapte au projet
+   choisi. Mais le catalogue des questions et des pieces vient du serveur,
+   et c'est lui qui fait foi a la transmission -- le lot, lui, recopiait
+   dans le courriel les intitules que le navigateur lui renvoyait.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-dossier">
+
+    <section class="hero wizard-hero">
+        <div>
+            <span class="ey">PARCOURS PERSONNALISÉ</span>
+            <h1>Démarrer<br>un dossier</h1>
+            <p>Quelques questions ciblées pour préparer le premier échange et obtenir une liste de pièces adaptée à votre projet.</p>
+            <div class="hero-meta"><span>01 Choisir</span><span>02 Préciser</span><span>03 Préparer</span></div>
+        </div>
+    </section>
+
+    <section class="section wizard-shell">
+        <div class="wizard-intro">
+            <div>
+                <span class="ey">01 / VOTRE PROJET</span>
+                <h2>Que souhaitez-vous<br><em>faire aujourd’hui ?</em></h2>
+            </div>
+            <p>Choisissez la situation qui vous correspond. Le questionnaire s’adapte ensuite automatiquement.</p>
+        </div>
+
+        <div class="choicegrid" id="projectChoices">
+            {% for entree in entrees %}
+                <button type="button" class="choice" data-key="{{ entree.cle }}">
+                    <span>{{ '%02d'|format(loop.index) }}</span>
+                    <strong>{{ entree.titre }}</strong>
+                    <small>{{ entree.chapo }}</small>
+                </button>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="section alt dynamic-section" id="questionSection" hidden>
+        <div class="layout">
+            <div class="sticky-copy">
+                <span class="ey">02 / PRÉCISONS</span>
+                <h2 id="questionTitle">Votre<br><em>situation.</em></h2>
+                <p id="questionIntro">Répondez uniquement à ce que vous connaissez déjà. Rien n’est bloquant.</p>
+                <div class="progress"><i id="progressBar"></i></div>
+                <small id="progressText">Étape 2 sur 3</small>
+            </div>
+
+            <form class="form dynamic-form" id="smartForm">
+                <div id="dynamicFields"></div>
+
+                <div class="identity-block">
+                    <h3>Comment vous recontacter ?</h3>
+                    <div class="row">
+                        <div class="field">
+                            <label for="dos-nom">NOM &amp; PRÉNOM</label>
+                            <input id="dos-nom" name="nom" autocomplete="name" required>
+                        </div>
+                        <div class="field">
+                            <label for="dos-tel">TÉLÉPHONE</label>
+                            <input id="dos-tel" name="telephone" type="tel" autocomplete="tel" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="dos-email">ADRESSE E-MAIL</label>
+                        <input id="dos-email" name="email" type="email" autocomplete="email" required>
+                    </div>
+                    <div class="field">
+                        <label for="dos-message">UNE PRÉCISION À NOUS SIGNALER ?</label>
+                        <textarea id="dos-message" name="message" placeholder="Facultatif — contexte, question particulière, disponibilité…"></textarea>
+                    </div>
+                </div>
+
+                <button class="btn solid" type="submit">Créer ma préparation →</button>
+
+                <p class="note">
+                    Vos réponses restent dans votre navigateur tant que vous ne choisissez
+                    pas de les transmettre. Après génération de la synthèse, vous pourrez
+                    l’envoyer directement à l’étude.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <section class="section result-section" id="resultSection" hidden>
+        <div class="result-head">
+            <div>
+                <span class="ey">03 / VOTRE PRÉPARATION</span>
+                <h2>Votre dossier,<br><em>déjà structuré.</em></h2>
+            </div>
+            <p>Voici une synthèse indicative pour préparer le premier échange. Il n’est pas nécessaire de disposer de toutes les pièces pour contacter l’étude.</p>
+        </div>
+
+        <div class="result-layout">
+            <article class="summary-card">
+                <span class="ey">SYNTHÈSE</span>
+                <h3 id="summaryTitle"></h3>
+                <div id="summaryAnswers"></div>
+            </article>
+            <article class="check-card">
+                <span class="ey">PIÈCES À ENVISAGER</span>
+                <h3>Premiers documents utiles</h3>
+                <div id="checklist"></div>
+            </article>
+        </div>
+
+        <div class="result-email-panel">
+            <div class="result-email-copy">
+                <span class="ey">TRANSMETTRE</span>
+                <h3>Envoyer ma préparation<br>à l’étude.</h3>
+                <p>
+                    Votre synthèse et les pièces que vous avez cochées sont adressées à
+                    l’étude, qui vous répond ensuite directement.
+                </p>
+            </div>
+
+            <div class="result-email-controls">
+                <label class="mail-option">
+                    <input type="checkbox" id="sendCopy" checked>
+                    <span>Recevoir une copie de ma préparation par e-mail.</span>
+                </label>
+                <label class="mail-option">
+                    <input type="checkbox" id="sendConsent">
+                    <span>Je demande la transmission de cette préparation à l’étude et confirme
+                        avoir pris connaissance de la
+                        <a href="{{ path('app_legal_page', { type: 'politique-de-confidentialite' }) }}">politique de confidentialité</a>.</span>
+                </label>
+
+                {# Pot de miel : hors de l'ecran, jamais rempli par un visiteur. #}
+                <div style="position:absolute;left:-9999px" aria-hidden="true">
+                    <label>Site web<input id="prepWebsite" tabindex="-1" autocomplete="off"></label>
+                </div>
+
+                <button class="btn solid mail-send-btn" id="sendPreparation" type="button">Envoyer ma préparation à l’étude →</button>
+                <p class="mail-status" id="preparationStatus" role="status"></p>
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button class="btn" type="button" id="printPreparation">Imprimer ma préparation</button>
+            <a class="btn" href="{{ path('app_rendez_vous') }}">Prendre rendez-vous →</a>
+            <a class="textlink" href="{{ path('app_contact') }}">Contacter directement l’étude</a>
+        </div>
+    </section>
+
+</div>
+
+{# Le catalogue voyage en JSON plutot qu'en JavaScript genere : le contenu
+   des questions ne peut alors pas s'echapper dans le code. #}
+<script type="application/json" id="dossierCatalogue">{{ catalogue|json_encode|raw }}</script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if recaptcha_site_key %}
+        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    {% endif %}
+    <script>
+    // base.html.twig place ce bloc dans le <head> : on attend le document.
+    document.addEventListener('DOMContentLoaded', function () {
+        var catalogue = JSON.parse(document.getElementById('dossierCatalogue').textContent);
+        var choix = [].slice.call(document.querySelectorAll('.choice[data-key]'));
+        var sectionQuestions = document.getElementById('questionSection');
+        var champs = document.getElementById('dynamicFields');
+        var formulaire = document.getElementById('smartForm');
+        var resultat = document.getElementById('resultSection');
+        var etat = null;
+
+        function texte(valeur) {
+            var noeud = document.createElement('span');
+            noeud.textContent = valeur;
+            return noeud;
+        }
+
+        function construireChamp(champ) {
+            var nom = champ[0], intitule = champ[1], type = champ[2], options = champ[3] || [];
+            var bloc = document.createElement('div');
+            bloc.className = 'field';
+
+            var etiquette = document.createElement('label');
+            etiquette.textContent = intitule;
+            etiquette.setAttribute('for', 'q-' + nom);
+            bloc.appendChild(etiquette);
+
+            var saisie;
+            if (type === 'select') {
+                saisie = document.createElement('select');
+                var vide = document.createElement('option');
+                vide.value = '';
+                vide.textContent = 'Sélectionner…';
+                saisie.appendChild(vide);
+                options.forEach(function (option) {
+                    var noeud = document.createElement('option');
+                    noeud.textContent = option;
+                    saisie.appendChild(noeud);
+                });
+            } else if (type === 'textarea') {
+                saisie = document.createElement('textarea');
+                saisie.placeholder = 'Facultatif';
+            } else {
+                saisie = document.createElement('input');
+                saisie.type = type || 'text';
+            }
+            saisie.id = 'q-' + nom;
+            saisie.name = nom;
+            bloc.appendChild(saisie);
+
+            return bloc;
+        }
+
+        choix.forEach(function (bouton) {
+            bouton.addEventListener('click', function () {
+                choix.forEach(function (autre) { autre.classList.remove('active'); });
+                bouton.classList.add('active');
+
+                var cle = bouton.dataset.key;
+                var parcours = catalogue[cle];
+                if (!parcours) { return; }
+                etat = { cle: cle, parcours: parcours };
+
+                document.getElementById('questionTitle').textContent = parcours.label;
+                document.getElementById('questionIntro').textContent = parcours.intro;
+
+                champs.textContent = '';
+                parcours.fields.forEach(function (champ) {
+                    champs.appendChild(construireChamp(champ));
+                });
+
+                sectionQuestions.hidden = false;
+                resultat.hidden = true;
+                document.getElementById('progressBar').style.width = '66%';
+                sectionQuestions.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        formulaire.addEventListener('submit', function (evenement) {
+            evenement.preventDefault();
+            if (!etat) { return; }
+
+            var donnees = new FormData(formulaire);
+            var reponses = [];
+            etat.parcours.fields.forEach(function (champ) {
+                var valeur = (donnees.get(champ[0]) || '').toString().trim();
+                if (valeur) { reponses.push([champ[1], valeur, champ[0]]); }
+            });
+            etat.reponses = reponses;
+            etat.contact = {
+                nom: (donnees.get('nom') || '').toString().trim(),
+                telephone: (donnees.get('telephone') || '').toString().trim(),
+                email: (donnees.get('email') || '').toString().trim(),
+                message: (donnees.get('message') || '').toString().trim()
+            };
+
+            document.getElementById('summaryTitle').textContent = etat.parcours.label;
+
+            var synthese = document.getElementById('summaryAnswers');
+            synthese.textContent = '';
+            if (reponses.length) {
+                reponses.forEach(function (ligne) {
+                    var bloc = document.createElement('div');
+                    bloc.className = 'answer';
+                    var intitule = document.createElement('small');
+                    intitule.textContent = ligne[0];
+                    var valeur = document.createElement('p');
+                    valeur.textContent = ligne[1];
+                    bloc.appendChild(intitule);
+                    bloc.appendChild(valeur);
+                    synthese.appendChild(bloc);
+                });
+            } else {
+                synthese.appendChild(texte('Votre projet a été sélectionné.'));
+            }
+
+            var pieces = document.getElementById('checklist');
+            pieces.textContent = '';
+            etat.parcours.docs.forEach(function (piece, rang) {
+                var etiquette = document.createElement('label');
+                etiquette.className = 'check';
+                var case_ = document.createElement('input');
+                case_.type = 'checkbox';
+                case_.value = String(rang);
+                etiquette.appendChild(case_);
+                etiquette.appendChild(texte(piece));
+                pieces.appendChild(etiquette);
+            });
+
+            resultat.hidden = false;
+            document.getElementById('progressBar').style.width = '100%';
+            var avis = document.getElementById('preparationStatus');
+            avis.textContent = '';
+            avis.className = 'mail-status';
+            resultat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        document.getElementById('printPreparation').addEventListener('click', function () {
+            window.print();
+        });
+
+        var bouton = document.getElementById('sendPreparation');
+        bouton.addEventListener('click', function () {
+            var avis = document.getElementById('preparationStatus');
+            var consentement = document.getElementById('sendConsent');
+            var copie = document.getElementById('sendCopy');
+
+            function echec(message) {
+                avis.textContent = message;
+                avis.className = 'mail-status error';
+            }
+
+            if (!etat || !etat.reponses) { return echec('Créez d’abord votre préparation.'); }
+            if (!consentement.checked) { return echec('Veuillez confirmer la transmission à l’étude.'); }
+
+            var charge = new FormData();
+            charge.append('_token', '{{ csrf_token('demarrer_dossier') }}');
+            charge.append('projet', etat.cle);
+            charge.append('nom', etat.contact.nom);
+            charge.append('telephone', etat.contact.telephone);
+            charge.append('email', etat.contact.email);
+            charge.append('message', etat.contact.message);
+            charge.append('consentement', '1');
+            charge.append('copie', copie.checked ? '1' : '0');
+            charge.append('website', document.getElementById('prepWebsite').value || '');
+            etat.reponses.forEach(function (ligne) {
+                charge.append('reponses[' + ligne[2] + ']', ligne[1]);
+            });
+            [].slice.call(document.querySelectorAll('#checklist input')).forEach(function (case_) {
+                if (case_.checked) { charge.append('pieces[]', case_.value); }
+            });
+
+            bouton.disabled = true;
+            bouton.textContent = 'Envoi en cours…';
+            avis.textContent = 'Transmission de votre préparation…';
+            avis.className = 'mail-status';
+
+            function envoyer() {
+                fetch('{{ path('app_demarrer_dossier_envoi') }}', {
+                    method: 'POST',
+                    body: charge,
+                    headers: { 'Accept': 'application/json' }
+                }).then(function (reponse) {
+                    return reponse.json().catch(function () {
+                        return { ok: false, message: 'Réponse du serveur illisible.' };
+                    });
+                }).then(function (donnees) {
+                    if (!donnees.ok) { throw new Error(donnees.message || 'La transmission a échoué.'); }
+                    bouton.textContent = 'Préparation envoyée ✓';
+                    avis.textContent = copie.checked
+                        ? 'Votre préparation a été envoyée à l’étude et une copie vous a été adressée.'
+                        : 'Votre préparation a été envoyée à l’étude.';
+                    avis.className = 'mail-status success';
+                }).catch(function (erreur) {
+                    bouton.disabled = false;
+                    bouton.textContent = 'Réessayer l’envoi →';
+                    echec((erreur.message || 'La transmission a échoué.')
+                        + ' Vous pouvez joindre l’étude au {{ site.phone|default('05 61 90 20 40') }}.');
+                });
+            }
+
+            {% if recaptcha_site_key %}
+            grecaptcha.ready(function () {
+                grecaptcha.execute('{{ recaptcha_site_key }}', { action: 'contact' }).then(function (jeton) {
+                    charge.append('g-recaptcha-response', jeton);
+                    envoyer();
+                });
+            });
+            {% else %}
+            envoyer();
+            {% endif %}
+        });
+    });
+    </script>
+{% endblock %}

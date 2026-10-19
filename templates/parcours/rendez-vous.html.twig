@@ -1,0 +1,148 @@
+{# ======================================================================
+   PRENDRE RENDEZ-VOUS — BM NOTAIRE
+   Transpose du lot. Le balisage et les styles viennent de v9.css, repris
+   sous .bm-dossier : la feuille d'origine visait body et a, elle aurait
+   repeint le site.
+
+   Dans le lot, le formulaire n'avait pas d'action : il ne partait nulle
+   part. Il est ici branche sur la mecanique de contact du CMS, et ses
+   messages restent dans la page -- les alertes du CMS s'affichent au-dessus
+   du contenu, donc par-dessus le bandeau sombre.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-dossier">
+
+    <section class="hero">
+        <div>
+            <span class="ey">UN TEMPS POUR VOTRE PROJET</span>
+            <h1>Prendre<br>rendez-vous</h1>
+            <p>Choisissez le motif de votre rendez-vous et laissez-nous les premières informations utiles à sa préparation.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="layout">
+            <div>
+                <span class="ey">01 / VOTRE DEMANDE</span>
+                <h2>Commençons<br><em>simplement.</em></h2>
+            </div>
+
+            <form class="form" method="post" action="{{ path('app_rendez_vous') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('rendez_vous') }}">
+
+                {% if envoye %}
+                    <p class="bm-dossier__avis bm-dossier__avis--ok">
+                        Votre demande a bien été transmise. L’étude vous recontacte rapidement.
+                    </p>
+                {% endif %}
+
+                {% for erreur in erreurs %}
+                    <p class="bm-dossier__avis bm-dossier__avis--ko">{{ erreur }}</p>
+                {% endfor %}
+
+                <div class="row">
+                    <div class="field">
+                        <label for="rdv-nom">NOM &amp; PRÉNOM</label>
+                        <input id="rdv-nom" name="nom" autocomplete="name" value="{{ saisie.nom|default('') }}" required>
+                    </div>
+                    <div class="field">
+                        <label for="rdv-tel">TÉLÉPHONE</label>
+                        <input id="rdv-tel" name="telephone" type="tel" autocomplete="tel" value="{{ saisie.telephone|default('') }}" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="rdv-email">ADRESSE E-MAIL</label>
+                    <input id="rdv-email" name="email" type="email" autocomplete="email" value="{{ saisie.email|default('') }}" required>
+                </div>
+
+                <div class="field">
+                    <label for="rdv-objet">OBJET DU RENDEZ-VOUS</label>
+                    <select id="rdv-objet" name="objet" required>
+                        <option value="">Choisir…</option>
+                        {% for objet in objets %}
+                            <option{{ saisie.objet|default('') == objet ? ' selected' : '' }}>{{ objet }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="rdv-jour">JOUR SOUHAITÉ</label>
+                        <input id="rdv-jour" name="jour" type="date" value="{{ saisie.jour|default('') }}">
+                    </div>
+                    <div class="field">
+                        <label for="rdv-pref">PRÉFÉRENCE</label>
+                        <select id="rdv-pref" name="preference">
+                            {% for preference in preferences %}
+                                <option{{ saisie.preference|default('') == preference ? ' selected' : '' }}>{{ preference }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="rdv-message">QUELQUES MOTS SUR VOTRE PROJET</label>
+                    <textarea id="rdv-message" name="message">{{ saisie.message|default('') }}</textarea>
+                </div>
+
+                {# Pot de miel : hors de l'ecran, jamais rempli par un visiteur. #}
+                <div style="position:absolute;left:-9999px" aria-hidden="true">
+                    <label>Site web<input name="website" tabindex="-1" autocomplete="off"></label>
+                </div>
+
+                <button class="btn solid" type="submit">Envoyer ma demande →</button>
+
+                <p class="note">
+                    La date indiquée constitue une préférence et devra être confirmée par
+                    l’étude. Vos informations ne servent qu’à préparer ce rendez-vous.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <section class="final">
+        <span class="ey">VOUS PRÉFÉREZ NOUS PARLER ?</span>
+        <h2>Un échange<br><em>direct.</em></h2>
+        <a class="btn" href="{{ path('app_contact') }}">Voir toutes les coordonnées →</a>
+    </section>
+
+    <section class="final">
+        <span class="ey">DOCUMENTS</span>
+        <h2>Des pièces à<br><em>préparer ?</em></h2>
+        <a class="btn" href="{{ path('app_demarrer_dossier') }}">Préparer mon dossier →</a>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if recaptcha_site_key %}
+        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+        <script>
+            // base.html.twig place ce bloc dans le <head> : on attend le document.
+            document.addEventListener('DOMContentLoaded', function () {
+                var formulaire = document.querySelector('.bm-dossier form.form');
+                if (!formulaire) { return; }
+                formulaire.addEventListener('submit', function (evenement) {
+                    if (formulaire.dataset.jeton === 'ok') { return; }
+                    evenement.preventDefault();
+                    grecaptcha.ready(function () {
+                        grecaptcha.execute('{{ recaptcha_site_key }}', { action: 'contact' }).then(function (jeton) {
+                            var champ = document.createElement('input');
+                            champ.type = 'hidden';
+                            champ.name = 'g-recaptcha-response';
+                            champ.value = jeton;
+                            formulaire.appendChild(champ);
+                            formulaire.dataset.jeton = 'ok';
+                            formulaire.submit();
+                        });
+                    });
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock %}
