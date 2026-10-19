@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\SeoTrait;
 use App\Repository\ServiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -53,6 +55,25 @@ class Service implements SanitizableContentInterface
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $isActive = true;
+
+    /**
+     * Service parent. Une prestation peut ainsi etre rattachee a un pole, sans
+     * que les sites dont l'offre est a plat aient quoi que ce soit a changer :
+     * la colonne reste simplement nulle.
+     */
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?self $parent = null;
+
+    /** @var Collection<int, self> */
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[ORM\OrderBy(['position' => 'ASC', 'title' => 'ASC'])]
+    private Collection $children;
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 
     // --- Getters / Setters ---
 
@@ -205,6 +226,51 @@ class Service implements SanitizableContentInterface
         $this->blocks = ($json !== null && $json !== '') ? json_decode($json, true) : null;
 
         return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        // Un service ne peut pas etre son propre parent : la boucle ferait
+        // tourner indefiniment tout parcours de l'arborescence.
+        $this->parent = ($parent === $this) ? null : $parent;
+
+        return $this;
+    }
+
+    /** @return Collection<int, self> */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children->add($child);
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        if ($this->children->removeElement($child) && $child->getParent() === $this) {
+            $child->setParent(null);
+        }
+
+        return $this;
+    }
+
+    /** Un service sans parent ouvre une branche de l'arborescence. */
+    public function isRoot(): bool
+    {
+        return $this->parent === null;
     }
 
     public function __toString(): string
