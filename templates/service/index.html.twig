@@ -6,43 +6,12 @@
 {% endblock %}
 
 {% block body %}
-<div class="container py-5">
-    {% set bandeau = intro|default(null) and intro.featuredMedia %}
-    {% set fil_ariane %}
-        <nav aria-label="breadcrumb" class="{{ bandeau ? 'page-hero__breadcrumb' : '' }}">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ title_page }}</li>
-            </ol>
-        </nav>
-    {% endset %}
-
-    {# Avec une image mise en avant, le titre et le fil d'Ariane passent dessus,
-       comme sur une page. Sans image, ils restent ordinaires. #}
-    {% if bandeau %}
-        <div class="page-hero services-hero">
-            {{ responsive_img(intro.featuredMedia, '(max-width: 991px) 100vw, 1100px', 'page-hero__img', intro.title, false, intro) }}
-            <div class="page-hero__overlay">
-                {{ fil_ariane|raw }}
-                <h1 class="page-hero__title">{{ title_page }}</h1>
-            </div>
-        </div>
-    {% else %}
-        {{ fil_ariane|raw }}
-        <h1 class="title-one mb-4">{{ title_page }}</h1>
-    {% endif %}
-
-    {# Introduction facultative : page systeme "services_intro", editable dans l'admin #}
-    {% if intro|default(null) %}
-    <div class="services-intro page-detail__content article-detail__content mb-5">
-        {{ intro.content|raw }}
-    </div>
-    {% endif %}
-
-    {% include '_partials/_services_grid.html.twig' with { services: services } %}
-
-    {% if services|length == 0 %}
-    <p class="text-muted text-center py-5">Aucun service disponible pour le moment.</p>
-    {% endif %}
-</div>
+    {# Corps delegue : une surcouche client, sinon celle du theme, sinon le
+       rendu commun. Un client peut ainsi redessiner cette page sans toucher
+       aux fichiers partages par les autres. #}
+    {% include [
+        'client/service/index.html.twig',
+        'themes/' ~ _theme ~ '/service/index.html.twig',
+        'service/_index_generic.html.twig'
+    ] %}
 {% endblock %}
