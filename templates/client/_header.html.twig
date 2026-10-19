@@ -10,6 +10,27 @@
    habituelle, faute de quoi il deviendrait illisible.
    ====================================================================== #}
 
+{# Dans la maquette, « Expertises » ne mene pas a la liste des prestations
+   mais a la galerie de l'accueil -- le lot pointe d'ailleurs sur
+   index.html#expertises depuis ses pages internes, donc une seule adresse
+   suffit ici.
+
+   La reecriture se fait dans ce gabarit et non en base : app:menu:sync
+   reecrit toujours la route des entrees systeme, et la route l'emporte dans
+   menuLink. Corrigee en base, l'entree serait revenue a la liste des
+   prestations au premier deploiement, sans bruit. #}
+{% set _ancres = { 'services': path('app_home') ~ '#expertises' } %}
+
+{% set _liens = [] %}
+{% for menu in header_menus %}
+    {% set _liens = _liens|merge([{
+        nom: menu.name,
+        href: menu.systemKey is not null and _ancres[menu.systemKey] is defined
+            ? _ancres[menu.systemKey]
+            : menu|menuLink
+    }]) %}
+{% endfor %}
+
 {% set _route = app.request.attributes.get('_route') %}
 {% set _routes_sombres = ['app_home', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier'] %}
 {% set _sur_visuel = _route in _routes_sombres or (_route == 'app_service_show' and service is defined and service.children|default([])|length > 0) %}
@@ -27,8 +48,8 @@
         </a>
 
         <nav class="bm-nav__liens" aria-label="Navigation principale">
-            {% for menu in header_menus %}
-                <a href="{{ menu|menuLink }}">{{ menu.name }}</a>
+            {% for lien in _liens %}
+                <a href="{{ lien.href }}">{{ lien.nom }}</a>
             {% endfor %}
         </nav>
 
@@ -108,8 +129,8 @@
         </div>
         <div class="offcanvas-body">
             <ul class="navbar-nav mb-4">
-                {% for menu in header_menus %}
-                    <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                {% for lien in _liens %}
+                    <li class="nav-item"><a href="{{ lien.href }}" class="nav-link">{{ lien.nom }}</a></li>
                 {% endfor %}
                 <li class="nav-item"><a href="{{ path('app_simulateurs') }}" class="nav-link">Simulateurs</a></li>
             </ul>
