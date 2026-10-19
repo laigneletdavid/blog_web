@@ -1344,17 +1344,21 @@ main { overflow-x: clip; }
 
 /* ======================================================================
    17. COLLISIONS AVEC LE CMS
-   La maquette nomme ses sections « hero » et « contact ». Le CMS connait
-   deja ces classes : .hero y est un alias historique de .home-hero, qui
-   porte un fond en degrade. Sur la scene, ce fond venait se poser par-dessus
-   la video et la masquait entierement.
+   La maquette nomme une de ses sections « hero ». Le CMS connait deja cette
+   classe : c'est un alias historique de .home-hero, qui porte un fond en
+   degrade. Sur la scene, ce fond venait se poser par-dessus la video et la
+   masquait entierement.
 
-   On rend donc a ces sections leur neutralite, sans toucher au CMS : les
-   autres clients continuent d'en profiter.
+   On lui rend donc sa neutralite, sans toucher au CMS : les autres clients
+   continuent d'en profiter.
+
+   « contact » figurait ici aussi, par symetrie. C'etait de trop : le .contact
+   du CMS n'habille que les etiquettes de formulaire qu'il contient, et cette
+   remise a zero effacait le fond sombre que le lot donne a la section des
+   demarches, qui se retrouvait en encre sur creme.
    ====================================================================== */
 
-.bm-cine .hero,
-.bm-cine .contact {
+.bm-cine .hero {
     background: none;
     background-image: none;
     min-height: 0;
@@ -1383,7 +1387,8 @@ main { overflow-x: clip; }
 .bm-cine .cinema-expert-head h2,
 .bm-cine .cinema-expert-head p,
 .bm-cine .explore,
-.bm-cine .counter {
+.bm-cine .counter,
+.bm-cine .contact {
     color: var(--bm-creme);
 }
 
@@ -1415,7 +1420,9 @@ main { overflow-x: clip; }
    un fond creme au survol et passe a l'encre. Un titre fige y disparaitrait. */
 .bm-cine .expertises h2,
 .bm-cine .expertises h3,
-.bm-cine .office-story h2 {
+.bm-cine .office-story h2,
+.bm-cine .contact h2,
+.bm-cine .contact-card h3 {
     color: inherit;
 }
 
