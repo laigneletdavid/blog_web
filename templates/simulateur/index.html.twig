@@ -1,0 +1,33 @@
+{# ======================================================================
+   SIMULATEURS — sommaire
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<header class="bm-entete">
+    <nav class="bm-fil" aria-label="Fil d'Ariane">
+        <a href="{{ path('app_home') }}">Accueil</a>
+        <span aria-hidden="true">·</span>
+        <span>{{ title_page }}</span>
+    </nav>
+
+    <h1 class="bm-titre">Estimer, <em>avant de décider.</em></h1>
+    <p class="bm-lede">
+        Ces outils donnent un ordre de grandeur pour préparer votre projet. Seule
+        l'étude, au vu de votre situation, peut arrêter un chiffre.
+    </p>
+</header>
+
+<section class="bm-section">
+    <div class="bm-poles">
+        {% for slug, simulateur in simulateurs %}
+            <a href="{{ path('app_simulateur_show', { slug: slug }) }}" class="bm-pole">
+                <span class="bm-pole__num">{{ '%02d'|format(loop.index) }}</span>
+                <h2 class="bm-pole__titre">{{ simulateur.titre }}</h2>
+                <p class="bm-pole__liste">{{ simulateur.resume }}</p>
+                <span class="bm-pole__fleche" aria-hidden="true">↗</span>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

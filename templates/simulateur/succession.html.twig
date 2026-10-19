@@ -1,0 +1,229 @@
+{# ======================================================================
+   SIMULATEUR — succession
+   Transpose du lot statique livre par l'etude.
+
+   Le balisage et le calcul sont repris tels quels : le script s'appuie sur
+   les identifiants des champs, les toucher reviendrait a le reecrire. Seul
+   l'habillage est refait, sous .bm-sim, pour que les styles d'origine --
+   qui ciblaient body, html et input -- ne debordent pas sur le reste du site.
+
+   BAREME A FAIRE VALIDER PAR L'ETUDE avant mise en ligne : profession
+   reglementee, ces chiffres engagent l'office.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-sim">
+
+<div class="wrap">
+  <div class="header">
+    <div class="eyebrow">Outil d'information — étude notariale</div>
+    <div class="title">Simulateur de droits de succession</div>
+    <div class="intro">Estimez rapidement les droits de succession à partir de la part nette reçue par un héritier, de son lien avec le défunt et des principaux abattements fiscaux.</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="section">
+        <h2>1. Situation de l'héritier</h2>
+        <div class="row">
+          <div>
+            <label for="lien">Lien avec le défunt</label>
+            <select id="lien">
+              <option value="enfant">Enfant / père / mère — ligne directe</option>
+              <option value="epoux">Époux / partenaire de PACS</option>
+              <option value="frere">Frère / sœur</option>
+              <option value="neveu">Neveu / nièce</option>
+              <option value="parent4">Parent jusqu'au 4e degré</option>
+              <option value="autre">Autre personne / sans lien de parenté</option>
+            </select>
+          </div>
+          <div>
+            <label for="nb">Nombre d'héritiers de même catégorie</label>
+            <input id="nb" type="number" min="1" step="1" value="1">
+            <div class="hint">Permet de répartir une masse successorale entre plusieurs héritiers identiques.</div>
+          </div>
+        </div>
+        <label class="check"><input id="handicap" type="checkbox"> Héritier en situation de handicap ouvrant droit à l'abattement spécifique</label>
+        <div class="hint">L'abattement spécifique pour personne handicapée s'ajoute, sous conditions, à l'abattement lié au lien de parenté.</div>
+      </div>
+
+      <div class="section">
+        <h2>2. Actif et passif successoral</h2>
+        <div class="row">
+          <div>
+            <label for="actif">Actif brut de la succession</label>
+            <input id="actif" type="number" min="0" step="1000" value="600000">
+            <div class="hint">Valeur totale estimée des biens et droits composant l'actif successoral.</div>
+          </div>
+          <div>
+            <label for="passif">Passif déductible</label>
+            <input id="passif" type="number" min="0" step="1000" value="0">
+            <div class="hint">Dettes déductibles prises en compte dans votre estimation.</div>
+          </div>
+        </div>
+        <div class="row one">
+          <div>
+            <label for="part">Part reçue par l'héritier</label>
+            <input id="part" type="number" min="0" step="1000" value="600000">
+            <div class="hint">Saisissez directement la part nette reçue si elle est déjà connue. Si plusieurs héritiers identiques sont indiqués, le simulateur peut répartir automatiquement l'actif net.</div>
+          </div>
+        </div>
+        <label class="check"><input id="autoPart" type="checkbox" checked> Répartir automatiquement l'actif net entre les héritiers indiqués</label>
+      </div>
+
+      <div class="section">
+        <h2>3. Donations antérieures</h2>
+        <div class="row">
+          <div>
+            <label for="donations">Abattements déjà consommés</label>
+            <input id="donations" type="number" min="0" step="1000" value="0">
+            <div class="hint">À renseigner si l'abattement fiscal disponible a déjà été utilisé par des donations antérieures prises en compte.</div>
+          </div>
+          <div>
+            <label for="annee">Année d'ouverture de la succession</label>
+            <input id="annee" type="number" min="2026" max="2100" step="1" value="2026">
+            <div class="hint">Le simulateur applique les paramètres actuellement intégrés pour 2026.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>4. Frais complémentaires (optionnel)</h2>
+        <div class="row">
+          <div>
+            <label for="frais">Autres frais estimés</label>
+            <input id="frais" type="number" min="0" step="100" value="0">
+            <div class="hint">Champ libre : frais ou débours que vous souhaitez afficher séparément. Il ne s'agit pas d'un barème automatique des émoluments.</div>
+          </div>
+          <div>
+            <label for="partage">Droit de partage estimé</label>
+            <input id="partage" type="number" min="0" step="100" value="0">
+            <div class="hint">À renseigner uniquement si un droit de partage est pertinent dans votre dossier.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Résultat de la simulation</h2>
+      <div class="result-main">
+        <div class="result-label">Droits de succession estimés</div>
+        <div class="result-value" id="droits">0 €</div>
+        <div class="sub" id="taux">—</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Actif net successoral</div><div class="v" id="actifNet">0 €</div></div>
+        <div class="stat"><div class="k">Part nette reçue</div><div class="v" id="partNette">0 €</div></div>
+        <div class="stat"><div class="k">Abattement disponible</div><div class="v" id="abattement">0 €</div></div>
+        <div class="stat"><div class="k">Base taxable</div><div class="v" id="base">0 €</div></div>
+      </div>
+
+      <div class="breakdown">
+        <div class="line"><span>Abattement parenté</span><strong id="abattParent">0 €</strong></div>
+        <div class="line"><span>Abattement handicap</span><strong id="abattHand">0 €</strong></div>
+        <div class="line"><span>Abattement déjà consommé</span><strong id="abattCons">0 €</strong></div>
+        <div class="line"><span>Taux marginal atteint</span><strong id="marginal">0 %</strong></div>
+        <div class="line total"><span>Droits + frais complémentaires</span><strong id="total">0 €</strong></div>
+      </div>
+
+      <div class="note" id="message">
+        Estimation indicative. Le résultat dépend notamment de la composition exacte du patrimoine, des donations antérieures, du régime matrimonial, des éventuels contrats d'assurance-vie, des exonérations et de la situation familiale.
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<div class="bm-sim-footer"><span>BM NOTAIRE · Saint-Martory</span><span>Simulation indicative · L’étude reste à votre disposition pour une analyse personnalisée.</span></div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    // base.html.twig place ce bloc dans le <head> : sans attendre le DOM,
+    // le script ne trouverait aucun de ses champs.
+    document.addEventListener('DOMContentLoaded', function () {
+(function(){
+  const $=id=>document.getElementById(id);
+  const money=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,v||0));
+  const num=id=>Math.max(0,Number($(id).value)||0);
+
+  function directTax(base){
+    const b=Math.max(0,base);
+    const tr=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
+    let prev=0,tax=0,rate=0;
+    for(const [limit,r] of tr){
+      const slice=Math.max(0,Math.min(b,limit)-prev);
+      if(slice>0){tax+=slice*r;rate=r;}
+      if(b<=limit)break;
+      prev=limit;
+    }
+    return {tax,rate};
+  }
+  function siblingTax(base){
+    const b=Math.max(0,base);
+    const first=Math.min(b,24430);
+    return {tax:first*.35+Math.max(0,b-24430)*.45,rate:b<=24430?.35:(b>0?.45:0)};
+  }
+  function calc(){
+    const lien=$('lien').value;
+    const nb=Math.max(1,Math.floor(num('nb')));
+    const actif=num('actif'), passif=num('passif');
+    const actifNet=Math.max(0,actif-passif);
+    let part=$('autoPart').checked ? actifNet/nb : num('part');
+    const already=num('donations');
+    const handicap=$('handicap').checked;
+
+    let allowance=0, hand=handicap?159325:0, parent=0, tax=0, rate=0, label='';
+    if(lien==='epoux'){
+      allowance=Infinity; tax=0; rate=0; label='Époux / partenaire de PACS : exonération de droits de succession';
+    } else {
+      if(lien==='enfant'){parent=100000; label='Ligne directe';}
+      if(lien==='frere'){parent=15932; label='Frère / sœur';}
+      if(lien==='neveu'){parent=7967; label='Neveu / nièce';}
+      if(lien==='parent4'){parent=1594; label='Parent jusqu’au 4e degré';}
+      if(lien==='autre'){parent=1594; label='Sans lien de parenté / autre';}
+      allowance=Math.max(0,parent + hand - already);
+      const base=Math.max(0,part-allowance);
+      let r;
+      if(lien==='enfant') r=directTax(base);
+      else if(lien==='frere') r=siblingTax(base);
+      else if(lien==='neveu') r={tax:base*.55,rate:base>0?.55:0};
+      else if(lien==='parent4') r={tax:base*.55,rate:base>0?.55:0};
+      else r={tax:base*.60,rate:base>0?.60:0};
+      tax=r.tax; rate=r.rate;
+    }
+
+    const frais=num('frais'), partage=num('partage');
+    const total=tax+frais+partage;
+    $('actifNet').textContent=money(actifNet);
+    $('partNette').textContent=money(part);
+    $('abattement').textContent=allowance===Infinity?'Exonération':money(allowance);
+    $('base').textContent=lien==='epoux'?'0 €':money(Math.max(0,part-allowance));
+    $('abattParent').textContent=lien==='epoux'?'Exonération':money(parent);
+    $('abattHand').textContent=lien==='epoux'?'—':money(hand);
+    $('abattCons').textContent=lien==='epoux'?'—':money(Math.min(already,parent+hand));
+    $('droits').textContent=money(tax);
+    $('marginal').textContent=(rate*100).toLocaleString('fr-FR',{maximumFractionDigits:0})+' %';
+    $('taux').textContent=label;
+    $('total').textContent=money(total);
+
+    let msg='';
+    if(lien==='epoux') msg='L’époux survivant et le partenaire de PACS sont exonérés de droits de succession. Les règles civiles de dévolution et les autres frais de règlement de la succession restent à examiner.';
+    else if(part<=0) msg='Indiquez une part nette reçue supérieure à zéro pour obtenir une estimation.';
+    else msg='Le calcul applique un abattement lié au lien de parenté puis le barème progressif correspondant. Les donations antérieures peuvent réduire l’abattement disponible.';
+    $('message').textContent=msg;
+  }
+
+  ['lien','nb','actif','passif','part','autoPart','donations','annee','frais','partage','handicap'].forEach(id=>{
+    $(id).addEventListener('input',calc); $(id).addEventListener('change',calc);
+  });
+  calc();
+})();
+    });
+    </script>
+{% endblock %}

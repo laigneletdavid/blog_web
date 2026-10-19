@@ -1,0 +1,237 @@
+{# ======================================================================
+   SIMULATEUR — donation
+   Transpose du lot statique livre par l'etude.
+
+   Le balisage et le calcul sont repris tels quels : le script s'appuie sur
+   les identifiants des champs, les toucher reviendrait a le reecrire. Seul
+   l'habillage est refait, sous .bm-sim, pour que les styles d'origine --
+   qui ciblaient body, html et input -- ne debordent pas sur le reste du site.
+
+   BAREME A FAIRE VALIDER PAR L'ETUDE avant mise en ligne : profession
+   reglementee, ces chiffres engagent l'office.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-sim">
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Outil d'information — étude notariale</div>
+    <div class="title">Simulateur de donation</div>
+    <div class="intro">Estimez les droits et les principaux frais d'une donation, puis préparez une demande de rendez-vous avec l'étude pour obtenir un chiffrage personnalisé.</div>
+  </section>
+
+  <div class="grid">
+    <div class="card">
+      <div class="section">
+        <h2>1. Nature de la donation</h2>
+        <div class="row">
+          <div><label for="nature">Bien donné</label><select id="nature">
+            <option value="argent">Somme d'argent / valeurs mobilières</option>
+            <option value="immobilier">Bien immobilier</option>
+          </select></div>
+          <div><label for="forme">Forme envisagée</label><select id="forme">
+            <option value="simple">Donation simple</option>
+            <option value="partage">Donation-partage</option>
+          </select></div>
+        </div>
+        <div class="row one">
+          <div><label for="montant">Valeur du bien ou montant donné</label><input id="montant" type="number" min="0" step="1000" value="300000"></div>
+        </div>
+        <div class="row" id="demRow">
+          <div><label for="demembrement">Démembrement</label><select id="demembrement">
+            <option value="plein">Pleine propriété</option>
+            <option value="nue">Nue-propriété avec réserve d'usufruit</option>
+          </select></div>
+          <div id="ageRow"><label for="ageUsufruit">Âge de l'usufruitier au jour de la donation</label><input id="ageUsufruit" type="number" min="1" max="110" value="68"></div>
+        </div>
+        <div class="hint" id="demHint">Pour une donation immobilière avec réserve d'usufruit, les émoluments sont calculés sur la valeur en pleine propriété ; la base fiscale de la nue-propriété dépend de l'âge de l'usufruitier.</div>
+      </div>
+
+      <div class="section">
+        <h2>2. Donateur et bénéficiaire</h2>
+        <div class="row">
+          <div><label for="lien">Lien de parenté</label><select id="lien">
+            <option value="enfant">Parent → enfant</option>
+            <option value="parent">Enfant → parent / ascendant</option>
+            <option value="petit">Grand-parent → petit-enfant</option>
+            <option value="arriere">Arrière-grand-parent → arrière-petit-enfant</option>
+            <option value="epoux">Époux / partenaire de PACS</option>
+            <option value="frere">Frère / sœur</option>
+            <option value="neveu">Oncle/tante → neveu/nièce</option>
+            <option value="autre">Autre / sans lien fiscal privilégié</option>
+          </select></div>
+          <div><label for="nb">Nombre de donataires identiques</label><input id="nb" type="number" min="1" step="1" value="1"></div>
+        </div>
+        <div class="row">
+          <div><label for="ageDonateur">Âge du donateur</label><input id="ageDonateur" type="number" min="18" max="110" value="65"></div>
+          <div><label for="ageDonataire">Âge du donataire</label><input id="ageDonataire" type="number" min="0" max="110" value="30"></div>
+        </div>
+        <label class="check"><input id="handicap" type="checkbox"> Donataire bénéficiant de l'abattement spécifique pour personne handicapée</label>
+      </div>
+
+      <div class="section">
+        <h2>3. Donations antérieures</h2>
+        <div class="row">
+          <div><label for="anterieur">Montant des donations antérieures de moins de 15 ans</label><input id="anterieur" type="number" min="0" step="1000" value="0"></div>
+          <div><label for="droitsAnterieurs">Droits déjà acquittés sur ces donations</label><input id="droitsAnterieurs" type="number" min="0" step="100" value="0"></div>
+        </div>
+        <div class="hint">Pour une simulation précise de rappel fiscal, l'historique exact des donations et des tranches déjà consommées doit être vérifié à partir des actes et déclarations.</div>
+      </div>
+
+      <div class="section">
+        <h2>4. Don familial de somme d'argent</h2>
+        <label class="check"><input id="don790G" type="checkbox"> Je souhaite vérifier l'exonération supplémentaire de 31 865 €</label>
+        <div class="hint">Sous conditions : donateur âgé de moins de 80 ans, donataire majeur ou émancipé, donation en pleine propriété et bénéficiaire entrant dans le champ de l'article 790 G.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Votre estimation</h2>
+      <div class="result">
+        <div class="small">Droits de donation estimés</div>
+        <div class="big" id="droits">0 €</div>
+        <div class="small" id="sousTitre">Après abattements et exonérations estimés</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k">Base fiscale</div><div class="v" id="base">0 €</div></div>
+        <div class="stat"><div class="k">Abattement principal</div><div class="v" id="abatt">0 €</div></div>
+        <div class="stat"><div class="k">Exonération 790 G</div><div class="v" id="g790">0 €</div></div>
+        <div class="stat"><div class="k">Émoluments HT estimés</div><div class="v" id="emol">0 €</div></div>
+      </div>
+      <div class="lines">
+        <div class="line"><span>Valeur fiscale transmise</span><strong id="valFisc">0 €</strong></div>
+        <div class="line"><span>Abattement handicap</span><strong id="hand">0 €</strong></div>
+        <div class="line"><span>TVA sur émoluments</span><strong id="tva">0 €</strong></div>
+        <div class="line"><span>Formalités immobilières estimées</span><strong id="immofrais">0 €</strong></div>
+        <div class="line total"><span>Total indicatif droits + émoluments + TVA + formalités</span><strong id="total">0 €</strong></div>
+      </div>
+
+      <div class="cta">
+        <h3>Besoin d'un chiffrage personnalisé ?</h3>
+        <p>Préparez votre demande à l'étude avec le résumé de cette simulation. Aucun envoi automatique n'est effectué depuis cette page.</p>
+        <button class="btn" id="showLead" type="button">Demander une estimation personnalisée</button>
+        <div class="lead" id="lead">
+          <div class="row">
+            <div><label for="nom">Nom</label><input id="nom" type="text" placeholder="Votre nom"></div>
+            <div><label for="email">E-mail</label><input id="email" type="email" placeholder="vous@exemple.fr"></div>
+          </div>
+          <div class="row">
+            <div><label for="tel">Téléphone</label><input id="tel" type="tel" placeholder="06 00 00 00 00"></div>
+            <div><label for="contact">Préférence de contact</label><select id="contact"><option>E-mail</option><option>Téléphone</option></select></div>
+          </div>
+          <button class="btn secondary" id="prepare" type="button">Préparer ma demande</button>
+          <div class="success" id="success"></div>
+        </div>
+      </div>
+
+      <div class="note">Simulation indicative fondée sur les paramètres fiscaux actuellement intégrés pour 2026. Les droits dépendent notamment des donations antérieures, du lien exact, de la nature du bien, des conditions d'exonération et des actes. Pour un immeuble, les frais de publicité foncière et la contribution de sécurité immobilière sont estimés séparément. Les honoraires libres, débours particuliers et formalités spécifiques ne sont pas inclus.</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="bm-sim-footer"><span>BM NOTAIRE · Saint-Martory</span><span>Simulation indicative · L’étude reste à votre disposition pour une analyse personnalisée.</span></div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    // base.html.twig place ce bloc dans le <head> : sans attendre le DOM,
+    // le script ne trouverait aucun de ses champs.
+    document.addEventListener('DOMContentLoaded', function () {
+(function(){
+const $=id=>document.getElementById(id);
+const money=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,v||0));
+const n=id=>Math.max(0,Number($(id).value)||0);
+
+function bracket(base, table){
+ let prev=0,tax=0;
+ for(const [limit,rate] of table){
+   const slice=Math.max(0,Math.min(base,limit)-prev);
+   if(slice>0)tax+=slice*rate;
+   if(base<=limit)break;
+   prev=limit;
+ }
+ return tax;
+}
+function usufruitPct(age){
+ if(age<21)return .90;if(age<31)return .80;if(age<41)return .70;if(age<51)return .60;
+ if(age<61)return .50;if(age<71)return .40;if(age<81)return .30;if(age<91)return .20;return .10;
+}
+function emolument(v,nature,forme){
+ if(forme==='partage'){
+   return tranche(v,[[6500,.04931],[17000,.02034],[60000,.01356],[Infinity,.01017]]);
+ }
+ if(nature==='argent'){
+   return tranche(v,[[6500,.02367],[17000,.00976],[60000,.00651],[Infinity,.00488]]);
+ }
+ return tranche(v,[[6500,.04931],[17000,.02034],[60000,.01356],[Infinity,.01017]]);
+}
+function tranche(v,ts){let p=0,s=0;for(const [lim,r] of ts){const x=Math.max(0,Math.min(v,lim)-p);s+=x*r;if(v<=lim)break;p=lim}return s}
+function calc(){
+ const nature=$('nature').value, forme=$('forme').value, lien=$('lien').value;
+ const montant=n('montant'), nb=Math.max(1,Math.floor(n('nb')));
+ const ageD=n('ageDonateur'), ageR=n('ageDonataire'), ant=n('anterieur'), droitsAnt=n('droitsAnterieurs');
+ const dem=$('demembrement').value, handicap=$('handicap').checked;
+ let valFisc=montant;
+ if(nature==='immobilier' && dem==='nue') valFisc=montant*usufruitPct(n('ageUsufruit')) ;
+ let parent=0;
+ if(['enfant','parent'].includes(lien))parent=100000;
+ else if(lien==='petit')parent=31865;
+ else if(lien==='arriere')parent=5310;
+ else if(lien==='epoux')parent=80724;
+ else if(lien==='frere')parent=15932;
+ else if(lien==='neveu')parent=7967;
+ else parent=0;
+ const hand=handicap?159325:0;
+ let g=0;
+ const eligibleG=$('don790G').checked && nature==='argent' && dem==='plein' && ageD<80 && ageR>=18 && ['enfant','petit','arriere','neveu'].includes(lien);
+ if(eligibleG)g=31865;
+ let dispo=Math.max(0,parent+hand-ant);
+ let base=Math.max(0,valFisc-dispo-g);
+ let tax=0;
+ if(lien==='enfant'||lien==='parent'||lien==='petit'||lien==='arriere'){
+   tax=bracket(base,[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]);
+ }else if(lien==='epoux'){
+   tax=bracket(base,[[8072,.05],[15932,.10],[31865,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]);
+ }else if(lien==='frere'){
+   tax=Math.min(base,24430)*.35+Math.max(0,base-24430)*.45;
+ }else if(lien==='neveu'){
+   tax=base*.55;
+ }else{
+   tax=base*.60;
+ }
+ tax=Math.max(0,tax-droitReduction(droitsAnt,base));
+ const em=emolument(montant,nature,forme);
+ const tva=em*.20;
+ let imm=0;
+ if(nature==='immobilier'){
+   const tpf=valFisc*.006;
+   imm=tpf+tpf*.0237+valFisc*.001;
+ }
+ const total=tax+em+tva+imm;
+ $('valFisc').textContent=money(valFisc);$('base').textContent=money(base);
+ $('abatt').textContent=money(parent);$('hand').textContent=money(hand);
+ $('g790').textContent=money(g);$('droits').textContent=money(tax);
+ $('emol').textContent=money(em);$('tva').textContent=money(tva);$('immofrais').textContent=money(imm);$('total').textContent=money(total);
+ $('sousTitre').textContent=eligibleG?'Exonération 790 G intégrée sous réserve des conditions légales.':'Après abattements et exonérations estimés';
+}
+function droitReduction(droitsAnt,base){return Math.min(Math.max(0,droitsAnt), bracket(Math.max(0,base),[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]))}
+['nature','forme','montant','demembrement','ageUsufruit','lien','nb','ageDonateur','ageDonataire','handicap','anterieur','droitsAnterieurs','don790G'].forEach(id=>{ $(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+$('demembrement').addEventListener('change',()=>{$('ageRow').classList.toggle('hidden',$('demembrement').value!=='nue');calc()});
+$('showLead').addEventListener('click',()=>{$('lead').classList.toggle('show');});
+$('prepare').addEventListener('click',()=>{
+ const nom=$('nom').value.trim(),email=$('email').value.trim(),tel=$('tel').value.trim();
+ const msg=`Demande d'estimation donation\n\nNom : ${nom||'Non renseigné'}\nE-mail : ${email||'Non renseigné'}\nTéléphone : ${tel||'Non renseigné'}\n\nMontant : ${money(n('montant'))}\nNature : ${$('nature').selectedOptions[0].text}\nForme : ${$('forme').selectedOptions[0].text}\nLien : ${$('lien').selectedOptions[0].text}\nDroits estimés : ${$('droits').textContent}\nTotal indicatif : ${$('total').textContent}`;
+ $('success').textContent='Demande préparée. Vous pouvez copier ce résumé et le transmettre à votre étude. Pour un envoi automatique, votre site devra connecter ce formulaire à votre adresse e-mail ou à votre CRM.';
+ $('success').classList.add('show');
+ if(nom||email||tel) navigator.clipboard?.writeText(msg).catch(()=>{});
+});
+$('ageRow').classList.toggle('hidden',$('demembrement').value!=='nue');calc();
+})();
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,258 @@
+{# ======================================================================
+   SIMULATEUR — plus-value
+   Transpose du lot statique livre par l'etude.
+
+   Le balisage et le calcul sont repris tels quels : le script s'appuie sur
+   les identifiants des champs, les toucher reviendrait a le reecrire. Seul
+   l'habillage est refait, sous .bm-sim, pour que les styles d'origine --
+   qui ciblaient body, html et input -- ne debordent pas sur le reste du site.
+
+   BAREME A FAIRE VALIDER PAR L'ETUDE avant mise en ligne : profession
+   reglementee, ces chiffres engagent l'office.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-sim">
+<section class="hero">
+    <div class="eyebrow">Étude notariale</div>
+    <h1>Simulateur de plus-value immobilière</h1>
+    <p>Estimez à titre indicatif l’imposition susceptible de s’appliquer lors de la vente d’un bien immobilier.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Votre vente</h2>
+      <div class="field">
+        <label for="salePrice">Prix de vente</label>
+        <input id="salePrice" type="number" min="0" step="1000" placeholder="300000">
+        <div class="hint">Montant indiqué dans l’acte, avant les éventuelles déductions de frais de cession.</div>
+      </div>
+      <div class="field">
+        <label for="saleCosts">Frais de cession déductibles</label>
+        <input id="saleCosts" type="number" min="0" step="100" value="0">
+        <div class="hint">À renseigner uniquement lorsque leur déductibilité est établie.</div>
+      </div>
+      <div class="field">
+        <label for="saleDate">Date prévue de la vente</label>
+        <input id="saleDate" type="date">
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Votre acquisition</h2>
+      <div class="field">
+        <label for="buyPrice">Prix d’acquisition</label>
+        <input id="buyPrice" type="number" min="0" step="1000" placeholder="200000">
+      </div>
+      <div class="field">
+        <label for="buyDate">Date d’acquisition</label>
+        <input id="buyDate" type="date">
+      </div>
+      <div class="field">
+        <label>Frais d’acquisition</label>
+        <div class="choice">
+          <label><input type="radio" name="acqFees" value="flat" checked><span>Forfait 7,5 %</span></label>
+          <label><input type="radio" name="acqFees" value="real"><span>Frais réels</span></label>
+        </div>
+        <input id="realAcqFees" type="number" min="0" step="100" value="0" style="margin-top:10px;display:none" placeholder="Montant des frais réels">
+      </div>
+      <div class="field">
+        <label>Travaux</label>
+        <div class="choice">
+          <label><input type="radio" name="works" value="none" checked><span>Aucun</span></label>
+          <label><input type="radio" name="works" value="flat"><span>Forfait 15 %</span></label>
+          <label><input type="radio" name="works" value="real"><span>Frais réels</span></label>
+        </div>
+        <input id="realWorks" type="number" min="0" step="100" value="0" style="margin-top:10px;display:none" placeholder="Montant des travaux retenus">
+        <div class="hint">Le forfait travaux est présenté lorsque la durée de détention permet son application.</div>
+      </div>
+    </section>
+
+    <section class="card full">
+      <h2>Situation du bien</h2>
+      <div class="field">
+        <label>Le bien constitue-t-il votre résidence principale au jour de la vente ?</label>
+        <div class="choice">
+          <label><input type="radio" name="principal" value="yes"><span>Oui</span></label>
+          <label><input type="radio" name="principal" value="no" checked><span>Non</span></label>
+        </div>
+      </div>
+      <div class="notice">
+        Cette version couvre un cas standard : particulier résident fiscal français, immeuble bâti détenu directement, acquisition unique et hors dispositifs/exonérations particulières. Les situations de SCI, démembrement, non-résidence, terrain à bâtir, acquisition par donation/succession, LMNP au réel, cessions par fractions ou exonérations spécifiques nécessitent un traitement personnalisé.
+      </div>
+    </section>
+
+    <section class="card full">
+      <div id="error" class="error" role="alert"></div>
+      <button id="calc" type="button">Calculer ma plus-value</button>
+    </section>
+
+    <section id="result" class="card full result" aria-live="polite">
+      <h2>Estimation</h2>
+      <div class="total">
+        <div>
+          <span>Fiscalité estimée</span>
+          <div><strong id="taxTotal">—</strong></div>
+        </div>
+        <span id="holding">—</span>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><small>Plus-value brute</small><strong id="gross">—</strong></div>
+        <div class="kpi"><small>Impôt sur le revenu</small><strong id="incomeTax">—</strong></div>
+        <div class="kpi"><small>Prélèvements sociaux</small><strong id="socialTax">—</strong></div>
+      </div>
+      <div class="lines">
+        <div class="line"><span>Prix de vente corrigé</span><span id="saleAdjusted">—</span></div>
+        <div class="line"><span>Prix d’acquisition corrigé</span><span id="buyAdjusted">—</span></div>
+        <div class="line"><span>Abattement IR</span><span id="irAbattement">—</span></div>
+        <div class="line"><span>Base imposable IR</span><span id="irBase">—</span></div>
+        <div class="line"><span>Abattement prélèvements sociaux</span><span id="psAbattement">—</span></div>
+        <div class="line"><span>Base prélèvements sociaux</span><span id="psBase">—</span></div>
+        <div class="line"><span>Surtaxe sur les plus-values élevées</span><span id="surtax">—</span></div>
+        <div class="line"><span>Plus-value nette après fiscalité</span><span id="net">—</span></div>
+      </div>
+      <div class="cta">Cette estimation est indicative. Le calcul définitif dépend des pièces justificatives, de la situation du vendeur et des règles fiscales applicables à la date de la cession. Le notaire chargé de la vente réalise le calcul et les formalités fiscales.</div>
+    </section>
+
+    <p class="disclaimer full">
+      Version de démonstration : règles générales des plus-values immobilières des particuliers. Taux utilisés : 19 % au titre de l'impôt sur le revenu et 17,2 % au titre des prélèvements sociaux. Exonération de l'IR après 22 ans et des prélèvements sociaux après 30 ans, sous réserve des conditions applicables.
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    // base.html.twig place ce bloc dans le <head> : sans attendre le DOM,
+    // le script ne trouverait aucun de ses champs.
+    document.addEventListener('DOMContentLoaded', function () {
+(() => {
+  const $ = id => document.getElementById(id);
+  const euro = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,n||0));
+  const pct = n => `${(n*100).toFixed(1).replace('.',',')} %`;
+
+  function val(id){ return Math.max(0, Number($(id).value)||0); }
+  function selected(name){ return document.querySelector(`input[name="${name}"]:checked`)?.value; }
+
+  document.querySelectorAll('input[name="acqFees"]').forEach(x => x.addEventListener('change', () => {
+    $('realAcqFees').style.display = selected('acqFees') === 'real' ? 'block' : 'none';
+  }));
+  document.querySelectorAll('input[name="works"]').forEach(x => x.addEventListener('change', () => {
+    $('realWorks').style.display = selected('works') === 'real' ? 'block' : 'none';
+  }));
+
+  function fullYears(start, end){
+    const a = new Date(start+'T00:00:00Z'), b = new Date(end+'T00:00:00Z');
+    let y = b.getUTCFullYear()-a.getUTCFullYear();
+    const anniversary = new Date(Date.UTC(a.getUTCFullYear()+y,a.getUTCMonth(),a.getUTCDate()));
+    if(anniversary > b) y--;
+    return Math.max(0,y);
+  }
+
+  function abatements(years){
+    const ir = years < 6 ? 0 : years <= 21 ? 0.06*(years-5) : 1;
+    let ps = 0;
+    if(years >= 6 && years <= 21) ps = 0.0165*(years-5);
+    else if(years === 22) ps = 0.0165*16 + 0.016;
+    else if(years >= 23) ps = Math.min(1, 0.0165*16 + 0.016 + 0.09*(years-22));
+    return {ir:Math.min(1,ir), ps:Math.min(1,ps)};
+  }
+
+  function surtax(base){
+    if(base <= 50000) return 0;
+    const bands = [
+      [50000,100000,.02],
+      [100000,150000,.03],
+      [150000,200000,.04],
+      [200000,250000,.05],
+      [250000,Infinity,.06]
+    ];
+    let tax=0;
+    for(const [lo,hi,rate] of bands){
+      if(base>lo) tax += (Math.min(base,hi)-lo)*rate;
+    }
+    return tax;
+  }
+
+  function calculate(){
+    const error = $('error');
+    error.style.display='none';
+    const sale = val('salePrice'), buy = val('buyPrice');
+    const saleDate = $('saleDate').value, buyDate = $('buyDate').value;
+    if(!sale || !buy || !saleDate || !buyDate){
+      error.textContent='Veuillez renseigner le prix de vente, le prix d’acquisition et les deux dates.';
+      error.style.display='block'; return;
+    }
+    if(new Date(saleDate) < new Date(buyDate)){
+      error.textContent="La date de vente doit être postérieure ou égale à la date d'acquisition.";
+      error.style.display='block'; return;
+    }
+
+    if(selected('principal') === 'yes'){
+      $('taxTotal').textContent=euro(0);
+      $('gross').textContent='Exonération';
+      $('incomeTax').textContent=euro(0);
+      $('socialTax').textContent=euro(0);
+      $('holding').textContent='Résidence principale déclarée';
+      $('saleAdjusted').textContent=euro(sale);
+      $('buyAdjusted').textContent=euro(buy);
+      $('irAbattement').textContent='100 %';
+      $('irBase').textContent=euro(0);
+      $('psAbattement').textContent='100 %';
+      $('psBase').textContent=euro(0);
+      $('surtax').textContent=euro(0);
+      $('net').textContent=euro(sale-buy);
+      $('result').classList.add('show');
+      return;
+    }
+
+    const years = fullYears(buyDate,saleDate);
+    const saleAdjusted = Math.max(0, sale-val('saleCosts'));
+
+    let fees = selected('acqFees') === 'flat' ? buy*0.075 : val('realAcqFees');
+    let works = 0;
+    if(selected('works') === 'flat') {
+      if(years < 5){
+        error.textContent="Le forfait travaux de 15 % n'est présenté qu'après plus de cinq années de détention. Choisissez les travaux réels ou aucun.";
+        error.style.display='block'; return;
+      }
+      works = buy*0.15;
+    } else if(selected('works') === 'real') works=val('realWorks');
+
+    const buyAdjusted = buy+fees+works;
+    const gross = Math.max(0,saleAdjusted-buyAdjusted);
+    const ab = abatements(years);
+    const irBase = gross*(1-ab.ir);
+    const psBase = gross*(1-ab.ps);
+    const incomeTax = irBase*0.19;
+    const socialTax = psBase*0.172;
+    const extra = surtax(irBase);
+    const total = incomeTax+socialTax+extra;
+
+    $('taxTotal').textContent=euro(total);
+    $('gross').textContent=euro(gross);
+    $('incomeTax').textContent=euro(incomeTax);
+    $('socialTax').textContent=euro(socialTax);
+    $('holding').textContent=`${years} an${years>1?'s':''} de détention`;
+    $('saleAdjusted').textContent=euro(saleAdjusted);
+    $('buyAdjusted').textContent=euro(buyAdjusted);
+    $('irAbattement').textContent=pct(ab.ir);
+    $('irBase').textContent=euro(irBase);
+    $('psAbattement').textContent=pct(ab.ps);
+    $('psBase').textContent=euro(psBase);
+    $('surtax').textContent=euro(extra);
+    $('net').textContent=euro(sale-total);
+    $('result').classList.add('show');
+    $('result').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  $('calc').addEventListener('click',calculate);
+
+  const now = new Date();
+  $('saleDate').value = now.toISOString().slice(0,10);
+})();
+    });
+    </script>
+{% endblock %}

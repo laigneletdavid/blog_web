@@ -496,3 +496,190 @@ main { overflow-x: clip; }
     .bm-hero__video { display: none; }
     * { transition: none !important; }
 }
+
+/* ======================================================================
+   12. SIMULATEURS
+   Le balisage vient du lot statique, dont les styles ciblaient body, html et
+   input : ils auraient deborde sur tout le site. On le rehabille ici, sous
+   .bm-sim, en reprenant ses classes d'origine -- hero, card, field, hint --
+   pour n'avoir ni a toucher au HTML ni a reecrire le calcul.
+   ====================================================================== */
+
+.bm-sim {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) var(--bm-gouttiere);
+}
+
+.bm-sim .hero { margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+
+.bm-sim .hero .eyebrow {
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--bm-sourdine);
+    margin-bottom: 1rem;
+}
+
+.bm-sim h1 {
+    font-family: var(--bm-serif);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    margin: 0 0 1rem;
+}
+
+.bm-sim .hero p {
+    font-size: 1.1rem;
+    color: var(--bm-sourdine);
+    max-width: 58ch;
+}
+
+.bm-sim .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.bm-sim .card {
+    background: #fff;
+    border: 1px solid var(--bm-filet);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.bm-sim .card h2,
+.bm-sim .card h3 {
+    font-family: var(--bm-serif);
+    font-size: 1.35rem;
+    margin: 0 0 1.5rem;
+}
+
+.bm-sim .field { margin-bottom: 1.5rem; }
+
+.bm-sim label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: .06em;
+    margin-bottom: .5rem;
+}
+
+.bm-sim input[type="number"],
+.bm-sim input[type="text"],
+.bm-sim select {
+    width: 100%;
+    padding: .8rem .9rem;
+    font-family: var(--bm-sans);
+    font-size: 1rem;
+    color: var(--bm-encre);
+    background: var(--bm-creme);
+    border: 1px solid var(--bm-filet);
+    border-radius: 0;
+}
+
+.bm-sim input:focus,
+.bm-sim select:focus {
+    outline: 2px solid var(--bm-encre);
+    outline-offset: -2px;
+}
+
+/* Precision sous un champ : utile, jamais au premier plan. */
+.bm-sim .hint {
+    font-size: .8rem;
+    line-height: 1.5;
+    color: var(--bm-sourdine);
+    margin-top: .45rem;
+}
+
+/* Choix exclusifs presentes en pastilles. */
+.bm-sim .choice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.bm-sim .choice label {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin: 0;
+    padding: .55rem .95rem;
+    border: 1px solid var(--bm-filet);
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
+
+.bm-sim .choice label:has(input:checked) {
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+    border-color: var(--bm-encre);
+}
+
+.bm-sim button {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-family: var(--bm-sans);
+    font-size: .75rem;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--bm-creme);
+    background: var(--bm-encre);
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background .25s ease;
+}
+
+.bm-sim button:hover { background: var(--bm-encre-clair); }
+
+/* Le resultat ne s'affiche qu'une fois le calcul demande. */
+.bm-sim #result { display: none; }
+.bm-sim #result.show { display: block; }
+
+.bm-sim #total {
+    display: block;
+    font-family: var(--bm-serif);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.1;
+    margin: .5rem 0 1.5rem;
+}
+
+.bm-sim .row,
+.bm-sim .line {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .7rem 0;
+    border-top: 1px solid var(--bm-filet);
+    font-size: .95rem;
+}
+
+.bm-sim .error {
+    display: none;
+    margin-top: 1rem;
+    padding: .85rem 1rem;
+    background: rgba(160, 60, 40, .08);
+    border-left: 3px solid #A03C28;
+    font-size: .9rem;
+}
+
+/* Avertissement de fin : un simulateur n'engage pas l'etude. */
+.bm-sim .disclaimer,
+.bm-sim .note,
+.bm-sim footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bm-filet);
+    font-size: .85rem;
+    line-height: 1.6;
+    color: var(--bm-sourdine);
+}
+
+@media (max-width: 720px) {
+    .bm-sim .grid { grid-template-columns: 1fr; }
+}

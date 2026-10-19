@@ -1,0 +1,145 @@
+{# ======================================================================
+   SIMULATEUR — viager
+   Transpose du lot statique livre par l'etude.
+
+   Le balisage et le calcul sont repris tels quels : le script s'appuie sur
+   les identifiants des champs, les toucher reviendrait a le reecrire. Seul
+   l'habillage est refait, sous .bm-sim, pour que les styles d'origine --
+   qui ciblaient body, html et input -- ne debordent pas sur le reste du site.
+
+   BAREME A FAIRE VALIDER PAR L'ETUDE avant mise en ligne : profession
+   reglementee, ces chiffres engagent l'office.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-sim">
+<section class="hero"><div class="eyebrow">Étude notariale</div><h1>Simulateur de viager</h1>
+<p>Estimez le bouquet et la rente viagère à partir de la valeur du bien, de l’âge du ou des vendeurs et des principales modalités du viager.</p></section>
+
+<div class="grid">
+<section class="card"><h2>Le bien</h2>
+<div class="field"><label for="value">Valeur vénale du bien</label><input id="value" type="number" min="0" step="1000" placeholder="300000"></div>
+<div class="field"><label>Type de viager</label><div class="choice">
+<label><input type="radio" name="occup" value="occupied" checked><span>Viager occupé</span></label>
+<label><input type="radio" name="occup" value="free"><span>Viager libre</span></label></div>
+<div class="hint">En viager occupé, le vendeur conserve un droit d’usage et d’habitation ou un usufruit selon l’acte.</div></div>
+<div class="field" id="rentField"><label for="rent">Valeur locative mensuelle estimée</label><input id="rent" type="number" min="0" step="50" placeholder="1000" value="1000">
+<div class="hint">Utilisée pour estimer la valeur économique du droit d’usage dans cette simulation pédagogique.</div></div>
+</section>
+
+<section class="card"><h2>Le vendeur</h2>
+<div class="row"><div class="field"><label for="age1">Âge du vendeur</label><input id="age1" type="number" min="40" max="105" value="75"></div>
+<div class="field"><label for="age2">2e vendeur (facultatif)</label><input id="age2" type="number" min="40" max="105" placeholder="—"></div></div>
+<div class="field"><label for="reversion">Réversibilité de la rente</label><select id="reversion"><option value="0">Aucune</option><option value="100">100 % au survivant</option><option value="50">50 % au survivant</option></select>
+<div class="hint">La réversibilité peut modifier le calcul en fonction de l’âge des deux crédirentiers.</div></div>
+</section>
+
+<section class="card"><h2>Le bouquet</h2>
+<div class="field"><label for="bouquet">Bouquet versé comptant</label><input id="bouquet" type="number" min="0" step="1000" value="60000">
+<div class="hint">Le bouquet est librement déterminé entre les parties et vient en déduction du capital transformé en rente.</div></div>
+<div class="field"><label for="yield">Taux de rendement retenu</label><select id="yield"><option value="4">4 %</option><option value="5" selected>5 %</option><option value="6">6 %</option></select>
+<div class="hint">Paramètre indicatif permettant de convertir la valeur du droit d’usage en décote. Le calcul définitif relève du dossier notarial.</div></div>
+</section>
+
+<section class="card"><h2>Indexation et paiement</h2>
+<div class="field"><label for="index">Indexation annuelle envisagée</label><select id="index"><option value="0">Aucune dans la simulation</option><option value="2" selected>2 % / an</option><option value="3">3 % / an</option></select></div>
+<div class="field"><label for="frequency">Périodicité de la rente</label><select id="frequency"><option value="12" selected>Mensuelle</option><option value="4">Trimestrielle</option><option value="1">Annuelle</option></select></div>
+<div class="notice">L’indexation et les garanties du vendeur doivent être prévues dans l’acte. La rente peut notamment être indexée afin de tenir compte de l’érosion monétaire.</div>
+</section>
+
+<section class="card full"><div id="error" class="error" role="alert"></div><button id="calc" type="button">Calculer le bouquet et la rente</button></section>
+
+<section id="result" class="card full result" aria-live="polite"><h2>Estimation de la rente viagère</h2>
+<div class="total"><div><span>Rente estimative</span><div><strong id="monthly">—</strong></div></div><span id="duration">—</span></div>
+<div class="kpis"><div class="kpi"><small>Bouquet</small><strong id="bouquetOut">—</strong></div><div class="kpi"><small>Décote d’occupation</small><strong id="discount">—</strong></div><div class="kpi"><small>Capital converti en rente</small><strong id="capital">—</strong></div></div>
+<div class="lines">
+<div class="line"><span>Valeur vénale</span><span id="valueOut">—</span></div>
+<div class="line"><span>Valeur estimative du droit d’usage</span><span id="dua">—</span></div>
+<div class="line"><span>Valeur retenue après occupation</span><span id="occupiedValue">—</span></div>
+<div class="line"><span>Bouquet</span><span id="bouquetLine">—</span></div>
+<div class="line"><span>Capital restant à convertir</span><span id="capitalLine">—</span></div>
+<div class="line"><span>Durée statistique indicative retenue</span><span id="life">—</span></div>
+<div class="line"><span>Rente annuelle initiale</span><span id="annual">—</span></div>
+<div class="line"><span>Rente selon la périodicité choisie</span><span id="periodic">—</span></div>
+<div class="line"><span>1re mensualité / rente initiale avec indexation</span><span id="indexed">—</span></div>
+</div>
+<div class="cta">Cette simulation est indicative. Un viager repose sur un aléa et le montant de la rente dépend notamment de la valeur vénale, du bouquet, de l’âge du ou des crédirentiers, de l’occupation éventuelle du bien, du rendement retenu et des modalités de réversion. Le calcul définitif doit être établi à partir du dossier et des paramètres retenus par les parties et l’étude notariale.</div>
+</section>
+
+<p class="disclaimer full">La méthode présentée ici est volontairement pédagogique : elle utilise une durée statistique indicative et une valorisation économique simplifiée du droit d’usage. Les notaires peuvent s’appuyer sur des tables de mortalité et des barèmes adaptés au dossier. Le bouquet est facultatif et librement fixé.</p>
+</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    // base.html.twig place ce bloc dans le <head> : sans attendre le DOM,
+    // le script ne trouverait aucun de ses champs.
+    document.addEventListener('DOMContentLoaded', function () {
+(()=> {
+const $=id=>document.getElementById(id);
+const euro=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,n||0));
+const val=id=>Math.max(0,Number($(id).value)||0);
+const occ=()=>document.querySelector('input[name="occup"]:checked')?.value;
+
+function life(age){
+  // Durées statistiques pédagogiques, volontairement lissées.
+  const table=[[60,26],[65,22],[70,18],[75,14],[80,10],[85,7],[90,5],[95,3.5],[100,2]];
+  if(age<=60)return 26;
+  for(let i=1;i<table.length;i++){
+    const [a2,l2]=table[i], [a1,l1]=table[i-1];
+    if(age<=a2)return l1+(l2-l1)*(age-a1)/(a2-a1);
+  }
+  return 1.5;
+}
+function calc(){
+ const err=$('error');err.style.display='none';
+ const value=val('value'), age1=Number($('age1').value), age2=Number($('age2').value)||0, bouquet=val('bouquet');
+ if(!value || !age1){err.textContent='Veuillez renseigner la valeur du bien et l’âge du vendeur.';err.style.display='block';return;}
+ if(age1<40||age1>105||(age2&&(age2<40||age2>105))){err.textContent='Veuillez saisir un âge compris entre 40 et 105 ans.';err.style.display='block';return;}
+ if(bouquet>value){err.textContent='Le bouquet ne peut pas dépasser la valeur du bien dans cette simulation.';err.style.display='block';return;}
+
+ let duration=life(age1);
+ if(age2) duration=Math.max(life(age1),life(age2));
+ const y=Number($('yield').value)/100;
+ let dua=0;
+ if(occ()==='occupied'){
+   const annualRent=val('rent')*12;
+   dua=Math.min(value, annualRent*duration/(1+y*duration));
+ }
+ let occupiedValue=Math.max(0,value-dua);
+ let capital=Math.max(0,occupiedValue-bouquet);
+ // Taux actuariel simplifié : capital / valeur actuelle d'une rente annuelle sur la durée statistique.
+ const rate=0.02;
+ const annuityFactor=(1-Math.pow(1+rate,-duration))/rate;
+ let annual=capital/annuityFactor;
+ // Réversion : majoration indicative si rente maintenue sur deux têtes.
+ if(age2){
+   const rev=Number($('reversion').value);
+   if(rev>0){
+     const joint= Math.max(duration, life(age2));
+     const factor=(1-Math.pow(1+rate,-joint))/rate;
+     annual=capital/factor*(1+0.10*(rev/100));
+   }
+ }
+ const freq=Number($('frequency').value);
+ const periodic=annual/freq;
+ const idx=Number($('index').value)/100;
+ const indexed=annual/12;
+ $('monthly').textContent=euro(annual/12);$('duration').textContent=`Durée statistique indicative : ${duration.toFixed(1).replace('.',',')} ans`;
+ $('bouquetOut').textContent=euro(bouquet);$('discount').textContent=euro(dua);$('capital').textContent=euro(capital);
+ $('valueOut').textContent=euro(value);$('dua').textContent=euro(dua);$('occupiedValue').textContent=euro(occupiedValue);
+ $('bouquetLine').textContent=euro(bouquet);$('capitalLine').textContent=euro(capital);
+ $('life').textContent=`${duration.toFixed(1).replace('.',',')} ans`;$('annual').textContent=euro(annual);
+ $('periodic').textContent=`${euro(periodic)} / ${freq===12?'mois':freq===4?'trimestre':'an'}`;
+ $('indexed').textContent=`${euro(indexed)} au départ — puis évolution prévue de ${idx*100}%/an`;
+ $('result').classList.add('show');$('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.querySelectorAll('input[name="occup"]').forEach(x=>x.addEventListener('change',()=>{$('rentField').style.display=occ()==='occupied'?'block':'none'}));
+$('calc').addEventListener('click',calc);
+})();
+    });
+    </script>
+{% endblock %}
