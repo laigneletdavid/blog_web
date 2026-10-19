@@ -906,7 +906,11 @@ main { overflow-x: clip; }
 .bm-cine .cinema {height:5200px}
 .bm-cine .stage {height:100vh;min-height:650px;position:sticky;top:0;overflow:hidden;background:#1c2a22;isolation:isolate}
 .bm-cine .film-wrap, .bm-cine .film, .bm-cine .veil, .bm-cine .light, .bm-cine .grain, .bm-cine .edge {position:absolute}
-.bm-cine .film-wrap {inset:-5%;transform:scale(var(--world-scale,1));transform-origin:center;will-change:transform,filter;filter:brightness(var(--brightness,1)) saturate(.72)}
+/* Le filtre d'origine -- brightness + saturate -- promeut ce conteneur sur
+   une couche GPU a part, ou la video cesse d'etre peinte selon le navigateur
+   et la carte graphique. On le retire : la scene perd sa desaturation, elle
+   garde son image. La teinte reste portee par les voiles au-dessus. */
+.bm-cine .film-wrap {inset:-5%;transform:scale(var(--world-scale,1));transform-origin:center;will-change:transform}
 .bm-cine .film {inset:0;width:100%;height:100%;object-fit:cover;will-change:transform,opacity}
 .bm-cine .film-a {transform:scale(1.06) translate3d(var(--mx,0),var(--my,0),0);opacity:var(--film-a,1)}
 .bm-cine .film-b {transform:scale(var(--film-b-scale,1.32)) translate3d(calc(var(--mx,0) * -.45),calc(var(--my,0) * -.3),0);opacity:var(--film-b,0);filter:contrast(1.04)}
