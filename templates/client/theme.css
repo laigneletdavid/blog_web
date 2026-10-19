@@ -1001,39 +1001,302 @@ main { overflow-x: clip; }
 
 
 /* ======================================================================
-   14. PAGE DE PRESTATION
-   Le contenu TipTap deroule le propos, le parcours, les pieces puis les
-   questions. Chaque niveau de titre porte un role, d'ou la mise en page.
+   14. PAGES DE PRESTATION
+   Balisage et styles repris de detail.css, prefixes par .bm-d et gardes
+   dans leur media query. Laisses de cote : .d-nav et .footer, le CMS ayant
+   les siens.
+
+   detail.css est la seule feuille du lot a demander la police Ogg, chargee
+   depuis un CloudFront tiers. Les quatre autres emploient Playfair Display,
+   qui est la police de la charte : c'est elle qu'on branche. Cela evite une
+   requete vers un domaine tiers, que la politique de confidentialite ne
+   mentionne pas, et une police dont rien n'atteste la licence.
    ====================================================================== */
 
-.bm-corps--prestation { max-width: 70ch; }
+/* detail.css tient ses couleurs d'une regle sur body que nous ne reprenons
+   pas : elle aurait repeint le site. Sa palette s'ecarte legerement de celle
+   des autres feuilles du lot ; on garde ses teintes de section, qui font le
+   dessin, et on rebranche le fond, l'encre et les polices sur la charte. */
+.bm-d {
+    --serif: var(--bm-serif);
+    --sans: var(--bm-sans);
 
-/* Intitule de section : « Votre dossier, etape par etape ». */
-.bm-corps--prestation h3 {
-    font-family: var(--bm-serif);
-    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-    margin: 3.5rem 0 1.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--bm-filet);
+    background: #F4EFE6;
+    color: var(--bm-encre);
+    font-family: var(--sans);
 }
 
-.bm-corps--prestation h3:first-child {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: 0;
+/* Les titres suivent la couleur de leur section : claire sur le bandeau, le
+   parcours et l'appel final, encre ailleurs. Sans cette precision le CMS
+   impose la sienne, plus specifique que l'heritage. */
+.bm-d h1,
+.bm-d h2,
+.bm-d h3,
+.bm-d p,
+.bm-d a,
+.bm-d span,
+.bm-d b {
+    color: inherit;
 }
 
-/* Question frequente : posee en serif, suivie de sa reponse. */
-.bm-corps--prestation h4 {
-    font-family: var(--bm-serif);
-    font-size: 1.15rem;
+/* ----------------------------------------------------------------------
+   Collisions avec le CMS
+
+   Trois noms du lot sont deja connus de Bootstrap. On leur rend leur
+   neutralite ici, et nulle part ailleurs.
+   ---------------------------------------------------------------------- */
+
+/* Bootstrap donne a .lead une graisse de 300. Le lot n'en declare pas, et
+   le chapeau du bandeau sortait donc en Playfair maigre. */
+.bm-d .lead {
     font-weight: 400;
-    margin: 2rem 0 .5rem;
 }
 
-.bm-corps--prestation h4 + p {
-    color: var(--bm-sourdine);
-    margin: 0;
+/* Le bouton du lot est un lien ; Bootstrap y ajoute sa propre mise en forme
+   et, sous 768 px, une hauteur minimale en inline-flex. */
+.bm-d .btn {
+    border: 0;
+    line-height: 1.2;
+    text-align: center;
+    justify-content: center;
+    font-size: 13px;
+    letter-spacing: .04em;
+}
+
+/* Le parcours et les pieces sont des listes : elles gardent leur sens sans
+   les puces ni les retraits du navigateur. */
+.bm-d .step-list,
+.bm-d .chips {
+    list-style: none;
+    padding-left: 0;
+}
+
+.bm-d .chips-note {
+    margin-top: 30px;
+    line-height: 1.6;
+}
+
+/* ======================================================================
+   14 bis. REGLES REPRISES DE DETAIL.CSS
+   ====================================================================== */
+
+.bm-d .d-hero {
+    min-height:86vh;
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    padding:0 7vw 9vh;
+    color:#fff;
+    overflow:hidden;
+}
+
+.bm-d .d-bg {
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    transform:scale(1.04);
+}
+
+.bm-d .d-shade {
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg,rgba(6,18,14,.2),rgba(6,18,14,.72));
+}
+
+.bm-d .d-copy {
+    position:relative;
+    z-index:2;
+    max-width:980px;
+}
+
+.bm-d .eyebrow,
+.bm-d .num {
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+}
+
+.bm-d .d-copy h1 {
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(62px,9vw,142px);
+    line-height:.83;
+    margin:18px 0 24px;
+}
+
+.bm-d .d-copy .lead {
+    font-family:var(--serif);
+    font-size:clamp(24px,2.4vw,42px);
+    line-height:1.05;
+    max-width:780px;
+    margin:0;
+}
+
+.bm-d .d-intro,
+.bm-d .d-steps,
+.bm-d .d-docs,
+.bm-d .d-faq {
+    padding:110px 7vw;
+}
+
+.bm-d .grid2 {
+    display:grid;
+    grid-template-columns:.7fr 1.3fr;
+    gap:7vw;
+}
+
+.bm-d .d-intro h2,
+.bm-d .d-steps h2,
+.bm-d .d-docs h2,
+.bm-d .d-faq h2,
+.bm-d .d-cta h2 {
+    font-family:var(--serif);
+    font-size:clamp(44px,5vw,80px);
+    font-weight:500;
+    line-height:.95;
+    margin:0;
+}
+
+.bm-d .d-intro p {
+    font-size:20px;
+    line-height:1.6;
+    max-width:700px;
+}
+
+.bm-d .d-steps {
+    background:#14251f;
+    color:#f7f1e8;
+}
+
+.bm-d .step-list {
+    margin-top:70px;
+    border-top:1px solid rgba(255,255,255,.25);
+}
+
+.bm-d .step {
+    display:grid;
+    grid-template-columns:70px 1fr;
+    gap:25px;
+    padding:28px 0;
+    border-bottom:1px solid rgba(255,255,255,.18);
+    align-items:center;
+}
+
+.bm-d .step b {
+    font-family:var(--serif);
+    font-size:31px;
+    font-weight:500;
+}
+
+.bm-d .d-docs {
+    background:#e7dfd2;
+}
+
+.bm-d .chips {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:45px;
+}
+
+.bm-d .chip {
+    border:1px solid #a99f90;
+    border-radius:999px;
+    padding:14px 20px;
+    background:rgba(255,255,255,.35);
+}
+
+.bm-d .faq-list {
+    margin-top:55px;
+}
+
+.bm-d .faq {
+    border-top:1px solid #b8afa2;
+    padding:25px 0;
+}
+
+.bm-d .faq:last-child {
+    border-bottom:1px solid #b8afa2;
+}
+
+.bm-d .faq h3 {
+    font-family:var(--serif);
+    font-size:28px;
+    font-weight:500;
+    margin:0 0 10px;
+}
+
+.bm-d .faq p {
+    margin:0;
+    line-height:1.55;
+    max-width:850px;
+    color:#4a534f;
+}
+
+.bm-d .d-cta {
+    background:#0d1d18;
+    color:#f7f1e8;
+    text-align:center;
+    padding:130px 7vw;
+}
+
+.bm-d .d-cta p {
+    max-width:620px;
+    margin:28px auto;
+    font-size:18px;
+    line-height:1.6;
+}
+
+.bm-d .btn {
+    display:inline-block;
+    color:#17231f;
+    background:#f7f1e8;
+    border-radius:999px;
+    padding:17px 26px;
+    text-decoration:none;
+}
+
+.bm-d .crumbs {
+    position:absolute;
+    z-index:3;
+    top:110px;
+    left:7vw;
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+.bm-d .crumbs a {
+    color:#fff;
+    text-decoration:none;
+    opacity:.78;
+}
+
+@media (max-width:760px) {
+    .bm-d .d-hero {
+        padding:0 22px 60px;
+    }
+
+    .bm-d .crumbs {
+        left:22px;
+    }
+
+    .bm-d .d-intro,
+    .bm-d .d-steps,
+    .bm-d .d-docs,
+    .bm-d .d-faq {
+        padding:75px 22px;
+    }
+
+    .bm-d .grid2 {
+        grid-template-columns:1fr;
+        gap:35px;
+    }
+
+    .bm-d .d-copy h1 {
+        font-size:58px;
+    }
 }
 
 

@@ -126,41 +126,160 @@
 
 {% else %}
 
-    {# ====== PRESTATION ====== #}
-    <header class="bm-entete">
-        <nav class="bm-fil" aria-label="Fil d'Ariane">
-            <a href="{{ path('app_home') }}">Accueil</a>
-            <span aria-hidden="true">·</span>
-            <a href="{{ path('app_service_index') }}">{{ section_title|default('Expertises') }}</a>
+    {# ====== PRESTATION ======
+       L'import a range le contenu dans un ordre constant, verifie sur les
+       trente-deux prestations : un chapeau d'introduction, puis trois blocs
+       ouverts par un <h3> -- le parcours en liste numerotee, les pieces en
+       liste a puces suivies de leur reserve, et les questions en paires
+       <h4>/<p>.
+
+       On relit donc ce decoupage plutot que d'ajouter des champs a l'entite.
+       Un contenu qui s'en ecarterait perdrait les sections concernees au lieu
+       de les afficher de travers. #}
+
+    {% set contenu = service.content|default('') %}
+    {% set blocs = contenu|split('<h3>') %}
+
+    {% set intro = blocs[0]|default('')|split('<p>')|slice(1)
+        |map(bloc => bloc|split('</p>')[0]|trim)|first|default('') %}
+
+    {# Chaque bloc porte son intitule, puis son corps. Les intitules du lot
+       sont constants, on ne garde donc que les corps, dans l'ordre. #}
+    {% set corps = blocs|slice(1)|map(bloc => bloc|split('</h3>')[1]|default('')) %}
+
+    {% set etapes = (corps[0]|default(''))|split('<li>')|slice(1)
+        |map(item => item|split('</li>')[0]|striptags|trim)
+        |filter(item => item is not empty) %}
+
+    {% set pieces = (corps[1]|default(''))|split('<li>')|slice(1)
+        |map(item => item|split('</li>')[0]|striptags|trim)
+        |filter(item => item is not empty) %}
+
+    {# La reserve suit la liste des pieces, hors de celle-ci. #}
+    {% set reserve = (corps[1]|default('')|split('</ul>')[1]|default(''))
+        |split('<p>')|slice(1)|map(bloc => bloc|split('</p>')[0]|trim)|first|default('') %}
+
+    {% set questions = (corps[2]|default(''))|split('<h4>')|slice(1)
+        |map(bloc => {
+            question: bloc|split('</h4>')[0]|striptags|trim,
+            reponse: bloc|split('<p>')[1]|default('')|split('</p>')[0]|trim
+        })
+        |filter(item => item.question is not empty) %}
+
+    {# Les prestations n'ont pas de visuel propre : le lot reprend celui du
+       pole dont elles dependent. #}
+    {% set visuel = service.image ?? (parent|default(null) ? parent.image : null) %}
+
+    {# Les styles de detail.css sont repris sous .bm-d : la feuille visait
+       html, body et a, elle aurait repeint le site. #}
+    <div class="bm-d">
+
+    {# ====== 01. HERO ====== #}
+    <section class="d-hero">
+        {% if visuel %}
+            <div class="d-bg" style="background-image:url('{{ asset('documents/medias/' ~ (visuel.webpFileName ?? visuel.fileName)) }}')"></div>
+        {% endif %}
+        <div class="d-shade"></div>
+
+        <nav class="crumbs" aria-label="Fil d'Ariane">
+            <a href="{{ path('app_home') }}">Accueil</a> ·
             {% if parent|default(null) %}
-                <span aria-hidden="true">·</span>
-                <a href="{{ path('app_service_show', { slug: parent.slug }) }}">{{ parent.title }}</a>
+                <a href="{{ path('app_service_show', { slug: parent.slug }) }}">{{ parent.title }}</a> ·
             {% endif %}
+            {{ service.title }}
         </nav>
 
-        <p class="bm-kicker">BM Notaire{% if parent|default(null) %} · {{ parent.title }}{% endif %}</p>
-        <h1 class="bm-titre">{{ service.title }}</h1>
-        {% if service.shortDescription %}
-            <p class="bm-lede">{{ service.shortDescription }}</p>
-        {% endif %}
-    </header>
-
-    <div class="bm-corps bm-corps--prestation">
-        {{ service.content|raw }}
-    </div>
-
-    <section class="bm-section bm-section--encre">
-        <div class="bm-duo">
-            <div><span class="bm-kicker">05 / Échangeons</span></div>
-            <div>
-                <h2 class="bm-titre">Parlons de <em>votre projet.</em></h2>
-                <p class="bm-lede">
-                    Un premier échange permet d'identifier votre besoin, les documents à
-                    réunir et les prochaines étapes.
-                </p>
-                <a href="{{ path('app_rendez_vous') }}" class="bm-lien">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
-            </div>
+        <div class="d-copy">
+            <span class="eyebrow">BM Notaire{% if parent|default(null) %} · {{ parent.title }}{% endif %}</span>
+            <h1>{{ service.title }}</h1>
+            {% if service.shortDescription %}
+                <p class="lead">{{ service.shortDescription }}</p>
+            {% endif %}
         </div>
     </section>
+
+    {# ====== 02. LE BESOIN ====== #}
+    {% if intro %}
+        <section class="d-intro">
+            <div class="grid2">
+                <div><span class="num">01 / Le besoin</span></div>
+                <div>
+                    <h2>Comprendre avant<br><em>d’agir.</em></h2>
+                    <p>{{ intro|raw }}</p>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {# ====== 03. LE PARCOURS ====== #}
+    {% if etapes %}
+        <section class="d-steps">
+            <div class="grid2">
+                <div><span class="num">02 / Le parcours</span></div>
+                <div>
+                    <h2>Votre dossier,<br><em>étape par étape.</em></h2>
+                    <ol class="step-list">
+                        {% for etape in etapes %}
+                            <li class="step">
+                                <span>{{ '%02d'|format(loop.index) }}</span>
+                                <b>{{ etape }}</b>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {# ====== 04. PREPARER ====== #}
+    {% if pieces %}
+        <section class="d-docs">
+            <div class="grid2">
+                <div><span class="num">03 / Préparer</span></div>
+                <div>
+                    <h2>Les premiers éléments<br><em>à réunir.</em></h2>
+                    <ul class="chips">
+                        {% for piece in pieces %}
+                            <li class="chip">{{ piece }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% if reserve %}<p class="chips-note">{{ reserve|raw }}</p>{% endif %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {# ====== 05. QUESTIONS ====== #}
+    {% if questions %}
+        <section class="d-faq">
+            <div class="grid2">
+                <div><span class="num">04 / Questions</span></div>
+                <div>
+                    <h2>Avant le<br><em>rendez-vous.</em></h2>
+                    <div class="faq-list">
+                        {% for item in questions %}
+                            <div class="faq">
+                                <h3>{{ item.question }}</h3>
+                                <p>{{ item.reponse|raw }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {# ====== 06. ECHANGEONS ====== #}
+    <section class="d-cta">
+        <span class="num">05 / Échangeons</span>
+        <h2>Parlons de<br><em>votre projet.</em></h2>
+        <p>
+            Présentez-nous votre situation. Nous vous indiquerons les premières
+            pièces utiles et la prochaine étape.
+        </p>
+        <a class="btn" href="{{ path('app_rendez_vous') }}">Prendre rendez-vous ↗</a>
+    </section>
+
+    </div>{# /.bm-d #}
 
 {% endif %}

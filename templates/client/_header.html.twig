@@ -33,7 +33,8 @@
 
 {% set _route = app.request.attributes.get('_route') %}
 {% set _routes_sombres = ['app_home', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier'] %}
-{% set _sur_visuel = _route in _routes_sombres or (_route == 'app_service_show' and service is defined and service.children|default([])|length > 0) %}
+{# Les deux niveaux de l'offre ouvrent desormais sur un bandeau sombre. #}
+{% set _sur_visuel = _route in _routes_sombres or _route == 'app_service_show' %}
 
 <header class="bm-nav{{ _sur_visuel ? ' bm-nav--clair' : ' bm-nav--plein' }}">
     {% include '_partials/_admin_bar.html.twig' %}
@@ -85,7 +86,8 @@
                 var CLAIRES = '.bm-cine .office-story, .bm-cine .manifesto,'
                     + '.bm-portal .cta,'
                     + '.bm-dossier .section:not(.alt), .bm-dossier .final,'
-                    + '.bm-xp .xp-overview, .bm-xp .xp-menu, .bm-xp .xp-cta';
+                    + '.bm-xp .xp-overview, .bm-xp .xp-menu, .bm-xp .xp-cta,'
+                    + '.bm-d .d-intro, .bm-d .d-docs, .bm-d .d-faq';
 
                 var barre = document.currentScript.closest('.bm-nav');
                 var zones = null;
