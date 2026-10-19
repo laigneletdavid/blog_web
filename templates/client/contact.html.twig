@@ -1,0 +1,151 @@
+{# ======================================================================
+   CONTACT — BM NOTAIRE
+   Surcouche client, prioritaire sur le rendu du theme.
+
+   Transpose du lot, avec trois ecarts assumes :
+
+   - Le lot affiche une iframe Google Maps sans cle. Elle ne s'affiche plus
+     (404, et X-Frame-Options la refuse en cadre). Le CMS produit deja une
+     carte statique a partir de l'adresse : c'est elle qu'on pose, sans
+     requete vers un tiers au chargement.
+
+   - Les coordonnees et les horaires viennent du site, jamais du lot :
+     l'etude doit pouvoir les corriger depuis son administration. Le lot les
+     ecrit en dur, jusqu'au numero de telephone.
+
+   - La derniere section du lot mene au depot documentaire, qui reste a
+     faire. On ne pointe pas vers une page absente : elle est remplacee par
+     le renvoi vers la prise de rendez-vous.
+
+   Le lot ne met pas de formulaire ici : il reserve la saisie a la page de
+   rendez-vous, que nous avons branchee. La page garde donc ce parti.
+   ====================================================================== #}
+
+{% set _adresse = [site.address1|default(''), site.postCode|default(''), site.town|default('')]|filter(v => v is not empty)|join(' ') %}
+{% set _itineraire = 'https://www.google.com/maps/dir/?api=1&destination=' ~ _adresse|url_encode %}
+
+<div class="bm-ct">
+
+    {# ====== 01. BANDEAU ====== #}
+    <section class="ct-hero">
+        <div class="ct-hero-inner">
+            <p class="eyebrow">BM Notaire · {{ site.town|default('Saint-Martory') }}</p>
+            <h1>Parlons de<br><em>votre projet.</em></h1>
+            <p class="intro">
+                Un premier échange permet de comprendre votre situation, d’identifier
+                les pièces utiles et d’organiser les prochaines étapes.
+            </p>
+        </div>
+        <a class="scroll" href="#coordonnees">COORDONNÉES <span aria-hidden="true">↓</span></a>
+    </section>
+
+    {# ====== 02. COORDONNEES ====== #}
+    <section class="ct-info" id="coordonnees">
+        <div class="ct-index">01 / Contact</div>
+
+        <div class="ct-grid">
+            {% if _adresse %}
+                <article>
+                    <span>ADRESSE</span>
+                    <h2>{{ site.address1 }}<br>{{ site.postCode|default('') }} {{ site.town|default('') }}</h2>
+                    <a href="{{ _itineraire }}" target="_blank" rel="noopener">Obtenir l’itinéraire ↗</a>
+                </article>
+            {% endif %}
+
+            {% if site.phone %}
+                <article>
+                    <span>TÉLÉPHONE</span>
+                    <h2><a href="tel:{{ site.phone }}">{{ site.phone|phone }}</a></h2>
+                    <p>Pour joindre directement l’étude.</p>
+                </article>
+            {% endif %}
+
+            {% if site.email %}
+                <article>
+                    <span>COURRIEL</span>
+                    <h2 class="email"><a href="mailto:{{ site.email }}">{{ site.email }}</a></h2>
+                    <p>Pour nous transmettre votre demande et vos coordonnées.</p>
+                </article>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ====== 03. VENIR A L'ETUDE ====== #}
+    {% if site.googleMaps %}
+        <section class="ct-map-section">
+            <div class="ct-map-head">
+                <div><span class="section-no">02 / Venir à l’étude</span></div>
+                <div>
+                    <h2>Au cœur de<br><em>{{ site.town|default('Saint-Martory') }}.</em></h2>
+                    <p>
+                        L’étude vous accueille au {{ site.address1|default('') }}.
+                        Utilisez la carte pour préparer votre trajet.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ct-map-wrap">
+                <img src="{{ asset(site.googleMaps) }}"
+                     alt="Plan d’accès à l’étude, {{ _adresse }}"
+                     loading="lazy" decoding="async">
+                <a class="map-button" href="{{ _itineraire }}" target="_blank" rel="noopener">
+                    Ouvrir l’itinéraire <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </section>
+    {% endif %}
+
+    {# ====== 04. HORAIRES ====== #}
+    {% set _horaires = site.openingHoursArray|default([]) %}
+    {% if _horaires|length %}
+        <section class="ct-hours">
+            <div>
+                <span class="section-no">03 / Horaires</span>
+                <h2>Nous vous<br><em>accueillons.</em></h2>
+            </div>
+
+            {# Format enregistre : une ligne par plage, « Lu-Ve 09:00-12:00 ».
+               La maquette veut une ligne par jour avec ses plages cote a cote :
+               on regroupe donc les plages qui portent le meme intitule de jour.
+               Les intitules restent ceux du site, qui alimentent aussi les
+               donnees structurees. #}
+            {% set _jours = {} %}
+            {% for ligne in _horaires %}
+                {% set _coupe = ligne|split(' ', 2) %}
+                {% set _jour = _coupe[0]|default(ligne) %}
+                {% set _jours = _jours|merge({
+                    (_jour): (_jours[_jour]|default([]))|merge([_coupe[1]|default('')])
+                }) %}
+            {% endfor %}
+
+            <div class="hours-list">
+                {% for jour, plages in _jours %}
+                    <div>
+                        <span>{{ jour }}</span>
+                        {% for plage in plages %}
+                            <b>{{ plage|replace({'-': ' — '}) }}</b>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <p class="hours-note">
+                Les horaires peuvent être adaptés ponctuellement. Pour un rendez-vous,
+                nous vous invitons à contacter l’étude au préalable.
+            </p>
+        </section>
+    {% endif %}
+
+    {# ====== 05. ECHANGEONS ====== #}
+    <section class="ct-action">
+        <p class="eyebrow">04 / Prenons le temps d’échanger</p>
+        <h2>Un projet.<br>Une question.<br><em>Échangeons.</em></h2>
+        <div class="ct-actions">
+            {% if site.phone %}
+                <a href="tel:{{ site.phone }}">Appeler l’étude <span aria-hidden="true">↗</span></a>
+            {% endif %}
+            <a href="{{ path('app_rendez_vous') }}">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+        </div>
+    </section>
+
+</div>
