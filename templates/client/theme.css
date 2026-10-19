@@ -1338,13 +1338,26 @@ main { overflow-x: clip; }
 }
 
 /* La scene se lit en clair : le lot tenait cette couleur d'une regle sur
-   body, que nous n'avons pas reprise pour ne pas repeindre le site. */
-.bm-cine .stage,
-.bm-cine .stage h1,
-.bm-cine .stage h2,
-.bm-cine .stage h3,
-.bm-cine .stage p,
-.bm-cine .stage a {
+   body, que nous n'avons pas reprise pour ne pas repeindre le site.
+
+   On vise les ensembles poses sur la video, pas toute la scene : les cartes
+   du rail ont un fond creme et leur propre encre. Cibler .stage h3 les
+   rendait illisibles, texte creme sur fond creme. */
+.bm-cine .hero,
+.bm-cine .hero p,
+.bm-cine .hero .signature,
+.bm-cine .statement,
+.bm-cine .statement h2,
+.bm-cine .statement p,
+.bm-cine .territory,
+.bm-cine .territory h2,
+.bm-cine .territory p,
+.bm-cine .territory a,
+.bm-cine .cinema-expert-head,
+.bm-cine .cinema-expert-head h2,
+.bm-cine .cinema-expert-head p,
+.bm-cine .explore,
+.bm-cine .counter {
     color: var(--bm-creme);
 }
 
@@ -1357,4 +1370,12 @@ main { overflow-x: clip; }
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+/* Les cartes du rail portent l'encre de la charte : sans cette precision,
+   le CMS leur impose son bleu-noir sur les titres. */
+.bm-cine .cinema-track article h3,
+.bm-cine .cinema-track article small,
+.bm-cine .cinema-track article p {
+    color: var(--bm-encre);
 }

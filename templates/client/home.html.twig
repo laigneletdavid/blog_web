@@ -63,19 +63,33 @@
                 <p class="kicker">NOS EXPERTISES</p>
                 <h2>Conseiller.<br><em>Anticiper.</em> Transmettre.</h2>
             </div>
+            {# Accroches et mots-cles du rail : ils n'existent dans aucun champ,
+               le lot les a ecrits pour cette vitrine. Faute de place ou les
+               ranger, ils vivent ici, indexes par identifiant de pole. Un
+               champ dedie sur le service les rendrait editables. #}
+            {% set accroches = {
+                'immobilier':  { titre: 'Donner forme<br>à vos projets.',          mots: 'Vente · Acquisition<br>Promotion · Division' },
+                'famille':     { titre: 'Protéger.<br>Anticiper. Transmettre.',    mots: 'Famille · Succession · Donation<br>Patrimoine · Société civile' },
+                'entreprise':  { titre: 'Accompagner<br>l’entrepreneur.',          mots: 'Sociétés · Fonds de commerce<br>Immobilier professionnel' },
+                'droit-rural': { titre: 'Comprendre<br>le territoire.',            mots: 'Baux ruraux · GFA' }
+            } %}
+
             <div class="cinema-track">
                 {% for service in services %}
+                    {% set accroche = accroches[service.slug]|default(null) %}
                     <article onclick="location.href='{{ path('app_service_show', { slug: service.slug }) }}'" role="link" tabindex="0">
                         <small>{{ '%02d'|format(loop.index) }} · {{ service.title|upper }}</small>
-                        <h3>{{ service.shortDescription|default(service.title)|split('.')|first }}.</h3>
-                        {% if service.children|length > 0 %}
+                        <h3>{{ accroche ? accroche.titre|raw : service.title }}</h3>
+                        {% if accroche %}
+                            <p>{{ accroche.mots|raw }}</p>
+                        {% elseif service.children|length > 0 %}
                             <p>{{ service.children|slice(0, 4)|map(e => e.title)|join(' · ') }}</p>
                         {% endif %}
                         <b>↗</b>
                     </article>
                 {% endfor %}
             </div>
-            <div class="explore">Explorer <span>→</span></div>
+            <div class="explore">EXPLORER <span>→</span></div>
         </section>
         {% endif %}
 
