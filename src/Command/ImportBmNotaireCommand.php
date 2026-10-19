@@ -299,17 +299,17 @@ class ImportBmNotaireCommand extends Command
 
         $etapes = $this->etapes($html);
         if ($etapes !== []) {
-            $contenu[] = $this->titre('Votre dossier, etape par etape');
+            $contenu[] = $this->titre('Votre dossier, étape par étape');
             $contenu[] = $this->liste($etapes, true);
         }
 
         $pieces = $this->pieces($html);
         if ($pieces !== []) {
-            $contenu[] = $this->titre('Les premiers elements a reunir');
+            $contenu[] = $this->titre('Les premiers éléments à réunir');
             $contenu[] = $this->liste($pieces, false);
             $contenu[] = $this->paragraphe(
-                'Cette liste constitue un point de depart. Les pieces reellement necessaires '
-                . 'sont precisees apres examen de votre situation.',
+                'Cette liste constitue un point de départ. Les pièces réellement nécessaires '
+                . 'sont précisées après examen de votre situation.',
             );
         }
 

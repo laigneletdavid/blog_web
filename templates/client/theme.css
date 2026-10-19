@@ -1,1842 +1,498 @@
 /* ======================================================================
-   ADN VISUEL - Etude Mainguy (branche bw_mainguy)
-   Inspiration : blnotaires.fr - monochrome noir & blanc, institutionnel,
-   beaucoup d'air. La photo porte la couleur, la typo porte l'elegance.
+   BM NOTAIRE — habillage client
+   Charge en dernier dans <head>, il a donc le dernier mot sur le theme.
 
-   Charge en dernier dans le <head> (base.html.twig), apres themes/corporate/theme.css.
-   Ne jamais modifier le CSS des themes ni le core : tout se passe ici.
-   Theme : corporate - hooks reels de templates/home/_home_generic.html.twig
+   Direction editoriale reprise du lot livre par l'etude : fond creme, encre
+   vert-noir, Playfair Display pour la voix, DM Sans pour le propos. Les
+   titres melent romain et italique, les intertitres sont de petites capitales
+   espacees numerotees.
    ====================================================================== */
 
-/* ======================================================================
-   1. TOKENS - surcharge des variables du theme corporate
-   ====================================================================== */
 :root {
-    /* Palette monochrome (primary / secondary / accent viennent de l'admin) */
-    --surface: #EEF3F3;          /* gris-vert clair : fond de page et sections alternees */
-    --border: #DCE3E3;           /* filets 1px, gris froid */
-    --text: #14191A;
-    --text-muted: #6B7576;
+    --bm-creme: #F2EADF;
+    --bm-encre: #142019;
+    --bm-encre-clair: #1E2E25;
+    --bm-sourdine: #778078;
+    --bm-filet: rgba(20, 32, 25, .14);
+    --bm-filet-clair: rgba(242, 234, 223, .32);
 
-    /* Pas d'arrondis, pas d'ombres : l'ADN est anguleux et plat */
-    --radius: 0;
-    --radius-sm: 0;
-    --radius-lg: 0;
-    --shadow-sm: none;
-    --shadow: none;
-    --shadow-lg: none;
+    --bm-serif: "Playfair Display", Georgia, serif;
+    --bm-sans: "DM Sans", Arial, sans-serif;
 
-    /* Fallback hero quand aucune image n'est definie (pas de degrade colore) */
-    --gradient-hero: #273133;
-
-    /* Tokens locaux */
-    --bw-section-y: 7rem;        /* air vertical des sections */
-    --bw-rule: 1px solid var(--border);
-    --bw-track: .15em;           /* letter-spacing des labels uppercase */
-    --bw-ease: .35s cubic-bezier(.22, .61, .36, 1);
-
-    /* Traitement des images editoriales.
-       Pour revenir a la couleur naturelle partout : passer --bw-img-filter a "none". */
-    --bw-img-filter: grayscale(1);
-    --bw-img-filter-hover: grayscale(0);
+    --bm-section: clamp(4.5rem, 9vw, 9rem);
+    --bm-gouttiere: clamp(1.25rem, 5vw, 4rem);
 }
 
 /* ======================================================================
-   2. TYPOGRAPHIE - serif editorial pour les titres, sans neutre pour le reste
-   Titres : Vidaloka, le didone du site de reference. Une seule graisse
-   disponible (400), d'ou l'absence de poids 300 dans tout ce fichier.
-   Sa capitale vaut 104,5 % de celle de Cormorant Garamond et sa hauteur
-   d'x 109 % : les tailles de titres sont donc reduites d'environ 7 %.
+   1. FONDATIONS
    ====================================================================== */
-.theme-corporate {
-    color: var(--text);
-    font-family: var(--font-family);
-    background: var(--surface);
+
+body {
+    background: var(--bm-creme);
+    color: var(--bm-encre);
+    font-family: var(--bm-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
 }
 
-.theme-corporate h1,
-.theme-corporate h2,
-.theme-corporate h3,
-.theme-corporate .home-section-title,
-.theme-corporate .home-hero__title,
-.theme-corporate .home-about__title,
-.theme-corporate .home-cta__title {
-    font-family: var(--font-family-secondary, var(--font-family));
+h1, h2, h3, .bm-serif {
+    font-family: var(--bm-serif);
     font-weight: 400;
-    letter-spacing: .005em;
-    line-height: 1.18;
+    line-height: 1.08;
+    letter-spacing: -.015em;
 }
 
-.theme-corporate .home-section-title {
-    font-size: clamp(1.95rem, 3.45vw, 3.05rem);
-    font-weight: 400;
-    margin-bottom: 3rem;
+h1 em, h2 em, h3 em, .bm-serif em {
+    font-style: italic;
 }
 
-/* Eyebrows / labels de section : uppercase, tracee, grise, petite */
-.theme-corporate .home-hero__badge,
-.theme-corporate .home-about__overtitle,
-.theme-corporate .home-logos__title,
-.theme-corporate .home-metrics__label {
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .75rem;
-    font-weight: 500;
-    font-family: var(--font-family);
-    color: var(--text-muted);
-}
+a { color: inherit; }
 
-/* ======================================================================
-   3. RYTHME VERTICAL & ALTERNANCE DE FONDS
-   ====================================================================== */
-.theme-corporate .home-features,
-.theme-corporate .home-services,
-.theme-corporate .home-events,
-.theme-corporate .home-portfolio,
-.theme-corporate .home-faq,
-.theme-corporate .home-metrics,
-.theme-corporate .home-articles,
-.theme-corporate .home-about,
-.theme-corporate .home-gallery,
-.theme-corporate .home-testimonials,
-.theme-corporate .home-logos,
-.theme-corporate .home-cta {
-    padding-top: var(--bw-section-y);
-    padding-bottom: var(--bw-section-y);
-}
-
-/* Alternance blanc / off-white pour le rythme editorial */
-.theme-corporate .home-features,
-.theme-corporate .home-portfolio,
-.theme-corporate .home-articles,
-.theme-corporate .home-gallery,
-.theme-corporate .home-logos {
-    background: #FFFFFF;
-}
-
-.theme-corporate .home-services,
-.theme-corporate .home-events,
-.theme-corporate .home-about,
-.theme-corporate .home-testimonials {
-    background: var(--surface);
-}
-
-.theme-corporate .home-metrics {
-    background: #FFFFFF;
-    border-top: var(--bw-rule);
-    border-bottom: var(--bw-rule);
-}
-
-/* ======================================================================
-   4. BOUTONS - rectangulaires, uppercase traces, inversion au hover
-   ====================================================================== */
-.theme-corporate .btn {
-    border-radius: 0;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .78rem;
-    font-weight: 500;
-    padding: .9rem 2rem;
-    border-width: 1px;
-    transition: background-color var(--bw-ease), color var(--bw-ease), border-color var(--bw-ease);
-}
-
-.theme-corporate .btn-lg {
-    padding: 1rem 2.4rem;
-    font-size: .8rem;
-}
-
-.theme-corporate .btn-sm {
-    padding: .55rem 1.2rem;
-    font-size: .7rem;
-}
-
-/* Noir plein -> inversion vers outline noir */
-.theme-corporate .btn-primary {
-    --bs-btn-bg: var(--primary);
-    --bs-btn-border-color: var(--primary);
-    --bs-btn-hover-bg: transparent;
-    --bs-btn-hover-color: var(--primary);
-    --bs-btn-hover-border-color: var(--primary);
-    --bs-btn-active-bg: transparent;
-    --bs-btn-active-color: var(--primary);
-    --bs-btn-active-border-color: var(--primary);
-}
-
-/* Outline noir -> inversion vers noir plein */
-.theme-corporate .btn-outline-primary,
-.theme-corporate .btn-outline-secondary {
-    --bs-btn-color: var(--primary);
-    --bs-btn-border-color: var(--primary);
-    --bs-btn-hover-bg: var(--primary);
-    --bs-btn-hover-color: #FFFFFF;
-    --bs-btn-hover-border-color: var(--primary);
-}
-
-/* ======================================================================
-   5. LIENS - soulignement anime
-   ====================================================================== */
-.theme-corporate .home-articles a:not(.btn),
-.theme-corporate .article-detail__content a:not(.btn) {
-    color: inherit;
-    text-decoration: none;
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size var(--bw-ease);
-}
-
-.theme-corporate .home-articles a:not(.btn):hover,
-.theme-corporate .article-detail__content a:not(.btn):hover {
-    background-size: 100% 1px;
-}
-
-/* ======================================================================
-   6. HERO - image plein ecran, overlay, titre serif blanc, indicateur scroll
-   ====================================================================== */
-.theme-corporate .home-hero {
-    position: relative;
-    min-height: 88vh;
-}
-
-.theme-corporate .home-hero__row {
-    min-height: 88vh;
-    padding: 8rem 0 6rem;
-}
-
-.theme-corporate .home-hero__overlay {
-    background: linear-gradient(180deg, rgba(0, 0, 0, .38) 0%, rgba(0, 0, 0, .24) 45%, rgba(0, 0, 0, .5) 100%);
-}
-
-.theme-corporate .home-hero__content {
-    max-width: 46rem;
-}
-
-.theme-corporate .home-hero__badge {
-    display: inline-block;
-    background: transparent;
-    color: rgba(255, 255, 255, .78);
-    padding: 0;
-    margin-bottom: 1.6rem;
-    border: 0;
-}
-
-.theme-corporate .home-hero__title {
-    color: #FFFFFF;
-    font-size: clamp(2.7rem, 6.05vw, 5.1rem);
-    font-weight: 400;
-    margin-bottom: 1.6rem;
-}
-
-.theme-corporate .home-hero__desc {
-    color: rgba(255, 255, 255, .85);
-    font-size: 1.05rem;
-    font-weight: 400;
-    line-height: 1.8;
-    max-width: 38rem;
-    margin-bottom: 2.6rem;
-}
-
-.theme-corporate .home-hero__actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-/* Sur photo sombre, les boutons passent en blanc */
-.theme-corporate .home-hero .btn-primary {
-    --bs-btn-bg: #FFFFFF;
-    --bs-btn-color: var(--primary);
-    --bs-btn-border-color: #FFFFFF;
-    --bs-btn-hover-bg: transparent;
-    --bs-btn-hover-color: #FFFFFF;
-    --bs-btn-hover-border-color: #FFFFFF;
-}
-
-.theme-corporate .home-hero .btn-outline-primary {
-    --bs-btn-color: #FFFFFF;
-    --bs-btn-border-color: rgba(255, 255, 255, .55);
-    --bs-btn-hover-bg: #FFFFFF;
-    --bs-btn-hover-color: var(--primary);
-    --bs-btn-hover-border-color: #FFFFFF;
-}
-
-/* Trust badges a emojis du template generique : hors ADN (icones monochromes only) */
-.theme-corporate .home-hero__badges {
-    display: none;
-}
-
-/* Indicateur "continuer" : filet vertical anime en bas du hero */
-.theme-corporate .home-hero::after {
+/* Intertitre numerote : « 02 / LE PARCOURS ». La numerotation vient du
+   contenu, la typographie d'ici. */
+.bm-kicker {
     display: block;
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 2.5rem;
-    width: 1px;
-    height: 3.5rem;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, .85));
-    transform-origin: top;
-    animation: bw-scroll-hint 2.4s ease-in-out infinite;
-    z-index: 1;
+    font-family: var(--bm-sans);
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--bm-sourdine);
+    margin-bottom: 1.25rem;
 }
 
-@keyframes bw-scroll-hint {
-    0%   { transform: scaleY(.2); opacity: .2; }
-    50%  { transform: scaleY(1);  opacity: .9; }
-    100% { transform: scaleY(.2); opacity: .2; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .theme-corporate .home-hero::after { animation: none; }
+.bm-lede {
+    font-size: 1.15rem;
+    color: var(--bm-sourdine);
+    max-width: 46ch;
 }
 
 /* ======================================================================
-   7. HEADER - sobre, filet 1px, nav uppercase tracee
+   2. EN-TETE
    ====================================================================== */
-.theme-corporate .header--corporate {
-    border-bottom: var(--bw-rule);
-    background: #FFFFFF;
+
+.theme-corporate .header,
+.theme-corporate .header-main {
+    background: var(--bm-creme);
+    border: 0;
+    box-shadow: none;
 }
 
-.theme-corporate .header--corporate .header-main {
-    padding: 1.15rem 0;
+.theme-corporate .header-main {
+    border-bottom: 1px solid var(--bm-filet);
 }
 
-.theme-corporate .header--corporate .nav-link {
-    text-transform: uppercase;
-    letter-spacing: .1em;
+.theme-corporate .header .nav-link {
     font-size: .76rem;
     font-weight: 500;
-    color: var(--text);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--bm-encre);
     padding: .5rem .9rem;
 }
 
-.theme-corporate .header--corporate .nav-link:hover {
-    color: var(--text-muted);
+.theme-corporate .header .nav-link:hover {
+    color: var(--bm-sourdine);
 }
 
-.theme-corporate .header--corporate .search-input,
-.theme-corporate .header--corporate .form-control {
-    border-radius: 0;
-    border-color: var(--border);
-}
-
-/* Le CTA du header reste discret : outline, pas d'aplat */
-.theme-corporate .header--corporate .btn-primary {
-    --bs-btn-bg: transparent;
-    --bs-btn-color: var(--primary);
-    --bs-btn-border-color: var(--primary);
-    --bs-btn-hover-bg: var(--primary);
-    --bs-btn-hover-color: #FFFFFF;
-    font-weight: 500;
-}
-
-/* ======================================================================
-   8. CARTES - bordures fines, zero ombre, hover discret
-   ====================================================================== */
-.theme-corporate .home-features__card,
-.theme-corporate .card,
-.theme-corporate .service-card,
-.theme-corporate .blog-card {
-    border: var(--bw-rule);
-    border-radius: 0;
-    box-shadow: none;
-    background: #FFFFFF;
-    transition: border-color var(--bw-ease), transform var(--bw-ease);
-}
-
-.theme-corporate .home-features__card:hover,
-.theme-corporate .card:hover,
-.theme-corporate .service-card:hover,
-.theme-corporate .blog-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: none;
-}
-
-.theme-corporate .home-features__card {
-    padding: 2.5rem 2rem;
-}
-
-.theme-corporate .home-features__icon {
-    color: var(--primary);
-    margin-bottom: 1.5rem;
-}
-
-.theme-corporate .home-features__icon svg {
-    width: 28px;
-    height: 28px;
-    stroke-width: 1.25;
-}
-
-.theme-corporate .home-features__title {
-    font-size: 1.15rem;
-    font-weight: 400;
-    margin-bottom: .8rem;
-}
-
-.theme-corporate .home-features__desc {
-    color: var(--text-muted);
-    font-size: .95rem;
-    line-height: 1.75;
-}
-
-/* Images : angles droits partout */
-.theme-corporate img,
-.theme-corporate .card-img-top,
-.theme-corporate .rounded,
-.theme-corporate .rounded-3 {
-    border-radius: 0 !important;
-}
-
-/* ======================================================================
-   9. METRICS - chiffres geants et fins, labels uppercase gris
-   ====================================================================== */
-.theme-corporate .home-metrics__item {
-    text-align: center;
-    padding: 1.5rem .5rem;
-}
-
-.theme-corporate .home-metrics__value {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(2.8rem, 5vw, 4.45rem);
-    font-weight: 400;
-    line-height: 1;
-    color: var(--primary);
-    margin-bottom: .9rem;
-}
-
-.theme-corporate .home-metrics__label {
-    font-size: .72rem;
-    line-height: 1.6;
-}
-
-/* ======================================================================
-   10. A PROPOS - portrait rectangulaire, texte aere
-   ====================================================================== */
-.theme-corporate .home-about__img,
-.theme-corporate .home-about__img.rounded-circle {
-    border-radius: 0 !important;
-    box-shadow: none;
-    filter: var(--bw-img-filter);
-    transition: filter var(--bw-ease);
-    width: 100%;
-    max-width: 320px;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    height: auto;
-}
-
-.theme-corporate .home-about__img:hover {
-    filter: var(--bw-img-filter-hover);
-}
-
-.theme-corporate .home-about__content {
-    align-items: flex-start !important;
-    text-align: left;
-    gap: 1.4rem;
-}
-
-.theme-corporate .home-about__overtitle {
-    display: block;
-    margin-bottom: .4rem;
-}
-
-.theme-corporate .home-about__title {
-    font-size: clamp(1.85rem, 3.05vw, 2.7rem);
-    font-weight: 400;
-}
-
-.theme-corporate .home-about__text {
-    color: var(--text-muted);
-    font-size: 1.02rem;
-    font-weight: 400;
-    line-height: 1.9;
-    max-width: 44rem;
-}
-
-/* ======================================================================
-   11. TEMOIGNAGES - sobres, gros guillemets typographiques
-   ====================================================================== */
-.theme-corporate .home-testimonial,
-.theme-corporate .testimonial-card {
-    background: #FFFFFF;
-    border: var(--bw-rule);
-    border-radius: 0;
-    box-shadow: none;
-    padding: 2.5rem 2rem;
-    position: relative;
-}
-
-.theme-corporate .home-testimonial::before,
-.theme-corporate .testimonial-card::before {
-    content: "\201C";
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: 4.5rem;
-    line-height: 1;
-    color: var(--border);
-    position: absolute;
-    top: 1rem;
-    left: 1.4rem;
-}
-
-.theme-corporate .testimonial-card__author,
-.theme-corporate .home-testimonial__author {
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .72rem;
-    color: var(--text-muted);
-}
-
-/* ======================================================================
-   12. LOGOS CLIENTS / GALERIE - grayscale, couleur au hover
-   ====================================================================== */
-.theme-corporate .home-logos__title {
-    margin-bottom: 2.5rem;
-}
-
-.theme-corporate .home-logos img {
-    filter: grayscale(1);
-    opacity: .55;
-    transition: filter var(--bw-ease), opacity var(--bw-ease);
-}
-
-.theme-corporate .home-logos img:hover {
-    filter: grayscale(0);
-    opacity: 1;
-}
-
-.theme-corporate .home-gallery img,
-.theme-corporate .home-articles .card-img-top,
-.theme-corporate .home-portfolio img {
-    filter: var(--bw-img-filter);
-    transition: filter var(--bw-ease), transform var(--bw-ease);
-}
-
-.theme-corporate .home-gallery img:hover,
-.theme-corporate .home-articles .card:hover .card-img-top,
-.theme-corporate .home-portfolio img:hover {
-    filter: var(--bw-img-filter-hover);
-}
-
-/* ======================================================================
-   13. CTA FINAL - bande noire pleine largeur, bouton outline blanc
-   ====================================================================== */
-.theme-corporate .home-cta {
-    background: var(--primary);
-    color: #FFFFFF;
-}
-
-.theme-corporate .home-cta__title {
-    color: #FFFFFF;
-    font-size: clamp(2.05rem, 4vw, 3.25rem);
-    font-weight: 400;
-    margin-bottom: 1.2rem;
-}
-
-.theme-corporate .home-cta__desc {
-    color: rgba(255, 255, 255, .72);
-    font-weight: 400;
-    font-size: 1.02rem;
-    line-height: 1.8;
-    max-width: 40rem;
-    margin: 0 auto 2.6rem;
-}
-
-/* home.scss pose background/color/border en dur sur .home-cta .btn-light :
-   on surcharge les proprietes directement, pas via les vars --bs-btn-*. */
-.theme-corporate .home-cta .btn-light {
-    background: transparent;
-    color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, .6);
-    border-radius: 0;
-    font-weight: 500;
-    padding: 1rem 2.4rem;
-}
-
-.theme-corporate .home-cta .btn-light:hover {
-    background: #FFFFFF;
-    color: var(--primary);
-    border-color: #FFFFFF;
-    transform: none;
-    box-shadow: none;
-}
-
-/* ======================================================================
-   14. FOOTER - noir, labels uppercase
-   ====================================================================== */
-.theme-corporate .footer--corporate {
-    background: var(--primary);
-    border-top: 0;
-}
-
-.theme-corporate .footer--corporate .footer-section {
-    letter-spacing: var(--bw-track);
-}
-
-/* ======================================================================
-   15. FILETS & FORMULAIRES
-   ====================================================================== */
-.theme-corporate hr,
-.theme-corporate .border-top,
-.theme-corporate .border-bottom {
-    border-color: var(--border) !important;
-    opacity: 1;
-}
-
-.theme-corporate .form-control,
-.theme-corporate .form-select {
-    border-radius: 0;
-    border-color: var(--border);
-}
-
-.theme-corporate .form-control:focus,
-.theme-corporate .form-select:focus {
-    border-color: var(--primary);
-    box-shadow: none;
-}
-
-.theme-corporate .badge {
-    border-radius: 0;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    font-weight: 500;
-}
-
-/* ======================================================================
-   16. PAGES INTERNES DU THEME (.corp-*) - blog, contact, services
-   Les composants .corp-* consomment deja --radius / --border / --surface,
-   donc ils heritent des tokens ci-dessus. Restent le poids des titres
-   (700 par defaut) et l'ombre au hover des cartes blog.
-   ====================================================================== */
-.theme-corporate .corp-hero__title,
-.theme-corporate .corp-section-title,
-.theme-corporate .corp-cta__title,
-.theme-corporate .corp-contact-hero__title,
-.theme-corporate .corp-blog-featured__title,
-.theme-corporate .corp-blog-grid__title,
-.theme-corporate .corp-contact-form__title,
-.theme-corporate .corp-service-card__title,
-.theme-corporate .corp-blog-card__title {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-weight: 400;
-    letter-spacing: .005em;
-}
-
-.theme-corporate .corp-hero__tagline,
-.theme-corporate .corp-blog-featured__cat,
-.theme-corporate .corp-blog-card__cat,
-.theme-corporate .corp-blog-featured__meta,
-.theme-corporate .corp-blog-card__meta,
-.theme-corporate .corp-stat__label,
-.theme-corporate .corp-logos__title {
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-family: var(--font-family);
-    font-weight: 500;
-    color: var(--text-muted);
-}
-
-.theme-corporate .corp-blog-card:hover,
-.theme-corporate .corp-blog-featured__card:hover {
-    box-shadow: none;
-    border-color: var(--primary);
-}
-
-.theme-corporate .corp-stat__value {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-weight: 400;
-}
-
-.theme-corporate .corp-services,
-.theme-corporate .corp-about,
-.theme-corporate .corp-testimonials,
-.theme-corporate .corp-logos,
-.theme-corporate .corp-articles,
-.theme-corporate .corp-cta,
-.theme-corporate .corp-contact-content {
-    padding-top: var(--bw-section-y);
-    padding-bottom: var(--bw-section-y);
-}
-
-.theme-corporate .corp-contact-hero {
-    padding: 5rem 0 4rem;
-}
-
-/* ======================================================================
-   17. RESPONSIVE - l'air se resserre sans disparaitre
-   ====================================================================== */
-@media (max-width: 991.98px) {
-    :root { --bw-section-y: 4.5rem; }
-
-    .theme-corporate .home-hero,
-    .theme-corporate .home-hero__row {
-        min-height: 72vh;
-    }
-
-    .theme-corporate .home-hero__row {
-        padding: 6rem 0 5rem;
-    }
-}
-
-@media (max-width: 575.98px) {
-    :root { --bw-section-y: 3.5rem; }
-
-    .theme-corporate .btn {
-        padding: .8rem 1.5rem;
-    }
-
-    .theme-corporate .home-hero::after {
-        display: none;
-    }
-}
-
-/* ======================================================================
-   18. HOME CLIENT (templates/client/home.html.twig)
-   Structure transposee de blnotaires.fr : hero + expertises + office +
-   valeurs + notaire + actualites + contact.
-   ====================================================================== */
-
-/* --- Elements partages --- */
-.theme-corporate .bw-eyebrow {
-    display: block;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-family: var(--font-family);
-    font-size: .72rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-}
-
-.theme-corporate .bw-section-title {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.95rem, 3.45vw, 3.05rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 1.5rem;
-}
-
-.theme-corporate .bw-section-intro {
-    color: var(--text-muted);
-    font-weight: 400;
-    font-size: 1.05rem;
-    line-height: 1.9;
-    max-width: 44rem;
-    margin: 0;
-}
-
-.theme-corporate .bw-section-header {
-    margin-bottom: 4rem;
-}
-
-.theme-corporate .bw-section-header--center {
-    text-align: center;
-}
-
-.theme-corporate .bw-section-header--center .bw-section-intro {
-    margin-inline: auto;
-}
-
-/* Lien texte avec fleche et soulignement anime */
-.theme-corporate .bw-link-arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: .6rem;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .74rem;
-    font-weight: 500;
-    color: var(--primary);
-    text-decoration: none;
-    padding-bottom: .35rem;
-    border-bottom: 1px solid var(--border);
-    transition: border-color var(--bw-ease), color var(--bw-ease);
-}
-
-.theme-corporate .bw-link-arrow::after {
-    content: "\2192";
-    transition: transform var(--bw-ease);
-}
-
-.theme-corporate .bw-link-arrow:hover {
-    border-bottom-color: var(--primary);
-}
-
-.theme-corporate .bw-link-arrow:hover::after {
-    transform: translateX(.35rem);
-}
-
-/* Aplats de reserve tant que les images ne sont pas livrees */
-.theme-corporate .bw-office__img--placeholder,
-.theme-corporate .bw-notary__img--placeholder {
-    background: repeating-linear-gradient(
-        135deg,
-        var(--surface),
-        var(--surface) 12px,
-        #E3EAEA 12px,
-        #E3EAEA 24px
-    );
-    border: var(--bw-rule);
-}
-
-/* --- 1. Hero --- */
-/* Le lien "Continuer" remplace l'indicateur en pseudo-element */
-.theme-corporate .bw-hero::after {
-    display: none;
-}
-
-.theme-corporate .bw-hero__title {
-    color: #FFFFFF;
-    margin-bottom: 1.4rem;
-}
-
-.theme-corporate .bw-hero__kicker {
-    display: block;
-    font-family: var(--font-family);
-    text-transform: uppercase;
-    letter-spacing: .3em;
-    font-size: .8rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, .75);
-    margin-bottom: 1.4rem;
-}
-
-.theme-corporate .bw-hero__place {
-    display: block;
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(2.8rem, 7.45vw, 6.5rem);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: .01em;
-}
-
-.theme-corporate .bw-hero__tagline {
-    color: rgba(255, 255, 255, .85);
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.2rem, 2vw, 1.7rem);
-    font-weight: 400;
-    font-style: italic;
-    margin-bottom: 2.8rem;
-}
-
-.theme-corporate .bw-hero__actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.theme-corporate .bw-hero__continue {
-    position: absolute;
-    left: 50%;
-    bottom: 2.2rem;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: .8rem;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .68rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, .8);
-    text-decoration: none;
-    z-index: 2;
-    transition: color var(--bw-ease);
-}
-
-.theme-corporate .bw-hero__continue:hover {
-    color: #FFFFFF;
-}
-
-.theme-corporate .bw-hero__continue-line {
-    width: 1px;
-    height: 3rem;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .1), rgba(255, 255, 255, .9));
-    transform-origin: top;
-    animation: bw-scroll-hint 2.4s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .theme-corporate .bw-hero__continue-line { animation: none; }
-}
-
-/* --- 2. Expertises --- */
-.theme-corporate .bw-expertises {
-    padding: var(--bw-section-y) 0;
-    background: #FFFFFF;
-}
-
-.theme-corporate .bw-doors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    gap: 0;
-    border-top: var(--bw-rule);
-    border-left: var(--bw-rule);
-}
-
-.theme-corporate .bw-door {
-    padding: 3rem 2.5rem 2.5rem;
-    border-right: var(--bw-rule);
-    border-bottom: var(--bw-rule);
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-    transition: background-color var(--bw-ease);
-}
-
-.theme-corporate .bw-door:hover {
-    background: var(--surface);
-}
-
-.theme-corporate .bw-door__index {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: var(--text-muted);
-}
-
-.theme-corporate .bw-door__title {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: 1.6rem;
-    font-weight: 400;
-    line-height: 1.25;
-    margin: 0;
-}
-
-.theme-corporate .bw-door__text {
-    color: var(--text-muted);
-    font-weight: 400;
-    line-height: 1.85;
-    margin: 0;
-    flex: 1;
-}
-
-.theme-corporate .bw-door__link {
-    align-self: flex-start;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .72rem;
-    font-weight: 500;
-    color: var(--primary);
-    text-decoration: none;
-    padding-bottom: .3rem;
-    border-bottom: 1px solid var(--primary);
-}
-
-.theme-corporate .bw-door__link:hover {
-    color: var(--text-muted);
-    border-bottom-color: var(--text-muted);
-}
-
-/* --- 3. L'Office --- */
-.theme-corporate .bw-office {
-    padding: var(--bw-section-y) 0;
-    background: var(--surface);
-}
-
-.theme-corporate .bw-office__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 4rem;
-    align-items: center;
-}
-
-.theme-corporate .bw-office__img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    filter: var(--bw-img-filter);
-    transition: filter var(--bw-ease);
-}
-
-.theme-corporate .bw-office__img:hover {
-    filter: var(--bw-img-filter-hover);
-}
-
-.theme-corporate .bw-office__text {
-    color: var(--text-muted);
-    font-weight: 400;
-    font-size: 1.05rem;
-    line-height: 1.95;
-    max-width: 40rem;
-}
-
-.theme-corporate .bw-office__location {
-    margin: 2.5rem 0;
-    padding-top: 1.5rem;
-    border-top: var(--bw-rule);
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: 1.35rem;
-    font-weight: 400;
-}
-
-.theme-corporate .bw-office__location .bw-eyebrow {
-    margin-bottom: .5rem;
-}
-
-/* --- 4. Valeurs (bande sombre) --- */
-.theme-corporate .bw-values {
-    padding: calc(var(--bw-section-y) * 1.15) 0;
-    background: var(--primary);
-    color: #FFFFFF;
-    text-align: center;
-}
-
-.theme-corporate .bw-values__quote {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.4rem, 2.8vw, 2.4rem);
-    font-weight: 400;
-    font-style: italic;
-    line-height: 1.5;
-    color: #FFFFFF;
-    max-width: 48rem;
-    margin: 0 auto 3.5rem;
-}
-
-.theme-corporate .bw-values__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem 3.5rem;
-}
-
-.theme-corporate .bw-values__list li {
-    text-transform: uppercase;
-    letter-spacing: .2em;
-    font-size: .76rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, .7);
-}
-
-/* --- 5. Le notaire --- */
-.theme-corporate .bw-notary {
-    padding: var(--bw-section-y) 0;
-    background: #FFFFFF;
-}
-
-.theme-corporate .bw-notary__card {
-    display: grid;
-    grid-template-columns: 320px minmax(0, 1fr);
-    gap: 3.5rem;
-    align-items: center;
-    max-width: 62rem;
-    margin: 0 auto;
-    border: var(--bw-rule);
-    padding: 3rem;
-}
-
-.theme-corporate .bw-notary__img {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    filter: var(--bw-img-filter);
-    transition: filter var(--bw-ease);
-}
-
-.theme-corporate .bw-notary__img:hover {
-    filter: var(--bw-img-filter-hover);
-}
-
-.theme-corporate .bw-notary__name {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.5rem, 2.4vw, 2.05rem);
-    font-weight: 400;
-    line-height: 1.2;
-    margin: 0 0 .6rem;
-}
-
-.theme-corporate .bw-notary__role {
-    display: block;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .72rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 1.6rem;
-}
-
-.theme-corporate .bw-notary__text {
-    color: var(--text-muted);
-    font-weight: 400;
-    line-height: 1.9;
-    margin-bottom: 2rem;
-}
-
-/* --- 6. Actualites --- */
-.theme-corporate .bw-news__header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-bottom: 3.5rem;
-}
-
-.theme-corporate .bw-news__header .bw-section-title {
-    margin-bottom: 0;
-}
-
-/* --- Responsive --- */
-@media (max-width: 991.98px) {
-    .theme-corporate .bw-office__grid {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-    }
-
-    .theme-corporate .bw-notary__card {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        padding: 2rem;
-        text-align: center;
-    }
-
-    .theme-corporate .bw-notary__portrait {
-        max-width: 260px;
-        margin: 0 auto;
-    }
-
-    .theme-corporate .bw-link-arrow {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 575.98px) {
-    .theme-corporate .bw-hero__continue { display: none; }
-    .theme-corporate .bw-door { padding: 2.2rem 1.6rem; }
-    .theme-corporate .bw-values__list { gap: .8rem 2rem; }
-}
-
-/* ======================================================================
-   19. LOGO
-   Monogramme BM detoure sur fond transparent, en deux teintes :
-   taupe pour le header clair (site.logo), blanc pour le footer sombre
-   (site.logoDark). Le fichier d'origine, lettres claires sur aplat taupe,
-   reste en medias comme source de redecoupe.
-   ====================================================================== */
-
-/* Le theme blanchit le logo du footer (brightness(0) invert(1)) en supposant
-   un logo sombre. Le notre est deja blanc : on neutralise le filtre pour que
-   la version claire ne depende pas de lui. */
-.theme-corporate .footer--corporate .footer-logo img {
-    filter: none;
-    height: auto;
-    width: auto;
-    max-height: 64px;
-}
-
-/* A 42px de haut, la signature « Bruno Mainguy | NOTAIRE » n'est plus
-   lisible : on laisse le bloc respirer dans le header. */
-.theme-corporate .header--corporate .header-logo img {
-    height: auto;
-    width: auto;
-    max-height: 72px;
-}
-
-@media (max-width: 991.98px) {
-    .theme-corporate .header--corporate .header-logo img {
-        max-height: 52px;
-    }
-}
-
-/* Le theme decore la bande CTA d'un disque blanc a 5 %, en haut a droite,
-   sous overflow: hidden. On garde l'emplacement et on y pose le monogramme
-   en filigrane a la place du disque. */
-.theme-corporate .home-cta::before {
-    width: 460px;
-    height: 330px;
-    top: -24px;
-    right: -56px;
-    border-radius: 0;
-    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
-    background-size: contain;
-    opacity: .075;
-}
-
-@media (max-width: 767.98px) {
-    .theme-corporate .home-cta::before {
-        width: 260px;
-        height: 190px;
-        top: -12px;
-        right: -34px;
-    }
-}
-
-/* Le meme monogramme en filigrane dans le hero, cote oppose au bloc de texte.
-   Le pseudo-element sert d'indicateur de scroll dans la home generique ; ici le
-   lien Continuer joue ce role, donc on le reaffecte entierement : position,
-   dimensions, fond et animation sont tous redefinis. */
-.theme-corporate .bw-hero {
-    overflow: hidden;
-}
-
-.theme-corporate .bw-hero::after {
-    display: block;
-    content: "";
-    position: absolute;
-    top: auto;
-    right: -55px;
-    bottom: -25px;
-    left: auto;
-    width: 460px;
-    height: 320px;
-    transform: none;
-    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
-    background-size: contain;
-    opacity: .35;
-    animation: none;
-    pointer-events: none;
-    z-index: 0;
-}
-
-@media (max-width: 991.98px) {
-    .theme-corporate .bw-hero::after {
-        width: 320px;
-        height: 220px;
-        right: -50px;
-        bottom: -15px;
-        opacity: .28;
-    }
-}
-
-/* Sous 768px le filigrane passerait derriere le titre et les deux boutons :
-   la lisibilite prime sur la decoration. */
-@media (max-width: 767.98px) {
-    .theme-corporate .bw-hero::after {
-        display: none;
-    }
-}
-
-/* ======================================================================
-   20. PAGES DE CONTENU (Tarifs, pages libres)
-   Le bloc .bw-fees est ecrit dans le contenu de la page Tarifs, editable
-   depuis l'admin : le CSS ne fait que l'habiller.
-   ====================================================================== */
-.theme-corporate .bw-fees {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-    gap: 0;
-    border-top: var(--bw-rule);
-    border-left: var(--bw-rule);
-    margin: 3rem 0 3.5rem;
-}
-
-.theme-corporate .bw-fee {
-    padding: 2.5rem 2rem;
-    border-right: var(--bw-rule);
-    border-bottom: var(--bw-rule);
-}
-
-.theme-corporate .bw-fee__share {
-    display: block;
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
-    line-height: 1;
-    color: var(--primary);
-    margin-bottom: 1.2rem;
-}
-
-.theme-corporate .bw-fee__unit {
-    font-size: .42em;
-    color: var(--text-muted);
-    margin-left: .08em;
-}
-
-/* Le theme cible .article-detail__content h3 (0,2,1) : il faut trois classes
-   pour reprendre la main sur la police de ce titre. */
-.theme-corporate .page-detail__content .bw-fee__title {
-    font-family: var(--font-family);
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
-    font-size: .76rem;
-    font-weight: 500;
-    margin: 0 0 .9rem;
-}
-
-.theme-corporate .bw-fee__text {
-    color: var(--text-muted);
-    font-size: .93rem;
-    line-height: 1.8;
-    margin: 0;
-}
-
-/* Confort de lecture des pages longues */
-.theme-corporate .page-detail__content .lead {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-    line-height: 1.65;
-    color: var(--text);
-    margin-bottom: 2.5rem;
-}
-
-.theme-corporate .page-detail__content h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.2rem;
-}
-
-.theme-corporate .page-detail__content p {
-    line-height: 1.9;
-    color: var(--text-muted);
-}
-
-.theme-corporate .page-detail__content strong {
-    color: var(--text);
-    font-weight: 600;
-}
-
-/* ======================================================================
-   21. GRILLE DES EXPERTISES (module services)
-   ====================================================================== */
-.theme-corporate .service-card {
-    padding: 2.5rem 2rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: .9rem;
-}
-
-.theme-corporate .service-card__icon {
-    color: var(--primary);
-    margin-bottom: .6rem;
-}
-
-.theme-corporate .service-card__icon svg {
-    width: 26px;
-    height: 26px;
-    stroke-width: 1.2;
-}
-
-.theme-corporate .service-card__title {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: 1.45rem;
-    font-weight: 400;
-    line-height: 1.25;
-    margin: 0;
-}
-
-.theme-corporate .service-card__text {
-    color: var(--text-muted);
-    font-size: .95rem;
-    line-height: 1.8;
-    margin: 0;
-}
-
-/* Titres de section dans les contenus de page (Tarifs, intro Expertises) :
-   le theme les laisse a 1.5rem, trop discret face au chapo. */
-.theme-corporate .page-detail__content h2,
-.theme-corporate .services-intro h2 {
-    font-size: clamp(1.5rem, 2.4vw, 2rem);
-    margin-top: 3.5rem;
-    margin-bottom: 1.2rem;
-}
-
-.theme-corporate .services-intro {
-    max-width: 52rem;
-}
-
-.theme-corporate .services-intro h2:first-of-type {
-    margin-top: 2.5rem;
-}
-
-/* ======================================================================
-   22. FILIGRANE DES PAGES INTERNES
-   Le monogramme blanc a 35 % sur le gris-vert du fond donne un effet de
-   gaufrage. Pose sur main sauf sur la home, qui a deja ses deux filigranes.
-   overflow-x: clip plutot que hidden : n'affecte ni le scroll ni les
-   elements sticky.
-   ====================================================================== */
-.theme-corporate main {
-    position: relative;
-    overflow-x: clip;
-}
-
-.theme-corporate main:not(:has(.home-hero))::after {
-    content: "";
-    position: absolute;
-    top: 5rem;
-    right: -70px;
-    width: 420px;
-    height: 290px;
-    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat center center;
-    background-size: contain;
-    opacity: .35;
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Le contenu passe devant le filigrane */
-.theme-corporate main > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Sous 1400px l'espace a droite du texte disparait : le filigrane passerait
-   derriere la colonne de lecture. */
-@media (max-width: 1399.98px) {
-    .theme-corporate main:not(:has(.home-hero))::after {
-        display: none;
-    }
-}
-
-/* ======================================================================
-   23. PAGE CONTACT
-   Le filigrane general tombe juste sous le bandeau sombre : on le retire ici
-   et on le repose dans le vide de la colonne des coordonnees, sous l'adresse.
-   Cet espace est celui de la carte Google : si elle est renseignee un jour,
-   le filigrane s'efface de lui-meme.
-   ====================================================================== */
-.theme-corporate main:has(.corp-contact-content)::after {
-    display: none;
-}
-
-.theme-corporate .corp-contact-content .col-lg-5 {
-    position: relative;
-}
-
-.theme-corporate .corp-contact-content .col-lg-5::after {
-    content: "";
-    position: absolute;
-    left: 24px;
-    bottom: 0;
-    width: 360px;
-    height: 245px;
-    background: url('/documents/medias/logo-bm-monogramme.png') no-repeat left bottom;
-    background-size: contain;
-    opacity: .35;
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* La carte Google occupe cet espace des qu'elle est renseignee. */
-.theme-corporate .corp-contact-content .col-lg-5:has(.corp-contact-map)::after {
-    display: none;
-}
-
-.theme-corporate .corp-contact-info {
-    position: relative;
-    z-index: 1;
-}
-
-/* Sous 992px les colonnes s'empilent : plus d'espace libre sous l'adresse. */
-@media (max-width: 991.98px) {
-    .theme-corporate .corp-contact-content .col-lg-5::after {
-        display: none;
-    }
-}
-
-/* ======================================================================
-   24. BOUTON D'APPEL DU HEADER (.bw-cta)
-   Aplat anthracite, seul element plein de la barre : il doit se distinguer
-   de la navigation sans rompre la sobriete. Fleche qui glisse au survol,
-   inversion vers un contour comme le reste des boutons.
-   ====================================================================== */
-.theme-corporate .header--corporate .bw-cta {
+/* Les deux appels a l'action de l'en-tete : l'un discret, l'autre plein. */
+.theme-corporate .bm-cta,
+.theme-corporate .bw-cta {
     display: inline-flex;
     align-items: center;
     gap: .55rem;
-    background: var(--primary);
-    color: #FFFFFF;
-    border: 1px solid var(--primary);
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+    border: 0;
     border-radius: 0;
-    text-transform: uppercase;
-    letter-spacing: var(--bw-track);
+    padding: .85rem 1.5rem;
     font-size: .72rem;
     font-weight: 500;
-    padding: .8rem 1.4rem;
-    text-decoration: none;
-    transition: background-color var(--bw-ease), color var(--bw-ease);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    transition: background .25s ease;
 }
 
-.theme-corporate .header--corporate .bw-cta:hover,
-.theme-corporate .header--corporate .bw-cta:focus-visible {
+.theme-corporate .bm-cta:hover,
+.theme-corporate .bw-cta:hover {
+    background: var(--bm-encre-clair);
+    color: var(--bm-creme);
+}
+
+.theme-corporate .bm-cta--ghost {
     background: transparent;
-    color: var(--primary);
+    color: var(--bm-encre);
+    border: 1px solid var(--bm-filet);
 }
 
-.theme-corporate .bw-cta__arrow {
-    width: 14px;
-    height: 14px;
-    transition: transform var(--bw-ease);
+.theme-corporate .bm-cta--ghost:hover {
+    background: var(--bm-encre);
+    color: var(--bm-creme);
 }
-
-.theme-corporate .bw-cta:hover .bw-cta__arrow {
-    transform: translateX(.3rem);
-}
-
-/* Version pleine largeur du menu mobile */
-.theme-corporate .bw-cta--block {
-    justify-content: center;
-    padding: 1rem 1.4rem;
-}
-
 
 /* ======================================================================
-   25. CHAMP DE RECHERCHE (.bw-search)
-   Un seul filet autour du champ et de la loupe, qui sert de bouton d'envoi.
-   Le cadre s'anime au focus : bordure qui fonce et champ qui s'elargit.
+   3. HERO — la video occupe l'ecran, le texte s'y pose
    ====================================================================== */
-.theme-corporate .bw-search {
+
+.bm-hero {
     position: relative;
+    min-height: min(88vh, 820px);
     display: flex;
-    align-items: center;
-    border: 1px solid var(--border);
-    background: #FFFFFF;
-    transition: border-color var(--bw-ease), width var(--bw-ease);
-    width: 210px;
-    height: 45px;   /* aligne sur la hauteur du bouton Nous rencontrer */
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--bm-encre);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
 }
 
-.theme-corporate .bw-search:focus-within {
-    border-color: var(--primary);
-    width: 280px;
-}
-
-.theme-corporate .bw-search__input {
-    flex: 1;
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    padding: 0 2.8rem 0 1rem;
-    height: 100%;
-    font-family: var(--font-family);
-    font-size: .85rem;
-    color: var(--text);
-}
-
-.theme-corporate .bw-search__input::placeholder {
-    color: var(--text-muted);
-    opacity: .75;
-}
-
-.theme-corporate .bw-search__input:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-/* La croix native de Chrome sur les champs de type search ferait doublon
-   avec la loupe. */
-.theme-corporate .bw-search__input::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-.theme-corporate .bw-search__submit {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 2.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: color var(--bw-ease);
-}
-
-.theme-corporate .bw-search__submit:hover,
-.theme-corporate .bw-search:focus-within .bw-search__submit {
-    color: var(--primary);
-}
-
-.theme-corporate .bw-search__submit:focus-visible {
-    outline: 1px solid var(--primary);
-    outline-offset: -3px;
-}
-
-/* Menu mobile : le champ prend toute la largeur, sans elargissement */
-.theme-corporate .bw-search--block,
-.theme-corporate .bw-search--block:focus-within {
-    width: 100%;
-    height: 52px;
-}
-
-.theme-corporate .bw-search--block .bw-search__input {
-    padding: 0 3rem 0 1.1rem;
-    font-size: .95rem;
-}
-
-.theme-corporate .bw-search--block .bw-search__submit {
-    width: 3rem;
-}
-
-/* Resultats : meme vocabulaire que le reste, angles droits et filets fins */
-.theme-corporate .header-search .dropdown-menu {
-    border-radius: 0;
-    border: 1px solid var(--border);
-    box-shadow: none;
-    margin-top: -1px;
-    min-width: 280px;
-    padding: .35rem 0;
-}
-
-.theme-corporate .header-search .dropdown-item {
-    font-size: .88rem;
-    padding: .55rem 1rem;
-    white-space: normal;
-}
-
-.theme-corporate .header-search .dropdown-item:hover {
-    background: var(--surface);
-}
-
-/* Sous 1200px la barre d'actions se resserre */
-@media (max-width: 1199.98px) {
-    .theme-corporate .bw-search { width: 170px; }
-    .theme-corporate .bw-search:focus-within { width: 220px; }
-}
-
-/* ======================================================================
-   26. VIDEO DE FOND DU HERO
-   L'image hero reste l'affiche : elle couvre le temps de chargement et sert
-   de repli quand la video est masquee.
-   ====================================================================== */
-.theme-corporate .bw-hero__video {
+.bm-hero__video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 0;
+    filter: grayscale(.35) contrast(1.05);
+}
+
+/* Voile : la video reste lisible, le texte aussi. */
+.bm-hero__voile {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(20, 32, 25, .86) 0%, rgba(20, 32, 25, .45) 45%, rgba(20, 32, 25, .25) 100%);
+}
+
+.bm-hero__contenu {
+    position: relative;
+    width: 100%;
+    padding: 0 var(--bm-gouttiere) clamp(3rem, 7vw, 6rem);
+    color: var(--bm-creme);
+}
+
+.bm-hero__kicker {
+    color: rgba(242, 234, 223, .72);
+}
+
+.bm-hero__signature {
+    font-family: var(--bm-serif);
+    font-size: clamp(2.1rem, 5.4vw, 4.4rem);
+    line-height: 1.04;
+    max-width: 18ch;
+    margin: 0;
+}
+
+.bm-hero__defiler {
+    display: inline-flex;
+    align-items: center;
+    gap: .7rem;
+    margin-top: 2.5rem;
+    font-size: .68rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(242, 234, 223, .78);
+    text-decoration: none;
+}
+
+/* ======================================================================
+   4. SECTIONS DE L'ACCUEIL
+   ====================================================================== */
+
+.bm-section {
+    padding: var(--bm-section) var(--bm-gouttiere);
+}
+
+.bm-section--encre {
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+.bm-section--encre .bm-kicker { color: rgba(242, 234, 223, .6); }
+.bm-section--encre .bm-lede { color: rgba(242, 234, 223, .76); }
+
+.bm-titre {
+    font-size: clamp(1.9rem, 4vw, 3.4rem);
+    margin: 0 0 1.5rem;
+    max-width: 20ch;
+}
+
+/* Deux colonnes : l'intitule a gauche, le propos a droite. */
+.bm-duo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+}
+
+@media (max-width: 860px) {
+    .bm-duo { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+/* ======================================================================
+   5. LES POLES — grille d'entrees vers l'offre
+   ====================================================================== */
+
+.bm-poles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--bm-filet);
+    border: 1px solid var(--bm-filet);
+    margin-top: 3rem;
+}
+
+.bm-pole {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    background: var(--bm-creme);
+    text-decoration: none;
+    overflow: hidden;
+    transition: background .3s ease, color .3s ease;
+}
+
+.bm-pole__num {
+    font-size: .7rem;
+    letter-spacing: .2em;
+    color: var(--bm-sourdine);
+}
+
+.bm-pole__titre {
+    font-family: var(--bm-serif);
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.bm-pole__liste {
+    font-size: .9rem;
+    color: var(--bm-sourdine);
+    margin: 0;
+}
+
+.bm-pole__fleche {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--bm-sourdine);
+}
+
+.bm-pole:hover {
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+}
+
+.bm-pole:hover .bm-pole__num,
+.bm-pole:hover .bm-pole__liste,
+.bm-pole:hover .bm-pole__fleche {
+    color: rgba(242, 234, 223, .74);
+}
+
+/* L'image du pole se devoile au survol, en fond. */
+.bm-pole__fond {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    filter: grayscale(1);
+    transition: opacity .45s ease;
     pointer-events: none;
 }
 
-/* Le contenu et l'indicateur passent devant la video et son voile */
-.theme-corporate .bw-hero .container,
-.theme-corporate .bw-hero__continue {
-    position: relative;
-    z-index: 2;
-}
-
-.theme-corporate .bw-hero__overlay {
-    z-index: 1;
-}
-
-/* Sous 768px : 7 Mo de donnees mobiles pour un fond decoratif, l'affiche suffit */
-@media (max-width: 767.98px) {
-    .theme-corporate .bw-hero__video {
-        display: none;
-    }
-}
-
-/* Mouvement reduit : la video ne doit pas s'imposer */
-@media (prefers-reduced-motion: reduce) {
-    .theme-corporate .bw-hero__video {
-        display: none;
-    }
-}
-
-/* La video occupe le hero : un filigrane par-dessus ferait doublon. */
-.theme-corporate .bw-hero::after {
-    display: none;
-}
+.bm-pole:hover .bm-pole__fond { opacity: .22; }
 
 /* ======================================================================
-   27. IMAGE DES CARTES D'EXPERTISE
-   Les cartes portent desormais une photo au lieu d'une icone : cadrage
-   uniforme, traitement editorial identique au reste du site.
+   6. MANIFESTE — bande de valeurs
    ====================================================================== */
-.theme-corporate .service-card {
-    padding: 0;
-    overflow: hidden;
-}
 
-.theme-corporate .service-card__image {
-    margin: 0;
-    line-height: 0;
-}
-
-.theme-corporate .service-card__image img {
-    width: 100%;
-    /* le theme fixe height: 160px, ce qui neutralise le ratio tant que la
-       hauteur reste explicite */
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    filter: var(--bw-img-filter);
-    transition: filter var(--bw-ease), transform var(--bw-ease);
-}
-
-.theme-corporate .service-card:hover .service-card__image img {
-    filter: var(--bw-img-filter-hover);
-}
-
-/* Le texte reprend le retrait que la carte a perdu */
-.theme-corporate .service-card__title,
-.theme-corporate .service-card__text,
-.theme-corporate .service-card__link {
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-
-.theme-corporate .service-card__title {
-    padding-top: 1.8rem;
-}
-
-.theme-corporate .service-card__link {
-    padding-bottom: 2rem;
-    display: inline-block;
-}
-
-.theme-corporate .service-card__text {
-    padding-bottom: .4rem;
-}
-
-/* ======================================================================
-   28. IMAGES MISES EN AVANT
-   Sans borne, une image prend sa hauteur naturelle et repousse le contenu
-   hors de l'ecran. Le CMS borne deja celles des pages a 420px via
-   .page-hero__img ; l'ouverture des Expertises et l'image d'un service
-   n'avaient pas d'equivalent.
-   ====================================================================== */
-.theme-corporate .page-hero__img,
-.theme-corporate .article-hero__img,
-.theme-corporate .service-detail__image img {
-    display: block;
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    object-position: center;
-    /* meme traitement editorial que les cartes d'expertise */
-    filter: var(--bw-img-filter);
-    transition: filter var(--bw-ease);
-}
-
-/* Le survol porte sur le cadre, pas sur l'image : sur un bandeau a titre, le
-   texte occupe le bas et l'image ne recevrait jamais le pointeur. */
-.theme-corporate .page-hero:hover .page-hero__img,
-.theme-corporate .article-hero:hover .article-hero__img,
-.theme-corporate .service-detail__image:hover img {
-    filter: var(--bw-img-filter-hover);
-}
-
-@media (max-width: 767.98px) {
-    .theme-corporate .page-hero__img,
-    .theme-corporate .article-hero__img,
-    .theme-corporate .service-detail__image img {
-        max-height: 260px;
-    }
-}
-
-/* Bandeau titre sur image : degrade plus present que celui du CMS pour que le
-   serif blanc tienne sur un visuel clair, et titre a la charte du site.
-   L'overlay couvre toute l'image et repartit ses deux lignes aux extremites :
-   le fil d'Ariane en haut, le titre en bas. Le voile se dedouble donc, sombre
-   en haut et en bas, clair au centre ou l'image doit rester lisible. */
-.theme-corporate .page-hero__overlay {
-    top: 0;
+.bm-valeurs {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: linear-gradient(rgba(20, 25, 26, .5), rgba(20, 25, 26, .1) 28%, rgba(20, 25, 26, .38) 68%, rgba(20, 25, 26, .84));
-    padding: 1.6rem 2.5rem 2rem;
-}
-
-.theme-corporate .page-hero__breadcrumb {
-    margin-bottom: 0;
-    font-size: .82rem;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    text-shadow: none;
-}
-
-.theme-corporate .page-hero__breadcrumb .breadcrumb-item,
-.theme-corporate .page-hero__breadcrumb .breadcrumb-item.active,
-.theme-corporate .page-hero__breadcrumb .breadcrumb-item a {
-    color: rgba(255, 255, 255, .88);
-}
-
-.theme-corporate .page-hero__title {
-    font-family: var(--font-family-secondary, var(--font-family));
-    font-size: clamp(1.95rem, 3.45vw, 3.05rem);
-    font-weight: 400;
-    letter-spacing: .005em;
-    text-shadow: none;
-}
-
-@media (max-width: 767.98px) {
-    .theme-corporate .page-hero__overlay {
-        padding: 1.1rem 1.4rem 1.4rem;
-    }
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    margin-top: 2.5rem;
+    font-family: var(--bm-serif);
+    font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+    font-style: italic;
 }
 
 /* ======================================================================
-   29. BANDEAUX PLEINE LARGEUR
-   L'ADN veut des images qui debordent des marges. Les bandeaux sortent donc
-   de leur container, mais le titre reste aligne sur la grille du contenu :
-   sans ce calage il viendrait se coller au bord de l'ecran.
-   main porte deja overflow-x: clip, ce qui absorbe la largeur de la barre de
-   defilement comprise dans 100vw.
+   7. PORTRAIT DE L'ETUDE
    ====================================================================== */
-.theme-corporate .page-hero,
-.theme-corporate .article-hero {
-    width: 100vw;
-    max-width: none;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+
+.bm-etude {
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
 }
 
-/* Plus large, donc un peu plus haut, sinon le cadrage devient une meurtriere */
-.theme-corporate .page-hero__img,
-.theme-corporate .article-hero__img {
-    max-height: 440px;
+.bm-etude__portrait img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(1);
+    transition: filter .5s ease;
 }
 
-/* Le bandeau ouvre la page : il monte au contact du header, la bande de fond
-   qui s'intercalait n'ayant plus rien a porter depuis que le fil d'Ariane est
-   passe sur l'image. */
-.theme-corporate .container:has(> .page-hero:first-child) {
-    /* py-5 est un utilitaire Bootstrap, donc deja !important */
-    padding-top: 0 !important;
+.bm-etude__portrait img:hover { filter: grayscale(0); }
+
+@media (max-width: 860px) {
+    .bm-etude { grid-template-columns: 1fr; }
 }
 
-/* Le texte du bandeau doit tomber sur la meme gouttiere que le texte de la
-   page. Le bandeau etant sorti du container, on la recalcule : demi-marge du
-   container, plus son padding. Les deux 100vw de l'operation -- celui du
-   debordement, celui d'ici -- s'annulent, donc la barre de defilement ne
-   fausse rien ; en revanche la largeur du container change par palier, et une
-   valeur en dur decalait le titre des la fenetre passee a 1400px. */
-.theme-corporate .page-hero__overlay {
-    --bw-container: 100vw;
-    --bw-gouttiere: 1rem; /* padding du container en mobile, cf. global.scss */
-    padding-left: calc((100vw - var(--bw-container)) / 2 + var(--bw-gouttiere));
-    padding-right: calc((100vw - var(--bw-container)) / 2 + var(--bw-gouttiere));
+/* ======================================================================
+   8. LIEN FLECHE
+   ====================================================================== */
+
+.bm-lien {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    margin-top: 1.75rem;
+    font-size: .74rem;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: .35rem;
 }
 
-/* Paliers Bootstrap */
-@media (min-width: 576px) {
-    .theme-corporate .page-hero__overlay { --bw-container: 540px; }
-}
-@media (min-width: 768px) {
-    .theme-corporate .page-hero__overlay { --bw-container: 720px; --bw-gouttiere: .75rem; }
-}
-@media (min-width: 992px) {
-    .theme-corporate .page-hero__overlay { --bw-container: 960px; }
-}
-@media (min-width: 1200px) {
-    .theme-corporate .page-hero__overlay { --bw-container: 1140px; }
-}
-@media (min-width: 1400px) {
-    .theme-corporate .page-hero__overlay { --bw-container: 1320px; }
+.bm-lien:hover { color: var(--bm-sourdine); }
+
+/* ======================================================================
+   9. PAGES D'OFFRE — index et detail
+   ====================================================================== */
+
+.bm-entete {
+    padding: clamp(3rem, 7vw, 6rem) var(--bm-gouttiere) clamp(2rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--bm-filet);
 }
 
-/* Titre pousse a droite : le fil ouvre en haut a gauche, le titre ferme en bas
-   a droite, et le regard traverse la photo au lieu de longer son bord. */
-.theme-corporate .page-hero__title {
-    align-self: flex-end;
-    text-align: right;
+.bm-fil {
+    font-size: .7rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--bm-sourdine);
+    margin-bottom: 1.5rem;
 }
 
-@media (max-width: 767.98px) {
-    .theme-corporate .page-hero__img,
-    .theme-corporate .article-hero__img {
-        max-height: 280px;
-    }
+.bm-fil a { text-decoration: none; }
+.bm-fil a:hover { color: var(--bm-encre); }
+
+/* Sommaire des prestations d'un pole. */
+.bm-prestations {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--bm-filet);
+    border: 1px solid var(--bm-filet);
+}
+
+.bm-prestation {
+    display: block;
+    padding: 1.75rem;
+    background: var(--bm-creme);
+    text-decoration: none;
+    transition: background .25s ease, color .25s ease;
+}
+
+.bm-prestation__titre {
+    font-family: var(--bm-serif);
+    font-size: 1.25rem;
+    margin: 0 0 .4rem;
+}
+
+.bm-prestation__chapo {
+    font-size: .92rem;
+    color: var(--bm-sourdine);
+    margin: 0;
+}
+
+.bm-prestation:hover { background: var(--bm-encre); color: var(--bm-creme); }
+.bm-prestation:hover .bm-prestation__chapo { color: rgba(242, 234, 223, .74); }
+
+/* Corps d'une prestation : le parcours et les pieces a reunir sortent du
+   contenu TipTap, on les met en page ici. */
+.bm-corps {
+    max-width: 68ch;
+    padding: clamp(2.5rem, 5vw, 4rem) var(--bm-gouttiere);
+}
+
+.bm-corps h3 {
+    font-size: 1.5rem;
+    margin: 3rem 0 1.25rem;
+}
+
+.bm-corps ol {
+    counter-reset: etape;
+    list-style: none;
+    padding: 0;
+}
+
+.bm-corps ol > li {
+    counter-increment: etape;
+    position: relative;
+    padding: 1rem 0 1rem 3.5rem;
+    border-top: 1px solid var(--bm-filet);
+}
+
+.bm-corps ol > li::before {
+    content: counter(etape, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1rem;
+    font-size: .8rem;
+    letter-spacing: .1em;
+    color: var(--bm-sourdine);
+}
+
+.bm-corps ol > li > p,
+.bm-corps ul > li > p { margin: 0; }
+
+.bm-corps ul {
+    list-style: none;
+    padding: 0;
+}
+
+.bm-corps ul > li {
+    position: relative;
+    padding: .55rem 0 .55rem 1.5rem;
+}
+
+.bm-corps ul > li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--bm-sourdine);
+}
+
+/* ======================================================================
+   10. PIED DE PAGE
+   ====================================================================== */
+
+.theme-corporate .footer,
+.theme-corporate footer.footer {
+    background: var(--bm-encre);
+    color: rgba(242, 234, 223, .76);
+    border: 0;
+}
+
+.theme-corporate .footer a { color: rgba(242, 234, 223, .76); text-decoration: none; }
+.theme-corporate .footer a:hover { color: var(--bm-creme); }
+
+/* ======================================================================
+   11. GARDE-FOUS
+   ====================================================================== */
+
+/* Les blocs pleine largeur sortent de la grille : sans cela, la page gagne
+   une barre de defilement horizontale. */
+main { overflow-x: clip; }
+
+@media (prefers-reduced-motion: reduce) {
+    .bm-hero__video { display: none; }
+    * { transition: none !important; }
 }

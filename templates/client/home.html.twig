@@ -1,203 +1,140 @@
 {# ======================================================================
-   HOME — Maître Mainguy, notaire à Saint-Martory
-   Override client : ce fichier est prioritaire sur themes/*/home.html.twig
-   et sur home/_home_generic.html.twig (voir templates/home/index.html.twig).
+   ACCUEIL — BM NOTAIRE
+   Surcouche client, prioritaire sur le theme (voir home/index.html.twig).
 
-   Structure transposée de blnotaires.fr (site de référence du client) :
-     1. Hero        — visuel plein écran, titre display, « Continuer »
-     2. Expertises  — chapô + 2 portes d'entrée
-     3. L'Office    — présentation + ancrage territorial
-     4. Valeurs     — bande sombre pleine largeur
-     5. Le notaire  — portrait + accroche (remplace l'équipe : office individuel)
-     6. Actualités  — module blog
-     7. Contact     — bande finale
-
-   Les textes proviennent du verbatim de l'ancien site bm-notaire.fr, recupere
-   via son API WordPress. Profession reglementee : a faire revalider par
-   l'office avant mise en ligne.
-   ====================================================================== #}
+   Transposition du lot statique livre par l'etude : une video qui occupe
+   l'ecran, puis des sections qui alternent creme et encre. Les poles sont
+   lus depuis les services de premier niveau, donc l'etude peut les reordonner
+   depuis l'administration sans toucher a ce fichier.
+   ====================================================================== */ #}
 
 {# ====== 1. HERO ====== #}
-<section class="home-hero bw-hero"
-    {% if site.heroImage %}
-    style="--hero-bg-image: url('{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}')"
-    {% endif %}>
-    {# Video de fond fournie par l'office. L'image hero sert d'affiche : elle
-       s'affiche immediatement, la video prend le relais une fois chargee.
-       Masquee sous 768px, ou elle couterait 7 Mo de donnees mobiles. #}
-    <video class="bw-hero__video" autoplay muted loop playsinline preload="metadata"
+<section class="bm-hero">
+    <video class="bm-hero__video" autoplay muted loop playsinline preload="metadata"
            {% if site.heroImage %}poster="{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}"{% endif %}
            aria-hidden="true" tabindex="-1">
         <source src="{{ asset('documents/medias/hero-bm-notaire.mp4') }}" type="video/mp4">
     </video>
-    <div class="home-hero__overlay"></div>
-    <div class="container position-relative">
-        <div class="home-hero__content bw-hero__content">
-            <h1 class="bw-hero__title">
-                <span class="bw-hero__kicker">Office notarial</span>
-                <span class="bw-hero__place">{{ site.town|default('Saint-Martory') }}</span>
-            </h1>
-            <p class="bw-hero__tagline">Anticiper les événements de votre vie en toute sérénité</p>
-            <div class="bw-hero__actions">
-                <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Prendre rendez-vous</a>
-                {% if services|default([])|length > 0 %}
-                <a href="{{ path('app_service_index') }}" class="btn btn-outline-primary btn-lg">Nos expertises</a>
-                {% else %}
-                <a href="#expertises" class="btn btn-outline-primary btn-lg">Nos expertises</a>
-                {% endif %}
-            </div>
-        </div>
+    <div class="bm-hero__voile"></div>
+    <div class="bm-hero__contenu">
+        <span class="bm-kicker bm-hero__kicker">Étude notariale · {{ site.town|default('Saint-Martory') }}</span>
+        <h1 class="bm-hero__signature">Le droit au service de vos projets.</h1>
+        <a href="#engagement" class="bm-hero__defiler">Faire défiler <span aria-hidden="true">↓</span></a>
     </div>
-    <a href="#expertises" class="bw-hero__continue">
-        <span>Continuer</span>
-        <span class="bw-hero__continue-line" aria-hidden="true"></span>
-    </a>
 </section>
 
-{# ====== 2. EXPERTISES ====== #}
-<section class="bw-expertises" id="expertises">
-    <div class="container">
-        <div class="bw-section-header">
-            <span class="bw-eyebrow">Expertises</span>
-            <h2 class="bw-section-title">BM Notaire vous accompagne dans tous vos projets</h2>
-            <p class="bw-section-intro">
-                Notre raison d’être est de vous permettre d’anticiper tous les événements
-                de votre vie en toute sérénité.
+{# ====== 2. ENGAGEMENT ====== #}
+<section class="bm-section" id="engagement">
+    <div class="bm-duo">
+        <div><span class="bm-kicker">Notre engagement</span></div>
+        <div>
+            <h2 class="bm-titre">Vous accompagner dans les moments <em>qui comptent.</em></h2>
+            <p class="bm-lede">
+                Rendre le droit clair, sécuriser les décisions et construire avec vous
+                des solutions durables.
             </p>
         </div>
+    </div>
+</section>
 
-        {% if services|default([])|length > 0 %}
-            {% include '_partials/_services_grid.html.twig' with { services: services } %}
-        {% else %}
-            {# FALLBACK — remplacé automatiquement dès que des services sont créés
-               dans Admin > Services. Contenu BROUILLON issu du cache du site client. #}
-            <div class="bw-doors">
-                <article class="bw-door">
-                    <span class="bw-door__index">01</span>
-                    <h3 class="bw-door__title">Vous achetez pour la première fois</h3>
-                    <p class="bw-door__text">
-                        Chaque étape vous est expliquée, sans jargon, pour aborder votre acquisition
-                        avec sérénité et en connaissance de cause.
+{# ====== 3. LES EXPERTISES ====== #}
+{% if services|default([])|length > 0 %}
+<section class="bm-section bm-section--encre" id="expertises">
+    <div class="bm-duo">
+        <div><span class="bm-kicker">Nos expertises</span></div>
+        <div>
+            <h2 class="bm-titre">Conseiller. <em>Anticiper.</em> Transmettre.</h2>
+            <p class="bm-lede">
+                Une approche exigeante, accessible et profondément humaine. Chaque dossier
+                mérite du temps, de la précision et une vision d'ensemble.
+            </p>
+        </div>
+    </div>
+
+    <div class="bm-poles">
+        {% for service in services %}
+            <a href="{{ path('app_service_show', { slug: service.slug }) }}" class="bm-pole">
+                {% if service.image %}
+                    <span class="bm-pole__fond" style="background-image:url('{{ asset('documents/medias/' ~ (service.image.webpFileName ?? service.image.fileName)) }}')"></span>
+                {% endif %}
+                <span class="bm-pole__num">{{ '%02d'|format(loop.index) }}</span>
+                <h3 class="bm-pole__titre">{{ service.title }}</h3>
+                {% if service.children|length > 0 %}
+                    <p class="bm-pole__liste">
+                        {{ service.children|slice(0, 3)|map(e => e.title)|join(' · ') }}
                     </p>
-                    <a href="{{ path('app_contact') }}" class="bw-door__link">Accéder</a>
-                </article>
-                <article class="bw-door">
-                    <span class="bw-door__index">02</span>
-                    <h3 class="bw-door__title">Vous investissez</h3>
-                    <p class="bw-door__text">
-                        Sécurisation de vos montages, conseil patrimonial et préparation de la
-                        transmission, au service de vos objectifs de long terme.
-                    </p>
-                    <a href="{{ path('app_contact') }}" class="bw-door__link">Accéder</a>
-                </article>
-            </div>
-        {% endif %}
+                {% elseif service.shortDescription %}
+                    <p class="bm-pole__liste">{{ service.shortDescription }}</p>
+                {% endif %}
+                <span class="bm-pole__fleche" aria-hidden="true">↗</span>
+            </a>
+        {% endfor %}
     </div>
 </section>
+{% endif %}
 
-{# ====== 3. L'OFFICE ====== #}
-<section class="bw-office">
-    <div class="container">
-        <div class="bw-office__grid">
-            <div class="bw-office__visual">
-                {% if site.aboutImage %}
-                    {{ responsive_img(site.aboutImage, '(max-width: 991px) 100vw, 45vw', 'bw-office__img', site.name|default(''), false, site) }}
-                {% else %}
-                <div class="bw-office__img bw-office__img--placeholder" aria-hidden="true"></div>
-                {% endif %}
-            </div>
-            <div class="bw-office__content">
-                <span class="bw-eyebrow">L'Office</span>
-                <h2 class="bw-section-title">Sur l’Office</h2>
-                <p class="bw-office__text">
-                    L’Étude vous reçoit au 379 rue des Villas. L’office BM Notaire a conscience que ses
-                    clients évoluent dans un environnement toujours plus complexe et mouvant. Il est
-                    garant de la sécurité juridique et apporte son expertise dans l’élaboration des
-                    contrats qui lui sont confiés.
-                </p>
-                {% if site.town %}
-                <p class="bw-office__location">
-                    <span class="bw-eyebrow">Implantation</span>
-                    {{ site.town }}{% if site.postCode %} — {{ site.postCode }}{% endif %}
-                </p>
-                {% endif %}
-                <a href="{{ path('app_contact') }}" class="bw-link-arrow">Nous rencontrer</a>
-            </div>
+{# ====== 4. L'ETUDE ====== #}
+<section class="bm-section" id="etude">
+    <div class="bm-etude">
+        <div class="bm-etude__portrait">
+            {% if site.contactImage %}
+                {{ responsive_img(site.contactImage, '(max-width: 860px) 100vw, 40vw', '', site.name|default(''), false, site) }}
+            {% elseif site.aboutImage %}
+                {{ responsive_img(site.aboutImage, '(max-width: 860px) 100vw, 40vw', '', site.name|default(''), false, site) }}
+            {% endif %}
+        </div>
+        <div>
+            <span class="bm-kicker">L'Étude</span>
+            <h2 class="bm-titre">Une relation fondée sur la <em>proximité.</em></h2>
+            <p class="bm-lede">
+                Écouter avant de conseiller. Expliquer avant de décider. Anticiper pour
+                sécuriser. L'étude privilégie une relation directe, lisible et durable à
+                chaque étape de votre projet.
+            </p>
+            <a href="{{ path('app_contact') }}" class="bm-lien">Rencontrer l'étude <span aria-hidden="true">↗</span></a>
         </div>
     </div>
 </section>
 
-{# ====== 4. VALEURS (bande sombre) ====== #}
-<section class="bw-values">
-    <div class="container">
-        <p class="bw-values__quote">
-            L’accompagnement avec humanité, rendre le droit accessible au plus grand nombre :
-            ce sont les qualités qui traduisent notre philosophie.
-        </p>
-        <ul class="bw-values__list">
-            <li>Humanité</li>
-            <li>Écoute attentive</li>
-            <li>Réactivité</li>
-            <li>Empathie</li>
-        </ul>
-    </div>
-</section>
-
-{# ====== 5. LE NOTAIRE ====== #}
-<section class="bw-notary">
-    <div class="container">
-        <div class="bw-section-header bw-section-header--center">
-            <span class="bw-eyebrow">Le notaire</span>
-            <h2 class="bw-section-title">Un office moderne</h2>
-        </div>
-        <div class="bw-notary__card">
-            <div class="bw-notary__portrait">
-                {% if site.contactImage %}
-                    {{ responsive_img(site.contactImage, '(max-width: 767px) 100vw, 320px', 'bw-notary__img', site.name|default(''), false, site) }}
-                {% else %}
-                <div class="bw-notary__img bw-notary__img--placeholder" aria-hidden="true"></div>
-                {% endif %}
-            </div>
-            <div class="bw-notary__body">
-                <h3 class="bw-notary__name">{{ site.name|default('') }}</h3>
-                <span class="bw-notary__role">Notaire{% if site.town %} à {{ site.town }}{% endif %}</span>
-                <p class="bw-notary__text">
-                    L’Office met à disposition ses nouvelles technologies : signature des actes sur
-                    support électronique, visioconférence, procuration à distance. Soucieux de
-                    l’environnement, nous privilégions une gestion dématérialisée des actes.
-                </p>
-                <a href="{{ path('app_contact') }}" class="bw-link-arrow">Prendre rendez-vous</a>
-            </div>
-        </div>
+{# ====== 5. MANIFESTE ====== #}
+<section class="bm-section bm-section--encre">
+    <span class="bm-kicker">Un office · un territoire · une exigence</span>
+    <h2 class="bm-titre">Parce qu'un acte ne se résume jamais à une <em>signature.</em></h2>
+    <div class="bm-valeurs">
+        <span>Écouter.</span>
+        <span>Conseiller.</span>
+        <span>Anticiper.</span>
+        <span>Transmettre.</span>
     </div>
 </section>
 
 {# ====== 6. ACTUALITES ====== #}
 {% if articles|default([])|length > 0 %}
-<section class="home-articles bw-news">
-    <div class="container">
-        <div class="bw-news__header">
-            <div>
-                <span class="bw-eyebrow">Actualités</span>
-                <h2 class="bw-section-title">Les publications de l'Étude</h2>
-            </div>
-            <a href="{{ path('app_article_show_all') }}" class="bw-link-arrow">Toutes les actualités</a>
+<section class="bm-section">
+    <div class="bm-duo">
+        <div><span class="bm-kicker">Actualités</span></div>
+        <div>
+            <h2 class="bm-titre">Les publications de <em>l'Étude.</em></h2>
+            <a href="{{ path('app_article_show_all') }}" class="bm-lien">Toutes les actualités <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="row">
-            {% include 'article/article_liste.html.twig' with { articles } %}
-        </div>
+    </div>
+    <div class="row mt-5">
+        {% include 'article/article_liste.html.twig' with { articles } %}
     </div>
 </section>
 {% endif %}
 
 {# ====== 7. CONTACT ====== #}
-<section class="home-cta bw-contact">
-    <div class="container text-center">
-        <h2 class="home-cta__title">Un projet ? Une question ?</h2>
-        <p class="home-cta__desc">
-            N’hésitez pas à nous contacter. Le conseil est gratuit : nous avons à cœur de fournir
-            un accompagnement de qualité et d’établir une relation de confiance.
-        </p>
-        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Prendre rendez-vous</a>
+<section class="bm-section bm-section--encre" id="contact">
+    <div class="bm-duo">
+        <div><span class="bm-kicker">Vos démarches</span></div>
+        <div>
+            <h2 class="bm-titre">Comment souhaitez-vous <em>avancer ?</em></h2>
+            <p class="bm-lede">
+                Présentez-nous votre situation : l'étude vous indique les étapes et les
+                pièces utiles avant le premier rendez-vous.
+            </p>
+            <a href="{{ path('app_contact') }}" class="bm-lien">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+        </div>
     </div>
 </section>

@@ -1,0 +1,73 @@
+{# ======================================================================
+   SERVICE — BM NOTAIRE
+   Surcouche client, prioritaire sur le rendu commun (service/show.html.twig).
+
+   Le meme gabarit sert aux deux niveaux de l'offre :
+     - un pole ouvre sur le sommaire de ses prestations ;
+     - une prestation deroule son parcours et ses pieces a reunir.
+   La distinction se lit dans l'arborescence, pas dans un champ a cocher.
+   ====================================================================== #}
+
+{% set est_pole = children|default([])|length > 0 %}
+
+<header class="bm-entete">
+    <nav class="bm-fil" aria-label="Fil d'Ariane">
+        <a href="{{ path('app_home') }}">Accueil</a>
+        <span aria-hidden="true">·</span>
+        <a href="{{ path('app_service_index') }}">{{ section_title|default('Expertises') }}</a>
+        {% if parent|default(null) %}
+            <span aria-hidden="true">·</span>
+            <a href="{{ path('app_service_show', { slug: parent.slug }) }}">{{ parent.title }}</a>
+        {% endif %}
+        <span aria-hidden="true">·</span>
+        <span>{{ service.title }}</span>
+    </nav>
+
+    <h1 class="bm-titre">{{ service.title }}</h1>
+
+    {% if service.shortDescription %}
+        <p class="bm-lede">{{ service.shortDescription }}</p>
+    {% endif %}
+</header>
+
+{% if est_pole %}
+    {# --- Sommaire d'un pole --- #}
+    <section class="bm-section">
+        <span class="bm-kicker">Les prestations</span>
+        <div class="bm-prestations">
+            {% for enfant in children %}
+                <a href="{{ path('app_service_show', { slug: enfant.slug }) }}" class="bm-prestation">
+                    <h2 class="bm-prestation__titre">{{ enfant.title }}</h2>
+                    {% if enfant.shortDescription %}
+                        <p class="bm-prestation__chapo">{{ enfant.shortDescription }}</p>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if service.content %}
+            <div class="bm-corps">{{ service.content|raw }}</div>
+        {% endif %}
+    </section>
+{% else %}
+    {# --- Une prestation --- #}
+    <div class="bm-corps">
+        {{ service.content|raw }}
+    </div>
+
+    {# L'appel a l'action est le meme partout : il releve du gabarit, et n'a
+       donc pas ete repris dans le contenu de chaque prestation. #}
+    <section class="bm-section bm-section--encre">
+        <div class="bm-duo">
+            <div><span class="bm-kicker">Échangeons</span></div>
+            <div>
+                <h2 class="bm-titre">Parlons de <em>votre projet.</em></h2>
+                <p class="bm-lede">
+                    Présentez-nous votre situation : l'étude vous indique les étapes et les
+                    pièces utiles avant le premier rendez-vous.
+                </p>
+                <a href="{{ path('app_contact') }}" class="bm-lien">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+            </div>
+        </div>
+    </section>
+{% endif %}

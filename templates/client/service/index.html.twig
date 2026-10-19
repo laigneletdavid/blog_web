@@ -1,0 +1,51 @@
+{# ======================================================================
+   EXPERTISES — BM NOTAIRE
+   Surcouche client, prioritaire sur le rendu commun (service/index.html.twig).
+
+   La page n'enumere que les poles : leurs prestations se decouvrent en
+   entrant. Les services remontent deja filtres sur le premier niveau.
+   ====================================================================== #}
+
+<header class="bm-entete">
+    <nav class="bm-fil" aria-label="Fil d'Ariane">
+        <a href="{{ path('app_home') }}">Accueil</a>
+        <span aria-hidden="true">·</span>
+        <span>{{ title_page }}</span>
+    </nav>
+
+    <h1 class="bm-titre">Le notariat, <em>autrement.</em></h1>
+    <p class="bm-lede">
+        Une approche exigeante, accessible et profondément humaine. Chaque dossier
+        mérite du temps, de la précision et une vision d'ensemble.
+    </p>
+</header>
+
+{% if intro|default(null) and intro.content %}
+    <div class="bm-corps">{{ intro.content|raw }}</div>
+{% endif %}
+
+<section class="bm-section">
+    {% if services|length > 0 %}
+        <div class="bm-poles">
+            {% for service in services %}
+                <a href="{{ path('app_service_show', { slug: service.slug }) }}" class="bm-pole">
+                    {% if service.image %}
+                        <span class="bm-pole__fond" style="background-image:url('{{ asset('documents/medias/' ~ (service.image.webpFileName ?? service.image.fileName)) }}')"></span>
+                    {% endif %}
+                    <span class="bm-pole__num">{{ '%02d'|format(loop.index) }}</span>
+                    <h2 class="bm-pole__titre">{{ service.title }}</h2>
+                    {% if service.children|length > 0 %}
+                        <p class="bm-pole__liste">
+                            {{ service.children|map(e => e.title)|join(' · ') }}
+                        </p>
+                    {% elseif service.shortDescription %}
+                        <p class="bm-pole__liste">{{ service.shortDescription }}</p>
+                    {% endif %}
+                    <span class="bm-pole__fleche" aria-hidden="true">↗</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="bm-lede">Aucune expertise publiée pour le moment.</p>
+    {% endif %}
+</section>
