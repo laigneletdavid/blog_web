@@ -32,7 +32,7 @@
 {% endfor %}
 
 {% set _route = app.request.attributes.get('_route') %}
-{% set _routes_sombres = ['app_home', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier'] %}
+{% set _routes_sombres = ['app_home', 'app_etude', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier'] %}
 {# Les deux niveaux de l'offre ouvrent desormais sur un bandeau sombre. #}
 {% set _sur_visuel = _route in _routes_sombres or _route == 'app_service_show' %}
 

@@ -1,0 +1,130 @@
+{# ======================================================================
+   L'ÉTUDE — BM NOTAIRE
+   Transpose du lot, avec une reserve : ses sections « etude-compact »,
+   « etude-card » et « etude-closing » n'ont aucune regle dans portal.css,
+   ni ailleurs. Le lot livre donc cette page non stylee en son milieu.
+
+   Plutot que d'inventer un dessin, on la rebatit avec le vocabulaire deja
+   en place sur /votre-projet : le bandeau « ph », la grille de cartes
+   « cards » et l'appel « cta ». Elle est ainsi coherente avec le reste
+   sans une ligne de CSS de plus.
+
+   Le texte vit ici, dans le gabarit, et non en base : la grille de cartes
+   ne survivrait pas a l'editeur du CMS, qui en aplatirait le balisage.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-portal">
+
+    {# ====== BANDEAU ====== #}
+    <section class="ph">
+        <div>
+            <p class="ey">BM NOTAIRE · SAINT-MARTORY</p>
+            <h1>L’Étude</h1>
+            <p class="lead">Une étude ancrée dans son territoire, résolument tournée vers l’avenir.</p>
+        </div>
+    </section>
+
+    {# ====== NOTRE HISTOIRE + LA PRATIQUE ====== #}
+    <section class="cards">
+        <div class="cards-head">
+            <span class="no">01 / NOTRE HISTOIRE</span>
+            <div>
+                <h2>Une étude ancrée dans son territoire,<br><em>résolument tournée vers l’avenir.</em></h2>
+                <p class="section-lead">
+                    Reprise en <strong>2023 par Maître Bruno Mainguy</strong>, l’étude s’inscrit
+                    dans la continuité d’une présence notariale de proximité, tout en portant une
+                    vision moderne et exigeante de la profession. Maître Bruno Mainguy est titulaire
+                    du <strong>Diplôme de Notaire</strong>. Il exerce entouré d’une équipe de
+                    <strong>six collaborateurs</strong>, avec une même ambition : proposer à chaque
+                    client un accompagnement juridique rigoureux, accessible et profondément humain.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid">
+            <article>
+                <span>02 / NOTRE MISSION</span>
+                <h3>Le notaire, partenaire de vos projets.</h3>
+                <p>
+                    Le rôle du notaire ne se limite pas à rédiger et authentifier des actes. Il
+                    consiste avant tout à écouter, conseiller, anticiper et sécuriser les décisions
+                    qui accompagnent les moments importants d’une vie. Derrière chaque acte se
+                    trouvent une histoire, des objectifs et parfois des décisions qui engagent
+                    plusieurs générations.
+                </p>
+            </article>
+
+            <article>
+                <span>03 / NOTRE PRATIQUE</span>
+                <h3>Une étude généraliste par choix.</h3>
+                <p>
+                    L’étude a fait le choix de conserver une pratique généraliste et transversale
+                    du notariat : droit immobilier, droit de la famille, successions et donations,
+                    droit patrimonial, droit des sociétés et de l’entreprise, droit rural, ainsi que
+                    les dossiers présentant une dimension internationale. Cette diversité constitue
+                    une véritable force.
+                </p>
+            </article>
+
+            <article>
+                <span>UNE VISION D’ENSEMBLE</span>
+                <h3>Anticiper, pas seulement traiter.</h3>
+                <p>
+                    Les situations de nos clients dépassent souvent les frontières d’une seule
+                    matière juridique. Une acquisition peut soulever des questions patrimoniales ou
+                    familiales ; une transmission d’entreprise peut nécessiter de repenser
+                    l’organisation d’un patrimoine. Cette vision d’ensemble permet d’anticiper les
+                    conséquences d’un acte et de l’inscrire dans un projet plus global.
+                </p>
+            </article>
+
+            <article>
+                <span>04 / NOTRE ÉQUIPE</span>
+                <h3>Six collaborateurs à vos côtés.</h3>
+                <p>
+                    Autour de Maître Bruno Mainguy, six collaborateurs participent quotidiennement à
+                    la préparation, au traitement et au suivi des dossiers de l’étude. Cette
+                    organisation repose sur quatre principes essentiels : disponibilité, réactivité,
+                    rigueur et clarté.
+                </p>
+            </article>
+
+            <article>
+                <span>LA RELATION CLIENT</span>
+                <h3>Comprendre avant de décider.</h3>
+                <p>
+                    Parce qu’un dossier notarial peut parfois sembler complexe, nous accordons une
+                    importance particulière à la qualité des échanges. Chaque client doit pouvoir
+                    comprendre les enjeux de son dossier, les solutions proposées et les
+                    conséquences des décisions qu’il prend.
+                </p>
+            </article>
+
+            <article>
+                <span>05 / NOTRE ENGAGEMENT</span>
+                <h3>Le droit, sans distance.</h3>
+                <p>
+                    Conjuguer les valeurs fondamentales du notariat — sécurité juridique, confiance,
+                    confidentialité et pérennité de l’acte authentique — avec une manière
+                    contemporaine d’exercer. Des outils modernes et des échanges plus fluides
+                    simplifient la relation avec l’étude, sans jamais diminuer l’exigence apportée
+                    au conseil et à la rédaction des actes.
+                </p>
+            </article>
+        </div>
+    </section>
+
+    {# ====== RENCONTRONS-NOUS ====== #}
+    <section class="cta">
+        <span class="no">06 / RENCONTRONS-NOUS</span>
+        <h2>Parlons de<br><em>votre projet.</em></h2>
+        <div class="buttons">
+            <a href="{{ path('app_contact') }}">Contacter l’étude ↗</a>
+            <a href="{{ path('app_votre_projet') }}">Trouver mon parcours →</a>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

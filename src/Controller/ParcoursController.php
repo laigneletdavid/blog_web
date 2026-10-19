@@ -55,6 +55,15 @@ class ParcoursController extends AbstractController
     ) {
     }
 
+    #[Route('/l-etude', name: 'app_etude')]
+    public function etude(): Response
+    {
+        return $this->render('parcours/etude.html.twig', [
+            'title_page' => 'L’Étude',
+            'seo' => $this->seoService->resolveForPage('L’Étude'),
+        ]);
+    }
+
     #[Route('/votre-projet', name: 'app_votre_projet')]
     public function votreProjet(): Response
     {
