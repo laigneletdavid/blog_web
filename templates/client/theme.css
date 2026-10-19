@@ -873,3 +873,131 @@ main { overflow-x: clip; }
     color: var(--bm-sourdine);
     margin: 0;
 }
+
+
+/* ======================================================================
+   15. LA SCENE D'ACCUEIL
+   Regles reprises du lot statique, prefixees par .bm-cine pour qu'elles ne
+   sortent pas de l'accueil : telles quelles, elles visaient body, html et
+   les titres, et auraient repeint tout le site.
+
+   Le defilement pilote une vingtaine de variables CSS, posees sur :root par
+   le script de fin de page.
+   ====================================================================== */
+
+.bm-cine .cinema {height:5200px}
+.bm-cine .stage {height:100vh;min-height:650px;position:sticky;top:0;overflow:hidden;background:#1c2a22;isolation:isolate}
+.bm-cine .film-wrap, .bm-cine .film, .bm-cine .veil, .bm-cine .light, .bm-cine .grain, .bm-cine .edge {position:absolute}
+.bm-cine .film-wrap {inset:-5%;transform:scale(var(--world-scale,1));transform-origin:center;will-change:transform,filter;filter:brightness(var(--brightness,1)) saturate(.72)}
+.bm-cine .film {inset:0;width:100%;height:100%;object-fit:cover;will-change:transform,opacity}
+.bm-cine .film-a {transform:scale(1.06) translate3d(var(--mx,0),var(--my,0),0);opacity:var(--film-a,1)}
+.bm-cine .film-b {transform:scale(var(--film-b-scale,1.32)) translate3d(calc(var(--mx,0) * -.45),calc(var(--my,0) * -.3),0);opacity:var(--film-b,0);filter:contrast(1.04)}
+.bm-cine .veil {inset:0;z-index:2;background:linear-gradient(180deg,rgba(8,17,12,.24),rgba(8,17,12,.02) 42%,rgba(8,17,12,.68));opacity:var(--veil,.8)}
+.bm-cine .light {z-index:3;inset:-30%;background:radial-gradient(circle at 62% 28%,rgba(255,227,175,.28),transparent 26%),radial-gradient(circle at 50% 50%,transparent 25%,rgba(7,16,11,.34) 75%);transform:translate3d(var(--light-x,0),var(--light-y,0),0)}
+.bm-cine .grain {z-index:20;inset:0;opacity:.10;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E")}
+.bm-cine .edge {z-index:8;top:-8%;bottom:-8%;width:51%;background:rgba(10,21,15,.88);opacity:var(--edge-o,0);will-change:transform,opacity}
+.bm-cine .edge-l {left:-2%;transform:translate3d(var(--edge-l,-105%),0,0) rotate(1deg)}
+.bm-cine .edge-r {right:-2%;transform:translate3d(var(--edge-r,105%),0,0) rotate(-1deg)}
+.bm-cine .hero, .bm-cine .statement, .bm-cine .territory, .bm-cine .cinema-expert {position:absolute;inset:0;z-index:10}
+.bm-cine .hero {display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:var(--hero-o,1);transform:translate3d(0,var(--hero-y,0),0) scale(var(--hero-scale,1));will-change:transform,opacity}
+.bm-cine .eyebrow, .bm-cine .kicker, .bm-cine .section-no {font-size:10px;letter-spacing:.28em;font-weight:600}
+.bm-cine .hero h1 {margin:38px 0 30px;line-height:.62;font-weight:500}
+.bm-cine .hero h1 span {display:block;font:500 clamp(120px,19vw,315px)/.55 var(--serif);letter-spacing:-.085em}
+.bm-cine .hero h1 em {display:block;font:500 italic clamp(48px,7vw,110px)/1 var(--serif);letter-spacing:.05em}
+.bm-cine .signature {font:500 clamp(20px,2vw,31px)/1.08 var(--serif);margin:0}
+.bm-cine .scroll {position:absolute;bottom:30px;font-size:9px;letter-spacing:.25em}
+.bm-cine .scroll b {display:block;font-size:17px;margin-top:9px}
+.bm-cine .statement, .bm-cine .territory {display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px;pointer-events:none}
+.bm-cine .statement {opacity:var(--s-o,0);transform:translate3d(0,var(--s-y,80px),0) scale(var(--s-scale,.94))}
+.bm-cine .territory {opacity:var(--t-o,0);transform:translate3d(0,var(--t-y,80px),0) scale(var(--t-scale,.94))}
+.bm-cine .statement h2, .bm-cine .territory h2, .bm-cine .cinema-expert h2, .bm-cine .expert-head h2, .bm-cine .manifesto h2, .bm-cine .contact h2 {font:500 clamp(54px,7.2vw,118px)/.88 var(--serif);letter-spacing:-.048em;margin:30px 0}
+.bm-cine .statement h2 em, .bm-cine .territory h2 em, .bm-cine .cinema-expert h2 em, .bm-cine .expert-head h2 em, .bm-cine .manifesto h2 em, .bm-cine .contact h2 em {font-weight:500}
+.bm-cine .lede {max-width:610px;font-size:16px;line-height:1.65;margin:0}
+.bm-cine .territory a {pointer-events:auto;margin-top:30px;padding-bottom:7px;border-bottom:1px solid rgba(242,234,223,.65);font-size:13px}
+.bm-cine .territory a span {margin-left:10px}
+.bm-cine .cinema-expert {padding:15vh 0 0 5vw;opacity:var(--ce-o,0);transform:translate3d(var(--ce-x,100vw),0,0);pointer-events:var(--ce-pointer,none)}
+.bm-cine .cinema-expert-head {width:min(760px,80vw);opacity:var(--ce-head,0);transform:translateY(var(--ce-head-y,30px))}
+.bm-cine .cinema-expert h2 {font-size:clamp(48px,5.6vw,88px);margin:22px 0 42px}
+.bm-cine .cinema-track {display:flex;gap:18px;width:max-content;transform:translate3d(var(--track-x,0),0,0);will-change:transform}
+.bm-cine .cinema-track article {position:relative;width:min(390px,74vw);height:245px;background:var(--cream);color:var(--ink);border-radius:22px;padding:24px;box-shadow:0 30px 70px rgba(0,0,0,.12)}
+.bm-cine .cinema-track small {font-size:9px;letter-spacing:.18em}
+.bm-cine .cinema-track h3 {font:500 34px/.98 var(--serif);letter-spacing:-.035em;margin:54px 0 14px}
+.bm-cine .cinema-track p {font-size:12px;line-height:1.5;margin:0;opacity:.7}
+.bm-cine .cinema-track b {position:absolute;right:24px;bottom:24px;font-size:20px}
+.bm-cine .explore {margin-top:25px;font-size:9px;letter-spacing:.25em}
+.bm-cine .explore span {font-size:17px;margin-left:10px}
+.bm-cine .counter {position:absolute;z-index:15;right:38px;bottom:31px;display:flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.15em;opacity:var(--counter-o,.8)}
+.bm-cine .counter i {display:block;width:60px;height:1px;background:rgba(242,234,223,.45)}
+.bm-cine .expertises {position:relative;background:var(--cream);color:var(--ink);padding:125px 5vw 115px}
+.bm-cine .expert-head {display:grid;grid-template-columns:1.5fr .65fr;align-items:end;gap:70px;margin:25px 0 90px}
+.bm-cine .expert-head h2 {font-size:clamp(65px,8.5vw,140px);margin:0}
+.bm-cine .expert-head p {max-width:420px;line-height:1.7;font-size:15px;margin:0 0 12px}
+.bm-cine .expert-grid {display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid #aaa9a0}
+.bm-cine .expert-grid a {position:relative;min-height:330px;padding:24px;border-right:1px solid #aaa9a0;border-bottom:1px solid #aaa9a0;transition:.35s}
+.bm-cine .expert-grid a {grid-column:span 3}
+.bm-cine .expert-grid a:first-child, .bm-cine .expert-grid a:nth-child(3) {border-left:1px solid #aaa9a0}
+.bm-cine .expert-grid a:hover {background:#e6ded2;transform:translateY(-5px)}
+.bm-cine .expert-grid span {font-size:10px;opacity:.55}
+.bm-cine .expert-grid h3 {font:500 clamp(34px,3vw,52px)/1 var(--serif);margin:95px 0 18px}
+.bm-cine .expert-grid p {font-size:13px;line-height:1.5;opacity:.65}
+.bm-cine .expert-grid b {position:absolute;right:24px;top:22px;font-size:21px}
+.bm-cine .cinema {height:4500px}
+.bm-cine .stage {min-height:620px}
+.bm-cine .hero h1 span {font-size:30vw}
+.bm-cine .hero h1 em {font-size:12vw}
+.bm-cine .statement h2, .bm-cine .territory h2 {font-size:13vw}
+.bm-cine .cinema-expert {padding-left:22px}
+.bm-cine .cinema-expert h2 {font-size:12vw}
+.bm-cine .cinema-track article {width:78vw}
+.bm-cine .expertises {padding:90px 22px}
+.bm-cine .expert-head {grid-template-columns:1fr;gap:30px;margin-bottom:55px}
+.bm-cine .expert-head h2 {font-size:17vw}
+.bm-cine .expert-grid {display:block}
+.bm-cine .expert-grid a {display:block;min-height:230px;border-left:1px solid #aaa9a0}
+.bm-cine .expert-grid h3 {margin-top:65px}
+.bm-cine .counter {right:20px}
+.bm-cine .edge {width:55%}
+.bm-cine .film-wrap, .bm-cine .film, .bm-cine .hero, .bm-cine .statement, .bm-cine .territory, .bm-cine .cinema-expert, .bm-cine .cinema-track, .bm-cine .edge {transition:none!important}
+.bm-cine .hero-logo {margin:30px 0 26px;padding:22px 34px;background:rgba(244,244,244,.92);backdrop-filter:blur(8px);border-radius:3px;box-shadow:0 22px 70px rgba(0,0,0,.18)}
+.bm-cine .hero-logo img {display:block;width:clamp(210px,25vw,390px);height:auto}
+.bm-cine .hero .signature {margin-top:0}
+.bm-cine .hero-logo {padding:16px 22px}
+.bm-cine .hero-logo img {width:min(62vw,300px)}
+.bm-cine /* V3.1 — hero title: logo reserved for navigation */ .hero-wordmark {margin:32px 0 28px;text-align:center;color:var(--cream);text-shadow:0 18px 50px rgba(0,0,0,.24)}
+.bm-cine .hero-wordmark span {display:block;font:500 clamp(76px,12vw,190px)/.72 var(--serif);letter-spacing:-.065em}
+.bm-cine .hero-wordmark span+span {margin-top:.08em}
+.bm-cine .hero-wordmark em {display:block;margin-top:24px;font:500 normal clamp(13px,1.15vw,18px)/1 var(--sans);letter-spacing:.48em;padding-left:.48em}
+.bm-cine .hero-wordmark {margin:26px 0 22px}
+.bm-cine .hero-wordmark span {font-size:19vw}
+.bm-cine .hero-wordmark em {margin-top:18px;font-size:11px;letter-spacing:.36em;padding-left:.36em}
+.bm-cine /* V3.2 — hero volontairement discret */ .hero .eyebrow {margin:0 0 18px;opacity:.82}
+.bm-cine .hero-signature {font:500 clamp(18px,1.65vw,26px)/1.2 var(--serif);letter-spacing:-.01em;text-shadow:0 10px 34px rgba(0,0,0,.28)}
+.bm-cine /* V4 — editorial office sequence and premium micro-interactions */ .nav a, .bm-cine .territory a, .bm-cine .contact-button, .bm-cine .office-copy a {transition:opacity .3s ease,transform .3s ease,border-color .3s ease}
+.bm-cine .cinema-track article {transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s ease}
+.bm-cine .cinema-track article:hover {transform:translateY(-8px);box-shadow:0 38px 90px rgba(0,0,0,.2)}
+.bm-cine .office-copy>p:not(.kicker) {max-width:610px;font-size:15px;line-height:1.8;color:#4f5852}
+.bm-cine /* V5 — immersive expertise gallery */ .expertises {min-height:100vh;overflow:hidden;isolation:isolate;background:#15221b;color:var(--cream)}
+.bm-cine .expert-visuals {position:absolute;inset:0;z-index:-2;overflow:hidden}
+.bm-cine .expert-visual {position:absolute;inset:-3%;background-size:cover;background-position:center;opacity:0;transform:scale(1.08);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform 1.4s cubic-bezier(.22,1,.36,1);filter:saturate(.7) contrast(1.03)}
+.bm-cine .expert-visual.is-active {opacity:1;transform:scale(1.02)}
+.bm-cine .expert-visual-shade {position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,18,13,.83) 0%,rgba(9,18,13,.55) 45%,rgba(9,18,13,.68) 100%),linear-gradient(180deg,rgba(9,18,13,.12),rgba(9,18,13,.58))}
+.bm-cine .expert-content {position:relative;z-index:2}
+.bm-cine .expertises .section-no {color:rgba(242,234,223,.65)}
+.bm-cine .expert-head p {color:rgba(242,234,223,.82)}
+.bm-cine .expert-grid {border-color:rgba(242,234,223,.34)}
+.bm-cine .expert-grid a {color:var(--cream);border-color:rgba(242,234,223,.34);background:rgba(14,27,19,.08);backdrop-filter:blur(0);transition:background .45s,transform .45s,border-color .45s}
+.bm-cine .expert-grid a:first-child, .bm-cine .expert-grid a:nth-child(3) {border-left-color:rgba(242,234,223,.34)}
+.bm-cine .expert-grid a:hover, .bm-cine .expert-grid a:focus-visible {background:rgba(242,234,223,.94);color:var(--ink);transform:translateY(-7px);outline:none;border-color:rgba(242,234,223,.75)}
+.bm-cine .expert-grid a:hover p, .bm-cine .expert-grid a:focus-visible p {opacity:.72}
+.bm-cine .expert-grid a::after {content:"";position:absolute;left:24px;bottom:22px;width:0;height:1px;background:currentColor;transition:width .55s cubic-bezier(.22,1,.36,1)}
+.bm-cine .expert-grid a:hover::after, .bm-cine .expert-grid a:focus-visible::after {width:58px}
+.bm-cine .expertises {min-height:auto}
+.bm-cine .expert-visual {inset:0}
+.bm-cine .expert-grid a:hover, .bm-cine .expert-grid a:focus-visible {transform:none}
+.bm-cine .contact-intro .kicker {margin:0 0 30px;
+  color:#a9b1aa;}
+.bm-cine .contact-card--light {background:var(--cream);
+  color:var(--ink);}
+.bm-cine .contact-card--light:hover {background:#e8e0d4;}
+.bm-cine .contact-card--light .contact-card-subchoices span {color:var(--ink);
+  border-color:rgba(20,32,25,.22);}

@@ -2,113 +2,156 @@
    ACCUEIL — BM NOTAIRE
    Surcouche client, prioritaire sur le theme (voir home/index.html.twig).
 
-   Transposition du lot statique livre par l'etude : une video qui occupe
-   l'ecran, puis des sections qui alternent creme et encre. Les poles sont
-   lus depuis les services de premier niveau, donc l'etude peut les reordonner
-   depuis l'administration sans toucher a ce fichier.
-   ====================================================================== */ #}
+   Transposition du lot statique. La page s'ouvre sur une scene : la video
+   reste fixe pendant que le defilement fait paraitre puis disparaitre le
+   titre, l'engagement, le territoire et les expertises. Le defilement pilote
+   une vingtaine de variables CSS, posees par le script en bas de fichier.
 
-{# ====== 1. HERO ====== #}
-<section class="bm-hero">
-    <video class="bm-hero__video" autoplay muted loop playsinline preload="metadata"
-           {% if site.heroImage %}poster="{{ asset('documents/medias/' ~ (site.heroImage.webpFileName ?? site.heroImage.fileName)) }}"{% endif %}
-           aria-hidden="true" tabindex="-1">
-        <source src="{{ asset('documents/medias/hero-bm-notaire.mp4') }}" type="video/mp4">
-    </video>
-    <div class="bm-hero__voile"></div>
-    <div class="bm-hero__contenu">
-        <span class="bm-kicker bm-hero__kicker">Étude notariale · {{ site.town|default('Saint-Martory') }}</span>
-        <h1 class="bm-hero__signature">Le droit au service de vos projets.</h1>
-        <a href="#engagement" class="bm-hero__defiler">Faire défiler <span aria-hidden="true">↓</span></a>
-    </div>
-</section>
+   Les expertises sont lues depuis les services de premier niveau : l'etude
+   peut les reordonner depuis l'administration sans toucher a ce gabarit.
+   ====================================================================== #}
 
-{# ====== 2. ENGAGEMENT ====== #}
-<section class="bm-section" id="engagement">
-    <div class="bm-duo">
-        <div><span class="bm-kicker">Notre engagement</span></div>
-        <div>
-            <h2 class="bm-titre">Vous accompagner dans les moments <em>qui comptent.</em></h2>
-            <p class="bm-lede">
-                Rendre le droit clair, sécuriser les décisions et construire avec vous
-                des solutions durables.
+<div class="bm-cine">
+
+{# ====== 1. LA SCENE ====== #}
+<section class="cinema" id="accueil">
+    <div class="stage">
+        <div class="film-wrap">
+            {# Deux lectures de la meme video : l'une se fond dans l'autre au
+               passage du tunnel, ce qui evite une coupure a l'image. #}
+            <video class="film film-a" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
+                <source src="{{ asset('documents/medias/hero-bm-notaire.mp4') }}" type="video/mp4">
+            </video>
+            <video class="film film-b" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
+                <source src="{{ asset('documents/medias/hero-bm-notaire.mp4') }}" type="video/mp4">
+            </video>
+        </div>
+        <div class="veil"></div>
+        <div class="light"></div>
+        <div class="grain"></div>
+        <div class="edge edge-l"></div>
+        <div class="edge edge-r"></div>
+
+        <section class="hero">
+            <p class="eyebrow">Étude notariale · {{ site.town|default('Saint-Martory')|upper }}</p>
+            <p class="signature hero-signature">Le droit au service de vos projets.</p>
+            <div class="scroll"><span>Faire défiler</span><b>↓</b></div>
+        </section>
+
+        <section class="statement" id="etude">
+            <p class="kicker">Notre engagement</p>
+            <h2>Vous accompagner<br>dans les moments<br><em>qui comptent.</em></h2>
+            <p class="lede">Rendre le droit clair, sécuriser les décisions et construire avec vous des solutions durables.</p>
+        </section>
+
+        <section class="territory">
+            <p class="kicker">BM Notaire</p>
+            <h2>Une étude ancrée<br><em>dans son territoire.</em></h2>
+            <p class="lede">
+                À {{ site.town|default('Saint-Martory') }}, nous accompagnons particuliers, familles,
+                entrepreneurs et professionnels à chaque étape de leurs projets.
             </p>
+            <a href="#expertises">Découvrir l'étude <span>↗</span></a>
+        </section>
+
+        {% if services|default([])|length > 0 %}
+        <section class="cinema-expert" aria-label="Nos expertises">
+            <div class="cinema-expert-head">
+                <p class="kicker">Nos expertises</p>
+                <h2>Conseiller.<br><em>Anticiper.</em> Transmettre.</h2>
+            </div>
+            <div class="cinema-track">
+                {% for service in services %}
+                    <article onclick="location.href='{{ path('app_service_show', { slug: service.slug }) }}'" role="link" tabindex="0">
+                        <small>{{ '%02d'|format(loop.index) }} · {{ service.title|upper }}</small>
+                        <h3>{{ service.shortDescription|default(service.title)|split('.')|first }}.</h3>
+                        {% if service.children|length > 0 %}
+                            <p>{{ service.children|slice(0, 4)|map(e => e.title)|join(' · ') }}</p>
+                        {% endif %}
+                        <b>↗</b>
+                    </article>
+                {% endfor %}
+            </div>
+            <div class="explore">Explorer <span>→</span></div>
+        </section>
+        {% endif %}
+
+        <div class="counter">
+            <span>01</span><i></i><span>{{ '%02d'|format(services|default([])|length) }}</span>
         </div>
     </div>
 </section>
 
-{# ====== 3. LES EXPERTISES ====== #}
+{# ====== 2. LES EXPERTISES ====== #}
 {% if services|default([])|length > 0 %}
-<section class="bm-section bm-section--encre" id="expertises">
-    <div class="bm-duo">
-        <div><span class="bm-kicker">Nos expertises</span></div>
-        <div>
-            <h2 class="bm-titre">Conseiller. <em>Anticiper.</em> Transmettre.</h2>
-            <p class="bm-lede">
+<section class="expertises" id="expertises">
+    <div class="expert-visuals" aria-hidden="true">
+        {% for service in services|filter(s => s.image) %}
+            <div class="expert-visual{{ loop.first ? ' is-active' }}" data-visual="{{ service.slug }}"
+                 style="background-image:url('{{ asset('documents/medias/' ~ (service.image.webpFileName ?? service.image.fileName)) }}')"></div>
+        {% endfor %}
+        <div class="expert-visual-shade"></div>
+    </div>
+    <div class="expert-content">
+        <div class="section-no">01 / Expertises</div>
+        <div class="expert-head">
+            <h2>Le notariat,<br><em>autrement.</em></h2>
+            <p>
                 Une approche exigeante, accessible et profondément humaine. Chaque dossier
                 mérite du temps, de la précision et une vision d'ensemble.
             </p>
         </div>
-    </div>
-
-    <div class="bm-poles">
-        {% for service in services %}
-            <a href="{{ path('app_service_show', { slug: service.slug }) }}" class="bm-pole">
-                {% if service.image %}
-                    <span class="bm-pole__fond" style="background-image:url('{{ asset('documents/medias/' ~ (service.image.webpFileName ?? service.image.fileName)) }}')"></span>
-                {% endif %}
-                <span class="bm-pole__num">{{ '%02d'|format(loop.index) }}</span>
-                <h3 class="bm-pole__titre">{{ service.title }}</h3>
-                {% if service.children|length > 0 %}
-                    <p class="bm-pole__liste">
-                        {{ service.children|slice(0, 3)|map(e => e.title)|join(' · ') }}
-                    </p>
-                {% elseif service.shortDescription %}
-                    <p class="bm-pole__liste">{{ service.shortDescription }}</p>
-                {% endif %}
-                <span class="bm-pole__fleche" aria-hidden="true">↗</span>
-            </a>
-        {% endfor %}
+        <div class="expert-grid">
+            {% for service in services %}
+                <a href="{{ path('app_service_show', { slug: service.slug }) }}" data-expertise="{{ service.slug }}">
+                    <span>{{ '%02d'|format(loop.index) }}</span>
+                    <h3>{{ service.title }}</h3>
+                    {% if service.children|length > 0 %}
+                        <p>{{ service.children|slice(0, 5)|map(e => e.title)|join(' · ') }}</p>
+                    {% endif %}
+                    <b>↗</b>
+                </a>
+            {% endfor %}
+        </div>
     </div>
 </section>
 {% endif %}
 
-{# ====== 4. L'ETUDE ====== #}
-<section class="bm-section" id="etude">
-    <div class="bm-etude">
-        <div class="bm-etude__portrait">
-            {% if site.contactImage %}
-                {{ responsive_img(site.contactImage, '(max-width: 860px) 100vw, 40vw', '', site.name|default(''), false, site) }}
-            {% elseif site.aboutImage %}
-                {{ responsive_img(site.aboutImage, '(max-width: 860px) 100vw, 40vw', '', site.name|default(''), false, site) }}
-            {% endif %}
-        </div>
-        <div>
-            <span class="bm-kicker">L'Étude</span>
-            <h2 class="bm-titre">Une relation fondée sur la <em>proximité.</em></h2>
-            <p class="bm-lede">
-                Écouter avant de conseiller. Expliquer avant de décider. Anticiper pour
-                sécuriser. L'étude privilégie une relation directe, lisible et durable à
-                chaque étape de votre projet.
-            </p>
-            <a href="{{ path('app_contact') }}" class="bm-lien">Rencontrer l'étude <span aria-hidden="true">↗</span></a>
-        </div>
+{# ====== 3. L'ETUDE ====== #}
+<section class="office-story" id="office">
+    <div class="office-mark office-portrait">
+        {% if site.contactImage %}
+            {{ responsive_img(site.contactImage, '(max-width: 860px) 100vw, 40vw', '', site.name|default(''), false, site) }}
+        {% elseif site.aboutImage %}
+            {{ responsive_img(site.aboutImage, '(max-width: 860px) 100vw, 40vw', '', site.name|default(''), false, site) }}
+        {% endif %}
+    </div>
+    <div class="office-copy">
+        <p class="kicker">L'Étude</p>
+        <h2>Une relation fondée<br>sur la <em>proximité.</em></h2>
+        <p>
+            Écouter avant de conseiller. Expliquer avant de décider. Anticiper pour
+            sécuriser. L'étude privilégie une relation directe, lisible et durable à
+            chaque étape de votre projet.
+        </p>
+        <a href="{{ path('app_contact') }}">Découvrir l'étude <span>↗</span></a>
+    </div>
+    <div class="office-aside">
+        <span>{{ site.town|default('Saint-Martory')|upper }}</span>
+        <p>Haute-Garonne<br>Occitanie</p>
     </div>
 </section>
 
-{# ====== 5. MANIFESTE ====== #}
-<section class="bm-section bm-section--encre">
-    <span class="bm-kicker">Un office · un territoire · une exigence</span>
-    <h2 class="bm-titre">Parce qu'un acte ne se résume jamais à une <em>signature.</em></h2>
-    <div class="bm-valeurs">
-        <span>Écouter.</span>
-        <span>Conseiller.</span>
-        <span>Anticiper.</span>
-        <span>Transmettre.</span>
+{# ====== 4. MANIFESTE ====== #}
+<section class="manifesto">
+    <p>Un office · Un territoire · Une exigence</p>
+    <h2>Parce qu'un acte ne se résume jamais<br>à une <em>signature.</em></h2>
+    <div class="values">
+        <span>Écouter.</span><span>Conseiller.</span><span>Anticiper.</span><span>Transmettre.</span>
     </div>
 </section>
 
-{# ====== 6. ACTUALITES ====== #}
+{# ====== 5. ACTUALITES ====== #}
 {% if articles|default([])|length > 0 %}
 <section class="bm-section">
     <div class="bm-duo">
@@ -118,23 +161,94 @@
             <a href="{{ path('app_article_show_all') }}" class="bm-lien">Toutes les actualités <span aria-hidden="true">↗</span></a>
         </div>
     </div>
-    <div class="row mt-5">
-        {% include 'article/article_liste.html.twig' with { articles } %}
-    </div>
+    <div class="row mt-5">{% include 'article/article_liste.html.twig' with { articles } %}</div>
 </section>
 {% endif %}
 
-{# ====== 7. CONTACT ====== #}
-<section class="bm-section bm-section--encre" id="contact">
-    <div class="bm-duo">
-        <div><span class="bm-kicker">Vos démarches</span></div>
-        <div>
-            <h2 class="bm-titre">Comment souhaitez-vous <em>avancer ?</em></h2>
-            <p class="bm-lede">
-                Présentez-nous votre situation : l'étude vous indique les étapes et les
-                pièces utiles avant le premier rendez-vous.
+{# ====== 6. VOS DEMARCHES ====== #}
+<section class="contact" id="contact">
+    <div class="contact-intro">
+        <p class="kicker">Vos démarches</p>
+        <div class="contact-intro-grid">
+            <h2>Comment souhaitez-vous<br><em>avancer ?</em></h2>
+            <p>
+                Deux parcours simples : prendre rendez-vous avec l'étude, ou consulter
+                nos simulateurs pour estimer votre projet avant d'en parler.
             </p>
-            <a href="{{ path('app_contact') }}" class="bm-lien">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
         </div>
     </div>
+    <div class="contact-actions contact-actions--two">
+        <a class="contact-card contact-card--light" href="{{ path('app_contact') }}">
+            <span class="contact-card-no">01</span>
+            <small>Rendez-vous</small>
+            <h3>Rencontrer<br>l'étude.</h3>
+            <p>Échangeons sur votre projet, et sur les documents utiles à réunir.</p>
+            <strong>Prendre rendez-vous <b>↗</b></strong>
+        </a>
+        <a class="contact-card contact-card--client contact-card--client-wide" href="{{ path('app_simulateurs') }}">
+            <span class="contact-card-no">02</span>
+            <small>Simulateurs</small>
+            <h3>Estimer<br>votre projet.</h3>
+            <p>Frais d'acquisition, donation, succession, plus-value, viager : un ordre de grandeur avant le rendez-vous.</p>
+            <strong>Accéder aux simulateurs <b>↗</b></strong>
+        </a>
+    </div>
 </section>
+
+</div>{# /.bm-cine #}
+
+{# ======================================================================
+   Le defilement pilote la scene. Repris du lot statique, a deux reserves :
+   le script ne demarre que si la scene est presente, et il s'arrete net
+   lorsque l'animation est deconseillee par le systeme.
+   ====================================================================== #}
+<script>
+(function () {
+    if (!document.querySelector('.bm-cine .cinema')) { return; }
+const root=document.documentElement,cinema=document.querySelector('.bm-cine .cinema');
+let tx=0,ty=0,mx=0,my=0,target=0,current=0;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const smooth=(a,b,x)=>{x=clamp((x-a)/(b-a));return x*x*(3-2*x)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+function update(){
+ const r=cinema.getBoundingClientRect();target=clamp(-r.top,0,cinema.offsetHeight-innerHeight);current=reduce.matches?target:current+(target-current)*.11;if(Math.abs(target-current)<.08)current=target;
+ mx=reduce.matches?0:mx+(tx-mx)*.08;my=reduce.matches?0:my+(ty-my)*.08;
+ const s=current;
+ const hero=smooth(80,720,s);
+ const statementIn=smooth(620,1120,s),statementOut=smooth(1420,1850,s),statement=statementIn*(1-statementOut);
+ const tunnel=smooth(1260,1840,s);
+ const territoryIn=smooth(1700,2220,s),territoryOut=smooth(2480,2880,s),territory=territoryIn*(1-territoryOut);
+ const expertIn=smooth(2760,3500,s),expertHead=smooth(3220,3720,s);
+ const maxTrack=Math.max(0,4*408-innerWidth*.9);const track=smooth(3440,4380,s)*maxTrack;
+ root.style.setProperty('--hero-o',(1-hero).toFixed(4));root.style.setProperty('--hero-y',`${-190*hero}px`);root.style.setProperty('--hero-scale',(1+hero*.22).toFixed(4));
+ root.style.setProperty('--s-o',statement.toFixed(4));root.style.setProperty('--s-y',`${70*(1-statementIn)-100*statementOut}px`);root.style.setProperty('--s-scale',(0.94+statementIn*.06+statementOut*.05).toFixed(4));
+ root.style.setProperty('--edge-o',(tunnel*(1-smooth(1950,2300,s))).toFixed(4));root.style.setProperty('--edge-l',`${-105+104*tunnel}%`);root.style.setProperty('--edge-r',`${105-104*tunnel}%`);
+ root.style.setProperty('--film-a',(1-tunnel*.7).toFixed(4));root.style.setProperty('--film-b',tunnel.toFixed(4));root.style.setProperty('--film-b-scale',(1.34-tunnel*.24+territoryOut*.12).toFixed(4));
+ root.style.setProperty('--world-scale',(1+s/11000+tunnel*.06).toFixed(4));root.style.setProperty('--brightness',(1-tunnel*.17+expertIn*.05).toFixed(4));
+ root.style.setProperty('--t-o',territory.toFixed(4));root.style.setProperty('--t-y',`${75*(1-territoryIn)-90*territoryOut}px`);root.style.setProperty('--t-scale',(0.94+territoryIn*.06).toFixed(4));
+ root.style.setProperty('--ce-o',expertIn.toFixed(4));root.style.setProperty('--ce-x',`${(1-expertIn)*115}vw`);root.style.setProperty('--ce-head',expertHead.toFixed(4));root.style.setProperty('--ce-head-y',`${30*(1-expertHead)}px`);root.style.setProperty('--track-x',`${-track}px`);root.style.setProperty('--ce-pointer',expertIn>.96?'auto':'none');
+ root.style.setProperty('--mx',`${mx*22}px`);root.style.setProperty('--my',`${my*13}px`);root.style.setProperty('--light-x',`${mx*-35}px`);root.style.setProperty('--light-y',`${my*-20}px`);
+ requestAnimationFrame(update);
+}
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5},{passive:true});update();
+
+// V5 — each expertise reveals its own visual universe.
+const expertiseLinks=[...document.querySelectorAll('.expert-grid a[data-expertise]')];
+const expertiseVisuals=[...document.querySelectorAll('.expert-visual[data-visual]')];
+function showExpertiseVisual(name){
+ expertiseVisuals.forEach(v=>v.classList.toggle('is-active',v.dataset.visual===name));
+}
+expertiseLinks.forEach(link=>{
+ const activate=()=>showExpertiseVisual(link.dataset.expertise);
+ link.addEventListener('mouseenter',activate);
+ link.addEventListener('focus',activate);
+ link.addEventListener('touchstart',activate,{passive:true});
+});
+// V6 — cinematic expertise cards now navigate to their detailed pages.
+document.querySelectorAll('.cinema-track article[role="link"]').forEach(card=>{
+ card.style.cursor='pointer';
+ card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
+});
+
+})();
+</script>
