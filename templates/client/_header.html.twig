@@ -54,11 +54,12 @@
             {% endfor %}
         </nav>
 
+        {# La maquette pose deux boutons : « Espace client » et « Prendre
+           rendez-vous ». L'espace client n'existe pas encore, et on ne pointe
+           pas vers une page absente : il ne reste donc que le second, qui mene
+           au formulaire de prise de rendez-vous. #}
         <div class="bm-nav__actions">
-            <a class="bm-nav__bouton bm-nav__bouton--plein" href="{{ path('app_simulateurs') }}">
-                <span>Simulateurs</span><b aria-hidden="true">↗</b>
-            </a>
-            <a class="bm-nav__bouton" href="{{ path('app_contact') }}">
+            <a class="bm-nav__bouton bm-nav__bouton--plein" href="{{ path('app_rendez_vous') }}">
                 <span class="bm-nav__long">Prendre rendez-vous</span>
                 <span class="bm-nav__court">Rendez-vous</span>
                 <b aria-hidden="true">↗</b>
@@ -134,9 +135,8 @@
                 {% for lien in _liens %}
                     <li class="nav-item"><a href="{{ lien.href }}" class="nav-link">{{ lien.nom }}</a></li>
                 {% endfor %}
-                <li class="nav-item"><a href="{{ path('app_simulateurs') }}" class="nav-link">Simulateurs</a></li>
             </ul>
-            <a href="{{ path('app_contact') }}" class="bm-nav__bouton bm-nav__bouton--plein w-100 justify-content-center">
+            <a href="{{ path('app_rendez_vous') }}" class="bm-nav__bouton bm-nav__bouton--plein w-100 justify-content-center">
                 <span>Prendre rendez-vous</span><b aria-hidden="true">↗</b>
             </a>
         </div>
