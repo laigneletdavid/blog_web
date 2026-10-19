@@ -1165,3 +1165,46 @@ main { overflow-x: clip; }
         background: currentColor;
     }
 }
+
+/* ======================================================================
+   17. COLLISIONS AVEC LE CMS
+   La maquette nomme ses sections « hero » et « contact ». Le CMS connait
+   deja ces classes : .hero y est un alias historique de .home-hero, qui
+   porte un fond en degrade. Sur la scene, ce fond venait se poser par-dessus
+   la video et la masquait entierement.
+
+   On rend donc a ces sections leur neutralite, sans toucher au CMS : les
+   autres clients continuent d'en profiter.
+   ====================================================================== */
+
+.bm-cine .hero,
+.bm-cine .contact {
+    background: none;
+    background-image: none;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* La scene se lit en clair : le lot tenait cette couleur d'une regle sur
+   body, que nous n'avons pas reprise pour ne pas repeindre le site. */
+.bm-cine .stage,
+.bm-cine .stage h1,
+.bm-cine .stage h2,
+.bm-cine .stage h3,
+.bm-cine .stage p,
+.bm-cine .stage a {
+    color: var(--bm-creme);
+}
+
+/* La section d'accueil garde sa mise en page propre, posee plus haut. */
+.bm-cine .hero {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
