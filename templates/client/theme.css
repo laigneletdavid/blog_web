@@ -895,22 +895,17 @@ main { overflow-x: clip; }
 
 /* ======================================================================
    15 bis. REGLES REPRISES DU LOT
-   Regles reprises du lot statique, prefixees par .bm-cine pour qu'elles ne
-   sortent pas de l'accueil : telles quelles, elles visaient body, html et
-   les titres, et auraient repeint tout le site.
 
-   Le defilement pilote une vingtaine de variables CSS, posees sur :root par
-   le script de fin de page.
+   Extraites de sa feuille, prefixees par .bm-cine, et surtout gardees dans
+   leurs media queries : aplaties, les regles prevues pour le telephone
+   s'appliquaient au grand ecran -- le titre de la scene y passait a 13vw,
+   soit deux cent cinquante pixels, et debordait de l'ecran.
    ====================================================================== */
 
 .bm-cine .cinema {height:5200px}
 .bm-cine .stage {height:100vh;min-height:650px;position:sticky;top:0;overflow:hidden;background:#1c2a22;isolation:isolate}
 .bm-cine .film-wrap, .bm-cine .film, .bm-cine .veil, .bm-cine .light, .bm-cine .grain, .bm-cine .edge {position:absolute}
-/* Le filtre d'origine -- brightness + saturate -- promeut ce conteneur sur
-   une couche GPU a part, ou la video cesse d'etre peinte selon le navigateur
-   et la carte graphique. On le retire : la scene perd sa desaturation, elle
-   garde son image. La teinte reste portee par les voiles au-dessus. */
-.bm-cine .film-wrap {inset:-5%;transform:scale(var(--world-scale,1));transform-origin:center;will-change:transform}
+.bm-cine .film-wrap {inset:-5%;transform:scale(var(--world-scale,1));transform-origin:center;will-change:transform,filter;filter:brightness(var(--brightness,1)) saturate(.72)}
 .bm-cine .film {inset:0;width:100%;height:100%;object-fit:cover;will-change:transform,opacity}
 .bm-cine .film-a {transform:scale(1.06) translate3d(var(--mx,0),var(--my,0),0);opacity:var(--film-a,1)}
 .bm-cine .film-b {transform:scale(var(--film-b-scale,1.32)) translate3d(calc(var(--mx,0) * -.45),calc(var(--my,0) * -.3),0);opacity:var(--film-b,0);filter:contrast(1.04)}
@@ -951,6 +946,7 @@ main { overflow-x: clip; }
 .bm-cine .counter {position:absolute;z-index:15;right:38px;bottom:31px;display:flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.15em;opacity:var(--counter-o,.8)}
 .bm-cine .counter i {display:block;width:60px;height:1px;background:rgba(242,234,223,.45)}
 .bm-cine .expertises {position:relative;background:var(--cream);color:var(--ink);padding:125px 5vw 115px}
+.bm-cine .section-no {color:#707970}
 .bm-cine .expert-head {display:grid;grid-template-columns:1.5fr .65fr;align-items:end;gap:70px;margin:25px 0 90px}
 .bm-cine .expert-head h2 {font-size:clamp(65px,8.5vw,140px);margin:0}
 .bm-cine .expert-head p {max-width:420px;line-height:1.7;font-size:15px;margin:0 0 12px}
@@ -963,41 +959,81 @@ main { overflow-x: clip; }
 .bm-cine .expert-grid h3 {font:500 clamp(34px,3vw,52px)/1 var(--serif);margin:95px 0 18px}
 .bm-cine .expert-grid p {font-size:13px;line-height:1.5;opacity:.65}
 .bm-cine .expert-grid b {position:absolute;right:24px;top:22px;font-size:21px}
-.bm-cine .cinema {height:4500px}
-.bm-cine .stage {min-height:620px}
-.bm-cine .hero h1 span {font-size:30vw}
-.bm-cine .hero h1 em {font-size:12vw}
-.bm-cine .statement h2, .bm-cine .territory h2 {font-size:13vw}
-.bm-cine .cinema-expert {padding-left:22px}
-.bm-cine .cinema-expert h2 {font-size:12vw}
-.bm-cine .cinema-track article {width:78vw}
-.bm-cine .expertises {padding:90px 22px}
-.bm-cine .expert-head {grid-template-columns:1fr;gap:30px;margin-bottom:55px}
-.bm-cine .expert-head h2 {font-size:17vw}
-.bm-cine .expert-grid {display:block}
-.bm-cine .expert-grid a {display:block;min-height:230px;border-left:1px solid #aaa9a0}
-.bm-cine .expert-grid h3 {margin-top:65px}
-.bm-cine .counter {right:20px}
-.bm-cine .edge {width:55%}
-.bm-cine .film-wrap, .bm-cine .film, .bm-cine .hero, .bm-cine .statement, .bm-cine .territory, .bm-cine .cinema-expert, .bm-cine .cinema-track, .bm-cine .edge {transition:none!important}
+.bm-cine .manifesto {min-height:80vh;background:#d8d0c5;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 5vw}
+.bm-cine .manifesto>p {font-size:9px;letter-spacing:.27em}
+.bm-cine .manifesto h2 {font-size:clamp(50px,6vw,100px);max-width:1300px}
+.bm-cine .contact {min-height:100vh;padding:130px 5vw 38px;display:flex;flex-direction:column;justify-content:center;background:#15221b}
+.bm-cine .contact h2 {font-size:clamp(72px,11vw,175px);margin:35px 0}
+.bm-cine .contact-button {align-self:flex-start;border:1px solid #879189;border-radius:100px;padding:17px 27px;font-size:13px}
+.bm-cine .contact-button span {margin-left:22px}
+.bm-cine .contact footer {margin-top:auto;padding-top:70px;display:grid;grid-template-columns:1.2fr .7fr 1fr auto;gap:40px;border-top:1px solid #536058;font-size:11px;line-height:1.8;color:#c7cdc8}
+@media(max-width:800px) {
+    .bm-cine .cinema {height:4500px}
+    .bm-cine .stage {min-height:620px}
+    .bm-cine .hero h1 span {font-size:30vw}
+    .bm-cine .hero h1 em {font-size:12vw}
+    .bm-cine .statement h2, .bm-cine .territory h2 {font-size:13vw}
+    .bm-cine .cinema-expert {padding-left:22px}
+    .bm-cine .cinema-expert h2 {font-size:12vw}
+    .bm-cine .cinema-track article {width:78vw}
+    .bm-cine .expertises {padding:90px 22px}
+    .bm-cine .expert-head {grid-template-columns:1fr;gap:30px;margin-bottom:55px}
+    .bm-cine .expert-head h2 {font-size:17vw}
+    .bm-cine .expert-grid {display:block}
+    .bm-cine .expert-grid a {display:block;min-height:230px;border-left:1px solid #aaa9a0}
+    .bm-cine .expert-grid h3 {margin-top:65px}
+    .bm-cine .manifesto h2 {font-size:12vw}
+    .bm-cine .contact {padding:100px 22px 30px}
+    .bm-cine .contact h2 {font-size:19vw}
+    .bm-cine .contact footer {grid-template-columns:1fr 1fr}
+    .bm-cine .counter {right:20px}
+    .bm-cine .edge {width:55%}
+}
+@media(prefers-reduced-motion:reduce) {
+    .bm-cine .film-wrap, .bm-cine .film, .bm-cine .hero, .bm-cine .statement, .bm-cine .territory, .bm-cine .cinema-expert, .bm-cine .cinema-track, .bm-cine .edge {transition:none!important}
+}
 .bm-cine .hero-logo {margin:30px 0 26px;padding:22px 34px;background:rgba(244,244,244,.92);backdrop-filter:blur(8px);border-radius:3px;box-shadow:0 22px 70px rgba(0,0,0,.18)}
 .bm-cine .hero-logo img {display:block;width:clamp(210px,25vw,390px);height:auto}
 .bm-cine .hero .signature {margin-top:0}
-.bm-cine .hero-logo {padding:16px 22px}
-.bm-cine .hero-logo img {width:min(62vw,300px)}
+@media(max-width:800px) {
+    .bm-cine .hero-logo {padding:16px 22px}
+    .bm-cine .hero-logo img {width:min(62vw,300px)}
+}
 .bm-cine /* V3.1 — hero title: logo reserved for navigation */ .hero-wordmark {margin:32px 0 28px;text-align:center;color:var(--cream);text-shadow:0 18px 50px rgba(0,0,0,.24)}
 .bm-cine .hero-wordmark span {display:block;font:500 clamp(76px,12vw,190px)/.72 var(--serif);letter-spacing:-.065em}
 .bm-cine .hero-wordmark span+span {margin-top:.08em}
 .bm-cine .hero-wordmark em {display:block;margin-top:24px;font:500 normal clamp(13px,1.15vw,18px)/1 var(--sans);letter-spacing:.48em;padding-left:.48em}
-.bm-cine .hero-wordmark {margin:26px 0 22px}
-.bm-cine .hero-wordmark span {font-size:19vw}
-.bm-cine .hero-wordmark em {margin-top:18px;font-size:11px;letter-spacing:.36em;padding-left:.36em}
+@media(max-width:800px) {
+    .bm-cine .hero-wordmark {margin:26px 0 22px}
+    .bm-cine .hero-wordmark span {font-size:19vw}
+    .bm-cine .hero-wordmark em {margin-top:18px;font-size:11px;letter-spacing:.36em;padding-left:.36em}
+}
 .bm-cine /* V3.2 — hero volontairement discret */ .hero .eyebrow {margin:0 0 18px;opacity:.82}
 .bm-cine .hero-signature {font:500 clamp(18px,1.65vw,26px)/1.2 var(--serif);letter-spacing:-.01em;text-shadow:0 10px 34px rgba(0,0,0,.28)}
 .bm-cine /* V4 — editorial office sequence and premium micro-interactions */ .nav a, .bm-cine .territory a, .bm-cine .contact-button, .bm-cine .office-copy a {transition:opacity .3s ease,transform .3s ease,border-color .3s ease}
+.bm-cine .rdv:hover, .bm-cine .contact-button:hover {transform:translateY(-2px);border-color:currentColor}
 .bm-cine .cinema-track article {transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s ease}
 .bm-cine .cinema-track article:hover {transform:translateY(-8px);box-shadow:0 38px 90px rgba(0,0,0,.2)}
+.bm-cine .office-story {min-height:92vh;background:#eee7dd;color:var(--ink);display:grid;grid-template-columns:1fr 1.35fr .55fr;align-items:center;gap:7vw;padding:120px 5vw;border-top:1px solid rgba(20,32,25,.14)}
+.bm-cine .office-mark {align-self:center}
+.bm-cine .office-mark img {display:block;width:min(300px,23vw);height:auto;opacity:.82}
+.bm-cine .office-copy h2 {font:500 clamp(52px,6.2vw,100px)/.9 var(--serif);letter-spacing:-.05em;margin:28px 0}
 .bm-cine .office-copy>p:not(.kicker) {max-width:610px;font-size:15px;line-height:1.8;color:#4f5852}
+.bm-cine .office-copy a {display:inline-block;margin-top:28px;padding-bottom:7px;border-bottom:1px solid rgba(20,32,25,.5);font-size:12px;letter-spacing:.04em}
+.bm-cine .office-copy a span {margin-left:12px}
+.bm-cine .office-aside {align-self:end;padding-bottom:15px;border-top:1px solid rgba(20,32,25,.3);padding-top:16px}
+.bm-cine .office-aside span {font-size:9px;letter-spacing:.24em}
+.bm-cine .office-aside p {font:500 22px/1.15 var(--serif);margin:18px 0 0}
+.bm-cine .values {display:flex;gap:34px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+.bm-cine .values span {font:500 italic clamp(18px,1.8vw,28px)/1 var(--serif);opacity:.72}
+@media(max-width:800px) {
+    .bm-cine .office-story {grid-template-columns:1fr;padding:90px 22px;gap:45px}
+    .bm-cine .office-mark img {width:150px}
+    .bm-cine .office-copy h2 {font-size:13vw}
+    .bm-cine .office-aside {align-self:auto}
+    .bm-cine .values {gap:18px}
+    .bm-cine .values span {font-size:19px}
+}
 .bm-cine /* V5 — immersive expertise gallery */ .expertises {min-height:100vh;overflow:hidden;isolation:isolate;background:#15221b;color:var(--cream)}
 .bm-cine .expert-visuals {position:absolute;inset:0;z-index:-2;overflow:hidden}
 .bm-cine .expert-visual {position:absolute;inset:-3%;background-size:cover;background-position:center;opacity:0;transform:scale(1.08);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform 1.4s cubic-bezier(.22,1,.36,1);filter:saturate(.7) contrast(1.03)}
@@ -1013,16 +1049,130 @@ main { overflow-x: clip; }
 .bm-cine .expert-grid a:hover p, .bm-cine .expert-grid a:focus-visible p {opacity:.72}
 .bm-cine .expert-grid a::after {content:"";position:absolute;left:24px;bottom:22px;width:0;height:1px;background:currentColor;transition:width .55s cubic-bezier(.22,1,.36,1)}
 .bm-cine .expert-grid a:hover::after, .bm-cine .expert-grid a:focus-visible::after {width:58px}
-.bm-cine .expertises {min-height:auto}
-.bm-cine .expert-visual {inset:0}
-.bm-cine .expert-grid a:hover, .bm-cine .expert-grid a:focus-visible {transform:none}
+@media(max-width:800px) {
+    .bm-cine .expertises {min-height:auto}
+    .bm-cine .expert-visual {inset:0}
+    .bm-cine .expert-grid a:hover, .bm-cine .expert-grid a:focus-visible {transform:none}
+}
+.bm-cine /* La fin de page devient une vraie zone d'orientation, .bm-cine lisible en un coup d'œil */ .contact {min-height:auto;
+  padding:120px 5vw 38px;
+  display:block;
+  background:#15221b;}
+.bm-cine .contact-intro {max-width:1440px;
+  margin:0 auto;
+  padding-bottom:66px;
+  border-bottom:1px solid rgba(242,234,223,.22);}
 .bm-cine .contact-intro .kicker {margin:0 0 30px;
   color:#a9b1aa;}
+.bm-cine .contact-intro-grid {display:grid;
+  grid-template-columns:1.3fr .55fr;
+  align-items:end;
+  gap:8vw;}
+.bm-cine .contact .contact-intro h2 {font:500 clamp(54px,7.4vw,112px)/.9 var(--serif);
+  letter-spacing:-.048em;
+  margin:0;}
+.bm-cine .contact .contact-intro h2 em {font-weight:500}
+.bm-cine .contact-intro-grid>p {max-width:470px;
+  margin:0 0 10px;
+  font-size:14px;
+  line-height:1.75;
+  color:#b9c0ba;}
+.bm-cine .contact-actions {max-width:1440px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border-left:1px solid rgba(242,234,223,.24);}
+.bm-cine .contact-card {position:relative;
+  min-height:410px;
+  padding:30px 30px 28px;
+  border-right:1px solid rgba(242,234,223,.24);
+  border-bottom:1px solid rgba(242,234,223,.24);
+  color:var(--cream);
+  transition:background .35s ease,color .35s ease,transform .35s cubic-bezier(.22,1,.36,1);}
+.bm-cine .contact-card:hover {background:rgba(242,234,223,.055);}
 .bm-cine .contact-card--light {background:var(--cream);
   color:var(--ink);}
 .bm-cine .contact-card--light:hover {background:#e8e0d4;}
+.bm-cine .contact-card--client {background:#263a30;}
+.bm-cine .contact-card--client:hover {background:#30483b;}
+.bm-cine .contact-card-no {position:absolute;
+  right:28px;
+  top:27px;
+  font:500 15px/1 var(--serif);
+  opacity:.42;}
+.bm-cine .contact-card small {display:block;
+  padding-right:42px;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.22em;
+  opacity:.62;}
+.bm-cine .contact-card h3 {font:500 clamp(36px,3.6vw,58px)/.96 var(--serif);
+  letter-spacing:-.04em;
+  margin:85px 0 22px;}
+.bm-cine .contact-card p {max-width:350px;
+  min-height:74px;
+  margin:0;
+  font-size:13px;
+  line-height:1.65;
+  opacity:.70;}
+.bm-cine .contact-card strong {position:absolute;
+  left:30px;
+  right:30px;
+  bottom:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-top:20px;
+  border-top:1px solid currentColor;
+  font-size:12px;
+  font-weight:600;}
+.bm-cine .contact-card strong b {font-size:18px;
+  font-weight:500;}
+.bm-cine .contact footer {max-width:1440px;
+  margin:86px auto 0;
+  padding-top:34px;}
+@media(max-width:800px) {
+    .bm-cine .contact {padding:88px 22px 30px}
+    .bm-cine .contact-intro {padding-bottom:40px}
+    .bm-cine .contact-intro-grid {grid-template-columns:1fr;
+    gap:26px;}
+    .bm-cine .contact .contact-intro h2 {font-size:13.5vw;}
+    .bm-cine .contact-intro-grid>p {font-size:13px;}
+    .bm-cine .contact-actions {grid-template-columns:1fr;
+    border-left:1px solid rgba(242,234,223,.24);}
+    .bm-cine .contact-card {min-height:315px;
+    padding:25px 24px 24px;}
+    .bm-cine .contact-card h3 {margin:55px 0 18px;
+    font-size:12vw;}
+    .bm-cine .contact-card p {min-height:auto;
+    padding-bottom:62px;}
+    .bm-cine .contact-card strong {left:24px;
+    right:24px;
+    bottom:23px;}
+    .bm-cine .contact footer {margin-top:60px;
+    grid-template-columns:1fr 1fr;}
+}
+.bm-cine /* V11.12 — Accueil : deux démarches principales */ .contact-actions--two {grid-template-columns:repeat(2,1fr);}
+.bm-cine .contact-card--client-wide p {max-width:500px;}
+.bm-cine .contact-card-subchoices {display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:22px 0 64px;}
+.bm-cine .contact-card-subchoices span {display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:0 12px;
+  border:1px solid rgba(242,234,223,.26);
+  border-radius:99px;
+  font-size:9px;
+  letter-spacing:.08em;
+  color:#d8ded9;}
 .bm-cine .contact-card--light .contact-card-subchoices span {color:var(--ink);
   border-color:rgba(20,32,25,.22);}
+@media(max-width:800px) {
+    .bm-cine .contact-actions--two {grid-template-columns:1fr}
+    .bm-cine .contact-card-subchoices {margin-bottom:58px}
+}
 
 /* ======================================================================
    16. EN-TETE
