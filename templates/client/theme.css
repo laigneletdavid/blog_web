@@ -1406,14 +1406,16 @@ main { overflow-x: clip; }
     color: var(--bm-encre);
 }
 
-/* Les titres de la galerie d'expertises heritent de leur section : le CMS
-   leur imposait son bleu-noir sur le visuel sombre, alors que les numeros
-   et les chapos etaient bien en creme.
+/* Les titres de la galerie d'expertises et du portrait de l'etude heritent
+   de leur section : le CMS leur imposait son bleu-noir, alors que tout ce
+   qui les entoure -- numeros, chapos, mentions -- portait bien la couleur
+   de la charte.
 
-   On herite au lieu de fixer le creme : au survol, la carte prend un fond
-   creme et passe a l'encre. Un titre creme en dur y disparaitrait. */
+   On herite au lieu de fixer la couleur : dans la galerie, la carte prend
+   un fond creme au survol et passe a l'encre. Un titre fige y disparaitrait. */
 .bm-cine .expertises h2,
-.bm-cine .expertises h3 {
+.bm-cine .expertises h3,
+.bm-cine .office-story h2 {
     color: inherit;
 }
 
