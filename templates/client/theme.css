@@ -683,3 +683,193 @@ main { overflow-x: clip; }
 @media (max-width: 720px) {
     .bm-sim .grid { grid-template-columns: 1fr; }
 }
+
+/* ======================================================================
+   13. PAGE DE POLE
+   Le hero porte la photo du pole en fond, les besoins se lisent comme un
+   sommaire numerote, les axes d'accompagnement en cartes.
+   ====================================================================== */
+
+.bm-xp-hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: min(68vh, 620px);
+    padding: clamp(2.5rem, 6vw, 5rem) var(--bm-gouttiere);
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+}
+
+.bm-xp-hero__fond {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(1);
+}
+
+.bm-xp-hero__voile {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(20, 32, 25, .9) 0%, rgba(20, 32, 25, .55) 60%, rgba(20, 32, 25, .3) 100%);
+}
+
+.bm-xp-hero__texte { position: relative; }
+
+.bm-xp-hero__titre {
+    font-family: var(--bm-serif);
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    line-height: 1.04;
+    margin: 0 0 1.25rem;
+    max-width: 14ch;
+}
+
+.bm-xp-hero__intro {
+    font-size: 1.1rem;
+    color: rgba(242, 234, 223, .82);
+    max-width: 52ch;
+    margin: 0;
+}
+
+.bm-xp-hero__defiler {
+    position: relative;
+    margin-top: 2.5rem;
+    font-size: .68rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(242, 234, 223, .75);
+    text-decoration: none;
+}
+
+.bm-fil--clair,
+.bm-fil--clair a { color: rgba(242, 234, 223, .7); }
+.bm-fil--clair a:hover { color: var(--bm-creme); }
+
+/* --- Sommaire des besoins --- */
+.bm-besoins {
+    margin-top: 3rem;
+    border-top: 1px solid var(--bm-filet-clair);
+}
+
+.bm-besoin {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr) 2rem;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--bm-filet-clair);
+    text-decoration: none;
+    transition: padding-left .3s ease, background .3s ease;
+}
+
+.bm-besoin:hover {
+    padding-left: 1rem;
+    background: rgba(242, 234, 223, .05);
+}
+
+.bm-besoin__num {
+    font-size: .72rem;
+    letter-spacing: .14em;
+    color: rgba(242, 234, 223, .55);
+}
+
+.bm-besoin__titre {
+    font-family: var(--bm-serif);
+    font-size: 1.45rem;
+    margin: 0 0 .3rem;
+}
+
+.bm-besoin__chapo {
+    font-size: .92rem;
+    color: rgba(242, 234, 223, .72);
+    margin: 0;
+}
+
+.bm-besoin__fleche {
+    justify-self: end;
+    color: rgba(242, 234, 223, .6);
+}
+
+/* --- Axes d'accompagnement : la liste du contenu devient une grille --- */
+.bm-corps--axes { max-width: none; padding-left: 0; padding-right: 0; }
+
+.bm-corps--axes h3 {
+    font-size: .7rem;
+    font-family: var(--bm-sans);
+    font-weight: 500;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--bm-sourdine);
+    margin: 3rem 0 1.5rem;
+}
+
+.bm-corps--axes ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--bm-filet);
+    border: 1px solid var(--bm-filet);
+    list-style: none;
+    padding: 0;
+}
+
+.bm-corps--axes ul > li {
+    background: var(--bm-creme);
+    padding: 1.75rem;
+}
+
+.bm-corps--axes ul > li::before { content: none; }
+
+/* « Intitule — propos » : l'intitule prend la voix serif. */
+.bm-corps--axes ul > li > p::first-line {
+    font-family: var(--bm-serif);
+    font-size: 1.2rem;
+}
+
+.bm-corps--nu { max-width: 60ch; padding: 0; }
+
+@media (max-width: 720px) {
+    .bm-besoin { grid-template-columns: 2.5rem minmax(0, 1fr); }
+    .bm-besoin__fleche { display: none; }
+}
+
+/* ======================================================================
+   14. PAGE DE PRESTATION
+   Le contenu TipTap deroule le propos, le parcours, les pieces puis les
+   questions. Chaque niveau de titre porte un role, d'ou la mise en page.
+   ====================================================================== */
+
+.bm-corps--prestation { max-width: 70ch; }
+
+/* Intitule de section : « Votre dossier, etape par etape ». */
+.bm-corps--prestation h3 {
+    font-family: var(--bm-serif);
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    margin: 3.5rem 0 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--bm-filet);
+}
+
+.bm-corps--prestation h3:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+}
+
+/* Question frequente : posee en serif, suivie de sa reponse. */
+.bm-corps--prestation h4 {
+    font-family: var(--bm-serif);
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin: 2rem 0 .5rem;
+}
+
+.bm-corps--prestation h4 + p {
+    color: var(--bm-sourdine);
+    margin: 0;
+}

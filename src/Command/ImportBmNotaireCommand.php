@@ -223,10 +223,27 @@ class ImportBmNotaireCommand extends Command
         return null;
     }
 
-    /** Le chapo est le paragraphe du hero, sous le titre. */
+    /**
+     * Chapeau du hero.
+     *
+     * Sur une page de pole, le premier paragraphe est l'intitule de rubrique
+     * (« BM NOTAIRE · EXPERTISE ») : c'est celui porteur de la classe xp-intro
+     * qu'il faut retenir. Sur une prestation, le premier paragraphe est le bon.
+     */
     private function extraireChapo(string $html): ?string
     {
-        $hero = $this->section($html, 'd-hero') ?: $this->section($html, 'xp-hero');
+        $hero = $this->section($html, 'xp-hero');
+        if ($hero !== '') {
+            if (preg_match('/<p class="xp-intro"[^>]*>(.*?)<\/p>/s', $hero, $m)) {
+                $t = $this->texte($m[1]);
+
+                return $t !== '' ? $t : null;
+            }
+
+            return null;
+        }
+
+        $hero = $this->section($html, 'd-hero');
         if ($hero !== '' && preg_match('/<p[^>]*>(.*?)<\/p>/s', $hero, $m)) {
             $t = $this->texte($m[1]);
 
@@ -271,16 +288,64 @@ class ImportBmNotaireCommand extends Command
         ];
     }
 
-    /** Corps d'une page de pole : son texte de presentation. */
+    /**
+     * Corps d'une page de pole.
+     *
+     * Deux temps : la vision d'ensemble, puis les axes d'accompagnement. Ces
+     * axes changent d'un pole a l'autre -- « Vente, Acquisition, Foncier »
+     * pour l'immobilier, « Anticiper, Transmettre, Regler » pour la famille --
+     * ils relevent donc du contenu et non du gabarit.
+     */
     private function blocsPole(string $html): array
     {
         $contenu = [];
-        $apercu = $this->section($html, 'xp-overview');
-        foreach ($this->paragraphes($apercu) as $p) {
+
+        foreach ($this->paragraphes($this->section($html, 'xp-overview')) as $p) {
             $contenu[] = $this->paragraphe($p);
         }
 
+        $detail = $this->section($html, 'xp-detail');
+
+        // Le chapeau de la section seulement : les paragraphes des cartes
+        // reviendraient sinon une seconde fois, en bas, dans les axes.
+        $chapeau = preg_replace('#<article class="xp-card">.*?</article>#s', '', $detail) ?? '';
+        foreach ($this->paragraphes($chapeau) as $p) {
+            $contenu[] = $this->paragraphe($p);
+        }
+
+        $axes = $this->axes($detail);
+        if ($axes !== []) {
+            $contenu[] = $this->titre('Notre accompagnement');
+            $contenu[] = $this->liste($axes, false);
+        }
+
         return $contenu !== [] ? ['type' => 'doc', 'content' => $contenu] : [];
+    }
+
+    /**
+     * Axes d'accompagnement d'un pole, sous la forme « Intitule — propos ».
+     *
+     * @return string[]
+     */
+    private function axes(string $section): array
+    {
+        preg_match_all(
+            '/<article class="xp-card">.*?<h3>(.*?)<\/h3>\s*<p>(.*?)<\/p>/s',
+            $section,
+            $m,
+            PREG_SET_ORDER,
+        );
+
+        $out = [];
+        foreach ($m as $carte) {
+            $titre = $this->texte($carte[1]);
+            $propos = $this->texte($carte[2]);
+            if ($titre !== '') {
+                $out[] = $propos !== '' ? $titre . ' — ' . $propos : $titre;
+            }
+        }
+
+        return $out;
     }
 
     /**
@@ -313,7 +378,47 @@ class ImportBmNotaireCommand extends Command
             );
         }
 
+        $questions = $this->questions($html);
+        if ($questions !== []) {
+            $contenu[] = $this->titre('Avant le rendez-vous');
+            foreach ($questions as [$q, $r]) {
+                $contenu[] = $this->titre($q, 4);
+                $contenu[] = $this->paragraphe($r);
+            }
+        }
+
         return $contenu !== [] ? ['type' => 'doc', 'content' => $contenu] : [];
+    }
+
+    /**
+     * Questions frequentes d'une prestation.
+     *
+     * Elles sont communes aux pages d'une meme famille -- cinq jeux de trois
+     * pour trente-trois pages. On les recopie sur chacune, comme le fait le
+     * site d'origine : l'etude peut ainsi en ajuster une sans toucher aux
+     * autres.
+     *
+     * @return array<int, array{0: string, 1: string}>
+     */
+    private function questions(string $html): array
+    {
+        $faq = $this->section($html, 'd-faq');
+        if ($faq === '') {
+            return [];
+        }
+
+        preg_match_all('#<h3[^>]*>(.*?)</h3>\s*<p[^>]*>(.*?)</p>#s', $faq, $m, PREG_SET_ORDER);
+
+        $out = [];
+        foreach ($m as $couple) {
+            $q = $this->texte($couple[1]);
+            $r = $this->texte($couple[2]);
+            if ($q !== '' && $r !== '') {
+                $out[] = [$q, $r];
+            }
+        }
+
+        return $out;
     }
 
     private function paragraphes(string $section): array
