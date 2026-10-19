@@ -17,16 +17,13 @@
 <section class="cinema" id="accueil">
     <div class="stage">
         <div class="film-wrap">
-            {# Deux lectures de la meme video : l'une se fond dans l'autre au
-               passage du tunnel, ce qui evite une coupure a l'image. #}
+            {# Une seule lecture. Le lot en superposait deux pour un fondu au
+               passage du tunnel, mais elles lisent le meme fichier au meme
+               instant : le fondu ne se voit pas, et la couche filtree de la
+               seconde empeche la premiere d'etre peinte selon le navigateur. #}
             {# Le poster tient l'image des le premier rendu : sans lui, la scene
                reste sur le fond du stage tant que la video n'est pas decodee. #}
             <video class="film film-a" autoplay muted loop playsinline preload="auto"
-                   poster="{{ asset('documents/medias/hero-bm-paysage-poster.jpg') }}"
-                   aria-hidden="true" tabindex="-1">
-                <source src="{{ asset('documents/medias/hero-bm-paysage.mp4') }}" type="video/mp4">
-            </video>
-            <video class="film film-b" autoplay muted loop playsinline preload="auto"
                    poster="{{ asset('documents/medias/hero-bm-paysage-poster.jpg') }}"
                    aria-hidden="true" tabindex="-1">
                 <source src="{{ asset('documents/medias/hero-bm-paysage.mp4') }}" type="video/mp4">
