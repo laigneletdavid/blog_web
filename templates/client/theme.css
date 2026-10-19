@@ -472,8 +472,64 @@ a { color: inherit; }
 
 /* ======================================================================
    10. PIED DE PAGE
+   Repris de celui de l'accueil du lot, qui vit dans sa derniere section.
+   Ici il est autonome : le CMS n'a qu'un pied de page pour tout le site,
+   la ou le lot en ecrit un par famille de pages.
    ====================================================================== */
 
+.bm-pied {
+    background: #0D1611;
+    color: #C7CDC8;
+    padding: 55px var(--bm-gouttiere) 48px;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.bm-pied__grille {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr .7fr 1fr auto;
+    gap: 40px;
+}
+
+.bm-pied strong {
+    color: var(--bm-creme);
+    font-weight: 600;
+    letter-spacing: .04em;
+}
+
+.bm-pied a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .3s ease;
+}
+
+.bm-pied a:hover { color: var(--bm-creme); }
+
+/* Le logo est fourni en encre : sur ce fond sombre il s'eclaircit par
+   inversion, comme dans l'en-tete. */
+.bm-pied__marque img {
+    display: block;
+    width: 59px;
+    height: auto;
+    margin-bottom: 14px;
+    filter: invert(1);
+    opacity: .9;
+}
+
+.bm-pied__fin { text-align: right; }
+
+@media (max-width: 860px) {
+    .bm-pied__grille { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .bm-pied__fin { text-align: left; }
+}
+
+@media (max-width: 520px) {
+    .bm-pied__grille { grid-template-columns: 1fr; }
+}
+
+/* Le pied du theme reste habille : il sert encore l'administration. */
 .theme-corporate .footer,
 .theme-corporate footer.footer {
     background: var(--bm-encre);

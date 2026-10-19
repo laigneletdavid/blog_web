@@ -1,0 +1,59 @@
+{# ======================================================================
+   PIED DE PAGE — BM NOTAIRE
+   Surcouche client, prioritaire sur celle du theme (voir base.html.twig).
+
+   Le lot en donne quatre, un par famille de pages. On n'en garde qu'un,
+   repris de celui de l'accueil, le plus complet.
+
+   Les coordonnees et les liens viennent du site et des menus, jamais du
+   lot : l'etude doit pouvoir les corriger depuis son administration sans
+   qu'on retouche un gabarit.
+
+   La maquette aligne en plus les quatre expertises. Elle les ecrit en dur,
+   sans lien ; ici rien ne les fournit au pied de page, et les figer dans ce
+   fichier aurait casse la ligne au premier pole renomme. Colonne laissee de
+   cote tant qu'elle n'a pas de source.
+   ====================================================================== #}
+
+<footer class="bm-pied">
+    <div class="bm-pied__grille">
+
+        {# Le nom enregistre est la raison sociale complete, trop longue pour
+           une colonne de pied. Le lot y met son logo : on fait de meme, ce
+           qui evite d'inscrire du texte client dans un gabarit. #}
+        <div class="bm-pied__marque">
+            {% if site is not null and site.logo is not null %}
+                <a href="{{ path('app_home') }}" aria-label="{{ site.name|default('Accueil') }}">
+                    {{ logo_img(site.logo, 34, site.name|default('')) }}
+                </a>
+            {% else %}
+                <strong>{{ site.title|default('')|upper }}</strong>
+            {% endif %}
+            {% if site.address1 %}<br>{{ site.address1 }}{% endif %}
+            {% if site.town %}<br>{{ site.postCode|default('') }} {{ site.town }}{% endif %}
+        </div>
+
+        {% if footer_nav_menus|length %}
+            <nav aria-label="Navigation de pied de page">
+                {% for menu in footer_nav_menus %}
+                    <a href="{{ menu|menuLink }}">{{ menu.name }}</a>{% if not loop.last %}<br>{% endif %}
+                {% endfor %}
+            </nav>
+        {% endif %}
+
+        {% if footer_legal_menus|length %}
+            <nav aria-label="Informations légales">
+                {% for menu in footer_legal_menus %}
+                    <a href="{{ menu|menuLink }}">{{ menu.name }}</a>{% if not loop.last %}<br>{% endif %}
+                {% endfor %}
+            </nav>
+        {% endif %}
+
+        <div class="bm-pied__fin">
+            {% if site.phone %}<a href="tel:{{ site.phone }}">{{ site.phone|phone }}</a><br>{% endif %}
+            {% if site.email %}<a href="mailto:{{ site.email }}">{{ site.email }}</a><br>{% endif %}
+            <span>© {{ 'now'|date('Y') }} {{ site.name|default('BM NOTAIRE') }}</span>
+        </div>
+
+    </div>
+</footer>
