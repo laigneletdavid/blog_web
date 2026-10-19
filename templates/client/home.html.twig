@@ -36,31 +36,31 @@
         <div class="edge edge-r"></div>
 
         <section class="hero">
-            <p class="eyebrow">Étude notariale · {{ site.town|default('Saint-Martory')|upper }}</p>
+            <p class="eyebrow">ÉTUDE NOTARIALE · {{ site.town|default('Saint-Martory')|upper }}</p>
             <p class="signature hero-signature">Le droit au service de vos projets.</p>
             <div class="scroll"><span>Faire défiler</span><b>↓</b></div>
         </section>
 
         <section class="statement" id="etude">
-            <p class="kicker">Notre engagement</p>
+            <p class="kicker">NOTRE ENGAGEMENT</p>
             <h2>Vous accompagner<br>dans les moments<br><em>qui comptent.</em></h2>
             <p class="lede">Rendre le droit clair, sécuriser les décisions et construire avec vous des solutions durables.</p>
         </section>
 
         <section class="territory">
-            <p class="kicker">BM Notaire</p>
+            <p class="kicker">BM NOTAIRE</p>
             <h2>Une étude ancrée<br><em>dans son territoire.</em></h2>
             <p class="lede">
                 À {{ site.town|default('Saint-Martory') }}, nous accompagnons particuliers, familles,
                 entrepreneurs et professionnels à chaque étape de leurs projets.
             </p>
-            <a href="#expertises">Découvrir l'étude <span>↗</span></a>
+            <a href="#expertises">Découvrir l’étude <span>↗</span></a>
         </section>
 
         {% if services|default([])|length > 0 %}
         <section class="cinema-expert" aria-label="Nos expertises">
             <div class="cinema-expert-head">
-                <p class="kicker">Nos expertises</p>
+                <p class="kicker">NOS EXPERTISES</p>
                 <h2>Conseiller.<br><em>Anticiper.</em> Transmettre.</h2>
             </div>
             <div class="cinema-track">
@@ -96,12 +96,12 @@
         <div class="expert-visual-shade"></div>
     </div>
     <div class="expert-content">
-        <div class="section-no">01 / Expertises</div>
+        <div class="section-no">01 / EXPERTISES</div>
         <div class="expert-head">
             <h2>Le notariat,<br><em>autrement.</em></h2>
             <p>
                 Une approche exigeante, accessible et profondément humaine. Chaque dossier
-                mérite du temps, de la précision et une vision d'ensemble.
+                mérite du temps, de la précision et une vision d’ensemble.
             </p>
         </div>
         <div class="expert-grid">
@@ -130,14 +130,14 @@
         {% endif %}
     </div>
     <div class="office-copy">
-        <p class="kicker">L'Étude</p>
+        <p class="kicker">L’ÉTUDE</p>
         <h2>Une relation fondée<br>sur la <em>proximité.</em></h2>
         <p>
             Écouter avant de conseiller. Expliquer avant de décider. Anticiper pour
             sécuriser. L'étude privilégie une relation directe, lisible et durable à
             chaque étape de votre projet.
         </p>
-        <a href="{{ path('app_contact') }}">Découvrir l'étude <span>↗</span></a>
+        <a href="{{ path('app_contact') }}">Découvrir l’étude <span>↗</span></a>
     </div>
     <div class="office-aside">
         <span>{{ site.town|default('Saint-Martory')|upper }}</span>
@@ -147,8 +147,8 @@
 
 {# ====== 4. MANIFESTE ====== #}
 <section class="manifesto">
-    <p>Un office · Un territoire · Une exigence</p>
-    <h2>Parce qu'un acte ne se résume jamais<br>à une <em>signature.</em></h2>
+    <p>UN OFFICE · UN TERRITOIRE · UNE EXIGENCE</p>
+    <h2>Parce qu’un acte ne se résume jamais<br>à une <em>signature.</em></h2>
     <div class="values">
         <span>Écouter.</span><span>Conseiller.</span><span>Anticiper.</span><span>Transmettre.</span>
     </div>
@@ -158,9 +158,9 @@
 {% if articles|default([])|length > 0 %}
 <section class="bm-section">
     <div class="bm-duo">
-        <div><span class="bm-kicker">Actualités</span></div>
+        <div><span class="bm-kicker">ACTUALITÉS</span></div>
         <div>
-            <h2 class="bm-titre">Les publications de <em>l'Étude.</em></h2>
+            <h2 class="bm-titre">Les publications de <em>l’Étude.</em></h2>
             <a href="{{ path('app_article_show_all') }}" class="bm-lien">Toutes les actualités <span aria-hidden="true">↗</span></a>
         </div>
     </div>
@@ -171,26 +171,26 @@
 {# ====== 6. VOS DEMARCHES ====== #}
 <section class="contact" id="contact">
     <div class="contact-intro">
-        <p class="kicker">Vos démarches</p>
+        <p class="kicker">VOS DÉMARCHES</p>
         <div class="contact-intro-grid">
             <h2>Comment souhaitez-vous<br><em>avancer ?</em></h2>
             <p>
-                Deux parcours simples : prendre rendez-vous avec l'étude, ou consulter
-                nos simulateurs pour estimer votre projet avant d'en parler.
+                Deux parcours simples : prendre rendez-vous avec l’étude, ou consulter
+                nos simulateurs pour estimer votre projet avant d’en parler.
             </p>
         </div>
     </div>
     <div class="contact-actions contact-actions--two">
         <a class="contact-card contact-card--light" href="{{ path('app_contact') }}">
             <span class="contact-card-no">01</span>
-            <small>Rendez-vous</small>
-            <h3>Rencontrer<br>l'étude.</h3>
+            <small>RENDEZ-VOUS</small>
+            <h3>Rencontrer<br>l’étude.</h3>
             <p>Échangeons sur votre projet, et sur les documents utiles à réunir.</p>
             <strong>Prendre rendez-vous <b>↗</b></strong>
         </a>
         <a class="contact-card contact-card--client contact-card--client-wide" href="{{ path('app_simulateurs') }}">
             <span class="contact-card-no">02</span>
-            <small>Simulateurs</small>
+            <small>SIMULATEURS</small>
             <h3>Estimer<br>votre projet.</h3>
             <p>Frais d'acquisition, donation, succession, plus-value, viager : un ordre de grandeur avant le rendez-vous.</p>
             <strong>Accéder aux simulateurs <b>↗</b></strong>
