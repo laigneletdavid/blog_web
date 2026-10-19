@@ -788,9 +788,14 @@ main { overflow-x: clip; }
     object-fit: cover;
 }
 
-/* Les plages d'un meme jour se suivent dans la ligne du lot, qui en prevoit
-   deux. Une seule plage laisse donc une colonne vide, sans rien casser. */
+/* La ligne du lot prevoit deux plages. Un jour ferme n'en a qu'une, qui
+   traverse alors les deux colonnes restantes. */
 .bm-ct .hours-list div { align-items: baseline; }
+
+.bm-ct .hours-list .ferme {
+    grid-column: 2 / -1;
+    opacity: .55;
+}
 
 
 /* ======================================================================

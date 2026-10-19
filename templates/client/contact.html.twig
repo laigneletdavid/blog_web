@@ -104,27 +104,37 @@
                 <h2>Nous vous<br><em>accueillons.</em></h2>
             </div>
 
-            {# Format enregistre : une ligne par plage, « Lu-Ve 09:00-12:00 ».
-               La maquette veut une ligne par jour avec ses plages cote a cote :
-               on regroupe donc les plages qui portent le meme intitule de jour.
-               Les intitules restent ceux du site, qui alimentent aussi les
-               donnees structurees. #}
-            {% set _jours = {} %}
+            {# Le champ est enregistre au format de schema.org, qu'il alimente
+               aussi : une ligne par jour et par plage, « Mo 09:00-12:00 ».
+
+               La semaine se lit en entier, comme dans la maquette. Un jour
+               sans plage enregistree est ferme : rien n'est invente, c'est
+               l'absence qui le dit. #}
+            {% set _noms = {
+                'Mo': 'Lundi', 'Tu': 'Mardi', 'We': 'Mercredi', 'Th': 'Jeudi',
+                'Fr': 'Vendredi', 'Sa': 'Samedi', 'Su': 'Dimanche'
+            } %}
+
+            {% set _plages = {} %}
             {% for ligne in _horaires %}
                 {% set _coupe = ligne|split(' ', 2) %}
-                {% set _jour = _coupe[0]|default(ligne) %}
-                {% set _jours = _jours|merge({
-                    (_jour): (_jours[_jour]|default([]))|merge([_coupe[1]|default('')])
+                {% set _code = _coupe[0]|default('') %}
+                {% set _plages = _plages|merge({
+                    (_code): (_plages[_code]|default([]))|merge([_coupe[1]|default('')])
                 }) %}
             {% endfor %}
 
             <div class="hours-list">
-                {% for jour, plages in _jours %}
+                {% for code, nom in _noms %}
                     <div>
-                        <span>{{ jour }}</span>
-                        {% for plage in plages %}
-                            <b>{{ plage|replace({'-': ' — '}) }}</b>
-                        {% endfor %}
+                        <span>{{ nom }}</span>
+                        {% if _plages[code]|default([])|length %}
+                            {% for plage in _plages[code] %}
+                                <b>{{ plage|replace({'-': ' — '}) }}</b>
+                            {% endfor %}
+                        {% else %}
+                            <b class="ferme">Fermé</b>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
