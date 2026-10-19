@@ -1019,3 +1019,145 @@ main { overflow-x: clip; }
 .bm-cine .contact-card--light:hover {background:#e8e0d4;}
 .bm-cine .contact-card--light .contact-card-subchoices span {color:var(--ink);
   border-color:rgba(20,32,25,.22);}
+
+/* ======================================================================
+   16. EN-TETE
+   Pose en transparence sur le visuel, repris du lot livre. Le logo, sombre
+   a l'origine, est eclairci par inversion : c'est ainsi que la maquette le
+   fait tenir sur une video.
+   ====================================================================== */
+
+.bm-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 80;
+    font-size: 12px;
+    letter-spacing: .08em;
+    transition: background .35s ease, color .35s ease;
+}
+
+.bm-nav__barre {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 29px 40px;
+}
+
+.bm-nav__marque img {
+    display: block;
+    width: 164px;
+    height: auto;
+    transition: opacity .3s ease;
+}
+
+.bm-nav__marque:hover img { opacity: .7; }
+
+.bm-nav__liens {
+    display: flex;
+    justify-content: center;
+    gap: 38px;
+    white-space: nowrap;
+}
+
+.bm-nav__liens a {
+    text-decoration: none;
+    opacity: .86;
+    transition: opacity .3s ease;
+}
+
+.bm-nav__liens a:hover { opacity: .55; }
+
+.bm-nav__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: .6rem;
+}
+
+/* Bouton en gelule, comme sur la maquette. */
+.bm-nav__bouton {
+    display: inline-flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 13px 19px;
+    border: 1px solid currentColor;
+    border-radius: 100px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform .3s ease, background .3s ease, color .3s ease;
+}
+
+.bm-nav__bouton:hover { transform: translateY(-2px); }
+
+.bm-nav__court { display: none; }
+.bm-nav__burger { display: none; }
+
+/* --- Sur un visuel sombre : tout s'eclaircit, le logo s'inverse --- */
+.bm-nav--clair { color: var(--bm-creme); }
+
+.bm-nav--clair .bm-nav__marque img {
+    filter: invert(1) drop-shadow(0 1px 8px rgba(0, 0, 0, .12));
+}
+
+.bm-nav--clair .bm-nav__bouton { border-color: rgba(242, 234, 223, .48); }
+
+.bm-nav--clair .bm-nav__bouton--plein {
+    background: var(--bm-creme);
+    color: var(--bm-encre);
+    border-color: var(--bm-creme);
+}
+
+/* --- Ailleurs : fond creme et encre, pour rester lisible --- */
+.bm-nav--plein {
+    background: var(--bm-creme);
+    color: var(--bm-encre);
+    border-bottom: 1px solid var(--bm-filet);
+}
+
+.bm-nav--plein .bm-nav__bouton { border-color: var(--bm-filet); }
+
+.bm-nav--plein .bm-nav__bouton--plein {
+    background: var(--bm-encre);
+    color: var(--bm-creme);
+    border-color: var(--bm-encre);
+}
+
+/* L'en-tete etant fixe, les pages a fond clair doivent lui laisser sa place. */
+.bm-nav--plein ~ main { padding-top: 92px; }
+
+@media (max-width: 1100px) {
+    .bm-nav__liens { gap: 22px; }
+    .bm-nav__long { display: none; }
+    .bm-nav__court { display: inline; }
+}
+
+@media (max-width: 860px) {
+    .bm-nav__barre { grid-template-columns: 1fr auto; padding: 20px; }
+    .bm-nav__liens { display: none; }
+    .bm-nav__actions { display: none; }
+    .bm-nav__marque img { width: 110px; }
+
+    .bm-nav__burger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        justify-self: end;
+    }
+
+    .bm-nav__burger span {
+        display: block;
+        height: 1px;
+        width: 24px;
+        background: currentColor;
+    }
+}
