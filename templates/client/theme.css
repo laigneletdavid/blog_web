@@ -319,29 +319,12 @@ a { color: inherit; }
 }
 
 /* ======================================================================
-   7. PORTRAIT DE L'ETUDE
+   7. (libre)
+   Le portrait de l'etude vivait ici, du temps de la premiere version de
+   l'accueil. Plus aucun gabarit ne s'en sert depuis la reprise du lot, et
+   son .bm-etude en display:grid entrait en collision avec la page de
+   l'etude, montee plus bas. Regles retirees.
    ====================================================================== */
-
-.bm-etude {
-    display: grid;
-    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
-    gap: clamp(2rem, 6vw, 5rem);
-    align-items: center;
-}
-
-.bm-etude__portrait img {
-    width: 100%;
-    height: auto;
-    display: block;
-    filter: grayscale(1);
-    transition: filter .5s ease;
-}
-
-.bm-etude__portrait img:hover { filter: grayscale(0); }
-
-@media (max-width: 860px) {
-    .bm-etude { grid-template-columns: 1fr; }
-}
 
 /* ======================================================================
    8. LIEN FLECHE
@@ -3088,4 +3071,132 @@ main { overflow-x: clip; }
     .bm-dossier .check input {
         display: none;
     }
+}
+
+
+/* ======================================================================
+   18 ter. PAGE DE L'ETUDE — deux niveaux de lecture
+
+   Le lot livre cette zone sans aucune regle, et numerote 01, 02, 03, 04
+   puis 06 en laissant deux intitules sans numero au meme rang que les
+   autres. On repart donc d'une hierarchie nette :
+
+     - une section numerotee porte un sujet, avec son intitule en marge ;
+     - un developpement vit dans la colonne de sa section, sans numero,
+       derriere un filet, en typo plus petite.
+
+   Le balisage dit deja cette subordination : le developpement est un
+   enfant de la colonne, pas un frere de la section.
+   ====================================================================== */
+
+.bm-etude {
+    --et-filet: rgba(20, 32, 25, .2);
+}
+
+.et-sec {
+    padding: clamp(4.5rem, 9vw, 8rem) 6vw;
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.et-sec--sombre {
+    --et-filet: rgba(242, 234, 223, .26);
+    background: var(--deep);
+    color: var(--cream);
+}
+
+/* La derniere section ferme la page sur un ton plus chaud, comme l'appel
+   qui la suit : la transition se fait sans rupture. */
+.et-sec--mat {
+    background: #E5DDD2;
+    color: var(--ink);
+}
+
+/* L'intitule reste en marge, le propos occupe la colonne large. C'est la
+   meme mesure que sur les pages de pole et de parcours. */
+.et-sec__tete {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: .65fr 1.35fr;
+    gap: 8vw;
+    align-items: start;
+}
+
+.et-no {
+    font-size: 10px;
+    letter-spacing: .24em;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: .62;
+    padding-top: .6rem;
+}
+
+.et-sec h2 {
+    font: 500 clamp(40px, 5vw, 82px)/.96 var(--serif);
+    letter-spacing: -.045em;
+    margin: 0 0 32px;
+    color: inherit;
+}
+
+.et-sec h2 em { font-weight: 500; }
+
+.et-lede {
+    max-width: 680px;
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.85;
+    color: inherit;
+    opacity: .82;
+}
+
+.et-lede strong { font-weight: 600; opacity: 1; }
+
+/* --- Le developpement, un cran en dessous --- */
+.et-bloc {
+    max-width: 680px;
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+    padding-top: 26px;
+    border-top: 1px solid var(--et-filet);
+}
+
+.et-bloc > span {
+    display: block;
+    font-size: 9px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    opacity: .55;
+}
+
+.et-bloc h3 {
+    font: 500 clamp(24px, 2.3vw, 32px)/1.15 var(--serif);
+    letter-spacing: -.02em;
+    margin: 14px 0 16px;
+    color: inherit;
+}
+
+.et-bloc p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.8;
+    color: inherit;
+    opacity: .78;
+}
+
+/* La phrase qui ferme la page se lit comme une signature, pas comme un
+   paragraphe de plus. */
+.et-final {
+    max-width: 780px;
+    margin: clamp(2rem, 3.5vw, 3rem) 0 0;
+    padding-top: 26px;
+    border-top: 1px solid var(--et-filet);
+    font: 500 clamp(19px, 1.9vw, 28px)/1.45 var(--serif);
+    letter-spacing: -.015em;
+    color: inherit;
+}
+
+@media (max-width: 860px) {
+    .et-sec { padding: 72px 22px; }
+    .et-sec__tete { grid-template-columns: 1fr; gap: 18px; }
+    .et-no { padding-top: 0; }
 }

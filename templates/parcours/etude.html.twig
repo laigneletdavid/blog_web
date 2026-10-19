@@ -1,16 +1,22 @@
 {# ======================================================================
    L'ÉTUDE — BM NOTAIRE
-   Transpose du lot, avec une reserve : ses sections « etude-compact »,
-   « etude-card » et « etude-closing » n'ont aucune regle dans portal.css,
-   ni ailleurs. Le lot livre donc cette page non stylee en son milieu.
 
-   Plutot que d'inventer un dessin, on la rebatit avec le vocabulaire deja
-   en place sur /votre-projet : le bandeau « ph », la grille de cartes
-   « cards » et l'appel « cta ». Elle est ainsi coherente avec le reste
-   sans une ligne de CSS de plus.
+   Le lot livre cette page non stylee en son milieu : ses sections
+   « etude-compact », « etude-card » et « etude-closing » n'ont aucune regle,
+   ni dans portal.css ni ailleurs. Il numerote par ailleurs 01, 02, 03, 04
+   puis 06, et laisse deux intitules sans numero au meme niveau que les
+   autres. Il n'y avait donc pas de montage a transposer.
 
-   Le texte vit ici, dans le gabarit, et non en base : la grille de cartes
-   ne survivrait pas a l'editeur du CMS, qui en aplatirait le balisage.
+   La page est rebatie sur deux niveaux, et c'est le balisage qui les dit :
+   cinq sections numerotees, et les developpements loges dans la colonne de
+   leur section, sans numero. Une vision d'ensemble appartient a la pratique,
+   la relation client a l'equipe.
+
+   Le bandeau et l'appel final restent ceux de .bm-portal, deja en place sur
+   /votre-projet.
+
+   Le texte vit ici et non en base : la mise en page ne survivrait pas a
+   l'editeur, qui en aplatirait le balisage.
    ====================================================================== #}
 {% extends 'base.html.twig' %}
 
@@ -26,99 +32,141 @@
         </div>
     </section>
 
-    {# ====== NOTRE HISTOIRE + LA PRATIQUE ====== #}
-    <section class="cards">
-        <div class="cards-head">
-            <span class="no">01 / NOTRE HISTOIRE</span>
-            <div>
-                <h2>Une étude ancrée dans son territoire,<br><em>résolument tournée vers l’avenir.</em></h2>
-                <p class="section-lead">
-                    Reprise en <strong>2023 par Maître Bruno Mainguy</strong>, l’étude s’inscrit
-                    dans la continuité d’une présence notariale de proximité, tout en portant une
-                    vision moderne et exigeante de la profession. Maître Bruno Mainguy est titulaire
-                    du <strong>Diplôme de Notaire</strong>. Il exerce entouré d’une équipe de
-                    <strong>six collaborateurs</strong>, avec une même ambition : proposer à chaque
-                    client un accompagnement juridique rigoureux, accessible et profondément humain.
-                </p>
+    <div class="bm-etude">
+
+        {# ====== 01. NOTRE HISTOIRE ====== #}
+        <section class="et-sec">
+            <div class="et-sec__tete">
+                <span class="et-no">01 / Notre histoire</span>
+                <div>
+                    <h2>Une présence ancrée,<br><em>une pratique d’aujourd’hui.</em></h2>
+                    <p class="et-lede">
+                        Reprise en <strong>2023 par Maître Bruno Mainguy</strong>, l’étude s’inscrit
+                        dans la continuité d’une présence notariale de proximité, tout en portant
+                        une vision moderne et exigeante de la profession.
+                    </p>
+                    <p class="et-lede">
+                        Maître Bruno Mainguy est titulaire du <strong>Diplôme de Notaire</strong>.
+                        Il exerce entouré d’une équipe de <strong>six collaborateurs</strong>, avec
+                        une même ambition : proposer à chaque client un accompagnement juridique
+                        rigoureux, accessible et profondément humain.
+                    </p>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="grid">
-            <article>
-                <span>02 / NOTRE MISSION</span>
-                <h3>Le notaire, partenaire de vos projets.</h3>
-                <p>
-                    Le rôle du notaire ne se limite pas à rédiger et authentifier des actes. Il
-                    consiste avant tout à écouter, conseiller, anticiper et sécuriser les décisions
-                    qui accompagnent les moments importants d’une vie. Derrière chaque acte se
-                    trouvent une histoire, des objectifs et parfois des décisions qui engagent
-                    plusieurs générations.
-                </p>
-            </article>
+        {# ====== 02. NOTRE MISSION ====== #}
+        <section class="et-sec et-sec--sombre">
+            <div class="et-sec__tete">
+                <span class="et-no">02 / Notre mission</span>
+                <div>
+                    <h2>Le notaire,<br><em>partenaire de vos projets.</em></h2>
+                    <p class="et-lede">
+                        Le rôle du notaire ne se limite pas à rédiger et authentifier des actes. Il
+                        consiste avant tout à <strong>écouter, conseiller, anticiper et sécuriser</strong>
+                        les décisions qui accompagnent les moments importants d’une vie.
+                    </p>
+                    <p class="et-lede">
+                        Acheter ou vendre un bien, transmettre son patrimoine, organiser une
+                        succession, protéger sa famille, créer une société, céder une entreprise ou
+                        préparer un projet agricole : derrière chaque acte se trouvent une histoire,
+                        des objectifs et parfois des décisions qui engagent plusieurs générations.
+                        Notre rôle est de comprendre ces enjeux pour apporter une réponse adaptée.
+                    </p>
+                </div>
+            </div>
+        </section>
 
-            <article>
-                <span>03 / NOTRE PRATIQUE</span>
-                <h3>Une étude généraliste par choix.</h3>
-                <p>
-                    L’étude a fait le choix de conserver une pratique généraliste et transversale
-                    du notariat : droit immobilier, droit de la famille, successions et donations,
-                    droit patrimonial, droit des sociétés et de l’entreprise, droit rural, ainsi que
-                    les dossiers présentant une dimension internationale. Cette diversité constitue
-                    une véritable force.
-                </p>
-            </article>
+        {# ====== 03. NOTRE PRATIQUE ====== #}
+        <section class="et-sec">
+            <div class="et-sec__tete">
+                <span class="et-no">03 / Notre pratique</span>
+                <div>
+                    <h2>Une étude généraliste<br><em>par choix.</em></h2>
+                    <p class="et-lede">
+                        L’étude a fait le choix de conserver une pratique
+                        <strong>généraliste et transversale</strong> du notariat. Elle intervient
+                        dans les principaux domaines de la profession : droit immobilier, droit de
+                        la famille, successions et donations, droit patrimonial, droit des sociétés
+                        et de l’entreprise, droit rural, ainsi que les dossiers présentant une
+                        dimension internationale.
+                    </p>
 
-            <article>
-                <span>UNE VISION D’ENSEMBLE</span>
-                <h3>Anticiper, pas seulement traiter.</h3>
-                <p>
-                    Les situations de nos clients dépassent souvent les frontières d’une seule
-                    matière juridique. Une acquisition peut soulever des questions patrimoniales ou
-                    familiales ; une transmission d’entreprise peut nécessiter de repenser
-                    l’organisation d’un patrimoine. Cette vision d’ensemble permet d’anticiper les
-                    conséquences d’un acte et de l’inscrire dans un projet plus global.
-                </p>
-            </article>
+                    <article class="et-bloc">
+                        <span>Une vision d’ensemble</span>
+                        <h3>Anticiper, pas seulement traiter.</h3>
+                        <p>
+                            Les situations de nos clients dépassent souvent les frontières d’une
+                            seule matière juridique. Une acquisition peut soulever des questions
+                            patrimoniales ou familiales ; une transmission d’entreprise peut
+                            nécessiter de repenser l’organisation d’un patrimoine. Cette diversité
+                            permet d’anticiper les conséquences d’un acte et de l’inscrire dans un
+                            projet plus global.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
 
-            <article>
-                <span>04 / NOTRE ÉQUIPE</span>
-                <h3>Six collaborateurs à vos côtés.</h3>
-                <p>
-                    Autour de Maître Bruno Mainguy, six collaborateurs participent quotidiennement à
-                    la préparation, au traitement et au suivi des dossiers de l’étude. Cette
-                    organisation repose sur quatre principes essentiels : disponibilité, réactivité,
-                    rigueur et clarté.
-                </p>
-            </article>
+        {# ====== 04. NOTRE EQUIPE ====== #}
+        <section class="et-sec et-sec--sombre">
+            <div class="et-sec__tete">
+                <span class="et-no">04 / Notre équipe</span>
+                <div>
+                    <h2>Six collaborateurs<br><em>à vos côtés.</em></h2>
+                    <p class="et-lede">
+                        Autour de Maître Bruno Mainguy, <strong>six collaborateurs</strong>
+                        participent quotidiennement à la préparation, au traitement et au suivi des
+                        dossiers. Cette organisation repose sur quatre principes essentiels :
+                        <strong>disponibilité, réactivité, rigueur et clarté</strong>.
+                    </p>
 
-            <article>
-                <span>LA RELATION CLIENT</span>
-                <h3>Comprendre avant de décider.</h3>
-                <p>
-                    Parce qu’un dossier notarial peut parfois sembler complexe, nous accordons une
-                    importance particulière à la qualité des échanges. Chaque client doit pouvoir
-                    comprendre les enjeux de son dossier, les solutions proposées et les
-                    conséquences des décisions qu’il prend.
-                </p>
-            </article>
+                    <article class="et-bloc">
+                        <span>La relation client</span>
+                        <h3>Comprendre avant de décider.</h3>
+                        <p>
+                            Parce qu’un dossier notarial peut sembler complexe, nous accordons une
+                            importance particulière à la qualité des échanges. Chaque client doit
+                            pouvoir comprendre les enjeux de son dossier, les solutions proposées et
+                            les conséquences des décisions qu’il prend.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
 
-            <article>
-                <span>05 / NOTRE ENGAGEMENT</span>
-                <h3>Le droit, sans distance.</h3>
-                <p>
-                    Conjuguer les valeurs fondamentales du notariat — sécurité juridique, confiance,
-                    confidentialité et pérennité de l’acte authentique — avec une manière
-                    contemporaine d’exercer. Des outils modernes et des échanges plus fluides
-                    simplifient la relation avec l’étude, sans jamais diminuer l’exigence apportée
-                    au conseil et à la rédaction des actes.
-                </p>
-            </article>
-        </div>
-    </section>
+        {# ====== 05. NOTRE ENGAGEMENT ====== #}
+        <section class="et-sec et-sec--mat">
+            <div class="et-sec__tete">
+                <span class="et-no">05 / Notre engagement</span>
+                <div>
+                    <h2>Le droit,<br><em>sans distance.</em></h2>
+                    <p class="et-lede">
+                        Depuis la reprise de l’étude en 2023, notre volonté est de conjuguer les
+                        valeurs fondamentales du notariat — <strong>sécurité juridique, confiance,
+                        confidentialité et pérennité de l’acte authentique</strong> — avec une
+                        manière contemporaine d’exercer notre métier.
+                    </p>
+                    <p class="et-lede">
+                        Des outils modernes, des échanges plus fluides et une organisation efficace
+                        simplifient la relation avec l’étude, sans jamais diminuer l’exigence
+                        apportée au conseil et à la rédaction des actes.
+                    </p>
+
+                    <p class="et-final">
+                        Car au-delà des textes et de la technicité juridique, notre métier repose
+                        avant tout sur une relation : celle qui se construit dans le temps entre un
+                        client, son notaire et l’équipe qui l’accompagne.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
 
     {# ====== RENCONTRONS-NOUS ====== #}
     <section class="cta">
-        <span class="no">06 / RENCONTRONS-NOUS</span>
+        <span class="no">06 / Rencontrons-nous</span>
         <h2>Parlons de<br><em>votre projet.</em></h2>
         <div class="buttons">
             <a href="{{ path('app_contact') }}">Contacter l’étude ↗</a>
