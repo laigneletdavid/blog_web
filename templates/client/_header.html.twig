@@ -60,8 +60,11 @@
 
                 function regarder() {
                     attente = false;
+                    // Sur l'accueil, on vise le conteneur du film et non la
+                    // scene : celle-ci est collante, son bas reste accroche
+                    // en haut de l'ecran et l'en-tete se poserait trop tot.
                     repere = repere || document.querySelector(
-                        '.bm-cine .stage, .ph, .bm-dossier .hero, .bm-xp-hero'
+                        '.bm-cine .cinema, .ph, .bm-dossier .hero, .bm-xp-hero'
                     );
                     if (!repere) { return; }
                     barre.classList.toggle(
