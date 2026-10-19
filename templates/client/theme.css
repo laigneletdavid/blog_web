@@ -1406,6 +1406,17 @@ main { overflow-x: clip; }
     color: var(--bm-encre);
 }
 
+/* Les titres de la galerie d'expertises heritent de leur section : le CMS
+   leur imposait son bleu-noir sur le visuel sombre, alors que les numeros
+   et les chapos etaient bien en creme.
+
+   On herite au lieu de fixer le creme : au survol, la carte prend un fond
+   creme et passe a l'encre. Un titre creme en dur y disparaitrait. */
+.bm-cine .expertises h2,
+.bm-cine .expertises h3 {
+    color: inherit;
+}
+
 
 /* ======================================================================
    18. PAGES DE PARCOURS
