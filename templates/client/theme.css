@@ -1200,9 +1200,14 @@ main { overflow-x: clip; }
     padding: 29px 40px;
 }
 
+/* Le lot pose son logo sur une toile carree de 500 px dont le dessin
+   n'occupe que 209x153 : sa largeur CSS de 138 px affiche donc une marque
+   de 58x42 px. Notre fichier, lui, est recadre au plus juste -- reprendre
+   ces 138 px aurait donne une marque trois fois trop grande.
+   On regle donc sur le dessin, pas sur la toile. */
 .bm-nav__marque img {
     display: block;
-    width: 164px;
+    width: 59px;
     height: auto;
     transition: opacity .3s ease;
 }
@@ -1324,7 +1329,7 @@ main { overflow-x: clip; }
     .bm-nav__barre { grid-template-columns: 1fr auto; padding: 20px; }
     .bm-nav__liens { display: none; }
     .bm-nav__actions { display: none; }
-    .bm-nav__marque img { width: 110px; }
+    .bm-nav__marque img { width: 47px; }
 
     .bm-nav__burger {
         display: flex;
