@@ -38,7 +38,7 @@ class HomeController extends AbstractController
             'title_page' => 'Blog & Web',
             'text_page' => 'Un CMS proche de vous !',
             'articles' => $articleRepository->homeArticles(),
-            'services' => $siteContext->hasModule('services') ? $serviceRepository->findAllActive() : [],
+            'services' => $siteContext->hasModule('services') ? $serviceRepository->findRootsActive() : [],
             'upcomingEvents' => $siteContext->hasModule('events') ? $eventRepository->findUpcoming(3) : [],
             'featuredProducts' => $siteContext->hasModule('catalogue') ? $productRepository->findFeatured(4) : [],
             'faqs' => $siteContext->hasModule('faq') ? $faqRepository->findAllActive() : [],
