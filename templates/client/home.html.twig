@@ -68,10 +68,14 @@
                ranger, ils vivent ici, indexes par identifiant de pole. Un
                champ dedie sur le service les rendrait editables. #}
             {% set accroches = {
-                'immobilier':  { titre: 'Donner forme<br>à vos projets.',          mots: 'Vente · Acquisition<br>Promotion · Division' },
-                'famille':     { titre: 'Protéger.<br>Anticiper. Transmettre.',    mots: 'Famille · Succession · Donation<br>Patrimoine · Société civile' },
-                'entreprise':  { titre: 'Accompagner<br>l’entrepreneur.',          mots: 'Sociétés · Fonds de commerce<br>Immobilier professionnel' },
-                'droit-rural': { titre: 'Comprendre<br>le territoire.',            mots: 'Baux ruraux · GFA' }
+                'immobilier':  { titre: 'Donner forme<br>à vos projets.',          mots: 'Vente · Acquisition<br>Promotion · Division',
+                                 grille: 'Vente · Acquisition · Promotion · Division' },
+                'famille':     { titre: 'Protéger.<br>Anticiper. Transmettre.',    mots: 'Famille · Succession · Donation<br>Patrimoine · Société civile',
+                                 grille: 'Succession · Donation · Régimes matrimoniaux · Transmission · Société civile' },
+                'entreprise':  { titre: 'Accompagner<br>l’entrepreneur.',          mots: 'Sociétés · Fonds de commerce<br>Immobilier professionnel',
+                                 grille: 'Sociétés · Fonds de commerce · Immobilier professionnel' },
+                'droit-rural': { titre: 'Comprendre<br>le territoire.',            mots: 'Baux ruraux · GFA',
+                                 grille: 'Baux ruraux · GFA' }
             } %}
 
             <div class="cinema-track">
@@ -123,7 +127,10 @@
                 <a href="{{ path('app_service_show', { slug: service.slug }) }}" data-expertise="{{ service.slug }}">
                     <span>{{ '%02d'|format(loop.index) }}</span>
                     <h3>{{ service.title }}</h3>
-                    {% if service.children|length > 0 %}
+                    {% set accroche = accroches[service.slug]|default(null) %}
+                    {% if accroche %}
+                        <p>{{ accroche.grille }}</p>
+                    {% elseif service.children|length > 0 %}
                         <p>{{ service.children|slice(0, 5)|map(e => e.title)|join(' · ') }}</p>
                     {% endif %}
                     <b>↗</b>
@@ -148,7 +155,7 @@
         <h2>Une relation fondée<br>sur la <em>proximité.</em></h2>
         <p>
             Écouter avant de conseiller. Expliquer avant de décider. Anticiper pour
-            sécuriser. L'étude privilégie une relation directe, lisible et durable à
+            sécuriser. L’étude privilégie une relation directe, lisible et durable à
             chaque étape de votre projet.
         </p>
         <a href="{{ path('app_contact') }}">Découvrir l’étude <span>↗</span></a>
