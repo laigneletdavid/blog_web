@@ -82,6 +82,15 @@ class ServiceCrudController extends AbstractCrudController
 
         yield $this->slugField('title');
 
+        // Rattachement facultatif : laisse vide, le service reste au premier
+        // niveau. C'est le cas de figure ordinaire, une offre a plat.
+        yield AssociationField::new('parent', 'Rattacher a')
+            ->setHelp('Laisser vide pour un service de premier niveau. Renseigne, ce service devient une prestation du service choisi.')
+            ->setFormTypeOption('choice_label', 'title')
+            ->setFormTypeOption('required', false)
+            ->autocomplete()
+            ->hideOnIndex();
+
         yield AssociationField::new('linkedPage', 'Page liée')
             ->setHelp('Lier ce service à une page du site (prioritaire sur le lien externe)')
             ->hideOnIndex();
