@@ -877,6 +877,24 @@ main { overflow-x: clip; }
 
 /* ======================================================================
    15. LA SCENE D'ACCUEIL
+
+   Les regles reprises du lot s'appuient sur ses propres variables -- --serif,
+   --cream, --ink. Leur :root n'a pas ete repris, il aurait repeint le site :
+   on les relie donc ici aux notres. Sans ce pont, une declaration « font »
+   privee de famille devient invalide, et le titre retombe a 17 pixels.
+   ====================================================================== */
+
+.bm-cine {
+    --serif: var(--bm-serif);
+    --sans: var(--bm-sans);
+    --cream: var(--bm-creme);
+    --ink: var(--bm-encre);
+    --muted: var(--bm-sourdine);
+    --line: var(--bm-filet-clair);
+}
+
+/* ======================================================================
+   15 bis. REGLES REPRISES DU LOT
    Regles reprises du lot statique, prefixees par .bm-cine pour qu'elles ne
    sortent pas de l'accueil : telles quelles, elles visaient body, html et
    les titres, et auraient repeint tout le site.
