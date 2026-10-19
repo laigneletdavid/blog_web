@@ -1379,3 +1379,134 @@ main { overflow-x: clip; }
 .bm-cine .cinema-track article p {
     color: var(--bm-encre);
 }
+
+
+/* ======================================================================
+   18. PAGES DE PARCOURS
+
+   portal.css s'appuie sur ses propres variables. Son :root n'est pas repris
+   -- il aurait repeint le site -- on les relie donc aux notres. Sans ce pont,
+   les raccourcis « font » perdent leur famille et deviennent invalides : les
+   titres retombent en police courante.
+   ====================================================================== */
+
+.bm-portal {
+    --cream: var(--bm-creme);
+    --ink: var(--bm-encre);
+    --paper: #EEE7DD;
+    --deep: #142119;
+    --line: rgba(20, 32, 25, .22);
+    --serif: var(--bm-serif);
+    --sans: var(--bm-sans);
+
+    background: var(--bm-creme);
+    color: var(--bm-encre);
+}
+
+/* Les titres suivent la couleur de leur section : creme sur le bandeau
+   sombre, encre ailleurs. Sans cette precision, le CMS leur impose la sienne,
+   plus specifique que l'heritage, et ils deviennent illisibles sur fond
+   fonce. */
+.bm-portal h1,
+.bm-portal h2,
+.bm-portal h3,
+.bm-portal p,
+.bm-portal a {
+    color: inherit;
+}
+
+/* ======================================================================
+   18 bis. REGLES REPRISES DE PORTAL.CSS
+   Regles de portal.css, prefixees par .bm-portal et gardees dans leurs
+   media queries. Sa feuille visait html, body et les liens : telle quelle,
+   elle aurait repeint le site entier.
+   ====================================================================== */
+
+.bm-portal 0, .bm-portal 500;1, .bm-portal 500&display=swap'); :root {--cream:#f2eadf;--ink:#142019;--paper:#eee7dd;--deep:#142119;--line:rgba(20,32,25,.22);--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',Arial,sans-serif}
+.bm-portal .pn {position:absolute;z-index:20;top:0;left:0;width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:27px 38px;color:var(--cream);font-size:11px;letter-spacing:.07em}
+.bm-portal .pn img {width:138px;display:block;filter:invert(1);opacity:.94}
+.bm-portal .pn nav {display:flex;gap:28px}
+.bm-portal .pn nav a {opacity:.78}
+.bm-portal .pn .pill {justify-self:end;border:1px solid rgba(242,234,223,.5);border-radius:999px;padding:13px 19px}
+.bm-portal .ph {min-height:88vh;background:radial-gradient(circle at 75% 25%,#46584a 0,#26362b 27%,#15231b 67%,#101a14 100%);color:var(--cream);display:flex;align-items:flex-end;position:relative;padding:0 6vw 10vh;overflow:hidden}
+.bm-portal .ph:after {content:"";position:absolute;inset:-30%;background:linear-gradient(115deg,transparent 38%,rgba(255,245,225,.07) 49%,transparent 58%);transform:rotate(-6deg)}
+.bm-portal .ph>div {position:relative;z-index:2}
+.bm-portal .ey, .bm-portal .no {font-size:10px;letter-spacing:.27em;font-weight:600}
+.bm-portal .ph h1, .bm-portal .introsec h2, .bm-portal .cards-head h2, .bm-portal .prep h2, .bm-portal .cta h2 {font:500 clamp(58px,8vw,132px)/.85 var(--serif);letter-spacing:-.055em;margin:24px 0 32px}
+.bm-portal .ph h1 em, .bm-portal .introsec em, .bm-portal .cards-head em, .bm-portal .prep em, .bm-portal .cta em {font-weight:500}
+.bm-portal .ph p.lead {max-width:720px;font:500 clamp(18px,1.8vw,27px)/1.4 var(--serif);color:#dedbd3}
+.bm-portal .introsec {padding:115px 6vw;display:grid;grid-template-columns:.55fr 1.45fr;gap:8vw}
+.bm-portal .introsec h2 {font-size:clamp(48px,5.8vw,90px);margin-top:20px}
+.bm-portal .introsec p {max-width:720px;line-height:1.8;color:#5d6861}
+.bm-portal .cards {padding:115px 6vw;background:var(--deep);color:var(--cream)}
+.bm-portal .cards-head {display:grid;grid-template-columns:.65fr 1.35fr;gap:8vw;margin-bottom:55px}
+.bm-portal .cards-head h2 {font-size:clamp(50px,6vw,95px);margin:15px 0}
+.bm-portal .grid {display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(242,234,223,.28);border-left:1px solid rgba(242,234,223,.28)}
+.bm-portal .grid a, .bm-portal .grid article {position:relative;min-height:285px;padding:28px;border-right:1px solid rgba(242,234,223,.28);border-bottom:1px solid rgba(242,234,223,.28);transition:.35s}
+.bm-portal .grid a:hover {background:var(--cream);color:var(--ink);transform:translateY(-5px)}
+.bm-portal .grid span {font-size:9px;letter-spacing:.2em;opacity:.6}
+.bm-portal .grid h3 {font:500 32px/1.05 var(--serif);margin:78px 0 15px}
+.bm-portal .grid p {font-size:12px;line-height:1.6;opacity:.72}
+.bm-portal .grid b {position:absolute;right:25px;top:24px}
+.bm-portal .prep {padding:115px 6vw}
+.bm-portal .prep h2 {font-size:clamp(48px,5.8vw,90px)}
+.bm-portal .prep-list {max-width:1050px;margin-left:auto;border-top:1px solid var(--line)}
+.bm-portal .prep-list a, .bm-portal .prep-list div {display:grid;grid-template-columns:70px 1fr auto;gap:20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--line)}
+.bm-portal .prep-list strong {font:500 clamp(22px,2vw,31px)/1 var(--serif)}
+.bm-portal .prep-list small {opacity:.55}
+.bm-portal .cta {background:#d9d1c6;padding:120px 6vw}
+.bm-portal .cta h2 {font-size:clamp(54px,7vw,110px)}
+.bm-portal .buttons {display:flex;gap:12px;flex-wrap:wrap}
+.bm-portal .buttons a {border:1px solid rgba(20,32,25,.45);border-radius:999px;padding:16px 23px;font-size:12px}
+.bm-portal .foot {background:#101a14;color:#cbd0cc;padding:50px 6vw;display:grid;grid-template-columns:1.3fr 1fr auto;gap:30px;font-size:11px;line-height:1.8}
+.bm-portal .foot img {width:120px;filter:invert(1)}
+@media(max-width:850px) {
+    .bm-portal .pn {grid-template-columns:1fr auto;padding:20px}
+    .bm-portal .pn nav {display:none}
+    .bm-portal .pn img {width:108px}
+    .bm-portal .ph {min-height:82vh;padding:0 22px 65px}
+    .bm-portal .ph h1 {font-size:17vw}
+    .bm-portal .introsec, .bm-portal .cards-head {grid-template-columns:1fr;padding-left:22px;padding-right:22px}
+    .bm-portal .cards, .bm-portal .prep, .bm-portal .cta {padding-left:22px;padding-right:22px}
+    .bm-portal .grid {grid-template-columns:1fr}
+    .bm-portal .prep-list a, .bm-portal .prep-list div {grid-template-columns:42px 1fr auto}
+    .bm-portal .foot {grid-template-columns:1fr 1fr}
+    .bm-portal .foot div:first-child {grid-column:1/-1}
+}
+.bm-portal /* V11.1 — Votre projet devient le hub unique */ .section-lead {max-width:720px;line-height:1.75;color:#667068;margin:0 0 45px}
+.bm-portal .checklist {padding-top:90px}
+.bm-portal .section-action {margin-top:36px}
+.bm-portal .section-action a {display:inline-block;border:1px solid rgba(242,234,223,.45);border-radius:999px;padding:15px 22px;font-size:12px}
+.bm-portal .advice {padding:115px 6vw;background:#e5ddd2}
+.bm-portal .advice .cards-head {margin-bottom:55px}
+.bm-portal .advice .cards-head h2 {color:var(--ink)}
+.bm-portal .advice-grid {display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.bm-portal .advice-grid a {min-height:310px;padding:30px;position:relative;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:.35s}
+.bm-portal .advice-grid a:hover {background:var(--deep);color:var(--cream);transform:translateY(-4px)}
+.bm-portal .advice-grid span {font-size:9px;letter-spacing:.22em;opacity:.62}
+.bm-portal .advice-grid h3 {font:500 clamp(28px,3vw,46px)/1.05 var(--serif);max-width:600px;margin:70px 0 18px}
+.bm-portal .advice-grid p {max-width:520px;font-size:13px;line-height:1.7;opacity:.72}
+.bm-portal .advice-grid b {position:absolute;right:28px;top:28px;font-weight:500}
+.bm-portal .prep, .bm-portal .checklist, .bm-portal .advice {scroll-margin-top:20px}
+@media(max-width:850px) {
+    .bm-portal .advice {padding:85px 22px}
+    .bm-portal .advice-grid {grid-template-columns:1fr}
+    .bm-portal .advice-grid a {min-height:270px}
+    .bm-portal .section-lead {margin-bottom:30px}
+}
+.bm-portal /* V11.10 — check-lists complètes et dépôt documentaire mis en valeur */ .checklist .checklist-lead {color:#c8cec9;max-width:650px;margin:24px 0 0}
+.bm-portal .checklist .grid article {min-height:315px}
+.bm-portal .checklist .grid article p {font-size:12.5px;line-height:1.68}
+.bm-portal .checklist .checklist-important {background:rgba(242,234,223,.08)}
+.bm-portal .deposit-cta {margin-top:54px;background:var(--cream);color:var(--ink);padding:34px 38px;display:grid;grid-template-columns:1fr auto;gap:38px;align-items:center;border:1px solid rgba(242,234,223,.35)}
+.bm-portal .deposit-cta>div>span {display:block;font-size:9px;letter-spacing:.24em;font-weight:600;color:#7b715f;margin-bottom:9px}
+.bm-portal .deposit-cta strong {display:block;font:500 clamp(28px,3vw,44px)/1.05 var(--serif);letter-spacing:-.03em}
+.bm-portal .deposit-cta p {margin:10px 0 0;max-width:560px;font-size:13px;line-height:1.6;color:#5d6861}
+.bm-portal .deposit-cta a {display:inline-flex;align-items:center;gap:16px;background:var(--deep);color:var(--cream);border:1px solid var(--deep);border-radius:999px;padding:17px 23px;font-size:12px;font-weight:600;white-space:nowrap;transition:transform .25s ease,background .25s ease}
+.bm-portal .deposit-cta a:hover {transform:translateY(-2px);background:#203229}
+.bm-portal .deposit-cta a b {font-size:16px;font-weight:500}
+@media(max-width:850px) {
+    .bm-portal .checklist .grid article {min-height:auto}
+    .bm-portal .deposit-cta {grid-template-columns:1fr;padding:28px 24px;gap:24px}
+    .bm-portal .deposit-cta a {justify-content:center;white-space:normal;text-align:center}
+}

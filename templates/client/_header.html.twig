@@ -11,7 +11,8 @@
    ====================================================================== #}
 
 {% set _route = app.request.attributes.get('_route') %}
-{% set _sur_visuel = _route == 'app_home' or (_route == 'app_service_show' and service is defined and service.children|default([])|length > 0) %}
+{% set _routes_sombres = ['app_home', 'app_votre_projet'] %}
+{% set _sur_visuel = _route in _routes_sombres or (_route == 'app_service_show' and service is defined and service.children|default([])|length > 0) %}
 
 <header class="bm-nav{{ _sur_visuel ? ' bm-nav--clair' : ' bm-nav--plein' }}">
     {% include '_partials/_admin_bar.html.twig' %}
