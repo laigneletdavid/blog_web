@@ -49,28 +49,42 @@
     </div>
 
     {% if _sur_visuel %}
-        {# L'en-tete transparent ne tient que tant qu'un fond sombre le porte.
-           Passe le bandeau, il reprend son fond creme : sans cela le visiteur
-           se retrouvait avec un logo fantome et des liens invisibles. #}
+        {# L'en-tete reste transparent de bout en bout, comme dans la maquette :
+           aucune barre ne vient jamais s'y poser.
+
+           Mais la maquette le laisse en creme meme au-dessus de ses sections
+           claires, ou il devient invisible. Il passe donc a l'encre quand une
+           de ces sections arrive sous lui.
+
+           Les zones claires sont nommees plutot que devinees : lire le fond
+           sous l'en-tete echouerait sur le film, dont les plans n'ont pas de
+           couleur de fond propre et laisseraient voir le blanc du CMS. #}
         <script>
             (function () {
+                var CLAIRES = '.bm-cine .office-story, .bm-cine .manifesto,'
+                    + '.bm-portal .cta,'
+                    + '.bm-dossier .section:not(.alt), .bm-dossier .final,'
+                    + '.bm-section:not(.bm-section--encre)';
+
                 var barre = document.currentScript.closest('.bm-nav');
-                var repere = null;
+                var zones = null;
                 var attente = false;
 
                 function regarder() {
                     attente = false;
-                    // Sur l'accueil, on vise le conteneur du film et non la
-                    // scene : celle-ci est collante, son bas reste accroche
-                    // en haut de l'ecran et l'en-tete se poserait trop tot.
-                    repere = repere || document.querySelector(
-                        '.bm-cine .cinema, .ph, .bm-dossier .hero, .bm-xp-hero'
-                    );
-                    if (!repere) { return; }
-                    barre.classList.toggle(
-                        'bm-nav--pose',
-                        repere.getBoundingClientRect().bottom <= barre.offsetHeight
-                    );
+                    zones = zones || document.querySelectorAll(CLAIRES);
+
+                    var bas = barre.offsetHeight;
+                    var sousLaBarre = false;
+                    for (var i = 0; i < zones.length; i++) {
+                        var cadre = zones[i].getBoundingClientRect();
+                        if (cadre.top < bas && cadre.bottom > 0) {
+                            sousLaBarre = true;
+                            break;
+                        }
+                    }
+
+                    barre.classList.toggle('bm-nav--sombre', sousLaBarre);
                 }
 
                 function planifier() {

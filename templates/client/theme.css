@@ -1282,27 +1282,33 @@ main { overflow-x: clip; }
 /* L'en-tete etant fixe, les pages a fond clair doivent lui laisser sa place. */
 .bm-nav--plein ~ main { padding-top: 92px; }
 
-/* --- Passe le visuel, l'en-tete se pose --- */
-/* L'en-tete transparent ne tient que tant qu'un fond sombre le porte. Des
-   que le visiteur a depasse le bandeau, il se retrouvait creme sur creme :
-   logo fantome et liens invisibles. Il reprend donc ici le fond plein. */
+/* --- Au-dessus d'une section claire, l'en-tete passe a l'encre --- */
+/* Il reste transparent de bout en bout, comme dans la maquette : aucune
+   barre ne vient s'y poser. Mais la maquette le garde en creme meme sur ses
+   sections claires, ou il disparait purement et simplement -- deux ecrans
+   sur neuf a l'accueil. Seule sa couleur change donc. */
 .bm-nav--clair {
-    transition: background .35s ease, color .35s ease, border-color .35s ease;
+    transition: color .35s ease;
 }
 
-.bm-nav--clair.bm-nav--pose {
-    background: var(--bm-creme);
+.bm-nav--clair .bm-nav__marque img,
+.bm-nav--clair .bm-nav__bouton {
+    transition: filter .35s ease, background .35s ease, color .35s ease, border-color .35s ease;
+}
+
+.bm-nav--clair.bm-nav--sombre {
     color: var(--bm-encre);
-    border-bottom: 1px solid var(--bm-filet);
 }
 
-.bm-nav--clair.bm-nav--pose .bm-nav__marque img {
+/* Le logo est fourni en encre : c'est l'inversion qui l'eclaircit sur les
+   fonds sombres. Ici on la retire. */
+.bm-nav--clair.bm-nav--sombre .bm-nav__marque img {
     filter: none;
 }
 
-.bm-nav--clair.bm-nav--pose .bm-nav__bouton { border-color: var(--bm-filet); }
+.bm-nav--clair.bm-nav--sombre .bm-nav__bouton { border-color: var(--bm-filet); }
 
-.bm-nav--clair.bm-nav--pose .bm-nav__bouton--plein {
+.bm-nav--clair.bm-nav--sombre .bm-nav__bouton--plein {
     background: var(--bm-encre);
     color: var(--bm-creme);
     border-color: var(--bm-encre);
