@@ -4,7 +4,8 @@
 
    Le meme fichier sert les deux niveaux de l'offre, dont la maquette donne
    deux decoupages distincts :
-     - un pole  : hero en image, approche, besoins, accompagnement, echange ;
+     - un pole  : hero plein ecran, approche, besoins, accompagnement, echange,
+                  balisage et styles repris d'expertise.css sous .bm-xp ;
      - une prestation : hero, propos, parcours, pieces, questions, echange.
    La distinction se lit dans l'arborescence, pas dans un champ a cocher.
 
@@ -14,79 +15,114 @@
 
 {% set est_pole = children|default([])|length > 0 %}
 
-{# Le contenu TipTap porte, dans l'ordre, la vision d'ensemble puis le reste.
-   On isole le premier paragraphe pour alimenter la section d'approche. #}
-{% set morceaux = service.content|default('')|split('</p>', 2) %}
-{% set apercu = morceaux[0] is defined and morceaux[0] is not empty ? morceaux[0] ~ '</p>' : '' %}
-{% set suite = morceaux[1]|default('') %}
-
 {% if est_pole %}
 
+    {# L'import a range le contenu du pole dans un ordre constant, verifie sur
+       les quatre poles : la vision d'ensemble, puis le propos d'accompagnement,
+       puis trois axes de la forme « Titre — description ».
+
+       On relit donc les paragraphes dans l'ordre plutot que d'ajouter des
+       champs a l'entite. Si un pole s'ecartait de cette forme, les sections
+       concernees disparaissent au lieu de s'afficher de travers. #}
+    {% set paragraphes = service.content|default('')|split('<p>')|slice(1)
+        |map(bloc => bloc|split('</p>')[0]|trim)
+        |filter(bloc => bloc is not empty) %}
+
+    {% set apercu = paragraphes[0]|default('') %}
+    {% set propos = paragraphes[1]|default('') %}
+    {% set axes = paragraphes|slice(2)|filter(axe => ' — ' in axe) %}
+
+    {# Les styles d'expertise.css sont repris sous .bm-xp : la feuille visait
+       html, body et a, elle aurait repeint le site. #}
+    <div class="bm-xp">
+
     {# ====== 01. HERO ====== #}
-    <section class="bm-xp-hero">
+    <section class="xp-hero">
         {% if service.image %}
-            <span class="bm-xp-hero__fond" style="background-image:url('{{ asset('documents/medias/' ~ (service.image.webpFileName ?? service.image.fileName)) }}')"></span>
+            <div class="xp-bg" style="background-image:url('{{ asset('documents/medias/' ~ (service.image.webpFileName ?? service.image.fileName)) }}')"></div>
         {% endif %}
-        <span class="bm-xp-hero__voile"></span>
-        <div class="bm-xp-hero__texte">
-            <nav class="bm-fil bm-fil--clair" aria-label="Fil d'Ariane">
-                <a href="{{ path('app_home') }}">Accueil</a>
-                <span aria-hidden="true">·</span>
-                <a href="{{ path('app_service_index') }}">{{ section_title|default('Expertises') }}</a>
-            </nav>
-            <p class="bm-kicker">BM Notaire · Expertise</p>
-            <h1 class="bm-xp-hero__titre">{{ service.title }}</h1>
+        <div class="xp-shade"></div>
+
+        <div class="xp-hero-copy">
+            <p class="xp-kicker">BM NOTAIRE · EXPERTISE</p>
+            <h1>{{ service.title }}</h1>
             {% if service.shortDescription %}
-                <p class="bm-xp-hero__intro">{{ service.shortDescription }}</p>
+                <p class="xp-intro">{{ service.shortDescription }}</p>
             {% endif %}
         </div>
-        <a href="#besoins" class="bm-xp-hero__defiler">Découvrir <span aria-hidden="true">↓</span></a>
+
+        {# Le lot laisse cette mention inerte ; elle mene ici la ou elle invite. #}
+        <a class="xp-scroll" href="#accompagnement">DÉCOUVRIR ↓</a>
     </section>
 
     {# ====== 02. NOTRE APPROCHE ====== #}
     {% if apercu %}
-        <section class="bm-section">
-            <div class="bm-duo">
-                <div><span class="bm-kicker">01 / Notre approche</span></div>
-                <div>
-                    <h2 class="bm-titre">Une vision <em>d'ensemble.</em></h2>
-                    <div class="bm-corps bm-corps--nu">{{ apercu|raw }}</div>
-                </div>
+        <section class="xp-overview">
+            <div><span class="xp-no">01 / NOTRE APPROCHE</span></div>
+            <div>
+                <h2>Une vision<br><em>d’ensemble.</em></h2>
+                <p>{{ apercu|raw }}</p>
             </div>
         </section>
     {% endif %}
 
     {# ====== 03. VOS BESOINS ====== #}
-    <section class="bm-section bm-section--encre" id="besoins">
-        <div class="bm-duo">
-            <div><span class="bm-kicker">02 / Vos besoins</span></div>
-            <div><h2 class="bm-titre">Comment pouvons-nous vous <em>accompagner&nbsp;?</em></h2></div>
+    <section class="xp-menu">
+        <div class="xp-menu-head">
+            <span class="xp-no">02 / VOS BESOINS</span>
+            <h2>Comment pouvons-nous<br>vous accompagner&nbsp;?</h2>
         </div>
 
-        <div class="bm-besoins">
+        <div class="xp-list">
             {% for enfant in children %}
-                <a href="{{ path('app_service_show', { slug: enfant.slug }) }}" class="bm-besoin">
-                    <span class="bm-besoin__num">{{ '%02d'|format(loop.index) }}</span>
-                    <h3 class="bm-besoin__titre">{{ enfant.title }}</h3>
-                    {% if enfant.shortDescription %}
-                        <p class="bm-besoin__chapo">{{ enfant.shortDescription }}</p>
-                    {% endif %}
-                    <span class="bm-besoin__fleche" aria-hidden="true">↗</span>
+                <a href="{{ path('app_service_show', { slug: enfant.slug }) }}">
+                    <span class="n">{{ '%02d'|format(loop.index) }}</span>
+                    <h3>{{ enfant.title }}</h3>
+                    <p>{{ enfant.shortDescription }}</p>
+                    <b aria-hidden="true">↗</b>
                 </a>
             {% endfor %}
         </div>
     </section>
 
     {# ====== 04. ACCOMPAGNEMENT ====== #}
-    {% if suite %}
-        <section class="bm-section">
-            <div class="bm-duo">
-                <div><span class="bm-kicker">03 / Accompagnement</span></div>
-                <div><h2 class="bm-titre">Du projet <em>à l'acte.</em></h2></div>
+    {% if propos or axes %}
+        <section class="xp-detail" id="accompagnement">
+            <div class="xp-detail-head">
+                <div><span class="xp-no">03 / ACCOMPAGNEMENT</span></div>
+                <div>
+                    <h2>Du projet<br><em>à l’acte.</em></h2>
+                    {% if propos %}<p class="lead">{{ propos|raw }}</p>{% endif %}
+                </div>
             </div>
-            <div class="bm-corps bm-corps--axes">{{ suite|raw }}</div>
+
+            {% if axes %}
+                <div class="xp-cards">
+                    {% for axe in axes %}
+                        {% set coupe = axe|split(' — ', 2) %}
+                        <article class="xp-card">
+                            <span>{{ '%02d'|format(loop.index) }}</span>
+                            <h3>{{ coupe[0]|striptags }}</h3>
+                            <p>{{ coupe[1]|default('')|raw }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </section>
     {% endif %}
+
+    {# ====== 05. ECHANGEONS ====== #}
+    <section class="xp-cta">
+        <span class="xp-no">04 / ÉCHANGEONS</span>
+        <h2>Parlons de<br><em>votre projet.</em></h2>
+        <p>
+            Un premier échange permet d’identifier votre besoin, les documents à
+            réunir et les prochaines étapes.
+        </p>
+        <a class="xp-button" href="{{ path('app_rendez_vous') }}">Prendre rendez-vous ↗</a>
+    </section>
+
+    </div>{# /.bm-xp #}
 
 {% else %}
 
@@ -113,19 +149,18 @@
         {{ service.content|raw }}
     </div>
 
-{% endif %}
-
-{# ====== ECHANGEONS — commun aux deux niveaux ====== #}
-<section class="bm-section bm-section--encre">
-    <div class="bm-duo">
-        <div><span class="bm-kicker">{{ est_pole ? '04' : '05' }} / Échangeons</span></div>
-        <div>
-            <h2 class="bm-titre">Parlons de <em>votre projet.</em></h2>
-            <p class="bm-lede">
-                Un premier échange permet d'identifier votre besoin, les documents à
-                réunir et les prochaines étapes.
-            </p>
-            <a href="{{ path('app_contact') }}" class="bm-lien">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+    <section class="bm-section bm-section--encre">
+        <div class="bm-duo">
+            <div><span class="bm-kicker">05 / Échangeons</span></div>
+            <div>
+                <h2 class="bm-titre">Parlons de <em>votre projet.</em></h2>
+                <p class="bm-lede">
+                    Un premier échange permet d'identifier votre besoin, les documents à
+                    réunir et les prochaines étapes.
+                </p>
+                <a href="{{ path('app_rendez_vous') }}" class="bm-lien">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+{% endif %}

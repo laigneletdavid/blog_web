@@ -685,158 +685,320 @@ main { overflow-x: clip; }
 }
 
 /* ======================================================================
-   13. PAGE DE POLE
-   Le hero porte la photo du pole en fond, les besoins se lisent comme un
-   sommaire numerote, les axes d'accompagnement en cartes.
+   13. PAGES DE POLE
+   Balisage et styles repris d expertise.css, prefixes par .bm-xp et
+   gardes dans leur media query. Laisses de cote : .xp-nav, .xp-brand et
+   .xp-footer, le CMS ayant deja son en-tete et son pied de page.
    ====================================================================== */
 
-.bm-xp-hero {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-height: min(68vh, 620px);
-    padding: clamp(2.5rem, 6vw, 5rem) var(--bm-gouttiere);
-    background: var(--bm-encre);
-    color: var(--bm-creme);
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    overflow: hidden;
+/* expertise.css tient ses couleurs d un :root et d une regle sur body que
+   nous ne reprenons pas : ils auraient repeint le site. */
+.bm-xp {
+    --cream: var(--bm-creme);
+    --ink: var(--bm-encre);
+    --paper: #EEE7DD;
+    --muted: #667168;
+    --serif: var(--bm-serif);
+    --sans: var(--bm-sans);
+
+    background: var(--paper);
+    color: var(--ink);
 }
 
-.bm-xp-hero__fond {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    filter: grayscale(1);
+/* Les titres suivent la couleur de leur section : creme sur le hero et sur
+   la bande d accompagnement, encre ailleurs. Sans cette precision le CMS
+   impose la sienne, plus specifique que l heritage. */
+.bm-xp h1,
+.bm-xp h2,
+.bm-xp h3,
+.bm-xp p,
+.bm-xp a,
+.bm-xp span,
+.bm-xp b {
+    color: inherit;
 }
 
-.bm-xp-hero__voile {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(20, 32, 25, .9) 0%, rgba(20, 32, 25, .55) 60%, rgba(20, 32, 25, .3) 100%);
+.bm-xp .xp-hero {
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-end;
+    padding:0 6vw 9vh;
+    color:var(--cream);
+    overflow:hidden;
+    background:#18251d;
 }
 
-.bm-xp-hero__texte { position: relative; }
-
-.bm-xp-hero__titre {
-    font-family: var(--bm-serif);
-    font-size: clamp(2.2rem, 6vw, 4.2rem);
-    line-height: 1.04;
-    margin: 0 0 1.25rem;
-    max-width: 14ch;
+.bm-xp .xp-bg,
+.bm-xp .xp-shade {
+    position:absolute;
+    inset:0;
 }
 
-.bm-xp-hero__intro {
-    font-size: 1.1rem;
-    color: rgba(242, 234, 223, .82);
-    max-width: 52ch;
-    margin: 0;
+.bm-xp .xp-bg {
+    background-size:cover;
+    background-position:center;
+    transform:scale(1.04);
+    animation:drift 12s ease-out both;
 }
 
-.bm-xp-hero__defiler {
-    position: relative;
-    margin-top: 2.5rem;
-    font-size: .68rem;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    color: rgba(242, 234, 223, .75);
-    text-decoration: none;
+.bm-xp .xp-shade {
+    background:linear-gradient(180deg,rgba(8,16,11,.12),rgba(8,16,11,.22) 42%,rgba(8,16,11,.78));
 }
 
-.bm-fil--clair,
-.bm-fil--clair a { color: rgba(242, 234, 223, .7); }
-.bm-fil--clair a:hover { color: var(--bm-creme); }
-
-/* --- Sommaire des besoins --- */
-.bm-besoins {
-    margin-top: 3rem;
-    border-top: 1px solid var(--bm-filet-clair);
+.bm-xp .xp-hero-copy {
+    position:relative;
+    z-index:2;
+    max-width:1150px;
 }
 
-.bm-besoin {
-    position: relative;
-    display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr) 2rem;
-    gap: 1.5rem;
-    align-items: baseline;
-    padding: 1.6rem 0;
-    border-bottom: 1px solid var(--bm-filet-clair);
-    text-decoration: none;
-    transition: padding-left .3s ease, background .3s ease;
+.bm-xp .xp-kicker,
+.bm-xp .xp-no {
+    font-size:10px;
+    letter-spacing:.27em;
+    font-weight:600;
 }
 
-.bm-besoin:hover {
-    padding-left: 1rem;
-    background: rgba(242, 234, 223, .05);
+.bm-xp .xp-hero h1 {
+    font:500 clamp(72px,12vw,190px)/.77 var(--serif);
+    letter-spacing:-.065em;
+    margin:28px 0 36px;
 }
 
-.bm-besoin__num {
-    font-size: .72rem;
-    letter-spacing: .14em;
-    color: rgba(242, 234, 223, .55);
+.bm-xp .xp-hero h1 em {
+    font-weight:500;
 }
 
-.bm-besoin__titre {
-    font-family: var(--bm-serif);
-    font-size: 1.45rem;
-    margin: 0 0 .3rem;
+.bm-xp .xp-intro {
+    max-width:670px;
+    font:500 clamp(20px,2.2vw,34px)/1.25 var(--serif);
+    margin:0;
 }
 
-.bm-besoin__chapo {
-    font-size: .92rem;
-    color: rgba(242, 234, 223, .72);
-    margin: 0;
+.bm-xp .xp-scroll {
+    position:absolute;
+    right:6vw;
+    bottom:9vh;
+    z-index:3;
+    font-size:9px;
+    letter-spacing:.25em;
 }
 
-.bm-besoin__fleche {
-    justify-self: end;
-    color: rgba(242, 234, 223, .6);
+.bm-xp .xp-overview {
+    padding:125px 6vw 100px;
+    display:grid;
+    grid-template-columns:.7fr 1.3fr;
+    gap:9vw;
 }
 
-/* --- Axes d'accompagnement : la liste du contenu devient une grille --- */
-.bm-corps--axes { max-width: none; padding-left: 0; padding-right: 0; }
-
-.bm-corps--axes h3 {
-    font-size: .7rem;
-    font-family: var(--bm-sans);
-    font-weight: 500;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    color: var(--bm-sourdine);
-    margin: 3rem 0 1.5rem;
+.bm-xp .xp-overview h2,
+.bm-xp .xp-cta h2 {
+    font:500 clamp(52px,6vw,100px)/.9 var(--serif);
+    letter-spacing:-.05em;
+    margin:20px 0;
 }
 
-.bm-corps--axes ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1px;
-    background: var(--bm-filet);
-    border: 1px solid var(--bm-filet);
-    list-style: none;
-    padding: 0;
+.bm-xp .xp-overview p {
+    max-width:700px;
+    font-size:16px;
+    line-height:1.8;
+    color:#4f5952;
 }
 
-.bm-corps--axes ul > li {
-    background: var(--bm-creme);
-    padding: 1.75rem;
+.bm-xp .xp-menu {
+    padding:0 6vw 130px;
 }
 
-.bm-corps--axes ul > li::before { content: none; }
-
-/* « Intitule — propos » : l'intitule prend la voix serif. */
-.bm-corps--axes ul > li > p::first-line {
-    font-family: var(--bm-serif);
-    font-size: 1.2rem;
+.bm-xp .xp-menu-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    border-bottom:1px solid rgba(20,32,25,.28);
+    padding-bottom:18px;
 }
 
-.bm-corps--nu { max-width: 60ch; padding: 0; }
-
-@media (max-width: 720px) {
-    .bm-besoin { grid-template-columns: 2.5rem minmax(0, 1fr); }
-    .bm-besoin__fleche { display: none; }
+.bm-xp .xp-menu-head h2 {
+    font:500 clamp(42px,5vw,78px)/.95 var(--serif);
+    margin:0;
 }
+
+.bm-xp .xp-list a {
+    display:grid;
+    grid-template-columns:80px 1fr 1.2fr 40px;
+    gap:25px;
+    align-items:center;
+    min-height:128px;
+    border-bottom:1px solid rgba(20,32,25,.24);
+    transition:.35s;
+}
+
+.bm-xp .xp-list a:hover {
+    padding-left:18px;
+    background:rgba(20,32,25,.045);
+}
+
+.bm-xp .xp-list .n {
+    font-size:10px;
+    opacity:.5;
+}
+
+.bm-xp .xp-list h3 {
+    font:500 clamp(27px,2.7vw,43px)/1 var(--serif);
+    margin:0;
+}
+
+.bm-xp .xp-list p {
+    font-size:13px;
+    line-height:1.6;
+    color:#5f6962;
+    margin:0;
+}
+
+.bm-xp .xp-list b {
+    font-size:22px;
+    font-weight:400;
+}
+
+.bm-xp .xp-detail {
+    background:#16231b;
+    color:var(--cream);
+    padding:120px 6vw;
+}
+
+.bm-xp .xp-detail-head {
+    display:grid;
+    grid-template-columns:.7fr 1.3fr;
+    gap:9vw;
+    margin-bottom:70px;
+}
+
+.bm-xp .xp-detail h2 {
+    font:500 clamp(50px,6vw,92px)/.9 var(--serif);
+    letter-spacing:-.045em;
+    margin:20px 0;
+}
+
+.bm-xp .xp-detail .lead {
+    max-width:680px;
+    line-height:1.8;
+    color:#ccd1cd;
+}
+
+.bm-xp .xp-cards {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border-top:1px solid rgba(242,234,223,.28);
+    border-left:1px solid rgba(242,234,223,.28);
+}
+
+.bm-xp .xp-card {
+    min-height:290px;
+    padding:28px;
+    border-right:1px solid rgba(242,234,223,.28);
+    border-bottom:1px solid rgba(242,234,223,.28);
+}
+
+.bm-xp .xp-card span {
+    font-size:9px;
+    letter-spacing:.18em;
+    opacity:.6;
+}
+
+.bm-xp .xp-card h3 {
+    font:500 32px/1.02 var(--serif);
+    margin:70px 0 18px;
+}
+
+.bm-xp .xp-card p {
+    font-size:13px;
+    line-height:1.7;
+    color:#c5cbc6;
+}
+
+.bm-xp .xp-cta {
+    padding:130px 6vw;
+    background:#d9d1c6;
+}
+
+.bm-xp .xp-cta p {
+    max-width:620px;
+    line-height:1.75;
+}
+
+.bm-xp .xp-button {
+    display:inline-block;
+    margin-top:30px;
+    border:1px solid rgba(20,32,25,.45);
+    border-radius:999px;
+    padding:16px 25px;
+    font-size:12px;
+}
+
+@keyframes drift {
+    from {
+        transform:scale(1.08);
+    }
+    to {
+        transform:scale(1.02);
+    }
+}
+
+@media (max-width:800px) {
+    .bm-xp .xp-hero {
+        padding:0 22px 70px;
+    }
+
+    .bm-xp .xp-hero h1 {
+        font-size:21vw;
+    }
+
+    .bm-xp .xp-scroll {
+        display:none;
+    }
+
+    .bm-xp .xp-overview,
+    .bm-xp .xp-detail-head {
+        grid-template-columns:1fr;
+        gap:20px;
+        padding-left:22px;
+        padding-right:22px;
+    }
+
+    .bm-xp .xp-menu {
+        padding:0 22px 90px;
+    }
+
+    .bm-xp .xp-menu-head {
+        display:block;
+    }
+
+    .bm-xp .xp-list a {
+        grid-template-columns:38px 1fr 24px;
+        gap:10px;
+        padding:22px 0;
+    }
+
+    .bm-xp .xp-list p {
+        grid-column:2/3;
+    }
+
+    .bm-xp .xp-cards {
+        grid-template-columns:1fr;
+    }
+
+    .bm-xp .xp-detail {
+        padding:90px 22px;
+    }
+
+    .bm-xp .xp-cta {
+        padding:90px 22px;
+    }
+
+    .bm-xp .xp-bg {
+        background-position:center;
+    }
+}
+
 
 /* ======================================================================
    14. PAGE DE PRESTATION
