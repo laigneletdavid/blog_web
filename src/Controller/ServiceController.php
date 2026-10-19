@@ -29,7 +29,7 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $services = $serviceRepository->findAllActive();
+        $services = $serviceRepository->findRootsActive();
 
         // Le titre suit l'intitule du menu : un site qui renomme "Services" en
         // "Expertises" ou "Prestations" attend le meme mot sur la page.
@@ -79,6 +79,11 @@ class ServiceController extends AbstractController
         return $this->render('service/show.html.twig', [
             'title_page' => $service->getTitle(),
             'service' => $service,
+            // Arborescence exposee au template : le rendu commun l'ignore, une
+            // surcouche peut s'en servir pour un sommaire ou un fil d'ariane
+            // a trois niveaux. Vide sur un site dont l'offre est a plat.
+            'children' => $service->getChildren(),
+            'parent' => $service->getParent(),
             // Le fil d'ariane reprend l'intitule du menu, comme la page d'index.
             'section_title' => $menuRepository->findSystemByLocationAndKey('header', 'services')?->getName()
                 ?? 'Services',
