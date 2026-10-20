@@ -15,6 +15,7 @@
    N'ecrire que ce qui est [livre] dans REFERENCE-LINTELLO.md.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
+{% import 'client/_macros.html.twig' as lt %}
 
 <div class="lt-home">
 
@@ -166,7 +167,7 @@
                     <span class="lt-post__body">
                         {% if cat %}<span class="lt-eyebrow">{{ cat.name }}</span>{% endif %}
                         <span class="lt-post__title">{{ article.title }}</span>
-                        <span class="lt-post__meta">{{ (article.publishedAt ?? article.createdAt)|format_date('long', locale='fr') }}</span>
+                        <span class="lt-post__meta">{{ lt.date_fr(article.publishedAt ?? article.createdAt) }}</span>
                     </span>
                 </a>
             {% endfor %}

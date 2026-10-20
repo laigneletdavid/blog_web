@@ -19,6 +19,7 @@
    Variables attendues : hero, modes, offer, guides, faqs.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
+{% import 'client/_macros.html.twig' as lt %}
 
 {% set audiences = [
     {label: 'Étudiants', slug: 'etudiants'},
@@ -152,7 +153,7 @@
                 <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="lt-card lt-card--link">
                     {% if cat %}<span class="lt-eyebrow">{{ cat.name }}</span>{% endif %}
                     <span class="lt-card__title lt-card__title--sm">{{ article.title }}</span>
-                    <span class="lt-post__meta">{{ (article.publishedAt ?? article.createdAt)|format_date('long', locale='fr') }}</span>
+                    <span class="lt-post__meta">{{ lt.date_fr(article.publishedAt ?? article.createdAt) }}</span>
                 </a>
             {% endfor %}
         </div>

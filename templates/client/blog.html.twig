@@ -1,0 +1,151 @@
+{# ======================================================================
+   APPRENDRE — accueil du blog LintellO
+   Surcouche client de la liste des articles (voir article/show_all).
+
+   Deux cles qui ne se melangent pas (spec vitrine) :
+   - les categories rangent le TYPE : Guides pratiques, Comprendre l'IA,
+     Nouveautes. Les trois portes et les onglets filtrent la liste par
+     categorie (?categorie=slug, gere par ArticleController) ;
+   - les tags rangent le PUBLIC et l'OUTIL. Le controleur ne filtre pas la
+     liste par tag : les pastilles « Pour : » menent aux pages de tag.
+   L'article a la une est celui coche « mis en avant » dans l'admin
+   (page 1, sans filtre).
+   ====================================================================== #}
+{% set families = [
+    {slug: 'guides-pratiques', label: 'Guides pratiques', lead: 'Partir d’un vrai besoin et le régler pas à pas avec LintellO.', icon: 'M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2zM8 7h6M8 11h6'},
+    {slug: 'comprendre-l-ia', label: 'Comprendre l’IA', lead: 'Ce que fait une IA, ce qu’elle fait de vos données, comment la choisir.', icon: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z'},
+    {slug: 'nouveautes', label: 'Nouveautés', lead: 'Ce qui arrive dans LintellO, version après version.', icon: 'M5 4h11v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1zM16 8h3a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3'},
+] %}
+{% set publics = [
+    {slug: 'etudiants', label: 'étudiants'},
+    {slug: 'maison', label: 'maison'},
+    {slug: 'pros', label: 'pros'},
+] %}
+{% set currentCat = filterCategorie|default(null) %}
+
+{% set baseParams = {} %}
+{% if filterMonth is defined and filterMonth %}
+    {% set baseParams = baseParams|merge({month: filterMonth, year: filterYear}) %}
+{% endif %}
+{% if currentCat %}
+    {% set baseParams = baseParams|merge({categorie: currentCat}) %}
+{% endif %}
+
+<div class="lt-learn">
+
+{# ====== EN-TETE ====== #}
+<section class="lt-page-head lt-learn__head">
+    <div class="lt-container">
+        <p class="lt-eyebrow">Apprendre</p>
+        <h1 class="lt-page-head__title">Tirer le meilleur de l'IA, <span>sans jargon.</span></h1>
+        <p class="lt-page-head__lead">Des guides pas à pas, des explications pour comprendre ce que fait une IA de vos données, et les nouveautés de LintellO.</p>
+    </div>
+</section>
+
+{# ====== LES TROIS PORTES (categories) ====== #}
+<section class="lt-learn__doors">
+    <div class="lt-container lt-doors">
+        {% for f in families %}
+            <a href="{{ path('app_article_show_all', {categorie: f.slug}) }}" class="lt-door{{ currentCat == f.slug ? ' is-current' }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>
+                <span class="lt-door__icon" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ f.icon }}"/></svg>
+                </span>
+                <span class="lt-door__label">{{ f.label }}</span>
+                <span class="lt-door__lead">{{ f.lead }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+{# ====== A LA UNE ====== #}
+{% if featuredArticle is defined and featuredArticle %}
+    {% set fcat = featuredArticle.categories|first %}
+    <section class="lt-learn__featured">
+        <div class="lt-container">
+            <a href="{{ path('app_article_show', {slug: featuredArticle.slug}) }}" class="lt-featured">
+                <span class="lt-featured__media">
+                    {% if featuredArticle.featuredMedia %}
+                        {{ responsive_img(featuredArticle.featuredMedia, '(max-width: 768px) 100vw, 50vw', 'lt-featured__img', null, true, featuredArticle) }}
+                    {% endif %}
+                </span>
+                <span class="lt-featured__body">
+                    <span class="lt-eyebrow">À la une{% if fcat %} · {{ fcat.name }}{% endif %}</span>
+                    <span class="lt-featured__title">{{ featuredArticle.title }}</span>
+                    {% if featuredArticle.featuredText %}
+                        <span class="lt-featured__lead">{{ featuredArticle.featuredText|striptags|u.truncate(220, '…') }}</span>
+                    {% endif %}
+                    {% if featuredArticle.tags|length > 0 %}
+                        <span class="lt-tags">
+                            {% for t in featuredArticle.tags %}<span class="lt-tag">#{{ t.name }}</span>{% endfor %}
+                        </span>
+                    {% endif %}
+                </span>
+            </a>
+        </div>
+    </section>
+{% endif %}
+
+{# ====== LISTE ====== #}
+<section class="lt-learn__list">
+    <div class="lt-container">
+        <div class="lt-learn__filters">
+            <nav class="lt-segmented lt-segmented--links" aria-label="Catégorie">
+                <a href="{{ path('app_article_show_all') }}"{% if not currentCat %} aria-current="page"{% endif %}>Tous</a>
+                {% for f in families %}
+                    <a href="{{ path('app_article_show_all', {categorie: f.slug}) }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>{{ f.label }}</a>
+                {% endfor %}
+            </nav>
+            <nav class="lt-learn__publics" aria-label="Contenus par public">
+                <span>Pour :</span>
+                {% for p in publics %}
+                    <a href="{{ path('app_tag_show', {slug: p.slug}) }}" class="lt-tag lt-tag--link">#{{ p.label }}</a>
+                {% endfor %}
+            </nav>
+        </div>
+
+        {% if articles|length > 0 %}
+            <div class="lt-cards lt-cards--280 lt-learn__grid">
+                {% for article in articles %}
+                    {% set cat = article.categories|first %}
+                    <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="lt-post">
+                        <span class="lt-post__media">
+                            {% if article.featuredMedia %}
+                                {{ responsive_img(article.featuredMedia, '(max-width: 768px) 100vw, 33vw', 'lt-post__img', null, false, article) }}
+                            {% endif %}
+                        </span>
+                        <span class="lt-post__body">
+                            {% if cat %}<span class="lt-eyebrow">{{ cat.name }}</span>{% endif %}
+                            <span class="lt-post__title">{{ article.title }}</span>
+                            {% if article.tags|length > 0 %}
+                                <span class="lt-tags">
+                                    {% for t in article.tags %}<span class="lt-tag">#{{ t.name }}</span>{% endfor %}
+                                </span>
+                            {% endif %}
+                        </span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="lt-learn__empty">
+                {% if currentCat %}Pas encore de contenu dans cette catégorie. <a href="{{ path('app_article_show_all') }}">Voir tous les contenus</a>.{% else %}Les premiers guides arrivent bientôt.{% endif %}
+            </p>
+        {% endif %}
+
+        {% if totalPages > 1 %}
+            <nav class="lt-pagination" aria-label="Pagination">
+                {% for p in 1..totalPages %}
+                    <a href="{{ path('app_article_show_all', baseParams|merge({page: p})) }}"{% if p == currentPage %} aria-current="page"{% endif %}>{{ p }}</a>
+                {% endfor %}
+                {% if currentPage < totalPages %}
+                    <a href="{{ path('app_article_show_all', baseParams|merge({page: currentPage + 1})) }}" class="lt-pagination__next">Suivant</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+
+        <div class="lt-learn__subscribe">
+            {% include 'widgets/subscribe.html.twig' %}
+        </div>
+    </div>
+</section>
+
+</div>

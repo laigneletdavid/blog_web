@@ -1,0 +1,10 @@
+{# ======================================================================
+   MACROS — LintellO
+   date_fr : date longue en francais (« 19 octobre 2026 ») sans passer par
+   intl. L'image Docker du CMS embarque un ICU sans donnees francaises :
+   format_date(locale='fr') y rend « October 19, 2026 ».
+   ====================================================================== #}
+{% macro date_fr(d) %}
+    {%- set mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'] -%}
+    {%- if d -%}{{ d|date('j') == '1' ? '1er' : d|date('j') }} {{ mois[d|date('n') - 1] }} {{ d|date('Y') }}{%- endif -%}
+{% endmacro %}
