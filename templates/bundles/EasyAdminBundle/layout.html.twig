@@ -20,10 +20,12 @@
     {% set _bw_site = seo_service.currentSite %}
     {% if _bw_site %}
         <a class="bw-site-identity" href="{{ path('app_home') }}" target="_blank" rel="noopener" title="Voir le site">
+            {# Logo seul s'il est regle (il porte deja le nom), sinon le nom #}
             {% if _bw_site.logo and _bw_site.logo.fileName %}
-                <img class="bw-site-identity__logo" src="{{ asset('documents/medias/' ~ _bw_site.logo.fileName) }}" alt="">
+                <img class="bw-site-identity__logo" src="{{ asset('documents/medias/' ~ _bw_site.logo.fileName) }}" alt="{{ _bw_site.name }}">
+            {% else %}
+                <span class="bw-site-identity__name">{{ _bw_site.name }}</span>
             {% endif %}
-            <span class="bw-site-identity__name">{{ _bw_site.name }}</span>
         </a>
     {% endif %}
     {{ parent() }}
