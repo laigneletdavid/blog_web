@@ -12,6 +12,21 @@
     "image": "{{ absolute_url(asset('documents/medias/' ~ article.featuredMedia.fileName)) }}",
     {% endif %}
     "description": {{ (article.seoDescription ?? article.featuredText ?? '')|json_encode|raw }},
+    {% if article.author %}
+    "author": {
+        "@type": "Person",
+        "name": {{ article.author.displayName|json_encode|raw }}
+        {%- if article.author.jobTitle %},
+        "jobTitle": {{ article.author.jobTitle|json_encode|raw }}
+        {%- endif %}
+    },
+    {% else %}
+    "author": {
+        "@type": "Organization",
+        "name": {{ site.name|default('Blog&Web')|json_encode|raw }},
+        "url": "{{ absolute_url('/') }}"
+    },
+    {% endif %}
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "{{ app.request.uri }}"

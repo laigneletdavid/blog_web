@@ -65,6 +65,12 @@ class Article implements TimestampedInterface, SanitizableContentInterface
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $featuredMedia = null;
 
+    // Auteur affiche sur l'article et declare en JSON-LD. Rempli a la creation
+    // avec le compte connecte ; nullable pour les articles anterieurs
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?User $author = null;
+
     #[ORM\Column(options: ['default' => false])]
     private bool $isFeatured = false;
 
@@ -309,6 +315,18 @@ class Article implements TimestampedInterface, SanitizableContentInterface
     public function setFeaturedMedia(?Media $featuredMedia): self
     {
         $this->featuredMedia = $featuredMedia;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

@@ -32,11 +32,12 @@ class MediaCrudController extends AbstractCrudController
                 ],
                 [
                     'title' => 'Texte alternatif (alt)',
-                    'content' => '<p>Le champ <em>Nom</em> sert de texte alternatif. Il est important pour :</p>
+                    'content' => '<p>Le champ <em>Texte alternatif</em> decrit ce que montre l\'image. Il est important pour :</p>
                     <ul>
                         <li><strong>L\'accessibilite</strong> — les lecteurs d\'ecran le lisent aux malvoyants</li>
                         <li><strong>Le SEO</strong> — Google comprend le contenu de vos images grace a ce texte</li>
-                    </ul>',
+                    </ul>
+                    <p>S\'il est vide, le site construit un texte a partir du <em>Nom</em> du media et du titre de la page. L\'analyse SEO signale les images concernees.</p>',
                 ],
                 [
                     'title' => 'Utiliser un media',
@@ -67,10 +68,18 @@ class MediaCrudController extends AbstractCrudController
             ->collapsible();
 
         yield TextField::new('name', 'Nom du media')
-            ->setHelp('Nom descriptif pour identifier le media (aussi utilise comme attribut alt)')
+            ->setHelp('Nom descriptif pour identifier le media dans la bibliotheque')
             ->setFormTypeOptions([
                 'attr' => ['placeholder' => 'Ex: Photo equipe, Logo client, Banniere article...'],
             ]);
+
+        yield TextField::new('alt', 'Texte alternatif')
+            ->setHelp('Decrivez ce que montre l\'image, en une phrase courte. Lu par les lecteurs d\'ecran et par Google. Si vide, le nom du media est utilise.')
+            ->setRequired(false)
+            ->setFormTypeOptions([
+                'attr' => ['placeholder' => 'Ex: L\'equipe reunie autour d\'une table dans les bureaux de Pau', 'maxlength' => 255],
+            ])
+            ->hideOnIndex();
 
         $mediaField = ImageField::new('filename', 'Image')
             ->setBasePath('documents/medias/')
