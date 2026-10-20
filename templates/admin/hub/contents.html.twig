@@ -1,5 +1,10 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{# Liens via path('admin', {routeName: ...}) : la route directe /admin/contenus
+   n'a pas le contexte EasyAdmin (ce controleur n'est pas le dashboard) #}
+{% set _base = {routeName: 'admin_contents'} %}
+{% set _search = search ? {q: search} : {} %}
+
 {% block page_title %}Contenus{% endblock %}
 
 {% block content_header %}
@@ -14,12 +19,13 @@
 
 {% block main %}
 <div class="bw-simple">
-    <form class="bw-filters" method="get" action="{{ path('admin_contents') }}">
-        <a class="bw-pill{{ currentType is null ? ' is-active' }}" href="{{ path('admin_contents', search ? {q: search} : {}) }}">
+    <form class="bw-filters" method="get" action="{{ path('admin') }}">
+        <input type="hidden" name="routeName" value="admin_contents">
+        <a class="bw-pill{{ currentType is null ? ' is-active' }}" href="{{ path('admin', _base|merge(_search)) }}">
             Tout <span class="bw-pill__count">{{ counts|reduce((sum, n) => sum + n, 0) }}</span>
         </a>
         {% for type in types %}
-            <a class="bw-pill{{ currentType == type.key ? ' is-active' }}" href="{{ path('admin_contents', {type: type.key}|merge(search ? {q: search} : {})) }}">
+            <a class="bw-pill{{ currentType == type.key ? ' is-active' }}" href="{{ path('admin', _base|merge({type: type.key})|merge(_search)) }}">
                 {{ type.plural }} <span class="bw-pill__count">{{ counts[type.key]|default(0) }}</span>
             </a>
         {% endfor %}
@@ -32,7 +38,7 @@
         <div class="bw-empty">
             {% if search %}
                 <p>Aucun contenu ne contient « {{ search }} ».</p>
-                <a href="{{ path('admin_contents', currentType ? {type: currentType} : {}) }}">Effacer la recherche</a>
+                <a href="{{ path('admin', _base|merge(currentType ? {type: currentType} : {})) }}">Effacer la recherche</a>
             {% else %}
                 <p>Rien ici pour l'instant. Utilisez « Créer » pour commencer.</p>
             {% endif %}

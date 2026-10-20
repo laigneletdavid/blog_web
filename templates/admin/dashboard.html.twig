@@ -72,7 +72,7 @@
     <section class="bw-panel" aria-label="Modifiés récemment">
         <div class="bw-panel__head">
             <h2 class="bw-panel__title">Modifiés récemment</h2>
-            <a href="{{ path('admin_contents') }}">Tous les contenus</a>
+            <a href="{{ path('admin', {routeName: 'admin_contents'}) }}">Tous les contenus</a>
         </div>
         <div class="bw-list bw-list--flat">
             {% for item in recent %}
