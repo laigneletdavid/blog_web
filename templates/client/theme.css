@@ -1076,9 +1076,26 @@ main { overflow-x: clip; }
     font-size:12px;
 }
 
+/* L'encart qui ferme la page, vers le depot documentaire. Le lot le pose
+   dans contact.html mais contact.css ne le decrit pas : il s'y affichait
+   sans habillage. Reprise des valeurs de la meme section sur la page de
+   demarrage de dossier, ou le lot la stylait. */
+.bm-ct .final {
+    padding:110px 6vw;
+    background:#d8d0c5;
+}
+
+.bm-ct .final h2 {
+    font-size:clamp(50px,6vw,95px);
+}
+
 @media (max-width:800px) {
     .bm-ct .ct-hero {
         padding:0 22px 65px;
+    }
+
+    .bm-ct .final {
+        padding:75px 22px;
     }
 
     .bm-ct .ct-hero h1 {

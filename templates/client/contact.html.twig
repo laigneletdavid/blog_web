@@ -29,7 +29,10 @@
     {# ====== 01. BANDEAU ====== #}
     <section class="ct-hero">
         <div class="ct-hero-inner">
-            <p class="eyebrow">BM Notaire · {{ site.town|default('Saint-Martory') }}</p>
+            {# Les surtitres de cette page s'affichent tels quels : .bm-ct ne
+               leur applique aucune mise en capitales, contrairement aux pages
+               de prestation. Ils les portent donc eux-memes, comme le lot. #}
+            <p class="eyebrow">BM NOTAIRE · {{ site.town|default('Saint-Martory')|upper }}</p>
             <h1>Parlons de<br><em>votre projet.</em></h1>
             <p class="intro">
                 Un premier échange permet de comprendre votre situation, d’identifier
@@ -41,7 +44,7 @@
 
     {# ====== 02. COORDONNEES ====== #}
     <section class="ct-info" id="coordonnees">
-        <div class="ct-index">01 / Contact</div>
+        <div class="ct-index">01 / CONTACT</div>
 
         <div class="ct-grid">
             {% if _adresse %}
@@ -74,7 +77,7 @@
     {% if site.googleMaps %}
         <section class="ct-map-section">
             <div class="ct-map-head">
-                <div><span class="section-no">02 / Venir à l’étude</span></div>
+                <div><span class="section-no">02 / VENIR À L’ÉTUDE</span></div>
                 <div>
                     <h2>Au cœur de<br><em>{{ site.town|default('Saint-Martory') }}.</em></h2>
                     <p>
@@ -100,7 +103,7 @@
     {% if _horaires|length %}
         <section class="ct-hours">
             <div>
-                <span class="section-no">03 / Horaires</span>
+                <span class="section-no">03 / HORAIRES</span>
                 <h2>Nous vous<br><em>accueillons.</em></h2>
             </div>
 
@@ -148,13 +151,26 @@
 
     {# ====== 05. ECHANGEONS ====== #}
     <section class="ct-action">
-        <p class="eyebrow">04 / Prenons le temps d’échanger</p>
+        <p class="eyebrow">04 / PRENONS LE TEMPS D’ÉCHANGER</p>
         <h2>Un projet.<br>Une question.<br><em>Échangeons.</em></h2>
         <div class="ct-actions">
             {% if site.phone %}
                 <a href="tel:{{ site.phone }}">Appeler l’étude <span aria-hidden="true">↗</span></a>
             {% endif %}
             <a href="{{ path('app_rendez_vous') }}">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+        </div>
+    </section>
+
+    {# ====== VERS LE DEPOT DOCUMENTAIRE ======
+       Repris du lot, ou il fermait la page. Il n'avait pas ete monte tant
+       que l'espace client n'existait pas. Le lot le laisse sans habillage
+       ici -- contact.css ne definit pas .final -- il en recoit un, calque
+       sur celui de la page de demarrage de dossier. #}
+    <section class="final">
+        <p class="eyebrow">DOCUMENTS</p>
+        <h2>Des pièces à<br><em>préparer ?</em></h2>
+        <div class="ct-actions">
+            <a href="{{ path('app_espace_client') }}">Accéder au dépôt documentaire <span aria-hidden="true">→</span></a>
         </div>
     </section>
 

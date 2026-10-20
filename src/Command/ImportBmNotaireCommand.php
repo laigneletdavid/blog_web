@@ -55,7 +55,15 @@ class ImportBmNotaireCommand extends Command
         $this
             ->addArgument('source', InputArgument::REQUIRED, 'Dossier contenant les fichiers HTML du site')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Analyse et rapport, sans rien ecrire')
-            ->addOption('prefixe', null, InputOption::VALUE_REQUIRED, 'Prefixe des slugs crees', '');
+            ->addOption('prefixe', null, InputOption::VALUE_REQUIRED, 'Prefixe des slugs crees', '')
+            ->addOption(
+                'rattacher',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Rattache une page orpheline a un pole deja importe, sous la forme '
+                .'pole.html=page.html. Seules ces pages sont ecrites : le balayage '
+                .'complet est alors saute, et aucun autre service n\'est touche.'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -72,6 +80,12 @@ class ImportBmNotaireCommand extends Command
         }
 
         $io->title('Import BM NOTAIRE' . ($simulation ? ' — simulation' : ''));
+
+        /** @var list<string> $rattachements */
+        $rattachements = (array) $input->getOption('rattacher');
+        if ($rattachements !== []) {
+            return $this->rattacher($io, $source, $prefixe, $simulation, $rattachements);
+        }
 
         $position = 0;
         $cree = 0;
@@ -177,6 +191,105 @@ class ImportBmNotaireCommand extends Command
         if ($ignores !== []) {
             $io->warning("Pages ignorees :\n  - " . implode("\n  - ", $ignores));
         }
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Rattache des pages orphelines a un pole deja importe.
+     *
+     * Le balayage ordinaire reecrit chaque service qu'il rencontre : titre,
+     * chapo, blocs. Le rejouer pour une seule page manquante effacerait les
+     * retouches faites depuis en administration sur toutes les autres. Ce
+     * chemin n'ecrit donc que les pages nommees.
+     *
+     * @param list<string> $rattachements chacun sous la forme pole.html=page.html
+     */
+    private function rattacher(
+        SymfonyStyle $io,
+        string $source,
+        string $prefixe,
+        bool $simulation,
+        array $rattachements,
+    ): int {
+        $cree = 0;
+        $maj = 0;
+
+        foreach ($rattachements as $couple) {
+            [$fichierPole, $fichierPage] = array_pad(explode('=', $couple, 2), 2, null);
+            if ($fichierPole === null || $fichierPage === null || $fichierPage === '') {
+                $io->error("Rattachement mal forme : $couple (attendu pole.html=page.html)");
+
+                return Command::FAILURE;
+            }
+
+            $pole = $this->services->findOneBy(['slug' => $this->slug($fichierPole, $prefixe)]);
+            if ($pole === null) {
+                $io->error("Pole introuvable en base : $fichierPole");
+
+                return Command::FAILURE;
+            }
+
+            $chemin = $source . '/' . $fichierPage;
+            if (!is_file($chemin)) {
+                $io->error("Page introuvable : $chemin");
+
+                return Command::FAILURE;
+            }
+
+            $html = $this->lire($chemin);
+            // Meme garde que le balayage : une prestation se reconnait a sa
+            // structure, pas a son nom de fichier.
+            if ($this->section($html, 'd-hero') === '') {
+                $io->error("$fichierPage n'a pas la structure d'une prestation.");
+
+                return Command::FAILURE;
+            }
+
+            $titre = $this->extraireTitre($html);
+            if ($titre === null) {
+                $io->error("Titre introuvable dans $fichierPage");
+
+                return Command::FAILURE;
+            }
+
+            // La nouvelle prestation se range apres les freres existants.
+            $rang = 0;
+            foreach ($this->services->findBy(['parent' => $pole]) as $frere) {
+                $rang = max($rang, (int) $frere->getPosition());
+            }
+
+            $this->majService(
+                $this->slug($fichierPage, $prefixe),
+                $titre,
+                $this->extraireChapo($html) ?? '',
+                $this->blocsDetail($html),
+                $pole,
+                $rang + 10,
+                $simulation,
+                $cree,
+                $maj,
+            );
+
+            $io->writeln(sprintf(
+                '   %-46s %s  ->  %s',
+                $titre,
+                $fichierPage,
+                $pole->getTitle(),
+            ));
+        }
+
+        if (!$simulation) {
+            $this->em->flush();
+        }
+
+        $io->newLine();
+        $io->success(sprintf(
+            '%d service(s) cree(s), %d mis a jour%s',
+            $cree,
+            $maj,
+            $simulation ? ' — rien n\'a ete ecrit' : '',
+        ));
 
         return Command::SUCCESS;
     }
