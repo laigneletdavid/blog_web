@@ -90,7 +90,7 @@
     <div class="lt-container">
         <h2 class="lt-h3">{{ modes.title }}</h2>
         <p class="lt-trust__intro">{{ modes.lead }}</p>
-        <ul class="lt-modes">
+        <ul class="lt-modes{{ modes.wide|default(false) ? ' lt-modes--wide' }}">
             {% for m in modes.items %}
                 <li class="lt-mode">
                     <h3 class="lt-mode__name">{{ m.name }}</h3>
@@ -192,7 +192,7 @@
     group.querySelectorAll('[data-lt-period]').forEach(function (b) {
         b.addEventListener('click', function () {
             var p = b.getAttribute('data-lt-period');
-            root.querySelectorAll('.lt-offer__amount, .lt-offer__per').forEach(function (el) {
+            root.querySelectorAll('.lt-offer__card [data-m][data-y]').forEach(function (el) {
                 el.textContent = el.getAttribute('data-' + p);
             });
             group.querySelectorAll('[data-lt-period]').forEach(function (x) {

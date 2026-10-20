@@ -674,6 +674,8 @@ a:hover { color: #1e40af; }
     grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
     gap: 16px;
 }
+/* Neuf modes : trois par ligne plutot que cinq puis quatre */
+.lt-modes--wide { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
 .lt-mode { background: #ffffff; border: 1px solid var(--lt-border); border-radius: 14px; padding: 22px; }
 .lt-mode__name { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 0; color: var(--lt-text); }
 .lt-mode p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: var(--lt-text-body); }
@@ -739,6 +741,32 @@ a:hover { color: #1e40af; }
 .lt-poster__text h2 { margin: 0; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.2; letter-spacing: -.02em; font-weight: 700; color: var(--lt-text); }
 .lt-poster__text p { margin: 12px 0 22px; font-size: 16px; line-height: 1.6; color: var(--lt-text-body); max-width: 560px; }
 .lt-poster__text .lt-btn { gap: 10px; }
+.lt-poster--plain .lt-poster__text p { max-width: 720px; }
+
+/* Offre secondaire (Pros) : presentee a cote, sans mise en avant */
+.lt-offer-alt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+    background: var(--lt-grey);
+    border: 1px solid #eef0f3;
+    border-radius: 20px;
+    padding: 40px;
+}
+.lt-offer-alt__text { flex: 1 1 360px; min-width: 0; }
+.lt-offer-alt__text h2 { margin: 8px 0 0; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.2; letter-spacing: -.02em; font-weight: 700; color: var(--lt-text); }
+.lt-offer-alt__text p:last-child { margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: var(--lt-text-body); max-width: 480px; }
+.lt-offer-alt__card {
+    flex: 1 1 420px;
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid var(--lt-border);
+    border-radius: 18px;
+    padding: 28px;
+}
+.lt-offer-alt__card .lt-offer__price { margin-top: 0; flex-wrap: wrap; }
+.lt-offer-alt__card .lt-offer__amount { font-size: 34px; }
 
 /* ---------- Footer ---------- */
 .lt-footer {
@@ -795,6 +823,8 @@ a:hover { color: #1e40af; }
     .lt-offer__card { padding: 24px; }
     .lt-offer__amount { font-size: 34px; }
     .lt-poster { padding: 28px 24px; gap: 24px; }
+    .lt-offer-alt { padding: 24px 16px; gap: 24px; }
+    .lt-offer-alt__card { padding: 20px; }
     .lt-poster-section { padding-bottom: 64px; }
     .lt-pricing__table { min-width: 780px; }
     .lt-pricing__corner { width: 130px; }
