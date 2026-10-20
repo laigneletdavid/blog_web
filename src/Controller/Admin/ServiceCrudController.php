@@ -151,21 +151,22 @@ class ServiceCrudController extends AbstractCrudController
             'sections' => [
                 [
                     'title' => 'Fiches de services',
-                    'content' => '<p>Presentez vos prestations sous forme de grille sur la page d\'accueil.</p>
+                    'content' => '<p>Présentez vos prestations en grille sur la page d\'accueil.</p>
                     <ul>
-                        <li><strong>Description courte</strong> — affichee dans la carte du service</li>
-                        <li><strong>Contenu detaille</strong> — page de detail optionnelle (editeur visuel)</li>
-                        <li><strong>Icone</strong> — classe Bootstrap Icons (ex: <code>bi-rocket</code>)</li>
+                        <li><strong>Description courte</strong> — affichée dans la liste des services</li>
+                        <li><strong>Page détaillée</strong> — facultative : si elle est vide, le service n\'a pas de page à lui</li>
+                        <li><strong>Icône</strong> et <strong>image</strong> — à choisir dans leurs sélecteurs</li>
+                        <li><strong>Rattacher à un service</strong> — fait de ce service une prestation d\'un autre</li>
                     </ul>',
                 ],
                 [
-                    'title' => 'Liens',
-                    'content' => '<p>Priorite des liens : page liee > lien externe > page de detail auto-generee (si contenu detaille rempli).</p>',
+                    'title' => 'Au clic sur le service',
+                    'content' => '<p>Le visiteur est envoyé, dans cet ordre de priorité, vers la <em>Page liée</em>, puis le lien externe (mode expert), puis la page détaillée si elle est remplie.</p>',
                 ],
             ],
             'tips' => [
-                'L\'icone s\'affiche dans la grille des services sur la home. Trouvez les icones sur icons.getbootstrap.com.',
-                '<strong>SEO</strong> : chaque service a sa propre page. Pensez à remplir le Titre SEO (max 70 car.) et la Meta description (max 160 car.) dans le panel SEO pour un meilleur référencement.',
+                'Chaque service avec une page détaillée a sa propre adresse : remplissez son bloc Dans Google (titre de 30 à 60 caractères, description de 120 à 160).',
+                'Citez la ville ou la zone où vous intervenez dans le titre dans Google : le bilan de la page Référencement le vérifie.',
             ],
         ];
     }

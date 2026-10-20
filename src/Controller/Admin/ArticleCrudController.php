@@ -57,35 +57,36 @@ class ArticleCrudController extends AbstractCrudController
             'title' => 'Aide — Articles',
             'sections' => [
                 [
-                    'title' => 'L\'editeur de contenu',
-                    'content' => '<p>L\'editeur visuel vous permet de mettre en forme vos articles : <strong>gras</strong>, <em>italique</em>, titres, listes, images, videos YouTube, citations et blocs de code.</p>
-                    <p>Vous pouvez aussi inserer des <strong>documents telechargeables</strong> (PDF, DOCX, XLSX, ZIP...) via le bouton <em>Document</em> de la barre d\'outils ou la commande <code>/document</code>. Ils s\'affichent en carte cliquable avec icone, nom et taille.</p>
-                    <p>Votre brouillon est <strong>sauvegarde automatiquement</strong> toutes les 30 secondes dans votre navigateur.</p>',
+                    'title' => 'Le formulaire',
+                    'content' => '<p><strong>À gauche, vous écrivez</strong> : titre, résumé (affiché dans la liste des articles), contenu, puis le bloc <em>Dans Google</em>.</p>
+                    <p><strong>À droite, vous publiez et classez</strong> : publication, auteur, image, catégories et étiquettes.</p>
+                    <p>Le contenu se met en forme avec l\'éditeur visuel. Tapez <code>/</code> pour insérer un bloc : image, vidéo, encart, colonnes, document à télécharger. Votre brouillon est sauvegardé automatiquement toutes les 30 secondes dans votre navigateur.</p>',
                 ],
                 [
                     'title' => 'Publication',
                     'content' => '<ul>
-                        <li>Par defaut, un article est en <strong>brouillon</strong> (non visible)</li>
-                        <li>Cochez <em>Publie</em> pour le rendre visible immediatement</li>
-                        <li>Ou definissez une <strong>date de publication programmee</strong> : l\'article sera publie automatiquement a la date et heure choisies, des qu\'un visiteur accede au site</li>
-                        <li>Si une date future est definie, l\'article reste en brouillon meme si <em>Publie</em> est coche</li>
-                        <li>Les abonnes sont notifies par email au moment de la publication (immediate ou programmee)</li>
+                        <li>Un nouvel article est un <strong>brouillon</strong> : vous seul le voyez</li>
+                        <li>Cochez <em>En ligne</em> pour le publier tout de suite</li>
+                        <li>Ou choisissez une date dans <em>Programmer une date</em> : il sera mis en ligne automatiquement à ce moment-là</li>
+                        <li>Les abonnés à la lettre sont prévenus par e-mail au moment de la mise en ligne</li>
                     </ul>',
                 ],
                 [
-                    'title' => 'Article vedette',
-                    'content' => '<p>Un article marque <em>vedette</em> est affiche en evidence en haut de la page Blog. Un seul article peut etre vedette a la fois.</p>',
+                    'title' => 'Auteur et mise en avant',
+                    'content' => '<p>L\'<em>Auteur</em> est rempli avec votre compte à la création. Il est affiché sous l\'article avec ses initiales et sa présentation, et Google valorise les contenus signés.</p>
+                    <p><em>Mettre en avant</em> affiche l\'article en tête de la page Blog.</p>',
                 ],
                 [
-                    'title' => 'SEO',
-                    'content' => '<p>Le panneau <em>SEO</em> (en bas du formulaire) vous permet de personnaliser le titre et la description qui apparaissent dans Google. Si vous les laissez vides, le titre et l\'accroche de l\'article sont utilises.</p>',
+                    'title' => 'Dans Google',
+                    'content' => '<p>Le bloc <em>Dans Google</em>, sous le contenu, règle le titre et la description affichés dans les résultats de recherche. L\'aperçu au-dessus montre le rendu pendant que vous tapez. Laissez vide pour reprendre le titre et le résumé.</p>
+                    <p>Le bilan en haut du formulaire vous indique ce qu\'il reste à améliorer.</p>',
                 ],
             ],
             'tips' => [
-                'Ajoutez toujours une image mise en avant et un texte d\'accroche pour rendre vos articles plus attractifs.',
-                'Un bon titre SEO fait entre 50 et 70 caracteres, et la meta-description entre 120 et 160.',
-                'Utilisez la publication programmee pour preparer vos articles a l\'avance et maintenir un rythme regulier.',
-                'Pour partager un PDF ou une plaquette, inserez-le directement depuis l\'editeur via le bouton Document : il s\'affichera en carte cliquable.',
+                'Ajoutez toujours une image et un résumé : vos articles seront plus attractifs dans les listes et sur les réseaux sociaux.',
+                'Un bon titre dans Google fait 30 à 60 caractères, et la description 120 à 160.',
+                'Programmez vos articles à l\'avance pour garder un rythme de publication régulier.',
+                'Pour partager un PDF ou une plaquette, insérez-le depuis l\'éditeur avec le bouton Document : il s\'affichera en carte cliquable.',
             ],
         ];
     }

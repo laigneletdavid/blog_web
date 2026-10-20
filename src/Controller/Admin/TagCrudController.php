@@ -92,18 +92,18 @@ class TagCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Aide — Tags',
+            'title' => 'Aide — Étiquettes',
             'sections' => [
                 [
-                    'title' => 'Classification',
-                    'content' => '<p>Les tags permettent une classification fine par mots-cles. Ils sont partages entre les <strong>articles</strong>, l\'<strong>annuaire</strong>, les <strong>produits</strong> et le <strong>portfolio</strong>.</p>
-                    <p>Chaque tag genere sa propre page (<code>/tag/{slug}</code>) listant tous les contenus associes, toutes sources confondues.</p>',
+                    'title' => 'À quoi servent les étiquettes',
+                    'content' => '<p>Les étiquettes permettent un classement fin par mots-clés. Elles sont partagées entre les <strong>articles</strong>, l\'<strong>annuaire</strong>, les <strong>produits</strong> et le <strong>portfolio</strong>.</p>
+                    <p>Chaque étiquette génère sa propre page (<code>/tag/{slug}</code>) listant tous les contenus associes, toutes sources confondues.</p>',
                 ],
                 [
-                    'title' => 'Familles de tags',
+                    'title' => 'Familles d\'étiquettes',
                     'content' => '<p>Vous pouvez regrouper les tags par <strong>famille</strong> (Villes, Métiers, Marques...) pour générer automatiquement des filtres front dédiés.</p>
                     <p>Le rattachement à une famille reste <strong>optionnel</strong> : un tag sans famille fonctionne comme avant.</p>
-                    <p>Pour gérer les familles, allez dans <em>Classification > Familles de tags</em>.</p>',
+                    <p>Les familles se gèrent dans <em>Réglages &rarr; Catégories et étiquettes &rarr; Familles d\'étiquettes</em>, visible en mode expert.</p>',
                 ],
             ],
             'tips' => [

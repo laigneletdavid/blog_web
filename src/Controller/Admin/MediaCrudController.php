@@ -26,30 +26,31 @@ class MediaCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Aide — Medias',
+            'title' => 'Aide — Médias',
             'sections' => [
                 [
                     'title' => 'Ajouter une image',
-                    'content' => '<p>Formats acceptes : <strong>JPG, PNG, GIF, WebP</strong>. Taille maximale : 25 Mo.</p>
-                    <p>Chaque image est automatiquement convertie en <strong>WebP</strong> (format plus leger) et declinee en <strong>3 tailles</strong> (480px, 800px, 1200px) pour s\'adapter a tous les ecrans.</p>',
+                    'content' => '<p>Formats acceptés : <strong>JPG, PNG, GIF, WebP</strong>. Taille maximale : 25 Mo.</p>
+                    <p>Chaque image est automatiquement convertie en <strong>WebP</strong> (format plus léger) et déclinée en <strong>3 tailles</strong> (480px, 800px, 1200px) pour s\'adapter à tous les écrans.</p>',
                 ],
                 [
-                    'title' => 'Texte alternatif (alt)',
-                    'content' => '<p>Le champ <em>Texte alternatif</em> decrit ce que montre l\'image. Il est important pour :</p>
+                    'title' => 'Texte alternatif',
+                    'content' => '<p>Le champ <em>Texte alternatif</em> décrit ce que montre l\'image. Il est important pour :</p>
                     <ul>
-                        <li><strong>L\'accessibilite</strong> — les lecteurs d\'ecran le lisent aux malvoyants</li>
-                        <li><strong>Le SEO</strong> — Google comprend le contenu de vos images grace a ce texte</li>
+                        <li><strong>L\'accessibilité</strong> — les lecteurs d\'écran le lisent aux personnes malvoyantes</li>
+                        <li><strong>Le référencement</strong> — Google comprend le contenu de vos images grâce à ce texte</li>
                     </ul>
-                    <p>S\'il est vide, le site construit un texte a partir du <em>Nom</em> du media et du titre de la page. L\'analyse SEO signale les images concernees.</p>',
+                    <p>Il est repris partout où l\'image est utilisée. S\'il est vide, le site construit un texte à partir du <em>Nom</em> de l\'image et du titre de la page, et l\'accueil vous signale l\'image.</p>',
                 ],
                 [
-                    'title' => 'Utiliser un media',
-                    'content' => '<p>Les medias sont utilises dans vos articles et pages via le bouton <strong>Image</strong> de l\'editeur, ou comme <em>image mise en avant</em> dans les formulaires.</p>',
+                    'title' => 'Utiliser une image',
+                    'content' => '<p>Insérez une image dans un article ou une page avec le bouton <strong>Image</strong> de l\'éditeur, ou choisissez-la dans le bloc <em>Image</em> à droite des formulaires.</p>
+                    <p>Les fichiers à télécharger (PDF, plaquettes) sont dans <em>Documents</em>, par le lien sous le titre de cette page.</p>',
                 ],
             ],
             'tips' => [
-                'Donnez des noms descriptifs a vos images. Preferez "equipe-reunion-bureau" a "IMG_20240315.jpg".',
-                'Les images WebP se chargent 25 a 30% plus vite que les JPEG classiques.',
+                'Décrivez ce qu\'on voit, pas le nom du fichier : « L\'équipe réunie dans les bureaux de Pau » plutôt que « IMG_20240315 ».',
+                'Les images WebP se chargent 25 à 30 % plus vite que les JPEG classiques.',
             ],
         ];
     }
