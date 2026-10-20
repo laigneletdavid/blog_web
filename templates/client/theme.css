@@ -10,6 +10,11 @@
 
 :root {
     --bm-creme: #F2EADF;
+    /* Les deux papiers des pages de contenu : celui des sections claires,
+       et le ton plus chaud qui ferme une page. Ils venaient du lot, ecrits
+       en dur a chaque usage ; les nommer evite qu'une teinte derive. */
+    --bm-papier: #EEE7DD;
+    --bm-papier-chaud: #E5DDD2;
     --bm-encre: #142019;
     --bm-encre-clair: #1E2E25;
     --bm-sourdine: #778078;
@@ -580,10 +585,20 @@ main { overflow-x: clip; }
     align-items: start;
 }
 
+/* La carte reprend le papier des sections claires de la page de l'etude.
+   Elle etait en blanc pur, une couleur qui ne figure nulle part ailleurs
+   sur le site. Les champs, en creme, s'y detachent en clair. */
 .bm-sim .card {
-    background: #fff;
+    background: var(--bm-papier);
     border: 1px solid var(--bm-filet);
     padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* Le resultat se distingue des cartes de saisie : c'est lui qu'on vient
+   chercher. Meme ton que la section de cloture de la page de l'etude. */
+.bm-sim #result {
+    background: var(--bm-papier-chaud);
+    border-color: rgba(20, 32, 25, .28);
 }
 
 .bm-sim .card h2,
@@ -591,6 +606,16 @@ main { overflow-x: clip; }
     font-family: var(--bm-serif);
     font-size: 1.35rem;
     margin: 0 0 1.5rem;
+}
+
+/* Les titres suivent l'encre de la charte : sans cette precision, le CMS
+   leur impose son bleu-noir, comme ailleurs sur le site. */
+.bm-sim h1,
+.bm-sim h2,
+.bm-sim h3,
+.bm-sim .card,
+.bm-sim #total {
+    color: var(--bm-encre);
 }
 
 .bm-sim .field { margin-bottom: 1.5rem; }
@@ -686,6 +711,38 @@ main { overflow-x: clip; }
     font-size: clamp(2rem, 5vw, 3.2rem);
     line-height: 1.1;
     margin: .5rem 0 1.5rem;
+}
+
+/* Les chiffres cles du resultat. Le lot les livre en <small> suivi d'un
+   <strong>, deux elements en ligne : sans mise en forme, le libelle et la
+   valeur se touchaient. */
+.bm-sim .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.bm-sim .kpi {
+    padding: .9rem 1.1rem;
+    background: rgba(242, 234, 223, .6);
+    border: 1px solid var(--bm-filet);
+}
+
+.bm-sim .kpi small {
+    display: block;
+    margin-bottom: .35rem;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--bm-sourdine);
+}
+
+.bm-sim .kpi strong {
+    display: block;
+    font-family: var(--bm-serif);
+    font-size: 1.3rem;
+    font-weight: 500;
 }
 
 .bm-sim .row,
@@ -1497,7 +1554,9 @@ main { overflow-x: clip; }
     display:flex;
     align-items:flex-end;
     padding:0 7vw 9vh;
-    color:#fff;
+    /* detail.css demandait du blanc pur. Tous les autres bandeaux sombres du
+       site sont en creme : cote a cote, le blanc sonnait plus froid. */
+    color: var(--bm-creme);
     overflow:hidden;
 }
 
@@ -1679,7 +1738,7 @@ main { overflow-x: clip; }
 }
 
 .bm-d .crumbs a {
-    color:#fff;
+    color: var(--bm-creme);
     text-decoration:none;
     opacity:.78;
 }
