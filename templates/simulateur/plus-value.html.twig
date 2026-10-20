@@ -52,7 +52,7 @@
       <div class="field">
         <label>Frais d’acquisition</label>
         <div class="choice">
-          <label><input type="radio" name="acqFees" value="flat" checked><span>Forfait 7,5 %</span></label>
+          <label><input type="radio" name="acqFees" value="flat" checked><span>Forfait {{ (bareme_valeurs.forfaitFraisAcquisition * 100)|number_format(1, ',', ' ') }} %</span></label>
           <label><input type="radio" name="acqFees" value="real"><span>Frais réels</span></label>
         </div>
         <input id="realAcqFees" type="number" min="0" step="100" value="0" style="margin-top:10px;display:none" placeholder="Montant des frais réels">
@@ -61,7 +61,7 @@
         <label>Travaux</label>
         <div class="choice">
           <label><input type="radio" name="works" value="none" checked><span>Aucun</span></label>
-          <label><input type="radio" name="works" value="flat"><span>Forfait 15 %</span></label>
+          <label><input type="radio" name="works" value="flat"><span>Forfait {{ (bareme_valeurs.forfaitTravaux * 100)|number_format(0, ',', ' ') }} %</span></label>
           <label><input type="radio" name="works" value="real"><span>Frais réels</span></label>
         </div>
         <input id="realWorks" type="number" min="0" step="100" value="0" style="margin-top:10px;display:none" placeholder="Montant des travaux retenus">
@@ -116,7 +116,7 @@
     </section>
 
     <p class="disclaimer full">
-      Version de démonstration : règles générales des plus-values immobilières des particuliers. Taux utilisés : 19 % au titre de l'impôt sur le revenu et 17,2 % au titre des prélèvements sociaux. Exonération de l'IR après 22 ans et des prélèvements sociaux après 30 ans, sous réserve des conditions applicables.
+      Règles générales des plus-values immobilières des particuliers. Taux utilisés : {{ (bareme_valeurs.tauxIr * 100)|number_format(0, ',', ' ') }} % au titre de l’impôt sur le revenu et {{ (bareme_valeurs.tauxPrelevementsSociaux * 100)|number_format(1, ',', ' ') }} % au titre des prélèvements sociaux. Exonération de l’impôt sur le revenu après {{ bareme_valeurs.exonerationIrAns }} ans de détention et des prélèvements sociaux après {{ bareme_valeurs.exonerationPrelevementsSociauxAns }} ans, sous réserve des conditions applicables.
     </p>
   </div>
 
@@ -131,6 +131,11 @@
     // le script ne trouverait aucun de ses champs.
     document.addEventListener('DOMContentLoaded', function () {
 (() => {
+  // Bareme servi par BaremeNotarial : aucune valeur chiffree ici.
+  const B = {{ bareme_valeurs|json_encode|raw }};
+  // JSON ne sait pas ecrire l'infini : la derniere tranche arrive a null.
+  const plafond = l => l === null ? Infinity : l;
+
   const $ = id => document.getElementById(id);
   const euro = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,n||0));
   const pct = n => `${(n*100).toFixed(1).replace('.',',')} %`;
@@ -154,26 +159,21 @@
   }
 
   function abatements(years){
-    const ir = years < 6 ? 0 : years <= 21 ? 0.06*(years-5) : 1;
+    const i = B.abattementIr, p = B.abattementPrelevementsSociaux;
+    const ir = years <= i.depart ? 0 : years <= i.exoneration ? i.parAn*(years-i.depart) : 1;
+    // Nombre d'annees courant au taux ordinaire avant l'annee charniere.
+    const paliers = p.anneeCharniere - 1 - p.depart;
     let ps = 0;
-    if(years >= 6 && years <= 21) ps = 0.0165*(years-5);
-    else if(years === 22) ps = 0.0165*16 + 0.016;
-    else if(years >= 23) ps = Math.min(1, 0.0165*16 + 0.016 + 0.09*(years-22));
+    if(years > p.depart && years < p.anneeCharniere) ps = p.parAn*(years-p.depart);
+    else if(years === p.anneeCharniere) ps = p.parAn*paliers + p.tauxCharniere;
+    else if(years > p.anneeCharniere) ps = Math.min(1, p.parAn*paliers + p.tauxCharniere + p.parAnEnsuite*(years-p.anneeCharniere));
     return {ir:Math.min(1,ir), ps:Math.min(1,ps)};
   }
 
   function surtax(base){
-    if(base <= 50000) return 0;
-    const bands = [
-      [50000,100000,.02],
-      [100000,150000,.03],
-      [150000,200000,.04],
-      [200000,250000,.05],
-      [250000,Infinity,.06]
-    ];
     let tax=0;
-    for(const [lo,hi,rate] of bands){
-      if(base>lo) tax += (Math.min(base,hi)-lo)*rate;
+    for(const [lo,hi,rate] of B.surtaxe){
+      if(base>lo) tax += (Math.min(base,plafond(hi))-lo)*rate;
     }
     return tax;
   }
@@ -213,14 +213,14 @@
     const years = fullYears(buyDate,saleDate);
     const saleAdjusted = Math.max(0, sale-val('saleCosts'));
 
-    let fees = selected('acqFees') === 'flat' ? buy*0.075 : val('realAcqFees');
+    let fees = selected('acqFees') === 'flat' ? buy*B.forfaitFraisAcquisition : val('realAcqFees');
     let works = 0;
     if(selected('works') === 'flat') {
-      if(years < 5){
-        error.textContent="Le forfait travaux de 15 % n'est présenté qu'après plus de cinq années de détention. Choisissez les travaux réels ou aucun.";
+      if(years < B.forfaitTravauxDureeMin){
+        error.textContent=`Le forfait travaux de ${(B.forfaitTravaux*100).toLocaleString('fr-FR',{maximumFractionDigits:1})} % n'est présenté qu'après plus de cinq années de détention. Choisissez les travaux réels ou aucun.`;
         error.style.display='block'; return;
       }
-      works = buy*0.15;
+      works = buy*B.forfaitTravaux;
     } else if(selected('works') === 'real') works=val('realWorks');
 
     const buyAdjusted = buy+fees+works;
@@ -228,8 +228,8 @@
     const ab = abatements(years);
     const irBase = gross*(1-ab.ir);
     const psBase = gross*(1-ab.ps);
-    const incomeTax = irBase*0.19;
-    const socialTax = psBase*0.172;
+    const incomeTax = irBase*B.tauxIr;
+    const socialTax = psBase*B.tauxPrelevementsSociaux;
     const extra = surtax(irBase);
     const total = incomeTax+socialTax+extra;
 

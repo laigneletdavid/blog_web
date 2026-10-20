@@ -145,6 +145,11 @@
     // le script ne trouverait aucun de ses champs.
     document.addEventListener('DOMContentLoaded', function () {
 (function(){
+// Bareme servi par BaremeNotarial : aucune valeur chiffree ici.
+const B={{ bareme_valeurs|json_encode|raw }};
+// JSON ne sait pas ecrire l'infini : la derniere tranche arrive a null.
+const plafond=l=>l===null?Infinity:l;
+
 const $=id=>document.getElementById(id);
 const money=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,v||0));
 const n=id=>Math.max(0,Number($(id).value)||0);
@@ -152,27 +157,26 @@ const n=id=>Math.max(0,Number($(id).value)||0);
 function bracket(base, table){
  let prev=0,tax=0;
  for(const [limit,rate] of table){
-   const slice=Math.max(0,Math.min(base,limit)-prev);
+   const l=plafond(limit);
+   const slice=Math.max(0,Math.min(base,l)-prev);
    if(slice>0)tax+=slice*rate;
-   if(base<=limit)break;
-   prev=limit;
+   if(base<=l)break;
+   prev=l;
  }
  return tax;
 }
 function usufruitPct(age){
- if(age<21)return .90;if(age<31)return .80;if(age<41)return .70;if(age<51)return .60;
- if(age<61)return .50;if(age<71)return .40;if(age<81)return .30;if(age<91)return .20;return .10;
+ for(const [limite,part] of B.usufruit){
+   if(limite===null||age<limite)return part;
+ }
+ return B.usufruit[B.usufruit.length-1][1];
 }
 function emolument(v,nature,forme){
- if(forme==='partage'){
-   return tranche(v,[[6500,.04931],[17000,.02034],[60000,.01356],[Infinity,.01017]]);
- }
- if(nature==='argent'){
-   return tranche(v,[[6500,.02367],[17000,.00976],[60000,.00651],[Infinity,.00488]]);
- }
- return tranche(v,[[6500,.04931],[17000,.02034],[60000,.01356],[Infinity,.01017]]);
+ if(forme==='partage')return tranche(v,B.emolumentsActe);
+ if(nature==='argent')return tranche(v,B.emolumentsArgent);
+ return tranche(v,B.emolumentsActe);
 }
-function tranche(v,ts){let p=0,s=0;for(const [lim,r] of ts){const x=Math.max(0,Math.min(v,lim)-p);s+=x*r;if(v<=lim)break;p=lim}return s}
+function tranche(v,ts){let p=0,s=0;for(const [lim,r] of ts){const l=plafond(lim);const x=Math.max(0,Math.min(v,l)-p);s+=x*r;if(v<=l)break;p=l}return s}
 function calc(){
  const nature=$('nature').value, forme=$('forme').value, lien=$('lien').value;
  const montant=n('montant'), nb=Math.max(1,Math.floor(n('nb')));
@@ -180,39 +184,34 @@ function calc(){
  const dem=$('demembrement').value, handicap=$('handicap').checked;
  let valFisc=montant;
  if(nature==='immobilier' && dem==='nue') valFisc=montant*usufruitPct(n('ageUsufruit')) ;
- let parent=0;
- if(['enfant','parent'].includes(lien))parent=100000;
- else if(lien==='petit')parent=31865;
- else if(lien==='arriere')parent=5310;
- else if(lien==='epoux')parent=80724;
- else if(lien==='frere')parent=15932;
- else if(lien==='neveu')parent=7967;
- else parent=0;
- const hand=handicap?159325:0;
+ const parent=B.abattements[lien]||0;
+ const hand=handicap?B.handicap:0;
  let g=0;
- const eligibleG=$('don790G').checked && nature==='argent' && dem==='plein' && ageD<80 && ageR>=18 && ['enfant','petit','arriere','neveu'].includes(lien);
- if(eligibleG)g=31865;
+ const eligibleG=$('don790G').checked && nature==='argent' && dem==='plein'
+   && ageD<B.don790G.ageDonateurMax && ageR>=B.don790G.ageDonataireMin
+   && ['enfant','petit','arriere','neveu'].includes(lien);
+ if(eligibleG)g=B.don790G.montant;
  let dispo=Math.max(0,parent+hand-ant);
  let base=Math.max(0,valFisc-dispo-g);
  let tax=0;
  if(lien==='enfant'||lien==='parent'||lien==='petit'||lien==='arriere'){
-   tax=bracket(base,[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]);
+   tax=bracket(base,B.ligneDirecte);
  }else if(lien==='epoux'){
-   tax=bracket(base,[[8072,.05],[15932,.10],[31865,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]);
+   tax=bracket(base,B.epoux);
  }else if(lien==='frere'){
-   tax=Math.min(base,24430)*.35+Math.max(0,base-24430)*.45;
+   tax=Math.min(base,B.freres.seuil)*B.freres.tauxBas+Math.max(0,base-B.freres.seuil)*B.freres.tauxHaut;
  }else if(lien==='neveu'){
-   tax=base*.55;
+   tax=base*B.neveu;
  }else{
-   tax=base*.60;
+   tax=base*B.autre;
  }
  tax=Math.max(0,tax-droitReduction(droitsAnt,base));
  const em=emolument(montant,nature,forme);
- const tva=em*.20;
+ const tva=em*B.tva;
  let imm=0;
  if(nature==='immobilier'){
-   const tpf=valFisc*.006;
-   imm=tpf+tpf*.0237+valFisc*.001;
+   const tpf=valFisc*B.immobilier.tpf;
+   imm=tpf+tpf*B.immobilier.fraisAssiette+valFisc*B.immobilier.securiteImmobiliere;
  }
  const total=tax+em+tva+imm;
  $('valFisc').textContent=money(valFisc);$('base').textContent=money(base);
@@ -221,7 +220,7 @@ function calc(){
  $('emol').textContent=money(em);$('tva').textContent=money(tva);$('immofrais').textContent=money(imm);$('total').textContent=money(total);
  $('sousTitre').textContent=eligibleG?'Exonération 790 G intégrée sous réserve des conditions légales.':'Après abattements et exonérations estimés';
 }
-function droitReduction(droitsAnt,base){return Math.min(Math.max(0,droitsAnt), bracket(Math.max(0,base),[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]))}
+function droitReduction(droitsAnt,base){return Math.min(Math.max(0,droitsAnt), bracket(Math.max(0,base),B.ligneDirecte))}
 ['nature','forme','montant','demembrement','ageUsufruit','lien','nb','ageDonateur','ageDonataire','handicap','anterieur','droitsAnterieurs','don790G'].forEach(id=>{ $(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
 $('demembrement').addEventListener('change',()=>{$('ageRow').classList.toggle('hidden',$('demembrement').value!=='nue');calc()});
 $('showLead').addEventListener('click',()=>{$('lead').classList.toggle('show');});

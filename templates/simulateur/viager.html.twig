@@ -84,6 +84,9 @@
     // le script ne trouverait aucun de ses champs.
     document.addEventListener('DOMContentLoaded', function () {
 (()=> {
+// Bareme servi par BaremeNotarial : aucune valeur chiffree ici.
+const B={{ bareme_valeurs|json_encode|raw }};
+
 const $=id=>document.getElementById(id);
 const euro=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,n||0));
 const val=id=>Math.max(0,Number($(id).value)||0);
@@ -91,19 +94,20 @@ const occ=()=>document.querySelector('input[name="occup"]:checked')?.value;
 
 function life(age){
   // Durées statistiques pédagogiques, volontairement lissées.
-  const table=[[60,26],[65,22],[70,18],[75,14],[80,10],[85,7],[90,5],[95,3.5],[100,2]];
-  if(age<=60)return 26;
+  const table=B.esperance;
+  if(age<=table[0][0])return table[0][1];
   for(let i=1;i<table.length;i++){
     const [a2,l2]=table[i], [a1,l1]=table[i-1];
     if(age<=a2)return l1+(l2-l1)*(age-a1)/(a2-a1);
   }
-  return 1.5;
+  return B.dureePlancher;
 }
 function calc(){
  const err=$('error');err.style.display='none';
  const value=val('value'), age1=Number($('age1').value), age2=Number($('age2').value)||0, bouquet=val('bouquet');
  if(!value || !age1){err.textContent='Veuillez renseigner la valeur du bien et l’âge du vendeur.';err.style.display='block';return;}
- if(age1<40||age1>105||(age2&&(age2<40||age2>105))){err.textContent='Veuillez saisir un âge compris entre 40 et 105 ans.';err.style.display='block';return;}
+ const horsBornes=a=>a<B.ageMin||a>B.ageMax;
+ if(horsBornes(age1)||(age2&&horsBornes(age2))){err.textContent=`Veuillez saisir un âge compris entre ${B.ageMin} et ${B.ageMax} ans.`;err.style.display='block';return;}
  if(bouquet>value){err.textContent='Le bouquet ne peut pas dépasser la valeur du bien dans cette simulation.';err.style.display='block';return;}
 
  let duration=life(age1);
@@ -117,7 +121,7 @@ function calc(){
  let occupiedValue=Math.max(0,value-dua);
  let capital=Math.max(0,occupiedValue-bouquet);
  // Taux actuariel simplifié : capital / valeur actuelle d'une rente annuelle sur la durée statistique.
- const rate=0.02;
+ const rate=B.tauxActuariel;
  const annuityFactor=(1-Math.pow(1+rate,-duration))/rate;
  let annual=capital/annuityFactor;
  // Réversion : majoration indicative si rente maintenue sur deux têtes.
@@ -126,7 +130,7 @@ function calc(){
    if(rev>0){
      const joint= Math.max(duration, life(age2));
      const factor=(1-Math.pow(1+rate,-joint))/rate;
-     annual=capital/factor*(1+0.10*(rev/100));
+     annual=capital/factor*(1+B.majorationReversion*(rev/100));
    }
  }
  const freq=Number($('frequency').value);

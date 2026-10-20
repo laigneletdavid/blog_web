@@ -150,26 +150,32 @@
     // le script ne trouverait aucun de ses champs.
     document.addEventListener('DOMContentLoaded', function () {
 (function(){
+  // Bareme servi par BaremeNotarial : aucune valeur chiffree ici.
+  const B={{ bareme_valeurs|json_encode|raw }};
+  // JSON ne sait pas ecrire l'infini : la derniere tranche arrive a null.
+  const plafond=l=>l===null?Infinity:l;
+
   const $=id=>document.getElementById(id);
   const money=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,v||0));
   const num=id=>Math.max(0,Number($(id).value)||0);
 
   function directTax(base){
     const b=Math.max(0,base);
-    const tr=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
     let prev=0,tax=0,rate=0;
-    for(const [limit,r] of tr){
-      const slice=Math.max(0,Math.min(b,limit)-prev);
+    for(const [limit,r] of B.ligneDirecte){
+      const l=plafond(limit);
+      const slice=Math.max(0,Math.min(b,l)-prev);
       if(slice>0){tax+=slice*r;rate=r;}
-      if(b<=limit)break;
-      prev=limit;
+      if(b<=l)break;
+      prev=l;
     }
     return {tax,rate};
   }
   function siblingTax(base){
     const b=Math.max(0,base);
-    const first=Math.min(b,24430);
-    return {tax:first*.35+Math.max(0,b-24430)*.45,rate:b<=24430?.35:(b>0?.45:0)};
+    const {seuil,tauxBas,tauxHaut}=B.freres;
+    const first=Math.min(b,seuil);
+    return {tax:first*tauxBas+Math.max(0,b-seuil)*tauxHaut,rate:b<=seuil?tauxBas:(b>0?tauxHaut:0)};
   }
   function calc(){
     const lien=$('lien').value;
@@ -180,23 +186,22 @@
     const already=num('donations');
     const handicap=$('handicap').checked;
 
-    let allowance=0, hand=handicap?159325:0, parent=0, tax=0, rate=0, label='';
+    let allowance=0, hand=handicap?B.handicap:0, parent=0, tax=0, rate=0, label='';
     if(lien==='epoux'){
       allowance=Infinity; tax=0; rate=0; label='Époux / partenaire de PACS : exonération de droits de succession';
     } else {
-      if(lien==='enfant'){parent=100000; label='Ligne directe';}
-      if(lien==='frere'){parent=15932; label='Frère / sœur';}
-      if(lien==='neveu'){parent=7967; label='Neveu / nièce';}
-      if(lien==='parent4'){parent=1594; label='Parent jusqu’au 4e degré';}
-      if(lien==='autre'){parent=1594; label='Sans lien de parenté / autre';}
+      const intitules={enfant:'Ligne directe',frere:'Frère / sœur',neveu:'Neveu / nièce',parent4:'Parent jusqu’au 4e degré',autre:'Sans lien de parenté / autre'};
+      parent=B.abattements[lien]||0;
+      label=intitules[lien]||'';
       allowance=Math.max(0,parent + hand - already);
       const base=Math.max(0,part-allowance);
+      const forfait=t=>({tax:base*t,rate:base>0?t:0});
       let r;
       if(lien==='enfant') r=directTax(base);
       else if(lien==='frere') r=siblingTax(base);
-      else if(lien==='neveu') r={tax:base*.55,rate:base>0?.55:0};
-      else if(lien==='parent4') r={tax:base*.55,rate:base>0?.55:0};
-      else r={tax:base*.60,rate:base>0?.60:0};
+      else if(lien==='neveu') r=forfait(B.neveu);
+      else if(lien==='parent4') r=forfait(B.parent4);
+      else r=forfait(B.autre);
       tax=r.tax; rate=r.rate;
     }
 

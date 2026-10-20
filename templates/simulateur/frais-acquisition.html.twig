@@ -25,9 +25,13 @@
 <h2>Votre acquisition</h2>
 <div class="field"><label for="price">Prix d’acquisition</label><input id="price" type="number" min="0" step="1000" placeholder="300000"><div class="hint">Prix indiqué dans l’acte, hors frais d’acquisition.</div></div>
 <div class="field"><label for="departmentRate">Régime des droits de mutation</label>
+{# Les deux taux viennent du bareme, comme le calcul : ecrits en dur ici,
+   ils finiraient par ne plus dire la meme chose que lui. #}
+{% set _normal = bareme_valeurs.mutationNormale %}
+{% set _primo = bareme_valeurs.mutationPrimo %}
 <select id="departmentRate">
-<option value="6.32">Taux normal — droits de mutation ≈ 6,32 %</option>
-<option value="5.81">Primo-accédant éligible — ≈ 5,81 %</option>
+<option value="{{ _normal }}">Taux normal — droits de mutation ≈ {{ _normal|number_format(2, ',', ' ') }} %</option>
+<option value="{{ _primo }}">Primo-accédant éligible — ≈ {{ _primo|number_format(2, ',', ' ') }} %</option>
 </select>
 <div class="hint">Le taux exact dépend notamment du département et de la situation de l’acquéreur. Le régime primo-accédant suppose l’acquisition de la résidence principale et l’absence de propriété de sa résidence principale au cours des deux années précédentes.</div></div>
 <div class="field"><label>Nature du bien</label><div class="choice">
@@ -70,7 +74,7 @@
 <div class="cta">Le résultat est donné à titre indicatif et ne constitue pas un devis ni un décompte définitif. Le montant exact sera déterminé par l’étude à partir du projet d’acte, de la nature du bien, du département, de la situation de l’acquéreur et des pièces du dossier.</div>
 </section>
 
-<p class="disclaimer full">Les frais d’acquisition comprennent principalement les droits et taxes, les émoluments du notaire, les formalités et les débours. Dans l’ancien, les droits de mutation peuvent atteindre environ 6,32 % dans les départements ayant appliqué la hausse temporaire ; les primo-accédants éligibles peuvent conserver le taux antérieur. Dans le neuf soumis au régime réduit, le taux de taxe de publicité foncière est de 0,71 %. Les émoluments suivent un barème national réglementé.</p>
+<p class="disclaimer full">Les frais d’acquisition comprennent principalement les droits et taxes, les émoluments du notaire, les formalités et les débours. Dans l’ancien, les droits de mutation peuvent atteindre environ {{ _normal|number_format(2, ',', ' ') }} % dans les départements ayant appliqué la hausse temporaire ; les primo-accédants éligibles peuvent conserver le taux antérieur. Dans le neuf soumis au régime réduit, le taux de taxe de publicité foncière est de {{ (bareme_valeurs.tpfNeuf * 100)|number_format(2, ',', ' ') }} %. Les émoluments suivent un barème national réglementé.</p>
 </div>
 
 {% include 'simulateur/_bareme.html.twig' %}
@@ -84,16 +88,20 @@
     // le script ne trouverait aucun de ses champs.
     document.addEventListener('DOMContentLoaded', function () {
 (()=> {
+// Bareme servi par BaremeNotarial : aucune valeur chiffree ici.
+const B={{ bareme_valeurs|json_encode|raw }};
+// JSON ne sait pas ecrire l'infini : la derniere tranche arrive a null.
+const plafond=l=>l===null?Infinity:l;
+
 const $=id=>document.getElementById(id);
 const euro=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,n||0));
 const val=id=>Math.max(0,Number($(id).value)||0);
 const type=()=>document.querySelector('input[name="type"]:checked')?.value;
 
 function notaryFeeHT(base){
-  const t=[[6500,.0387],[17000,.01596],[60000,.01064],[Infinity,.00799]];
   let prev=0,total=0;
-  for(const [limit,rate] of t){const amount=Math.max(0,Math.min(base,limit)-prev);total+=amount*rate;if(base<=limit)break;prev=limit;}
-  return Math.min(total, base*.10);
+  for(const [limit,rate] of B.emoluments){const l=plafond(limit);const amount=Math.max(0,Math.min(base,l)-prev);total+=amount*rate;if(base<=l)break;prev=l;}
+  return Math.min(total, base*B.plafondEmoluments);
 }
 function calc(){
  const err=$('error');err.style.display='none';
@@ -103,11 +111,11 @@ function calc(){
  const base=Math.max(0,price-furniture);
  const newBuild=type()==='new';
  let mutation, rateLabel;
- if(newBuild){mutation=base*.00715;rateLabel='Régime neuf — taxe de publicité foncière réduite ≈ 0,715 %';}
+ if(newBuild){mutation=base*B.tpfNeuf;rateLabel=`Régime neuf — taxe de publicité foncière réduite ≈ ${(B.tpfNeuf*100).toLocaleString('fr-FR',{maximumFractionDigits:3})} %`;}
  else {const r=Number($('departmentRate').value);mutation=base*r/100;rateLabel=`Ancien — droits retenus ≈ ${r.toFixed(2).replace('.',',')} %`;}
- const security=base*.001;
+ const security=base*B.securiteImmobiliere;
  const feeHT=notaryFeeHT(base);
- const vat=feeHT*.20;
+ const vat=feeHT*B.tva;
  const disb=val('disbursements');
  const agency=val('agency');
  const total=mutation+security+feeHT+vat+disb;

@@ -84,6 +84,9 @@ class SimulateurController extends AbstractController
             'simulateur' => $simulateur,
             'slug' => $slug,
             'bareme' => $this->bareme,
+            // Les valeurs chiffrees partent en JSON dans le script de la page :
+            // aucun taux ne doit plus etre ecrit en dur dans un gabarit.
+            'bareme_valeurs' => $this->bareme->pour($slug),
             'seo' => $this->seoService->resolveForPage($simulateur['titre']),
         ]);
     }
