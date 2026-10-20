@@ -1,0 +1,48 @@
+{# ======================================================================
+   PAGES LEGALES DU SITE — LintellO
+   Mentions legales et politique de confidentialite de la vitrine
+   (generees par LegalPageContentService, completees en base).
+   Spec vitrine, contrainte 6 : elles couvrent le site lui-meme ; les textes
+   du service LintellO restent sur l'app, vers laquelle on renvoie.
+   ====================================================================== #}
+{% set lt_app = 'https://www.lintello.ai' %}
+{% set legalPages = [
+    {label: 'Mentions légales', type: 'mentions-legales', slug: 'mentions-legales'},
+    {label: 'Politique de confidentialité', type: 'politique-de-confidentialite', slug: 'politique-confidentialite'},
+] %}
+
+<div class="lt-legal">
+
+<section class="lt-page-head lt-legal__head">
+    <div class="lt-container">
+        <p class="lt-eyebrow">Informations légales · site lintello.fr</p>
+        <h1 class="lt-page-head__title">{{ page.title }}</h1>
+    </div>
+</section>
+
+<section class="lt-legal__body">
+    <div class="lt-container lt-legal__grid">
+        <aside class="lt-legal__side">
+            <nav class="lt-toc" aria-label="Pages légales">
+                <p class="lt-toc__title">Ce site</p>
+                <ul class="lt-toc__list">
+                    {% for l in legalPages %}
+                        <li><a href="{{ path('app_legal_page', {type: l.type}) }}" class="lt-toc__link{{ page.slug == l.slug ? ' widget-toc__link--active' }}"{% if page.slug == l.slug %} aria-current="page"{% endif %}>{{ l.label }}</a></li>
+                    {% endfor %}
+                </ul>
+                <p class="lt-toc__title lt-legal__side-title">L'application LintellO</p>
+                <ul class="lt-toc__list">
+                    <li><a href="{{ lt_app }}/conditions" class="lt-toc__link">CGU et CGV</a></li>
+                    <li><a href="{{ lt_app }}/mentions-legales" class="lt-toc__link">Mentions légales de l'app</a></li>
+                    <li><a href="{{ lt_app }}/politique-confidentialite" class="lt-toc__link">Confidentialité de l'app</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <article class="lt-prose lt-legal__content">
+            {{ page.content|raw }}
+        </article>
+    </div>
+</section>
+
+</div>

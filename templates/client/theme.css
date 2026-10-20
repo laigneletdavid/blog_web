@@ -1113,6 +1113,26 @@ a:hover { color: #1e40af; }
 .lt-contact__links a { display: inline-flex; min-height: 36px; align-items: center; font-size: 15px; font-weight: 600; color: var(--lt-primary-dark); text-decoration: none; }
 .lt-contact__links a:hover { text-decoration: underline; }
 
+/* ---------- Pages legales du site ---------- */
+.lt-legal__head { padding-bottom: 32px; }
+.lt-legal__body { padding: 16px 0 96px; }
+.lt-legal__grid { display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-start; }
+.lt-legal__side { flex: 1 1 240px; max-width: 300px; min-width: 0; position: sticky; top: 88px; }
+.lt-legal__side-title { margin-top: 20px !important; }
+.lt-legal__content { font-size: 16px; line-height: 1.75; }
+.lt-legal__content > p:first-child em,
+.lt-legal__content > p:first-child { font-size: 14px; color: var(--lt-text-muted); }
+.lt-legal__content h2 { font-size: 22px; margin-top: 40px; }
+.lt-legal__content h3 { font-size: 18px; margin-top: 28px; }
+.lt-legal__content table { margin-top: 16px; border: 1px solid var(--lt-border); border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden; font-size: 14.5px; }
+.lt-legal__content th,
+.lt-legal__content td { padding: 10px 14px; vertical-align: top; }
+.lt-legal__content tr:first-child th,
+.lt-legal__content tr:first-child td { border-top: 0; }
+.lt-legal__content thead th { background: var(--lt-grey); font-size: 13px; font-weight: 600; color: var(--lt-text-body); }
+.lt-legal__content td:first-child { font-weight: 600; color: var(--lt-text); width: 34%; }
+.lt-legal__content thead + tbody td:first-child { width: auto; }
+
 /* ---------- FAQ (gabarit du CMS, habille en CSS) ---------- */
 .faq-section { max-width: 820px; margin: 0 auto; padding: 24px 0 56px; }
 .container:has(> .faq-section) > nav { max-width: 820px; margin: 0 auto; }
@@ -1411,6 +1431,10 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-contact__form { padding: 24px 20px; border-radius: 16px; }
     .lt-contact__grid { gap: 24px; }
     .lt-contact__body { padding-bottom: 64px; }
+    .lt-legal__grid { gap: 24px; }
+    .lt-legal__side { position: static; max-width: none; }
+    .lt-legal__body { padding-bottom: 64px; }
+    .lt-legal__content table { display: block; overflow-x: auto; }
     .lt-offer-alt__card { padding: 20px; }
     .lt-poster-section { padding-bottom: 64px; }
     .lt-pricing__table { min-width: 780px; }

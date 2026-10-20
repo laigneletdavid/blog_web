@@ -1,9 +1,11 @@
 {# ======================================================================
    PAGES — LintellO
    Une page dessinee a son gabarit client/page/_<slug>.html.twig ; les
+   pages legales du site (pages systeme) partagent _legal.html.twig ; les
    autres gardent le rendu commun.
    ====================================================================== #}
-{% include [
-    'client/page/_' ~ page.slug ~ '.html.twig',
-    'page/_show_generic.html.twig'
-] %}
+{% set candidates = ['client/page/_' ~ page.slug ~ '.html.twig'] %}
+{% if page.isSystem %}
+    {% set candidates = candidates|merge(['client/page/_legal.html.twig']) %}
+{% endif %}
+{% include candidates|merge(['page/_show_generic.html.twig']) %}
