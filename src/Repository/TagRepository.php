@@ -169,7 +169,7 @@ class TagRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
 
         $articles = (int) $em->createQuery(
-            'SELECT COUNT(a.id) FROM App\\Entity\\Article a JOIN a.tag t WHERE t = :tag AND a.published = true'
+            'SELECT COUNT(a.id) FROM App\\Entity\\Article a JOIN a.tags t WHERE t = :tag AND a.published = true'
         )->setParameter('tag', $tag)->getSingleScalarResult();
 
         $directory = (int) $em->createQuery(
