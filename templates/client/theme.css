@@ -1113,6 +1113,70 @@ a:hover { color: #1e40af; }
 .lt-contact__links a { display: inline-flex; min-height: 36px; align-items: center; font-size: 15px; font-weight: 600; color: var(--lt-primary-dark); text-decoration: none; }
 .lt-contact__links a:hover { text-decoration: underline; }
 
+/* ---------- FAQ (gabarit du CMS, habille en CSS) ---------- */
+.faq-section { max-width: 820px; margin: 0 auto; padding: 24px 0 56px; }
+.container:has(> .faq-section) > nav { max-width: 820px; margin: 0 auto; }
+.faq-section .title-one {
+    margin: 0 0 40px !important;
+    font-size: clamp(34px, 4.4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -.03em;
+    font-weight: 700;
+    color: var(--lt-text);
+    text-align: left;
+}
+.faq-section .title-one::after { display: none; }
+.faq-category__title {
+    margin: 48px 0 8px;
+    padding: 0;
+    border: 0;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--lt-primary-dark);
+}
+.faq-category__title:first-of-type { margin-top: 0; }
+.faq-category__title::after { display: none; }
+.faq-section .faq-accordion { border-top: 1px solid var(--lt-border); margin-bottom: 0 !important; --bs-accordion-border-width: 0; }
+.faq-section .accordion-item {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--lt-border);
+    border-radius: 0 !important;
+}
+.faq-section .accordion-header { margin: 0; }
+.faq-section .accordion-button {
+    min-height: 44px;
+    padding: 22px 0;
+    background: transparent;
+    box-shadow: none !important;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--lt-text);
+    border-radius: 0 !important;
+}
+.faq-section .accordion-button:not(.collapsed) { background: transparent; color: var(--lt-text); }
+/* Chevron bleu, comme la FAQ de la home */
+.faq-section .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-size: 20px;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    border: 0;
+    margin-top: 0;
+    transform: none;
+    transition: transform .2s;
+}
+/* app.css dessine un chevron en bordure tournee a 45 degres : on l'annule */
+.faq-section .accordion-button:not(.collapsed)::after { transform: rotate(180deg); }
+.faq-section .accordion-button:focus-visible { outline: 2px solid var(--lt-primary); outline-offset: 4px; }
+.faq-section .accordion-body { padding: 0 40px 24px 0; font-size: 15.5px; line-height: 1.7; color: var(--lt-text-body); }
+.faq-section .accordion-body p:last-child { margin-bottom: 0; }
+.faq-section .accordion-body a { color: var(--lt-primary-dark); }
+
 /* ---------- Pages standard du CMS (tag, categorie, pages legales) ----------
    Ces gabarits n'ont pas de surcouche client : on habille leurs classes
    communes pour qu'ils rejoignent la charte de la vitrine. */
