@@ -27,30 +27,30 @@ class SimulateurController extends AbstractController
      * @var array<string, array{titre: string, chapo: string, resume: string}>
      */
     private const SIMULATEURS = [
-        'frais-acquisition' => [
-            'titre' => "Frais d'acquisition",
-            'chapo' => "Estimer les frais d'un achat immobilier, dans l'ancien comme dans le neuf.",
-            'resume' => "Droits de mutation, émoluments, débours : le détail de ce que l'on appelle « frais de notaire ».",
-        ],
-        'donation' => [
-            'titre' => 'Donation',
-            'chapo' => 'Mesurer la fiscalité d\'une donation selon le lien de parenté.',
-            'resume' => 'Abattements, barème progressif et rappel des donations antérieures.',
-        ],
-        'succession' => [
-            'titre' => 'Succession',
-            'chapo' => 'Apprécier les droits dus par chaque héritier.',
-            'resume' => 'Part taxable, abattement applicable et barème selon le lien avec le défunt.',
-        ],
         'plus-value' => [
             'titre' => 'Plus-value immobilière',
             'chapo' => "Évaluer l'imposition à la revente d'un bien.",
-            'resume' => "Abattements pour durée de détention, impôt sur le revenu et prélèvements sociaux.",
+            'resume' => 'Estimez la plus-value et les principaux impôts associés.',
+        ],
+        'frais-acquisition' => [
+            'titre' => "Frais d'acquisition",
+            'chapo' => "Estimer les frais d'un achat immobilier, dans l'ancien comme dans le neuf.",
+            'resume' => 'Calculez une première estimation des frais liés à votre acquisition.',
         ],
         'viager' => [
             'titre' => 'Viager',
             'chapo' => 'Répartir un prix entre bouquet et rente.',
-            'resume' => "Valeur occupée, droit d'usage et d'habitation, rente mensuelle.",
+            'resume' => 'Obtenez une estimation pédagogique du bouquet et de la rente.',
+        ],
+        'succession' => [
+            'titre' => 'Succession',
+            'chapo' => 'Apprécier les droits dus par chaque héritier.',
+            'resume' => 'Estimez les droits de succession à partir de votre situation.',
+        ],
+        'donation' => [
+            'titre' => 'Donation',
+            'chapo' => "Mesurer la fiscalité d'une donation selon le lien de parenté.",
+            'resume' => "Estimez les droits et principaux frais d'une donation.",
         ],
     ];
 

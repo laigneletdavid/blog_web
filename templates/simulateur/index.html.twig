@@ -1,25 +1,48 @@
 {# ======================================================================
    SIMULATEURS — sommaire
+
+   Transpose de simulateurs.html, qui porte ses styles en ligne : grille a
+   deux colonnes, numero en haut a gauche, lien en haut a droite, titre
+   decroche en bas de carte.
+
+   Le bandeau sombre reste celui des pages de parcours, pour que les six
+   pages de simulateurs se ressemblent entre elles.
+
+   L'ordre et les resumes viennent du controleur, qui reprend ceux du lot.
    ====================================================================== #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
 {% include 'simulateur/_hero.html.twig' with {
-    surtitre: 'BM Notaire · Saint-Martory',
-    titre: 'Estimer,<br><em>avant de décider.</em>',
-    chapo: 'Ces outils donnent un ordre de grandeur pour préparer votre projet. Seule l’étude, au vu de votre situation, peut arrêter un chiffre.'
+    surtitre: 'BM Notaire · Outils',
+    titre: 'Nos<br><em>simulateurs.</em>',
+    chapo: 'Des outils pédagogiques pour obtenir rapidement une première estimation et préparer votre rendez-vous avec l’étude.'
 } only %}
 
-<section class="bm-section">
-    <div class="bm-poles">
+<div class="bm-outils">
+
+    <div class="section-head">
+        <h2>Choisissez votre simulation</h2>
+        <p>Les résultats sont indicatifs et peuvent nécessiter une étude personnalisée.</p>
+    </div>
+
+    <div class="tools">
         {% for slug, simulateur in simulateurs %}
-            <a href="{{ path('app_simulateur_show', { slug: slug }) }}" class="bm-pole">
-                <span class="bm-pole__num">{{ '%02d'|format(loop.index) }}</span>
-                <h2 class="bm-pole__titre">{{ simulateur.titre }}</h2>
-                <p class="bm-pole__liste">{{ simulateur.resume }}</p>
-                <span class="bm-pole__fleche" aria-hidden="true">↗</span>
+            <a class="tool-card" href="{{ path('app_simulateur_show', { slug: slug }) }}">
+                <span class="tool-number">{{ '%02d'|format(loop.index) }}</span>
+                <span class="tool-link">Accéder au simulateur <b aria-hidden="true">→</b></span>
+                <div class="tool-content">
+                    <h3>{{ simulateur.titre }}</h3>
+                    <p>{{ simulateur.resume }}</p>
+                </div>
             </a>
         {% endfor %}
     </div>
-</section>
+
+    <p class="tools-note">
+        Les simulations sont fournies à titre informatif. Elles ne remplacent pas
+        l’analyse personnalisée de votre situation par le notaire.
+    </p>
+
+</div>
 {% endblock %}
