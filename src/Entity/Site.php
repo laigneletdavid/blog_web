@@ -607,6 +607,40 @@ class Site
         return $this;
     }
 
+    /** @return string[] Villes ou zones visees, une par ligne dans la fiche */
+    public function getSeoAreaList(): array
+    {
+        return self::splitLines($this->seoAreas);
+    }
+
+    /** @return string[] Priorites, une par ligne dans la fiche */
+    public function getSeoPriorityList(): array
+    {
+        return self::splitLines($this->seoPriorities);
+    }
+
+    /** @return string[] Mots des clients, un par ligne dans la fiche */
+    public function getSeoCustomerWordList(): array
+    {
+        return self::splitLines($this->seoCustomerWords);
+    }
+
+    /**
+     * Decoupe un champ "un par ligne" : lignes vides ignorees, doublons retires.
+     *
+     * @return string[]
+     */
+    private static function splitLines(?string $value): array
+    {
+        if ($value === null) {
+            return [];
+        }
+
+        $lines = array_map('trim', preg_split('/\R/u', $value) ?: []);
+
+        return array_values(array_unique(array_filter($lines, static fn (string $l) => $l !== '')));
+    }
+
     // --- Apparence Getters/Setters ---
 
     public function getPrimaryColor(): ?string

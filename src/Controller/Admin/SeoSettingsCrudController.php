@@ -4,10 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\Site;
 use App\Enum\SeoReachEnum;
+use App\Service\SeoIntentChecker;
 use App\Service\SiteContext;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -31,12 +33,29 @@ class SeoSettingsCrudController extends AbstractCrudController
 
     public function __construct(
         private readonly SiteContext $siteContext,
+        private readonly SeoIntentChecker $intentChecker,
     ) {
     }
 
     public static function getEntityFqcn(): string
     {
         return Site::class;
+    }
+
+    /**
+     * Bilan en haut de page : la fiche confrontee au contenu publie.
+     * Appele par AdminHelpTrait::configureResponseParameters(), affiche par le layout admin.
+     */
+    protected function addSeoReportToResponse(KeyValueStore $responseParameters): KeyValueStore
+    {
+        $site = $responseParameters->get('entity')?->getInstance();
+
+        if ($site instanceof Site) {
+            $responseParameters->set('seo_report', $this->intentChecker->check($site));
+            $responseParameters->set('seo_report_title', 'Bilan de votre référencement');
+        }
+
+        return $responseParameters;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -192,6 +211,11 @@ class SeoSettingsCrudController extends AbstractCrudController
                     'title' => 'À quoi sert cette page',
                     'content' => '<p>Ici, vous dites ce que vous attendez de Google : ce que vous proposez, à qui, et où vous voulez être trouvé.</p>
                     <p>Ces réponses ne s\'affichent pas sur le site. Elles servent de repère pour vérifier que vos pages parlent bien de vos priorités.</p>',
+                ],
+                [
+                    'title' => 'Le bilan en haut de page',
+                    'content' => '<p>Le bilan compare votre fiche à ce que le site publie : villes citées dans les titres, une page par priorité, mots de vos clients présents dans les textes.</p>
+                    <p>Les points en orange sont des pistes d\'amélioration, pas des erreurs. Le bilan se met à jour à chaque enregistrement.</p>',
                 ],
                 [
                     'title' => 'Fiche entreprise Google',

@@ -132,6 +132,12 @@
             {%- if site.openingHoursArray|default([])|length > 0 %},
             "openingHours": {{ site.openingHoursArray|json_encode|raw }}
             {%- endif %}
+            {#- Zone desservie, depuis la fiche Referencement #}
+            {%- if site.seoReach|default(null) == 'national' %},
+            "areaServed": "France"
+            {%- elseif site.seoReach|default(null) in ['local', 'regional'] and site.seoAreaList|default([])|length > 0 %},
+            "areaServed": {{ site.seoAreaList|json_encode|raw }}
+            {%- endif %}
         }
         </script>
         {% endblock %}
