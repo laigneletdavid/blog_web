@@ -1,0 +1,99 @@
+{# ======================================================================
+   POUR QUI — ETUDIANTS
+   Donnees du public, rendues par client/page/_pour_qui.html.twig.
+
+   Sources : REFERENCE-LINTELLO.md (§ 2 modes, § 8 offre) ; descriptions
+   des modes Quizz Master, Langues et Redacteur etudiant tirees de
+   InitModesCommand.php (depot LintellO).
+   Pas d'« OCR » ni de « photo de ton cours » : fichiers joints au chat
+   [à voir en prod], OCR des PDF [prévu].
+
+   L'affiche ecole / BDE : renseigner poster.pdf (et poster.qr) quand les
+   fichiers existent ; d'ici la, le bloc et le lien du heros sont masques.
+   ====================================================================== #}
+{% set poster = {
+    pdf: null,
+    qr: null,
+} %}
+
+{% embed 'client/page/_pour_qui.html.twig' with {
+    hero: {
+        eyebrow: 'LintellO pour les études',
+        title: 'Comprendre ses cours,',
+        accent: 'pas recopier une réponse.',
+        lead: 'Cinq modes pensés pour apprendre : expliquer une notion, la reprendre autrement quand elle ne passe pas, réviser, pratiquer une langue, rédiger.',
+        cta: 'Choisir l’offre Étudiant',
+        secondary: poster.pdf ? {href: '#affiche', label: 'L’affiche pour votre école'} : null,
+        note: '4,99 € TTC par mois · sur simple déclaration · dès 15 ans',
+        chat: {
+            title: 'Révisions de maths',
+            mode: 'Tout s’explique',
+            user: 'Je ne comprends pas pourquoi on retourne la fraction quand on divise.',
+            bot: [
+                'Prenons-le autrement. Diviser par 2, c’est chercher combien de fois 2 rentre dans un nombre.',
+                'Et combien de fois ½ rentre dans 3 ? Six fois, autant que 3 × 2. À vous : combien de fois ¼ rentre dans 2 ?',
+            ],
+        },
+    },
+    modes: {
+        title: 'Cinq modes pour apprendre',
+        lead: 'LintellO choisit le mode selon votre question. Vous pouvez aussi le choisir vous-même.',
+        items: [
+            {name: 'Prof', text: 'Explique une notion dans l’ordre, pas à pas.'},
+            {name: 'Tout s’explique', text: 'Reprend autrement quand le cours ne passe pas, sans donner la réponse de l’exercice.'},
+            {name: 'Quizz Master', text: 'Vous fait réviser par questions progressives, QCM, vrai ou faux ou questions ouvertes, et tient le score.'},
+            {name: 'Langues', text: 'Converse dans la langue que vous pratiquez et corrige vos erreurs en les expliquant.'},
+            {name: 'Rédacteur étudiant', text: 'Corrige votre texte en expliquant chaque règle, sans écrire le devoir à votre place.'},
+        ],
+    },
+    offer: {
+        title: 'L’offre Étudiant',
+        lead: 'Pour les lycéens et les étudiants, sur simple déclaration : aucun justificatif à fournir.',
+        name: 'Étudiant',
+        m: '4,99 €', mp: 'TTC / mois',
+        y: '49,90 €', yp: 'TTC / an',
+        points: [
+            'IA du quotidien illimitée',
+            'IA avancée : 100k tokens / mois',
+            '500 crédits de recherche / mois',
+            'Les 5 modes Éducation',
+            'Projets pour ranger ses cours',
+            'Fichiers jusqu’à 15 Mo',
+        ],
+        cta: 'Choisir l’offre Étudiant',
+    },
+    guides: {
+        title: 'Guides pour les études',
+        link: 'Tous les contenus pour les études',
+    },
+    faqTitle: 'Questions des étudiants',
+    faqs: [
+        {q: 'Faut-il un justificatif ?', a: 'Non. L’offre Étudiant s’ouvre sur simple déclaration.'},
+        {q: 'LintellO fait-il mes devoirs à ma place ?', a: 'Le mode Tout s’explique est fait pour l’inverse : il change d’angle jusqu’à ce que la notion passe, et ne donne pas la réponse de l’exercice. Le Rédacteur étudiant corrige votre texte, il ne l’écrit pas.'},
+        {q: 'À partir de quel âge ?', a: 'LintellO est ouvert à partir de 15 ans.'},
+    ],
+} %}
+    {% block lt_specific %}
+        {% if poster.pdf %}
+        <section class="lt-poster-section" id="affiche">
+            <div class="lt-container">
+                <div class="lt-poster">
+                    <div class="lt-poster__qr">
+                        {% if poster.qr %}
+                            <img src="{{ asset(poster.qr) }}" alt="QR code vers l’inscription à LintellO" width="168" height="168">
+                        {% endif %}
+                    </div>
+                    <div class="lt-poster__text">
+                        <h2>L’affiche pour votre école ou votre BDE</h2>
+                        <p>Imprimez-la, affichez-la : le QR code mène directement à l’inscription.</p>
+                        <a href="{{ asset(poster.pdf) }}" class="lt-btn lt-btn--primary" download>
+                            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+                            Télécharger l’affiche (PDF)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    {% endblock %}
+{% endembed %}

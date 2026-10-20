@@ -1,0 +1,204 @@
+{# ======================================================================
+   POUR QUI — gabarit commun aux pages Etudiants, A la maison et Pros
+   Utilise via {% embed %} par client/page/_<slug>.html.twig, qui fournit
+   les donnees du public et, au besoin, le bloc propre au public
+   (block lt_specific).
+
+   Structure (spec vitrine) :
+     1. sous-menu des trois publics
+     2. heros avec l'apercu d'un chat dans le mode du public
+     3. les modes du public, chacun en une phrase
+     4. l'offre, avec la bascule mensuel / annuel
+     5. un bloc propre au public
+     6. les guides du tag du public
+     7. une FAQ du public
+
+   Les guides sont les articles publies des tags poses sur la page
+   (relation Tag <-> Page, posee en base). Sans article, le bloc disparait.
+
+   Variables attendues : hero, modes, offer, guides, faqs.
+   ====================================================================== #}
+{% set lt_app = 'https://www.lintello.ai' %}
+
+{% set audiences = [
+    {label: 'Étudiants', slug: 'etudiants'},
+    {label: 'À la maison', slug: 'particuliers'},
+    {label: 'Pros', slug: 'professionnels'},
+] %}
+
+{# Articles publies des tags de la page, du plus recent au plus ancien #}
+{% set guideArticles = [] %}
+{% set guideIds = [] %}
+{% for tag in page.tags %}
+    {% for article in tag.article %}
+        {% if article.published and article.id not in guideIds %}
+            {% set guideArticles = guideArticles|merge([article]) %}
+            {% set guideIds = guideIds|merge([article.id]) %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% set guideArticles = guideArticles|sort((a, b) => (b.publishedAt ?? b.createdAt) <=> (a.publishedAt ?? a.createdAt))|slice(0, 3) %}
+{% set guideTag = page.tags|first %}
+
+<div class="lt-audience" data-lt-audience>
+
+{# ====== 1. SOUS-MENU DES PUBLICS ====== #}
+<div class="lt-subnav">
+    <nav class="lt-container lt-subnav__inner" aria-label="Pour qui">
+        {% for a in audiences %}
+            <a href="{{ path('app_page_show', {slug: a.slug}) }}" class="lt-subnav__link"{% if a.slug == page.slug %} aria-current="page"{% endif %}>{{ a.label }}</a>
+        {% endfor %}
+    </nav>
+</div>
+
+{# ====== 2. HEROS ====== #}
+<section class="lt-hero lt-hero--page">
+    <div class="lt-container lt-hero__grid">
+        <div class="lt-hero__text">
+            <p class="lt-eyebrow">{{ hero.eyebrow }}</p>
+            <h1 class="lt-page-head__title">{{ hero.title }} <span>{{ hero.accent }}</span></h1>
+            <p class="lt-hero__lead">{{ hero.lead }}</p>
+            <div class="lt-hero__actions">
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">{{ hero.cta }}</a>
+                {% if hero.secondary is defined and hero.secondary %}
+                    <a href="{{ hero.secondary.href }}" class="lt-link">{{ hero.secondary.label }}</a>
+                {% endif %}
+            </div>
+            <p class="lt-hero__note">{{ hero.note }}</p>
+        </div>
+
+        <div class="lt-hero__visual">
+            <div class="lt-chat" role="img" aria-label="Exemple de conversation avec LintellO en mode {{ hero.chat.mode }}">
+                <div class="lt-chat__head">
+                    <img src="{{ asset('images/lintello/icone-lintello.png') }}" alt="" width="22" height="22">
+                    <span>{{ hero.chat.title }}</span>
+                    <span class="lt-chat__mode">Mode : {{ hero.chat.mode }}</span>
+                </div>
+                <div class="lt-chat__body" aria-hidden="true">
+                    <div class="lt-chat__user">{{ hero.chat.user }}</div>
+                    <div class="lt-chat__bot">
+                        {% for line in hero.chat.bot %}<p>{{ line }}</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. LES MODES DU PUBLIC ====== #}
+<section class="lt-section lt-section--grey">
+    <div class="lt-container">
+        <h2 class="lt-h3">{{ modes.title }}</h2>
+        <p class="lt-trust__intro">{{ modes.lead }}</p>
+        <ul class="lt-modes">
+            {% for m in modes.items %}
+                <li class="lt-mode">
+                    <h3 class="lt-mode__name">{{ m.name }}</h3>
+                    <p>{{ m.text }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{# ====== 4. L'OFFRE ====== #}
+<section class="lt-trust__block">
+    <div class="lt-container lt-offer">
+        <div class="lt-offer__text">
+            <h2 class="lt-h3">{{ offer.title }}</h2>
+            <p class="lt-trust__intro">{{ offer.lead }}</p>
+            <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link lt-offer__compare">Comparer avec les autres offres →</a>
+        </div>
+        <div class="lt-offer__card">
+            <div class="lt-offer__top">
+                <div>
+                    <p class="lt-offer__name">{{ offer.name }}</p>
+                    <p class="lt-offer__price">
+                        <span class="lt-offer__amount" data-m="{{ offer.m }}" data-y="{{ offer.y }}">{{ offer.m }}</span>
+                        <span class="lt-offer__per" data-m="{{ offer.mp }}" data-y="{{ offer.yp }}">{{ offer.mp }}</span>
+                    </p>
+                </div>
+                <div class="lt-segmented" role="group" aria-label="Période de facturation" hidden data-lt-period-group>
+                    <button type="button" data-lt-period="m" aria-pressed="true">Mensuel</button>
+                    <button type="button" data-lt-period="y" aria-pressed="false">Annuel · −17 %</button>
+                </div>
+            </div>
+            <ul class="lt-offer__points">
+                {% for pt in offer.points %}
+                    <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>{{ pt }}</span></li>
+                {% endfor %}
+            </ul>
+            <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-offer__cta">{{ offer.cta }}</a>
+        </div>
+    </div>
+</section>
+
+{# ====== 5. BLOC PROPRE AU PUBLIC ====== #}
+{% block lt_specific %}{% endblock %}
+
+{# ====== 6. LES GUIDES DU TAG ====== #}
+{% if guideArticles|length > 0 %}
+<section class="lt-trust__block lt-trust__block--tight">
+    <div class="lt-container">
+        <div class="lt-section__head">
+            <h2 class="lt-h3">{{ guides.title }}</h2>
+            {% if guideTag %}
+                <a href="{{ path('app_tag_show', {slug: guideTag.slug}) }}" class="lt-link">{{ guides.link }} →</a>
+            {% endif %}
+        </div>
+        <div class="lt-cards lt-cards--280">
+            {% for article in guideArticles %}
+                {% set cat = article.categories|first %}
+                <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="lt-card lt-card--link">
+                    {% if cat %}<span class="lt-eyebrow">{{ cat.name }}</span>{% endif %}
+                    <span class="lt-card__title lt-card__title--sm">{{ article.title }}</span>
+                    <span class="lt-post__meta">{{ (article.publishedAt ?? article.createdAt)|format_date('long', locale='fr') }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== 7. FAQ DU PUBLIC ====== #}
+{% if faqs|length > 0 %}
+<section class="lt-section lt-faq lt-faq--page">
+    <div class="lt-container lt-container--narrow">
+        <h2 class="lt-h3">{{ faqTitle }}</h2>
+        <div class="lt-faq__list">
+            {% for faq in faqs %}
+                <details class="lt-faq__item"{% if loop.first %} open{% endif %}>
+                    <summary class="lt-faq__q">
+                        <span>{{ faq.q }}</span>
+                        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </summary>
+                    <div class="lt-faq__a"><p>{{ faq.a }}</p></div>
+                </details>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+</div>
+
+<script>
+(function () {
+    var root = document.querySelector('[data-lt-audience]');
+    if (!root) return;
+    var group = root.querySelector('[data-lt-period-group]');
+    if (!group) return;
+    group.hidden = false;
+    group.querySelectorAll('[data-lt-period]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            var p = b.getAttribute('data-lt-period');
+            root.querySelectorAll('.lt-offer__amount, .lt-offer__per').forEach(function (el) {
+                el.textContent = el.getAttribute('data-' + p);
+            });
+            group.querySelectorAll('[data-lt-period]').forEach(function (x) {
+                x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+            });
+        });
+    });
+})();
+</script>
