@@ -306,7 +306,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('<img src="/images/BlogWebbeta.svg" alt="Blog & Web"/>')
+            ->setTitle('<img src="/images/logo-blogweb.png" alt="Blog & Web" class="bw-admin-logo"/>')
             ->setLocales(['fr'])
             ->setFaviconPath('images/favicon-16x16.png')
             ->disableDarkMode();

@@ -613,3 +613,10 @@ $bw-orange: #c2410c;
         font-weight: 500;
     }
 }
+
+// Logo BlogWeb de l'en-tete admin (le PNG a une marge basse : on cadre par la hauteur)
+.bw-admin-logo {
+    display: block;
+    height: 64px;
+    width: auto;
+}
