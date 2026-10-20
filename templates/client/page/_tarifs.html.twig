@@ -1,0 +1,174 @@
+{# ======================================================================
+   TARIFS — LintellO
+   Tableau comparatif des cinq offres, choix du profil et bascule de periode.
+
+   Les chiffres font foi dans l'app (InitQuotasCommand / InitPricingCommand),
+   resumes au § 8 de REFERENCE-LINTELLO.md : toute evolution des offres se
+   reporte ici.
+   Le profil choisi met en avant une seule colonne. Aucune offre n'est
+   etiquetee « la plus choisie » : rien ne permet de l'affirmer.
+   Sans JavaScript : prix mensuels, colonne « À la maison » mise en avant.
+   ====================================================================== #}
+{% set lt_app = 'https://www.lintello.ai' %}
+
+{% set plans = [
+    {name: 'Gratuit',  m: '0 €',     mp: 'sans engagement', y: '0 €',     yp: 'sans engagement', cta: 'Commencer'},
+    {name: 'Étudiant', m: '4,99 €',  mp: 'TTC / mois',      y: '49,90 €', yp: 'TTC / an',        cta: 'Choisir'},
+    {name: 'Perso',    m: '9,90 €',  mp: 'TTC / mois',      y: '99 €',    yp: 'TTC / an',        cta: 'Choisir'},
+    {name: 'Pro',      m: '19,90 €', mp: 'HT / mois',       y: '199 €',   yp: 'HT / an',         cta: 'Choisir'},
+    {name: 'LintellO', m: '49 €',    mp: 'HT / mois',       y: '490 €',   yp: 'HT / an',         cta: 'Choisir'},
+] %}
+
+{% set profiles = [
+    {label: 'Je découvre', plan: 0},
+    {label: 'J’étudie', plan: 1},
+    {label: 'À la maison', plan: 2},
+    {label: 'Je travaille', plan: 3},
+] %}
+{% set defaultPlan = 2 %}
+
+{% set rows = [
+    ['IA du quotidien', '20 messages / jour', 'Illimitée', 'Illimitée', 'Illimitée', 'Illimitée'],
+    ['IA avancée / mois', '—', '100k tokens', '200k tokens', '1M tokens', '3M tokens'],
+    ['IA code / mois', '—', '—', '—', '200k tokens', '1M tokens'],
+    ['Analyse d’images / mois', 'environ 5', 'environ 25', 'environ 50', 'environ 200', 'quasi illimitée'],
+    ['Crédits de recherche / mois', '50', '500', '1 200', '3 000', '8 000'],
+    ['Modes', 'Découverte + 3 essais / mois', 'Éducation (5)', 'Éducation + Quotidien (9)', 'Les 18', 'Les 18 + les vôtres'],
+    ['Projets', '—', 'Oui', 'Oui', 'Oui', 'Oui'],
+    ['Taille max fichier / image', '10 / 5 Mo', '15 / 10 Mo', '15 / 10 Mo', '25 / 20 Mo', '50 / 20 Mo'],
+    ['Messages par conversation', '20', '50', '50', '100', '200'],
+] %}
+
+<div class="lt-pricing" data-lt-pricing data-default-plan="{{ defaultPlan }}">
+
+{# ====== EN-TETE ET REGLAGES ====== #}
+<section class="lt-page-head">
+    <div class="lt-container">
+        <p class="lt-eyebrow">Tarifs</p>
+        <h1 class="lt-page-head__title">Comparez les offres, <span>ligne par ligne.</span></h1>
+        <p class="lt-page-head__lead">Toutes les offres donnent accès au chat, aux documents et à la recherche. Ce qui change : le volume d'IA avancée, les crédits de recherche et les modes.</p>
+
+        <div class="lt-pricing__controls" hidden data-lt-controls>
+            <div>
+                <p class="lt-pricing__label" id="lt-profile-label">Vous êtes plutôt…</p>
+                <div class="lt-chips" role="group" aria-labelledby="lt-profile-label">
+                    {% for p in profiles %}
+                        <button type="button" class="lt-chip" data-lt-profile="{{ p.plan }}" aria-pressed="{{ p.plan == defaultPlan ? 'true' : 'false' }}">{{ p.label }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <p class="lt-pricing__label" id="lt-period-label">Facturation</p>
+                <div class="lt-segmented" role="group" aria-labelledby="lt-period-label">
+                    <button type="button" data-lt-period="m" aria-pressed="true">Mensuel</button>
+                    <button type="button" data-lt-period="y" aria-pressed="false">Annuel · environ −17 %</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== TABLEAU ====== #}
+<section class="lt-pricing__table-section">
+    <div class="lt-container">
+        <div class="lt-pricing__scroll" tabindex="0" aria-label="Tableau des offres, défilable horizontalement">
+            <table class="lt-pricing__table">
+                <caption class="visually-hidden">Comparaison des offres LintellO</caption>
+                <thead>
+                    <tr>
+                        <th scope="col" class="lt-pricing__corner">Offre</th>
+                        {% for plan in plans %}
+                            <th scope="col" class="lt-pricing__head{{ loop.index0 == defaultPlan ? ' is-hi' : '' }}" data-col="{{ loop.index0 }}">
+                                <span class="lt-pricing__name">{{ plan.name }}</span>
+                                <span class="lt-pricing__price" data-m="{{ plan.m }}" data-y="{{ plan.y }}">{{ plan.m }}</span>
+                                <span class="lt-pricing__per" data-m="{{ plan.mp }}" data-y="{{ plan.yp }}">{{ plan.mp }}</span>
+                                <a href="{{ lt_app }}/register" class="lt-btn lt-pricing__cta">{{ plan.cta }}<span class="visually-hidden"> l'offre {{ plan.name }}</span></a>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                        <tr>
+                            <th scope="row">{{ row[0] }}</th>
+                            {% for cell in row|slice(1) %}
+                                <td data-col="{{ loop.index0 }}"{% if loop.index0 == defaultPlan %} class="is-hi"{% endif %}>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{# ====== NOTES ====== #}
+<section class="lt-pricing__notes">
+    <div class="lt-container lt-notes">
+        <div class="lt-note">
+            <h2 class="lt-note__title">Les crédits de recherche</h2>
+            <p>Une recherche lancée depuis le chat coûte un crédit, une recherche dans l'outil Recherche en coûte deux.</p>
+        </div>
+        <div class="lt-note">
+            <h2 class="lt-note__title">Changer d'offre</h2>
+            <p>La différence est facturée tout de suite, au prorata. Résiliation en fin de période ou immédiate.</p>
+        </div>
+        <div class="lt-note">
+            <h2 class="lt-note__title">Rétractation</h2>
+            <p>14 jours pour les consommateurs, remboursés au prorata. <a href="{{ lt_app }}/conditions">Lire les CGV</a></p>
+        </div>
+        <div class="lt-note">
+            <h2 class="lt-note__title">Offre Étudiant</h2>
+            <p>Sur simple déclaration, sans justificatif à fournir.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== APPEL FINAL ====== #}
+<section class="lt-final">
+    <div class="lt-container">
+        <div class="lt-final__box">
+            <div class="lt-final__text">
+                <h2>Commencez avec l'offre Gratuite.</h2>
+                <p>20 messages par jour avec l'IA du quotidien, sans engagement.</p>
+            </div>
+            <a href="{{ lt_app }}/register" class="lt-btn lt-btn--white lt-btn--lg">Créer mon compte</a>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+    var root = document.querySelector('[data-lt-pricing]');
+    if (!root) return;
+    var controls = root.querySelector('[data-lt-controls]');
+    controls.hidden = false;
+
+    function highlight(plan) {
+        root.querySelectorAll('[data-col]').forEach(function (el) {
+            el.classList.toggle('is-hi', el.getAttribute('data-col') === String(plan));
+        });
+        root.querySelectorAll('[data-lt-profile]').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-lt-profile') === String(plan) ? 'true' : 'false');
+        });
+    }
+
+    function period(p) {
+        root.querySelectorAll('.lt-pricing__price, .lt-pricing__per').forEach(function (el) {
+            el.textContent = el.getAttribute('data-' + p);
+        });
+        root.querySelectorAll('[data-lt-period]').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-lt-period') === p ? 'true' : 'false');
+        });
+    }
+
+    root.querySelectorAll('[data-lt-profile]').forEach(function (b) {
+        b.addEventListener('click', function () { highlight(b.getAttribute('data-lt-profile')); });
+    });
+    root.querySelectorAll('[data-lt-period]').forEach(function (b) {
+        b.addEventListener('click', function () { period(b.getAttribute('data-lt-period')); });
+    });
+})();
+</script>

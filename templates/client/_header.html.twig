@@ -7,6 +7,7 @@
    et l'appel principal, qui pointent vers l'app.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
+{% set lt_path = app.request.pathInfo %}
 
 <header class="header lt-header">
     {% include '_partials/_admin_bar.html.twig' %}
@@ -26,7 +27,8 @@
                     {% set visibleChildren = menu.children|filter(c => c.isVisible) %}
                     {% if visibleChildren|length > 0 %}
                         <div class="dropdown">
-                            <a class="lt-header__link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ menu.name }}</a>
+                            {% set isCurrent = visibleChildren|filter(c => c|menuLink == lt_path)|length > 0 %}
+                            <a class="lt-header__link dropdown-toggle{{ isCurrent ? ' active' }}" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ menu.name }}</a>
                             <ul class="dropdown-menu lt-header__dropdown">
                                 {% for child in visibleChildren %}
                                     <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
@@ -34,7 +36,9 @@
                             </ul>
                         </div>
                     {% else %}
-                        <a href="{{ menu|menuLink }}" class="lt-header__link">{{ menu.name }}</a>
+                        {% set link = menu|menuLink %}
+                        {% set isCurrent = link == lt_path or (link starts with '/article' and (lt_path starts with '/article' or lt_path starts with '/categorie')) %}
+                        <a href="{{ link }}" class="lt-header__link{{ isCurrent ? ' active' }}"{% if isCurrent %} aria-current="page"{% endif %}>{{ menu.name }}</a>
                     {% endif %}
                 {% endfor %}
             </nav>

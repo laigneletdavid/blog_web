@@ -123,8 +123,8 @@ a:hover { color: #1e40af; }
     padding: 10px 0;
     border-bottom: 2px solid transparent;
 }
-.lt-header__link:hover,
-.lt-header__link.active { color: var(--lt-text); border-bottom-color: var(--lt-primary); }
+.lt-header__link:hover { color: var(--lt-text); border-bottom-color: var(--lt-primary); }
+.lt-header__link.active { color: var(--lt-primary-dark); font-weight: 600; border-bottom-color: var(--lt-primary); }
 .lt-header__dropdown {
     border: 1px solid var(--lt-border);
     border-radius: 12px;
@@ -417,6 +417,118 @@ a:hover { color: #1e40af; }
 .lt-faq__a p:last-child { margin-bottom: 0; }
 .lt-faq__more { margin: 24px 0 0; font-size: 15px; color: var(--lt-text-body); }
 
+/* ---------- En-tete des pages interieures ---------- */
+.lt-page-head { padding: 88px 0 40px; background: #ffffff; }
+.lt-page-head__title {
+    margin: 12px 0 0;
+    font-size: clamp(36px, 4.6vw, 56px);
+    line-height: 1.06;
+    letter-spacing: -.035em;
+    font-weight: 700;
+    max-width: 780px;
+    color: var(--lt-text);
+}
+.lt-page-head__title span { color: var(--lt-primary); }
+.lt-page-head__lead { margin: 20px 0 0; font-size: 18px; line-height: 1.6; color: var(--lt-text-body); max-width: 640px; }
+
+/* ---------- Appel final (aplat bleu) ---------- */
+.lt-final { padding: 0 0 104px; }
+.lt-final__box {
+    background: var(--lt-primary);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 56px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+}
+.lt-final__text { flex: 1 1 420px; }
+.lt-final__text h2 {
+    margin: 0;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -.03em;
+    font-weight: 700;
+    color: #ffffff;
+}
+.lt-final__text p { margin: 12px 0 0; font-size: 17px; line-height: 1.6; color: #ffffff; }
+.lt-btn--white { background: #ffffff; color: var(--lt-primary-darker); }
+.lt-btn--white:hover { background: var(--lt-soft); color: var(--lt-primary-darker); }
+
+/* ---------- Tarifs ---------- */
+.lt-pricing__controls { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 20px 32px; align-items: flex-end; }
+.lt-pricing__controls[hidden] { display: none; }
+.lt-pricing__label { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--lt-text-body); }
+.lt-chips { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.lt-chip {
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--lt-border);
+    background: #ffffff;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.lt-chip:hover { border-color: var(--lt-primary); }
+.lt-chip[aria-pressed="true"] { background: var(--lt-tint); color: var(--lt-primary-darker); border-color: var(--lt-primary); }
+.lt-segmented { display: inline-flex; background: #eceff3; border-radius: 12px; padding: 4px; gap: 4px; }
+.lt-segmented button {
+    min-height: 40px;
+    border: 0;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    background: transparent;
+    color: var(--lt-text-body);
+    cursor: pointer;
+}
+.lt-segmented button[aria-pressed="true"] { background: #ffffff; color: var(--lt-text); box-shadow: 0 1px 2px rgba(17, 24, 39, .08); }
+.lt-chip:focus-visible,
+.lt-segmented button:focus-visible,
+.lt-pricing__scroll:focus-visible { outline: 2px solid var(--lt-primary); outline-offset: 2px; }
+
+.lt-pricing__table-section { padding: 0 0 64px; }
+.lt-pricing__scroll { overflow-x: auto; overflow-y: hidden; border: 1px solid var(--lt-border); border-radius: var(--lt-radius-card); }
+.lt-pricing__table { width: 100%; min-width: 880px; border-collapse: collapse; font-size: 14.5px; table-layout: fixed; }
+.lt-pricing__table th,
+.lt-pricing__table td { padding: 16px 18px; text-align: left; color: #1f2937; border-top: 1px solid #f1f2f4; vertical-align: middle; }
+.lt-pricing__table tbody th { padding-left: 20px; font-weight: 500; }
+/* La colonne des libelles reste visible quand le tableau defile (mobile) */
+.lt-pricing__table tbody th,
+.lt-pricing__corner { position: sticky; left: 0; z-index: 1; background: #ffffff; }
+.lt-pricing__table thead th { border-top: 0; border-bottom: 1px solid var(--lt-border); padding-top: 24px; padding-bottom: 24px; vertical-align: top; }
+.lt-pricing__corner { width: 22%; font-size: 13px; font-weight: 600; color: var(--lt-text-body) !important; vertical-align: bottom !important; padding-left: 20px !important; }
+.lt-pricing__name { display: block; font-size: 17px; font-weight: 700; color: var(--lt-text); }
+.lt-pricing__price { display: block; margin-top: 10px; font-size: 28px; font-weight: 700; letter-spacing: -.03em; color: var(--lt-text); white-space: nowrap; }
+.lt-pricing__per { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 400; color: var(--lt-text-muted); }
+.lt-pricing__cta {
+    display: flex;
+    width: 100%;
+    margin-top: 16px;
+    padding: 10px;
+    font-size: 13.5px;
+    background: #ffffff;
+    color: var(--lt-primary-darker);
+    border-color: #c7d2fe;
+}
+.lt-pricing__cta:hover { background: var(--lt-soft); color: var(--lt-primary-darker); }
+/* Une seule offre mise en avant : fond doux et filet bleu en tete de colonne */
+.lt-pricing__table .is-hi { background: var(--lt-soft); }
+.lt-pricing__head.is-hi { box-shadow: inset 0 4px 0 var(--lt-primary); }
+.lt-pricing__head.is-hi .lt-pricing__cta { background: var(--lt-primary); color: #ffffff; border-color: var(--lt-primary); }
+.lt-pricing__head.is-hi .lt-pricing__cta:hover { background: var(--lt-primary-dark); }
+
+.lt-pricing__notes { padding: 0 0 104px; }
+.lt-notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px; }
+.lt-note { background: var(--lt-grey); border: 1px solid #eef0f3; border-radius: 14px; padding: 22px; }
+.lt-note__title { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--lt-text); }
+.lt-note p { margin: 8px 0 0; font-size: 14px; line-height: 1.6; color: var(--lt-text-body); }
+
 /* ---------- Footer ---------- */
 .lt-footer {
     background: #ffffff;
@@ -455,4 +567,12 @@ a:hover { color: #1e40af; }
     .lt-section--grey { padding: 64px 0; }
     .lt-faq { padding-top: 0; }
     .lt-card { padding: 24px; }
+    .lt-page-head { padding: 56px 0 32px; }
+    .lt-final__box { padding: 40px 24px; }
+    .lt-pricing__notes,
+    .lt-final { padding-bottom: 72px; }
+    .lt-pricing__table { min-width: 780px; }
+    .lt-pricing__corner { width: 130px; }
+    .lt-pricing__table th,
+    .lt-pricing__table td { padding-left: 12px; padding-right: 12px; }
 }
