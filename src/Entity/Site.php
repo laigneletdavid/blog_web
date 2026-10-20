@@ -104,6 +104,31 @@ class Site
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $ogImage = null;
 
+    // --- Referencement : intention de l'admin (contexte pour les controles SEO et LintellO) ---
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $seoActivity = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $seoAudience = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $seoStrengths = null;
+
+    // Valeur de SeoReachEnum (local, regional, national)
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $seoReach = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $seoAreas = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $seoPriorities = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $seoCustomerWords = null;
+
     // --- Apparence ---
 
     #[ORM\Column(length: 7, nullable: true)]
@@ -492,6 +517,92 @@ class Site
     public function setOgImage(?Media $ogImage): self
     {
         $this->ogImage = $ogImage;
+
+        return $this;
+    }
+
+    // --- Referencement Getters/Setters ---
+
+    public function getSeoActivity(): ?string
+    {
+        return $this->seoActivity;
+    }
+
+    public function setSeoActivity(?string $seoActivity): self
+    {
+        $this->seoActivity = $seoActivity;
+
+        return $this;
+    }
+
+    public function getSeoAudience(): ?string
+    {
+        return $this->seoAudience;
+    }
+
+    public function setSeoAudience(?string $seoAudience): self
+    {
+        $this->seoAudience = $seoAudience;
+
+        return $this;
+    }
+
+    public function getSeoStrengths(): ?string
+    {
+        return $this->seoStrengths;
+    }
+
+    public function setSeoStrengths(?string $seoStrengths): self
+    {
+        $this->seoStrengths = $seoStrengths;
+
+        return $this;
+    }
+
+    public function getSeoReach(): ?string
+    {
+        return $this->seoReach;
+    }
+
+    public function setSeoReach(?string $seoReach): self
+    {
+        $this->seoReach = $seoReach;
+
+        return $this;
+    }
+
+    public function getSeoAreas(): ?string
+    {
+        return $this->seoAreas;
+    }
+
+    public function setSeoAreas(?string $seoAreas): self
+    {
+        $this->seoAreas = $seoAreas;
+
+        return $this;
+    }
+
+    public function getSeoPriorities(): ?string
+    {
+        return $this->seoPriorities;
+    }
+
+    public function setSeoPriorities(?string $seoPriorities): self
+    {
+        $this->seoPriorities = $seoPriorities;
+
+        return $this;
+    }
+
+    public function getSeoCustomerWords(): ?string
+    {
+        return $this->seoCustomerWords;
+    }
+
+    public function setSeoCustomerWords(?string $seoCustomerWords): self
+    {
+        $this->seoCustomerWords = $seoCustomerWords;
 
         return $this;
     }

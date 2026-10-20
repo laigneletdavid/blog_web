@@ -33,6 +33,7 @@ use App\Service\StatService;
 use App\Service\ThemeService;
 use App\Service\WalkthroughService;
 use App\Controller\Admin\ModulesCrudController;
+use App\Controller\Admin\SeoSettingsCrudController;
 use App\Controller\Admin\SiteCrudController;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -425,6 +426,12 @@ class DashboardController extends AbstractDashboardController
                 ->setAction(Crud::PAGE_EDIT)
                 ->setEntityId($this->siteContext->getCurrentSiteId())
                 ->setCssClass('tour-menu-site-identity');
+
+            yield MenuItem::linkToCrud('Référencement', 'fas fa-magnifying-glass-chart', Site::class)
+                ->setController(SeoSettingsCrudController::class)
+                ->setAction(Crud::PAGE_EDIT)
+                ->setEntityId($this->siteContext->getCurrentSiteId())
+                ->setCssClass('tour-menu-seo');
 
             yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager')
                 ->setCssClass('tour-menu-navigation');

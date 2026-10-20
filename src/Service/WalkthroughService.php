@@ -126,6 +126,15 @@ class WalkthroughService
             ];
 
             $steps[] = [
+                'element' => '.tour-menu-seo',
+                'popover' => [
+                    'title' => 'Référencement',
+                    'description' => 'Dites ce que vous proposez, à qui et où vous voulez être trouvé. On y règle aussi la fiche entreprise Google et l\'image de partage sur les réseaux sociaux.',
+                    'side' => 'right',
+                ],
+            ];
+
+            $steps[] = [
                 'element' => '.tour-menu-navigation',
                 'popover' => [
                     'title' => 'Gestion de la navigation',
