@@ -1,5 +1,20 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 
+{# Bascule mode simple / expert, sous le menu principal #}
+{% block main_menu_wrapper %}
+    {{ parent() }}
+    {% if is_granted('ROLE_AUTHOR') %}
+        <form class="bw-expert-toggle" method="post" action="{{ path('admin_expert_toggle') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_expert') }}">
+            <button type="submit" class="bw-expert-toggle__btn" role="switch" aria-checked="{{ is_admin_expert() ? 'true' : 'false' }}">
+                <span class="bw-expert-toggle__track" aria-hidden="true"><span class="bw-expert-toggle__thumb"></span></span>
+                <span>Mode expert</span>
+            </button>
+            <span class="bw-expert-toggle__hint">{{ is_admin_expert() ? 'Réglages techniques affichés.' : 'Affiche les réglages techniques.' }}</span>
+        </form>
+    {% endif %}
+{% endblock %}
+
 {% block content_header_wrapper %}
     {{ parent() }}
     {% if seo_report is defined and seo_report is not null and ea.crud.currentPage in ['edit', 'new'] %}

@@ -27,9 +27,7 @@ use App\Entity\TagGroup;
 use App\Entity\Subscriber;
 use App\Entity\User;
 use App\Repository\MenuRepository;
-use App\Service\AdminStatsService;
 use App\Service\SiteContext;
-use App\Service\StatService;
 use App\Service\ThemeService;
 use App\Service\WalkthroughService;
 use App\Controller\Admin\ModulesCrudController;
@@ -56,9 +54,10 @@ class DashboardController extends AbstractDashboardController
         private SiteContext $siteContext,
         private ThemeService $themeService,
         private \App\Repository\OrderRepository $orderRepository,
-        private AdminStatsService $adminStatsService,
-        private StatService $statService,
         private WalkthroughService $walkthroughService,
+        private \App\Repository\ContactMessageRepository $contactMessageRepository,
+        private \App\Service\AdminTodoService $adminTodoService,
+        private \App\Service\ContentHubService $contentHub,
     ) {
     }
 
@@ -66,13 +65,6 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $site = $this->siteContext->getCurrentSite();
-
-        // Filtres top pages
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        $topPagesPeriod = $request?->query->getString('period', 'month') ?? 'month';
-        $topPagesYear = $request?->query->getInt('year', (int) date('Y')) ?? (int) date('Y');
-
-        $stats = $this->adminStatsService->getDashboardStats($topPagesPeriod, $topPagesYear);
 
         $ecommerceStats = null;
         if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('ecommerce')) {
@@ -83,25 +75,24 @@ class DashboardController extends AbstractDashboardController
             ];
         }
 
-        // Années disponibles pour le filtre
-        $currentYear = (int) date('Y');
-        $availableYears = range($currentYear, $currentYear - 3);
-
         $tourSteps = $this->walkthroughService->getStepsForCurrentUser();
         $user = $this->getUser();
         $tourCompleted = $user instanceof User && $user->isTourCompleted();
 
-        $statsSummary = $this->statService->dashboardSummary();
+        // Accueil "a faire" : les taches d'abord, les chiffres detailles sont dans Statistiques
+        $recent = array_values(array_filter(
+            $this->contentHub->getItems(),
+            static fn (array $item) => $item['date'] !== null,
+        ));
 
         return $this->render('admin/dashboard.html.twig', [
             'title_admin' => $site?->getName() ?? 'Blog & Web',
             'site' => $site,
-            'stats' => $stats,
-            'statsSummary' => $statsSummary,
+            'types' => $this->contentHub->getTypes(),
+            'todos' => $this->adminTodoService->getTodos(),
+            'figures' => $this->isGranted('ROLE_ADMIN') ? $this->adminTodoService->getKeyFigures() : null,
+            'recent' => array_slice($recent, 0, 5),
             'ecommerceStats' => $ecommerceStats,
-            'topPagesPeriod' => $topPagesPeriod,
-            'topPagesYear' => $topPagesYear,
-            'availableYears' => $availableYears,
             'tourSteps' => $tourSteps,
             'tourCompleted' => $tourCompleted,
         ]);
@@ -131,6 +122,28 @@ class DashboardController extends AbstractDashboardController
         }
 
         return new JsonResponse(['ok' => true]);
+    }
+
+    /**
+     * Bascule mode simple / mode expert, enregistree sur le compte.
+     */
+    #[Route('/admin/mode-expert', name: 'admin_expert_toggle', methods: ['POST'])]
+    #[IsGranted('ROLE_AUTHOR')]
+    public function toggleExpert(Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        if ($user instanceof User && $this->isCsrfTokenValid('admin_expert', $request->request->getString('_token'))) {
+            $user->setAdminExpert(!$user->isAdminExpert());
+            $em->flush();
+        }
+
+        // Retour sur la page d'origine, uniquement si elle est sur ce site
+        $referer = $request->headers->get('referer');
+        if ($referer !== null && str_starts_with($referer, $request->getSchemeAndHttpHost() . '/admin')) {
+            return $this->redirect($referer);
+        }
+
+        return $this->redirectToRoute('admin');
     }
 
     #[Route('/admin/guide', name: 'admin_guide')]
@@ -299,180 +312,62 @@ class DashboardController extends AbstractDashboardController
             ->disableDarkMode();
     }
 
+    /**
+     * Menu par tache, pas par type de donnees : 8 entrees au plus.
+     * Les classements (categories, tags), utilisateurs et modules sont regroupes
+     * dans Reglages ; les types de contenu dans Contenus.
+     */
     public function configureMenuItems(): iterable
     {
-        // --- Navigation ---
-        yield MenuItem::linkToUrl('Tableau de bord', 'fa fa-gauge', $this->generateUrl('admin'))
+        yield MenuItem::linkToUrl('Accueil', 'fas fa-house', $this->generateUrl('admin'))
             ->setCssClass('tour-menu-dashboard');
-        yield MenuItem::linkToUrl('Aller sur le site', 'fa fa-external-link-alt', $this->generateUrl('app_home'))
-            ->setCssClass('tour-menu-visit-site');
-
-        // --- Contenu ---
-        yield MenuItem::section('Contenu');
 
         if ($this->isGranted('ROLE_AUTHOR')) {
-            if ($this->siteContext->hasModule('blog')) {
-                yield MenuItem::subMenu('Blog', 'fas fa-newspaper')->setSubItems([
-                    MenuItem::linkToCrud('Articles', 'fas fa-pen-to-square', Article::class),
-                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', Categorie::class),
-                ])->setCssClass('tour-menu-blog');
-                // Tags geres dans Contenu > Classification (transverse multi-modules, ROLE_ADMIN)
-            }
-            yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class)
-                ->setCssClass('tour-menu-pages');
-            yield MenuItem::linkToCrud('Medias', 'fas fa-photo-video', Media::class)
+            yield MenuItem::linkToRoute('Contenus', 'fas fa-file-lines', 'admin_contents')
+                ->setCssClass('tour-menu-contents');
+            yield MenuItem::linkToCrud('Médias', 'fas fa-image', Media::class)
                 ->setCssClass('tour-menu-medias');
-            yield MenuItem::linkToCrud('Documents', 'fas fa-file-arrow-down', Document::class)
-                ->setCssClass('tour-menu-documents');
-
-            // Classification transverse (tags partages entre modules + familles)
-            if ($this->isGranted('ROLE_ADMIN')) {
-                yield MenuItem::subMenu('Classification', 'fas fa-layer-group')->setSubItems([
-                    MenuItem::linkToCrud('Tags', 'fas fa-tags', Tag::class),
-                    MenuItem::linkToCrud('Familles de tags', 'fas fa-object-group', TagGroup::class),
-                ])->setCssClass('tour-menu-classification');
-            }
-        } elseif ($this->isGranted('ROLE_AUTHOR')) {
-            if ($this->siteContext->hasModule('blog')) {
-                yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
-            }
-            yield MenuItem::linkToCrud('Pages', 'fas fa-file-lines', Page::class);
         }
 
-        // --- Modules (si au moins un module actif hors blog) ---
-        $hasModules = $this->isGranted('ROLE_ADMIN') && (
-            $this->siteContext->hasModule('services')
-            || $this->siteContext->hasModule('events')
-            || $this->siteContext->hasModule('catalogue')
-            || $this->siteContext->hasModule('ecommerce')
-            || $this->siteContext->hasModule('faq')
-            || $this->siteContext->hasModule('portfolio')
-            || $this->siteContext->hasModule('directory')
-        );
-
-        if ($hasModules) {
-            yield MenuItem::section('Modules')
-                ->setCssClass('tour-menu-modules-section');
-
-            if ($this->siteContext->hasModule('services')) {
-                yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Service::class);
-            }
-            if ($this->siteContext->hasModule('events')) {
-                yield MenuItem::linkToCrud('Evenements', 'fas fa-calendar-days', Event::class);
-            }
-            if ($this->siteContext->hasModule('catalogue')) {
-                yield MenuItem::subMenu('Catalogue', 'fas fa-store')->setSubItems([
-                    MenuItem::linkToCrud('Produits', 'fas fa-box-open', Product::class),
-                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-tree', ProductCategory::class),
-                ]);
-            }
-            if ($this->siteContext->hasModule('ecommerce')) {
-                yield MenuItem::linkToCrud('Commandes', 'fas fa-shopping-bag', Order::class);
-            }
-            if ($this->siteContext->hasModule('faq')) {
-                yield MenuItem::subMenu('FAQ', 'fas fa-circle-question')->setSubItems([
-                    MenuItem::linkToCrud('Questions', 'fas fa-question', Faq::class),
-                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', FaqCategory::class),
-                ]);
-            }
-            if ($this->siteContext->hasModule('portfolio')) {
-                yield MenuItem::subMenu('Portfolio', 'fas fa-images')->setSubItems([
-                    MenuItem::linkToCrud('Realisations', 'fas fa-briefcase', PortfolioItem::class),
-                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', PortfolioCategory::class),
-                ]);
-            }
-            if ($this->siteContext->hasModule('directory')) {
-                yield MenuItem::subMenu('Annuaire', 'fas fa-address-book')->setSubItems([
-                    MenuItem::linkToCrud('Fiches', 'fas fa-id-card', DirectoryEntry::class),
-                    MenuItem::linkToCrud('Catégories', 'fas fa-folder-open', DirectoryCategory::class),
-                ]);
-            }
-        }
-
-        // --- Marketing (module) ---
-        if ($this->isGranted('ROLE_ADMIN') && $this->siteContext->hasModule('marketing')) {
-            yield MenuItem::section('Marketing');
-            yield MenuItem::linkToCrud('Landing pages', 'fas fa-rocket', Page::class)
-                ->setController(LandingCrudController::class);
-            yield MenuItem::linkToRoute('Vue d\'ensemble', 'fas fa-chart-pie', 'admin_stats_index');
-            yield MenuItem::linkToRoute('Acquisition', 'fas fa-arrow-trend-down', 'admin_stats_acquisition');
-            yield MenuItem::linkToRoute('Comportement', 'fas fa-gauge-high', 'admin_stats_comportement');
-            yield MenuItem::linkToRoute('Conversions', 'fas fa-bullseye', 'admin_stats_conversions');
-        }
-
-        // --- Communaute ---
-        $hasCommunity = $this->siteContext->hasModule('blog') || $this->isGranted('ROLE_ADMIN');
-        if ($hasCommunity) {
-            yield MenuItem::section('Communaute');
-
-            if ($this->isGranted('ROLE_ADMIN')) {
-                yield MenuItem::linkToCrud('Messages', 'fas fa-envelope-open-text', ContactMessage::class);
-            }
-            if ($this->siteContext->hasModule('blog')) {
-                yield MenuItem::linkToCrud('Commentaires', 'fas fa-comments', Comment::class);
-            }
-            if ($this->isGranted('ROLE_ADMIN')) {
-                yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
-            }
-            yield MenuItem::linkToCrud('Abonnes', 'fas fa-envelope', Subscriber::class);
-        }
-
-        // --- Reglages (ROLE_ADMIN+) ---
         if ($this->isGranted('ROLE_ADMIN')) {
-            yield MenuItem::section('Réglages');
+            $unread = $this->contactMessageRepository->countUnread();
+            $messages = MenuItem::linkToCrud('Messages', 'fas fa-inbox', ContactMessage::class)
+                ->setCssClass('tour-menu-messages');
+            if ($unread > 0) {
+                $messages->setBadge($unread, 'danger');
+            }
+            yield $messages;
 
-            yield MenuItem::linkToCrud('Identité du site', 'fas fa-building', Site::class)
-                ->setController(SiteCrudController::class)
-                ->setAction(Crud::PAGE_EDIT)
-                ->setEntityId($this->siteContext->getCurrentSiteId())
-                ->setCssClass('tour-menu-site-identity');
+            if ($this->siteContext->hasModule('ecommerce')) {
+                yield MenuItem::linkToCrud('Commandes', 'fas fa-bag-shopping', Order::class);
+            }
 
-            yield MenuItem::linkToCrud('Référencement', 'fas fa-magnifying-glass-chart', Site::class)
+            if ($this->siteContext->hasModule('marketing')) {
+                yield MenuItem::linkToRoute('Statistiques', 'fas fa-chart-column', 'admin_stats_index')
+                    ->setCssClass('tour-menu-stats');
+            }
+
+            yield MenuItem::linkToCrud('Référencement', 'fas fa-magnifying-glass', Site::class)
                 ->setController(SeoSettingsCrudController::class)
                 ->setAction(Crud::PAGE_EDIT)
                 ->setEntityId($this->siteContext->getCurrentSiteId())
                 ->setCssClass('tour-menu-seo');
 
-            yield MenuItem::linkToRoute('Navigation', 'fas fa-bars', 'admin_menu_manager')
-                ->setCssClass('tour-menu-navigation');
-        }
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            // Menu Apparence : reglages + images accessibles des ROLE_ADMIN
-            // (couleurs, polices, hero, about, galerie, logos, temoignages).
-            // Le catalogue de themes reste reserve a ROLE_FREELANCE+
-            // (changer de theme = decision technique critique).
-            $apparenceItems = [
-                MenuItem::linkToCrud('Réglages du thème', 'fas fa-sliders', Site::class)
-                    ->setController(ThemeSettingsCrudController::class)
-                    ->setAction(Crud::PAGE_EDIT)
-                    ->setEntityId($this->siteContext->getCurrentSiteId()),
-                MenuItem::linkToCrud('Images du theme', 'fas fa-images', SiteGalleryItem::class)
-                    ->setController(ThemeImagesCrudController::class),
-            ];
-
-            if ($this->isGranted('ROLE_FREELANCE')) {
-                array_unshift(
-                    $apparenceItems,
-                    MenuItem::linkToRoute('Catalogue de themes', 'fas fa-swatchbook', 'admin_theme_browser')
-                        ->setCssClass('tour-menu-theme-catalog'),
-                );
-            }
-
-            yield MenuItem::subMenu('Apparence', 'fas fa-palette')->setSubItems($apparenceItems)
+            yield MenuItem::linkToCrud('Apparence', 'fas fa-palette', Site::class)
+                ->setController(ThemeSettingsCrudController::class)
+                ->setAction(Crud::PAGE_EDIT)
+                ->setEntityId($this->siteContext->getCurrentSiteId())
                 ->setCssClass('tour-menu-apparence');
 
-            if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-                yield MenuItem::linkToCrud('Modules', 'fas fa-puzzle-piece', Site::class)
-                    ->setController(ModulesCrudController::class)
-                    ->setAction(Crud::PAGE_EDIT)
-                    ->setEntityId($this->siteContext->getCurrentSiteId());
-            }
+            yield MenuItem::linkToRoute('Réglages', 'fas fa-gear', 'admin_settings')
+                ->setCssClass('tour-menu-settings');
         }
 
-        // --- Aide ---
-        yield MenuItem::section('Aide');
-        yield MenuItem::linkToRoute('Guide', 'fas fa-book-open', 'admin_guide')
+        yield MenuItem::section();
+        yield MenuItem::linkToUrl('Voir mon site', 'fas fa-arrow-up-right-from-square', $this->generateUrl('app_home'))
+            ->setLinkTarget('_blank')
+            ->setCssClass('tour-menu-visit-site');
+        yield MenuItem::linkToRoute('Aide', 'fas fa-circle-question', 'admin_guide')
             ->setCssClass('tour-menu-guide');
     }
 
@@ -485,6 +380,7 @@ class DashboardController extends AbstractDashboardController
             ->addWebpackEncoreEntry('admin_icons')
             ->addWebpackEncoreEntry('admin_dashboard')
             ->addWebpackEncoreEntry('admin_walkthrough')
-            ->addWebpackEncoreEntry('admin_stats');
+            ->addWebpackEncoreEntry('admin_stats')
+            ->addWebpackEncoreEntry('admin_simple');
     }
 }

@@ -37,6 +37,7 @@ class ArticleCrudController extends AbstractCrudController
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
         private readonly SeoAnalyzer $seoAnalyzer,
+        private readonly \App\Service\AdminModeService $adminMode,
     ) {
     }
 
@@ -110,18 +111,27 @@ class ArticleCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $viewOnSite);
     }
 
+    /**
+     * Formulaire en deux colonnes : ecrire a gauche, publier a droite.
+     * Les reglages techniques (adresse, canonique, mots-cles...) ne sortent qu'en mode expert.
+     */
     public function configureFields(string $pageName): iterable
     {
-        // --- Panel Contenu ---
-        yield FormField::addPanel('Contenu')
-            ->setIcon('fa fa-pen')
-            ->collapsible();
+        $expert = $this->adminMode->isExpert();
 
+        // Liste : score SEO, titre, categories, image, statut, vues, dates
         yield $this->seoScoreField();
 
-        yield TextField::new('title', 'Titre de l\'article');
+        // ===== Colonne principale : le contenu =====
+        yield FormField::addColumn('col-lg-8');
 
-        yield TextareaField::new('blocksJson', 'Contenu de l\'article')
+        yield TextField::new('title', 'Titre');
+
+        yield TextField::new('featuredText', 'Résumé')
+            ->setHelp('Une ou deux phrases, affichées dans la liste des articles.')
+            ->hideOnIndex();
+
+        yield TextareaField::new('blocksJson', 'Contenu')
             ->setFormTypeOptions([
                 'attr' => [
                     'data-tiptap-editor' => '',
@@ -129,34 +139,36 @@ class ArticleCrudController extends AbstractCrudController
                 ],
             ])
             ->setColumns('col-12')
-            ->setHelp('Editeur visuel : mise en forme, images, videos, encarts, colonnes. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
+            ->setHelp('Tapez <strong>/</strong> pour insérer rapidement un bloc : image, vidéo, encart, colonnes, document.')
             ->hideOnIndex();
 
-        // --- Panel Paramètres ---
-        yield FormField::addPanel('Paramètres')
-            ->setIcon('fa fa-cog')
-            ->collapsible();
+        // Apercu Google : le JS admin-simple affiche le rendu au-dessus de ces deux champs
+        yield FormField::addFieldset('Dans Google')
+            ->setHelp('Laissez vide pour reprendre le titre et le résumé.');
 
-        yield AssociationField::new('categories', 'Catégories');
-
-        // Article::tags est en mappedBy (cote inverse). Sans by_reference=false,
-        // Symfony Forms modifie la collection sans appeler addTag()/removeTag(),
-        // donc rien n'est persiste cote owning (Tag). Ce flag force l'utilisation
-        // des methodes add*/remove* qui propagent au cote proprietaire.
-        yield AssociationField::new('tags', 'Tags')
-            ->setHelp('Associez des tags pour organiser vos articles par thématique')
-            ->setFormTypeOption('by_reference', false)
+        yield TextField::new('seoTitle', 'Titre dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
             ->hideOnIndex();
 
-        yield AssociationField::new('featuredMedia', 'Image mise en avant');
-
-        yield TextField::new('featuredText', 'Texte mis en avant')
-            ->setHelp('Court résumé affiché dans les listes d\'articles')
+        yield TextareaField::new('seoDescription', 'Description dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 2]])
             ->hideOnIndex();
+
+        // ===== Colonne laterale : publier et classer =====
+        yield FormField::addColumn('col-lg-4');
+
+        yield FormField::addFieldset('Publication')->setIcon('fa fa-paper-plane');
+
+        yield BooleanField::new('published', 'En ligne')
+            ->setHelp('Décoché : brouillon, visible de vous seul.');
+
+        yield DateTimeField::new('scheduledAt', 'Programmer une date')
+            ->setHelp('L\'article sera mis en ligne automatiquement à cette date.')
+            ->hideOnIndex()
+            ->setRequired(false);
 
         // Seuls les comptes qui ecrivent (ROLE_AUTHOR et +) sont proposes, pas les membres
         yield AssociationField::new('author', 'Auteur')
-            ->setHelp('Affiché sur l\'article. Par défaut, le compte qui crée l\'article.')
             ->setFormTypeOption('choice_label', 'displayName')
             ->setQueryBuilder(static fn (QueryBuilder $qb) => $qb
                 ->andWhere(sprintf(
@@ -169,34 +181,58 @@ class ArticleCrudController extends AbstractCrudController
                 ->setParameter('superAdmin', '%ROLE_SUPER_ADMIN%'))
             ->hideOnIndex();
 
-        yield BooleanField::new('published', 'Publié')
-            ->setHelp('Si une date de programmation est définie dans le futur, l\'article sera publié automatiquement à cette date.');
+        yield FormField::addFieldset('Image')->setIcon('fa fa-image');
 
-        yield DateTimeField::new('scheduledAt', 'Publication programmée')
-            ->setHelp('Laissez vide pour publier manuellement. Si une date future est définie, l\'article sera publié automatiquement.')
-            ->hideOnIndex()
-            ->setRequired(false);
+        yield AssociationField::new('featuredMedia', 'Image')
+            ->setHelp('Son texte alternatif se règle dans Médias.');
 
-        yield BooleanField::new('isFeatured', 'Article vedette')
-            ->setHelp('L\'article vedette est mis en avant en haut de la page blog')
+        yield FormField::addFieldset('Classement')->setIcon('fa fa-tags');
+
+        yield AssociationField::new('categories', 'Catégories');
+
+        // Article::tags est en mappedBy (cote inverse). Sans by_reference=false,
+        // Symfony Forms modifie la collection sans appeler addTag()/removeTag(),
+        // donc rien n'est persiste cote owning (Tag). Ce flag force l'utilisation
+        // des methodes add*/remove* qui propagent au cote proprietaire.
+        yield AssociationField::new('tags', 'Étiquettes')
+            ->setFormTypeOption('by_reference', false)
             ->hideOnIndex();
 
-        if ($this->siteContext->hasModule('private_pages')) {
-            yield ChoiceField::new('visibility', 'Visibilite')
-                ->setChoices(VisibilityEnum::choices())
-                ->renderExpanded(false)
-                ->setHelp('Public = visible par tous. Membres = connectes uniquement. Admin = administrateurs uniquement.')
+        yield BooleanField::new('isFeatured', 'Mettre en avant')
+            ->setHelp('Affiché en tête de la page blog.')
+            ->hideOnIndex();
+
+        if ($expert) {
+            yield FormField::addFieldset('Options avancées')
+                ->setIcon('fa fa-sliders-h')
+                ->setCssClass('bw-fieldset-expert');
+
+            yield $this->slugField('title');
+
+            if ($this->siteContext->hasModule('private_pages')) {
+                yield ChoiceField::new('visibility', 'Visible par')
+                    ->setChoices(VisibilityEnum::choices())
+                    ->renderExpanded(false)
+                    ->hideOnIndex();
+            }
+
+            yield TextField::new('seoKeywords', 'Mots-clés')
+                ->setHelp('Ignorés par Google, utiles seulement à certains outils.')
+                ->hideOnIndex();
+
+            yield BooleanField::new('noIndex', 'Masquer des moteurs de recherche')
+                ->hideOnIndex();
+
+            yield TextField::new('canonicalUrl', 'Adresse canonique')
+                ->setHelp('Seulement si ce texte existe aussi sur un autre site.')
+                ->hideOnIndex();
+
+            yield DateTimeField::new('publishedAt', 'Date de publication')
+                ->setHelp('Remplie automatiquement à la première mise en ligne.')
                 ->hideOnIndex();
         }
 
-        // --- Panel Avancé (collapsed) ---
-        yield FormField::addPanel('Avancé')
-            ->setIcon('fa fa-sliders-h')
-            ->collapsible()
-            ->renderCollapsed();
-
-        yield $this->slugField('title');
-
+        // Colonnes de la liste uniquement
         $pvRepo = $this->pageViewRepository;
         yield IntegerField::new('viewCount', 'Vues')
             ->hideOnForm()
@@ -209,38 +245,6 @@ class ArticleCrudController extends AbstractCrudController
 
         yield DateTimeField::new('updatedAt', 'Modifié le')
             ->hideOnForm();
-
-        yield DateTimeField::new('publishedAt', 'Date de publication')
-            ->setHelp('Rempli automatiquement à la première publication')
-            ->hideOnIndex();
-
-        // --- Panel SEO ---
-        yield FormField::addPanel('SEO')
-            ->setIcon('fa fa-search')
-            ->collapsible()
-            ->renderCollapsed();
-
-        yield TextField::new('seoTitle', 'Titre SEO')
-            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Un bon titre attire les clics. Max 70 caracteres. Laissez vide = titre de l\'article.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
-            ->hideOnIndex();
-
-        yield TextareaField::new('seoDescription', 'Meta description')
-            ->setHelp('Texte affiche sous le titre dans les resultats Google. Un bon resume incite au clic et ameliore le taux de visite. Max 160 caracteres.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
-            ->hideOnIndex();
-
-        yield TextField::new('seoKeywords', 'Mots-cles')
-            ->setHelp('Mots-cles principaux de l\'article, separes par des virgules. Aide au referencement thematique.')
-            ->hideOnIndex();
-
-        yield BooleanField::new('noIndex', 'Masquer des moteurs')
-            ->setHelp('Si active, Google n\'indexera pas cet article. Utile pour les brouillons ou contenus prives.')
-            ->hideOnIndex();
-
-        yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
-            ->hideOnIndex();
     }
 
     public function createEntity(string $entityFqcn): Article

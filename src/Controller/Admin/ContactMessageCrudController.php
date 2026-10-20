@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -51,7 +52,11 @@ class ContactMessageCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Messages de contact')
             ->setDefaultSort(['createdAt' => 'DESC'])
             ->setSearchFields(['name', 'firstname', 'email', 'subject', 'message'])
-            ->setPageTitle(Crud::PAGE_INDEX, 'Messages de contact');
+            ->setPageTitle(Crud::PAGE_INDEX, 'Messages')
+            // Messages et commentaires forment la meme boite de reception
+            ->setHelp(Crud::PAGE_INDEX, 'Les demandes envoyées depuis votre formulaire de contact. Les réactions sous vos articles sont dans <a href="'
+                . $this->container->get(AdminUrlGenerator::class)->unsetAll()->setController(CommentCrudController::class)->setAction(Action::INDEX)->generateUrl()
+                . '">Commentaires</a>.');
     }
 
     public function configureActions(Actions $actions): Actions

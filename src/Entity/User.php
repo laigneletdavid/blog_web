@@ -64,6 +64,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $tourCompleted = false;
 
+    // Mode expert de l'admin : affiche les reglages techniques (slug, canonique, modules...)
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $adminExpert = false;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -285,6 +289,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTourCompleted(bool $tourCompleted): self
     {
         $this->tourCompleted = $tourCompleted;
+
+        return $this;
+    }
+
+    public function isAdminExpert(): bool
+    {
+        return $this->adminExpert;
+    }
+
+    public function setAdminExpert(bool $adminExpert): self
+    {
+        $this->adminExpert = $adminExpert;
 
         return $this;
     }
