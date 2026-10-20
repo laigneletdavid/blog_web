@@ -620,3 +620,37 @@ $bw-orange: #c2410c;
     height: 64px;
     width: auto;
 }
+
+// Identite du site client dans la barre du haut de la zone principale
+.content-top {
+    gap: 16px;
+}
+
+.bw-site-identity {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: $bw-ink;
+    text-decoration: none;
+
+    &:hover {
+        color: $bw-blue-dark;
+    }
+
+    &__logo {
+        flex: 0 0 auto;
+        max-width: 140px;
+        height: 36px;
+        object-fit: contain;
+    }
+
+    &__name {
+        overflow: hidden;
+        font-size: 1rem;
+        font-weight: 600;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
