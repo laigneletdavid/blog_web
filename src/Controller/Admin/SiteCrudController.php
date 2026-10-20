@@ -36,7 +36,7 @@ class SiteCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Aide — Identite du site',
+            'title' => 'Aide — Identité du site',
             'sections' => [
                 [
                     'title' => 'Identite',
@@ -54,7 +54,7 @@ class SiteCrudController extends AbstractCrudController
                 ],
                 [
                     'title' => 'Referencement',
-                    'content' => '<p>La fiche entreprise Google, le titre et la description par defaut, l\'image de partage, Google Analytics et Search Console se reglent dans <em>Reglages &rarr; Referencement</em>.</p>',
+                    'content' => '<p>La fiche entreprise Google, le titre et la description par defaut, l\'image de partage, Google Analytics et Search Console se règlent dans l\'entrée <em>Référencement</em> du menu.</p>',
                 ],
             ],
             'tips' => [

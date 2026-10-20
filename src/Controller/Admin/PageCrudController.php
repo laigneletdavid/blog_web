@@ -55,29 +55,29 @@ class PageCrudController extends AbstractCrudController
             'title' => 'Aide — Pages',
             'sections' => [
                 [
-                    'title' => 'Pages systeme vs personnalisees',
-                    'content' => '<p>Les <strong>pages systeme</strong> (mentions legales, politique de confidentialite) ne peuvent pas etre supprimees, mais leur contenu est modifiable.</p>
-                    <p>Vous pouvez creer autant de <strong>pages personnalisees</strong> que necessaire (A propos, Nos services, etc.).</p>',
+                    'title' => 'Pages système et pages personnalisées',
+                    'content' => '<p>Les <strong>pages système</strong> (mentions légales, politique de confidentialité) ne peuvent pas être supprimées, mais leur contenu est modifiable.</p>
+                    <p>Vous pouvez créer autant de <strong>pages personnalisées</strong> que nécessaire (À propos, Tarifs, etc.).</p>',
                 ],
                 [
-                    'title' => 'Mise en page',
-                    'content' => '<ul>
-                        <li><strong>Par defaut</strong> — Contenu avec sidebar droite (widgets, categories, archives)</li>
-                        <li><strong>Pleine largeur</strong> — Contenu sur toute la largeur, ideal pour les presentations</li>
-                        <li><strong>Sidebar gauche</strong> — Widgets a gauche, contenu a droite</li>
+                    'title' => 'Le formulaire',
+                    'content' => '<p>Comme pour les articles : <strong>vous écrivez à gauche</strong> (titre, contenu, bloc <em>Dans Google</em>), <strong>vous publiez à droite</strong> (en ligne, image).</p>
+                    <p>L\'éditeur visuel accepte texte riche, titres, listes, images, vidéos YouTube, encarts, colonnes et tableaux, ainsi que des <strong>documents à télécharger</strong> (bouton <em>Document</em> ou commande <code>/document</code>) : pratique pour les plaquettes, tarifs, CGV ou formulaires.</p>',
+                ],
+                [
+                    'title' => 'Mise en page (mode expert)',
+                    'content' => '<p>Avec le <em>Mode expert</em>, les options avancées proposent la disposition de la page :</p>
+                    <ul>
+                        <li><strong>Par défaut</strong> — Contenu avec une colonne à droite (widgets, catégories, archives)</li>
+                        <li><strong>Pleine largeur</strong> — Contenu sur toute la largeur, idéal pour les présentations</li>
+                        <li><strong>Colonne à gauche</strong> — Widgets à gauche, contenu à droite</li>
                     </ul>',
-                ],
-                [
-                    'title' => 'L\'editeur',
-                    'content' => '<p>Meme editeur visuel que pour les articles : texte riche, titres, listes, images, videos YouTube, encarts, colonnes et tableaux.</p>
-                    <p>Vous pouvez aussi inserer des <strong>documents telechargeables</strong> (PDF, DOCX, XLSX, ZIP...) via le bouton <em>Document</em> de la barre d\'outils ou la commande <code>/document</code>. Ils s\'affichent en carte cliquable avec icone, nom et taille &mdash; pratique pour les plaquettes, tarifs, CGV ou formulaires a telecharger.</p>
-                    <p>Votre brouillon est sauvegarde automatiquement.</p>',
                 ],
             ],
             'tips' => [
-                'N\'oubliez pas d\'ajouter vos nouvelles pages dans la navigation (Reglages > Navigation).',
-                'Les pages systeme sont essentielles pour la conformite RGPD. Mettez-les a jour regulierement.',
-                'Pour les pages "Tarifs" ou "Documents legaux", inserez vos PDF directement dans le contenu via le bouton Document de l\'editeur.',
+                'N\'oubliez pas d\'ajouter vos nouvelles pages au menu du site (Réglages → Menu du site).',
+                'Les pages système sont essentielles pour la conformité RGPD. Mettez-les à jour régulièrement.',
+                'Pour une page Tarifs ou des documents légaux, insérez vos PDF directement dans le contenu avec le bouton Document.',
             ],
         ];
     }

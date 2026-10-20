@@ -40,7 +40,7 @@ class CategorieCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Aide — Categories',
+            'title' => 'Aide — Catégories du blog',
             'sections' => [
                 [
                     'title' => 'Organiser vos contenus',
@@ -58,7 +58,7 @@ class CategorieCrudController extends AbstractCrudController
             ],
             'tips' => [
                 'Limitez-vous a 5-10 categories. Trop de categories diluent la navigation et le SEO.',
-                'Vous pouvez ajouter une categorie dans le menu principal via Reglages > Navigation.',
+                'Vous pouvez ajouter une catégorie au menu du site dans Réglages → Menu du site.',
             ],
         ];
     }
