@@ -1,0 +1,280 @@
+{# ======================================================================
+   ESPACE CLIENT — BM NOTAIRE
+
+   Transpose d'espace-securise.html. Le formulaire du lot appelait un
+   script autonome qui passait par mail() ; il est ici branche sur le
+   transport du CMS, avec jeton de session, pot de miel, limitation de
+   cadence et reCAPTCHA.
+
+   Une mention est ajoutee sous le depot, qui n'est pas dans le lot :
+   le courrier electronique ne chiffre que le transport, et le visiteur
+   doit le savoir avant d'y confier une piece sensible.
+   ====================================================================== #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="bm-dossier">
+
+    {# ====== BANDEAU ====== #}
+    <section class="hero secure-hero client-hero">
+        <div>
+            <span class="ey">BM NOTAIRE · VOS DÉMARCHES</span>
+            <h1>Espace<br>client</h1>
+            <p>Un point d’entrée unique pour transmettre des documents à l’étude ou commencer un nouveau dossier.</p>
+        </div>
+    </section>
+
+    {# ====== 01. CHOISIR UNE DEMARCHE ====== #}
+    <section class="section client-entry">
+        <div class="client-entry-head">
+            <span class="ey">01 / CHOISIR UNE DÉMARCHE</span>
+            <div>
+                <h2>Que souhaitez-vous<br><em>faire aujourd’hui&nbsp;?</em></h2>
+                <p>Les deux parcours sont regroupés ici afin de rendre l’accès plus simple et plus lisible.</p>
+            </div>
+        </div>
+
+        <div class="client-entry-grid">
+            <a class="client-entry-card client-entry-card--primary" href="#depot">
+                <span class="client-entry-no">01</span>
+                <small>DÉPÔT DOCUMENTAIRE</small>
+                <h3>Transmettre<br>vos pièces.</h3>
+                <p>Envoyez les documents utiles à un dossier déjà ouvert ou en cours de traitement.</p>
+                <strong>Accéder au dépôt <b aria-hidden="true">↓</b></strong>
+            </a>
+
+            <a class="client-entry-card" href="{{ path('app_demarrer_dossier') }}">
+                <span class="client-entry-no">02</span>
+                <small>NOUVEAU DOSSIER</small>
+                <h3>Démarrer<br>un dossier.</h3>
+                <p>Répondez à quelques questions pour nous communiquer les premières informations sur votre projet.</p>
+                <strong>Commencer <b aria-hidden="true">↗</b></strong>
+            </a>
+        </div>
+    </section>
+
+    {# ====== 02. DEPOT DOCUMENTAIRE ====== #}
+    <section class="section" id="depot">
+        <div class="layout">
+            <div class="sticky-copy light">
+                <span class="ey">02 / DÉPÔT DOCUMENTAIRE</span>
+                <h2>Identifier votre<br><em>dossier.</em></h2>
+                <p>
+                    Renseignez vos coordonnées puis sélectionnez les documents à transmettre.
+                    Si vous disposez déjà d’une référence de dossier, indiquez-la pour
+                    faciliter le traitement.
+                </p>
+            </div>
+
+            <form class="upload-panel" method="post"
+                  action="{{ path('app_espace_client_envoi') }}"
+                  enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token('depot_documents') }}">
+
+                {% if app.request.query.getBoolean('envoye') %}
+                    <p class="bm-dossier__avis bm-dossier__avis--ok">
+                        Vos documents ont été transmis à l’étude. Elle vous recontacte rapidement.
+                    </p>
+                {% endif %}
+
+                {% for erreur in erreurs|default([]) %}
+                    <p class="bm-dossier__avis bm-dossier__avis--ko">{{ erreur }}</p>
+                {% endfor %}
+
+                <div class="row">
+                    <div class="field">
+                        <label for="depot-nom">NOM &amp; PRÉNOM</label>
+                        <input id="depot-nom" name="nom" autocomplete="name" maxlength="120"
+                               value="{{ saisie.nom|default('') }}" required>
+                    </div>
+                    <div class="field">
+                        <label for="depot-tel">TÉLÉPHONE</label>
+                        <input id="depot-tel" name="telephone" type="tel" autocomplete="tel" maxlength="40"
+                               value="{{ saisie.telephone|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="depot-email">ADRESSE E-MAIL</label>
+                    <input id="depot-email" name="email" type="email" autocomplete="email" maxlength="180"
+                           value="{{ saisie.email|default('') }}" required>
+                </div>
+
+                <div class="field">
+                    <label for="depot-ref">RÉFÉRENCE DU DOSSIER <small>(si vous en avez une)</small></label>
+                    <input id="depot-ref" name="reference" placeholder="Ex. DUPONT / VENTE" maxlength="120"
+                           value="{{ saisie.reference|default('') }}">
+                </div>
+
+                <label class="dropzone" for="depot-fichiers">
+                    <input id="depot-fichiers" name="documents[]" type="file" multiple hidden
+                           accept=".pdf,.jpg,.jpeg,.png">
+                    <span class="dropmark" aria-hidden="true">＋</span>
+                    <strong>Choisir mes documents</strong>
+                    <small>
+                        PDF, JPG ou PNG · {{ (taille_fichier / 1024 / 1024)|round }} Mo maximum par fichier ·
+                        {{ (taille_totale / 1024 / 1024)|round }} Mo au total · {{ nombre_max }} fichiers
+                    </small>
+                </label>
+
+                <div id="listeFichiers" class="file-list">
+                    <p class="empty">Aucun document sélectionné.</p>
+                </div>
+
+                <div class="field">
+                    <label for="depot-message">MESSAGE <small>(facultatif)</small></label>
+                    <textarea id="depot-message" name="message" maxlength="2000"
+                              placeholder="Une précision utile pour l’étude…">{{ saisie.message|default('') }}</textarea>
+                </div>
+
+                {# Pot de miel : hors de l'ecran, jamais rempli par un visiteur. #}
+                <div style="position:absolute;left:-9999px" aria-hidden="true">
+                    <label>Site web<input name="website" tabindex="-1" autocomplete="off"></label>
+                </div>
+
+                <label class="consent">
+                    <input type="checkbox" name="consentement" value="1" required>
+                    <span>Je demande la transmission de ces informations et documents à l’étude
+                        et confirme avoir pris connaissance de la
+                        <a href="{{ path('app_legal_page', { type: 'politique-de-confidentialite' }) }}">politique de confidentialité</a>.</span>
+                </label>
+
+                <button class="btn solid" type="submit">Envoyer mes documents →</button>
+
+                <div class="security-note">
+                    <span>CONFIDENTIALITÉ</span>
+                    <p>
+                        Le dépôt se fait par liaison chiffrée, mais vos pièces vous parviennent
+                        ensuite par courrier électronique : elles transitent et sont conservées
+                        en clair chez le prestataire d’envoi puis dans la boîte de l’étude.
+                        N’envoyez que les pièces nécessaires à votre dossier. Pour les documents
+                        les plus sensibles, remettez-les à l’étude par un autre moyen.
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    {# ====== 03. APRES L'ENVOI ====== #}
+    <section class="section alt">
+        <div class="result-head">
+            <div>
+                <span class="ey">03 / APRÈS L’ENVOI</span>
+                <h2>Une réception<br><em>identifiable.</em></h2>
+            </div>
+            <p>
+                Le message reçu par l’étude reprend votre identité, votre adresse e-mail,
+                votre référence éventuelle et la liste des pièces jointes.
+            </p>
+        </div>
+
+        <div class="articles">
+            <article class="article">
+                <span class="cat">01 · CONTRÔLE</span>
+                <h3>Formats limités</h3>
+                <p>Le serveur vérifie le contenu réel de chaque fichier, et non son extension, ainsi que sa taille, avant tout envoi.</p>
+            </article>
+            <article class="article">
+                <span class="cat">02 · DESTINATION</span>
+                <h3>Adresse de l’étude</h3>
+                <p>Les pièces sont adressées directement à l’étude, à l’adresse qu’elle a déclarée.</p>
+            </article>
+            <article class="article">
+                <span class="cat">03 · CONSERVATION</span>
+                <h3>Rien sur le site</h3>
+                <p>Vos pièces ne sont pas conservées sur le serveur du site : elles sont jointes au message puis effacées.</p>
+            </article>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if recaptcha_site_key %}
+        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    {% endif %}
+    <script>
+    // base.html.twig place ce bloc dans le <head> : on attend le document.
+    document.addEventListener('DOMContentLoaded', function () {
+        var champ = document.getElementById('depot-fichiers');
+        var liste = document.getElementById('listeFichiers');
+        var formulaire = champ ? champ.closest('form') : null;
+        if (!champ || !liste || !formulaire) { return; }
+
+        var POIDS_MAX = {{ taille_fichier }};
+        var TOTAL_MAX = {{ taille_totale }};
+        var NOMBRE_MAX = {{ nombre_max }};
+
+        function poids(octets) {
+            return octets < 1024 * 1024
+                ? Math.round(octets / 1024) + ' Ko'
+                : (octets / 1024 / 1024).toFixed(1).replace('.', ',') + ' Mo';
+        }
+
+        champ.addEventListener('change', function () {
+            liste.textContent = '';
+            var fichiers = [].slice.call(champ.files);
+
+            if (!fichiers.length) {
+                var vide = document.createElement('p');
+                vide.className = 'empty';
+                vide.textContent = 'Aucun document sélectionné.';
+                liste.appendChild(vide);
+                return;
+            }
+
+            var total = 0;
+            fichiers.forEach(function (f, rang) {
+                total += f.size;
+                var ligne = document.createElement('div');
+                ligne.className = 'file-row';
+
+                var num = document.createElement('span');
+                num.textContent = ('0' + (rang + 1)).slice(-2);
+
+                var nom = document.createElement('b');
+                nom.textContent = f.name;
+
+                var taille = document.createElement('small');
+                taille.textContent = poids(f.size) + (f.size > POIDS_MAX ? ' — trop lourd' : '');
+
+                ligne.appendChild(num);
+                ligne.appendChild(nom);
+                ligne.appendChild(taille);
+                liste.appendChild(ligne);
+            });
+
+            var bilan = document.createElement('p');
+            bilan.className = 'empty';
+            bilan.textContent = fichiers.length + ' fichier' + (fichiers.length > 1 ? 's' : '')
+                + ' · ' + poids(total);
+            if (fichiers.length > NOMBRE_MAX) {
+                bilan.textContent += ' — ' + NOMBRE_MAX + ' au maximum';
+            } else if (total > TOTAL_MAX) {
+                bilan.textContent += ' — au-delà du total autorisé';
+            }
+            liste.appendChild(bilan);
+        });
+
+        {% if recaptcha_site_key %}
+        formulaire.addEventListener('submit', function (evenement) {
+            if (formulaire.dataset.jeton === 'ok') { return; }
+            evenement.preventDefault();
+            grecaptcha.ready(function () {
+                grecaptcha.execute('{{ recaptcha_site_key }}', { action: 'contact' }).then(function (jeton) {
+                    var champJeton = document.createElement('input');
+                    champJeton.type = 'hidden';
+                    champJeton.name = 'g-recaptcha-response';
+                    champJeton.value = jeton;
+                    formulaire.appendChild(champJeton);
+                    formulaire.dataset.jeton = 'ok';
+                    formulaire.submit();
+                });
+            });
+        });
+        {% endif %}
+    });
+    </script>
+{% endblock %}

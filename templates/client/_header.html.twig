@@ -32,7 +32,9 @@
 {% endfor %}
 
 {% set _route = app.request.attributes.get('_route') %}
-{% set _routes_sombres = ['app_home', 'app_etude', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier', 'app_contact', 'app_simulateurs', 'app_simulateur_show'] %}
+{# app_espace_client_envoi y figure aussi : en cas d'erreur, le POST reaffiche
+   la meme page, avec le meme bandeau sombre. #}
+{% set _routes_sombres = ['app_home', 'app_etude', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier', 'app_contact', 'app_simulateurs', 'app_simulateur_show', 'app_espace_client', 'app_espace_client_envoi'] %}
 {# Les deux niveaux de l'offre ouvrent desormais sur un bandeau sombre. #}
 {% set _sur_visuel = _route in _routes_sombres or _route == 'app_service_show' %}
 
@@ -54,11 +56,16 @@
             {% endfor %}
         </nav>
 
-        {# La maquette pose deux boutons : « Espace client » et « Prendre
-           rendez-vous ». L'espace client n'existe pas encore, et on ne pointe
-           pas vers une page absente : il ne reste donc que le second, qui mene
-           au formulaire de prise de rendez-vous. #}
+        {# La maquette pose deux boutons : « Espace client », en lien simple, et
+           « Prendre rendez-vous », en gelule. Les deux libelles se raccourcissent
+           ensemble sur les ecrans etroits. #}
         <div class="bm-nav__actions">
+            <a class="bm-nav__bouton bm-nav__bouton--discret" href="{{ path('app_espace_client') }}"
+               aria-label="Espace client — dépôt documentaire">
+                <span class="bm-nav__long">Espace client</span>
+                <span class="bm-nav__court">Documents</span>
+                <b aria-hidden="true">↗</b>
+            </a>
             <a class="bm-nav__bouton bm-nav__bouton--plein" href="{{ path('app_rendez_vous') }}">
                 <span class="bm-nav__long">Prendre rendez-vous</span>
                 <span class="bm-nav__court">Rendez-vous</span>
@@ -140,6 +147,11 @@
             </ul>
             <a href="{{ path('app_rendez_vous') }}" class="bm-nav__bouton bm-nav__bouton--plein w-100 justify-content-center">
                 <span>Prendre rendez-vous</span><b aria-hidden="true">↗</b>
+            </a>
+            {# La barre d'actions disparait sous 860px : l'espace client doit
+               rester joignable ici, sinon la page n'a plus d'entree mobile. #}
+            <a href="{{ path('app_espace_client') }}" class="bm-nav__bouton w-100 justify-content-center mt-2">
+                <span>Espace client</span><b aria-hidden="true">↗</b>
             </a>
         </div>
     </div>

@@ -2245,6 +2245,22 @@ main { overflow-x: clip; }
     border-color: var(--bm-encre);
 }
 
+/* L'acces a l'espace client reste un lien simple : la maquette ne pose qu'une
+   gelule dans la barre, celle du rendez-vous. Le filet n'apparait qu'au survol.
+   Trois classes et une place apres les variantes --clair / --plein / --sombre :
+   sans cela leurs border-color l'emporteraient et dessineraient une seconde
+   gelule. */
+.bm-nav .bm-nav__actions .bm-nav__bouton--discret {
+    border-color: transparent;
+    padding-left: 13px;
+    padding-right: 13px;
+    gap: .5rem;
+}
+
+.bm-nav .bm-nav__actions .bm-nav__bouton--discret:hover {
+    border-color: currentColor;
+}
+
 @media (max-width: 1100px) {
     .bm-nav__liens { gap: 22px; }
     .bm-nav__long { display: none; }
@@ -3422,4 +3438,302 @@ main { overflow-x: clip; }
     .bm-outils .section-head p { margin-top: 15px; }
     .bm-outils .tool-card { min-height: 235px; }
     .bm-outils .tool-content h3 { margin-top: 55px; }
+}
+
+
+/* ======================================================================
+   19 quinquies. ESPACE CLIENT
+   Regles de v9.css laissees de cote a la premiere passe, la page n'etant
+   pas montee. Memes precautions : prefixees .bm-dossier, gardees dans
+   leurs media queries.
+   ====================================================================== */
+
+.bm-dossier .articles {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border-left:1px solid rgba(242,234,223,.25);
+    border-top:1px solid rgba(242,234,223,.25);
+}
+
+.bm-dossier .article {
+    min-height:340px;
+    padding:27px;
+    border-right:1px solid rgba(242,234,223,.25);
+    border-bottom:1px solid rgba(242,234,223,.25);
+    display:flex;
+    flex-direction:column;
+}
+
+.bm-dossier .article .cat {
+    font-size:9px;
+    letter-spacing:.18em;
+    opacity:.6;
+}
+
+.bm-dossier .article h3 {
+    font:500 34px/1.05 var(--serif);
+    margin:auto 0 18px;
+}
+
+.bm-dossier .article p {
+    font-size:12px;
+    line-height:1.7;
+    opacity:.7;
+}
+
+.bm-dossier .article b {
+    font-weight:400;
+}
+
+.bm-dossier .secure-hero {
+    min-height:78vh;
+}
+
+.bm-dossier .upload-panel {
+    max-width:860px;
+}
+
+.bm-dossier .dropzone {
+    min-height:250px;
+    border:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    cursor:pointer;
+    padding:35px;
+    transition:.25s;
+    background:rgba(255,255,255,.16);
+}
+
+.bm-dossier .dropzone:hover {
+    background:var(--ink);
+    color:var(--cream);
+}
+
+.bm-dossier .dropmark {
+    font:300 52px var(--serif);
+    line-height:1;
+}
+
+.bm-dossier .dropzone strong {
+    font:500 30px var(--serif);
+    margin:12px 0 8px;
+}
+
+.bm-dossier .dropzone small {
+    opacity:.6;
+}
+
+.bm-dossier .file-list {
+    margin:18px 0 35px;
+    border-top:1px solid var(--line);
+}
+
+.bm-dossier .file-row {
+    display:grid;
+    grid-template-columns:45px 1fr auto;
+    gap:15px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+    align-items:center;
+}
+
+.bm-dossier .file-row span,
+.bm-dossier .file-row small,
+.bm-dossier .empty {
+    font-size:10px;
+    opacity:.55;
+}
+
+.bm-dossier .consent {
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    font-size:11px;
+    line-height:1.6;
+    margin:28px 0;
+}
+
+.bm-dossier .consent input {
+    margin-top:3px;
+    accent-color:var(--ink);
+}
+
+.bm-dossier .consent a {
+    text-decoration:underline;
+}
+
+.bm-dossier .security-note {
+    border-top:1px solid var(--line);
+    margin-top:34px;
+    padding-top:22px;
+    max-width:720px;
+}
+
+.bm-dossier .security-note span {
+    font-size:9px;
+    letter-spacing:.18em;
+}
+
+.bm-dossier .security-note p {
+    font-size:11px;
+    line-height:1.7;
+    color:var(--muted);
+}
+
+.bm-dossier .prepared {
+    font:500 18px/1.5 var(--serif);
+    margin-top:20px;
+}
+
+.bm-dossier .client-hero {
+    min-height:70vh;
+}
+
+.bm-dossier .client-entry {
+    padding-top:88px;
+}
+
+.bm-dossier .client-entry-head {
+    display:grid;
+    grid-template-columns:.58fr 1.42fr;
+    gap:7vw;
+    align-items:end;
+    margin-bottom:52px;
+}
+
+.bm-dossier .client-entry-head>div h2 {
+    margin:16px 0 18px;
+}
+
+.bm-dossier .client-entry-head>div p {
+    max-width:560px;
+    margin:0;
+    font-size:13px;
+    line-height:1.75;
+    color:var(--muted);
+}
+
+.bm-dossier .client-entry-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-top:1px solid var(--line);
+    border-left:1px solid var(--line);
+}
+
+.bm-dossier .client-entry-card {
+    position:relative;
+    min-height:390px;
+    padding:34px 34px 30px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+    transition:background .3s ease,color .3s ease,transform .3s ease;
+}
+
+.bm-dossier .client-entry-card:hover {
+    background:#e5ddd2;
+}
+
+.bm-dossier .client-entry-no {
+    position:absolute;
+    top:29px;
+    right:31px;
+    font:500 16px/1 var(--serif);
+    opacity:.4;
+}
+
+.bm-dossier .client-entry-card small {
+    display:block;
+    font-size:9px;
+    letter-spacing:.2em;
+    font-weight:600;
+    opacity:.58;
+}
+
+.bm-dossier .client-entry-card h3 {
+    font:500 clamp(40px,4.6vw,68px)/.96 var(--serif);
+    letter-spacing:-.04em;
+    margin:90px 0 24px;
+}
+
+.bm-dossier .client-entry-card p {
+    max-width:470px;
+    margin:0;
+    font-size:13px;
+    line-height:1.7;
+    opacity:.72;
+}
+
+.bm-dossier .client-entry-card strong {
+    position:absolute;
+    left:34px;
+    right:34px;
+    bottom:29px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:19px;
+    border-top:1px solid currentColor;
+    font-size:11px;
+    font-weight:600;
+}
+
+.bm-dossier .client-entry-card strong b {
+    font-size:18px;
+    font-weight:400;
+}
+
+.bm-dossier .client-entry-card strong {
+    border-top:0 !important;
+    padding-top:0 !important;
+}
+
+@media (max-width:850px) {
+    .bm-dossier .articles {
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width:850px) {
+    .bm-dossier .file-row {
+        grid-template-columns:32px 1fr;
+    }
+
+    .bm-dossier .file-row small {
+        grid-column:2;
+    }
+}
+
+@media (max-width:850px) {
+    .bm-dossier .client-entry-head {
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .bm-dossier .client-entry-grid {
+        grid-template-columns:1fr;
+    }
+
+    .bm-dossier .client-entry-card {
+        min-height:325px;
+        padding:28px 25px 25px;
+    }
+
+    .bm-dossier .client-entry-card h3 {
+        margin:62px 0 20px;
+        font-size:13vw;
+    }
+
+    .bm-dossier .client-entry-card p {
+        padding-bottom:58px;
+    }
+
+    .bm-dossier .client-entry-card strong {
+        left:25px;
+        right:25px;
+        bottom:23px;
+    }
 }
