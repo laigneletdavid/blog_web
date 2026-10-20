@@ -1070,6 +1070,166 @@ a:hover { color: #1e40af; }
 .lt-related__title { margin: 0; font-size: 28px; letter-spacing: -.02em; font-weight: 700; color: var(--lt-text); }
 .lt-related .lt-cards { margin-top: 28px; gap: 24px; }
 
+/* ---------- Pages standard du CMS (tag, categorie, pages legales) ----------
+   Ces gabarits n'ont pas de surcouche client : on habille leurs classes
+   communes pour qu'ils rejoignent la charte de la vitrine. */
+main .breadcrumb { margin: 32px 0 0; padding: 0; background: none; font-size: 13.5px; }
+main .breadcrumb-item,
+main .breadcrumb-item.active { color: var(--lt-text-muted); }
+main .breadcrumb-item a { color: var(--lt-text-body); text-decoration: none; }
+main .breadcrumb-item a:hover { color: var(--lt-primary-dark); text-decoration: underline; }
+main .breadcrumb-item + .breadcrumb-item::before { color: var(--lt-text-muted); }
+
+.page-detail { padding: 24px 0 72px; }
+.page-detail__title {
+    margin: 0 0 12px;
+    padding: 0;
+    border: 0;
+    font-size: clamp(34px, 4.4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -.03em;
+    font-weight: 700;
+    color: var(--lt-text);
+}
+.page-detail__title::after { display: none; }
+.page-detail > .text-muted { font-size: 15px; color: var(--lt-text-muted) !important; }
+.page-detail__content h2.h4 { margin-top: 32px !important; font-size: 22px; font-weight: 700; letter-spacing: -.01em; color: var(--lt-text); }
+.page-detail__content h2.h4 svg,
+.page-detail__content h2.h4 i { display: none; }
+
+/* Grille d'articles : deux colonnes au lieu de cartes empilees */
+.page-detail__content .row:has(> .blog-card) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 20px;
+    margin: 0;
+}
+.page-detail__content .row:has(> .blog-card) > .blog-card { width: auto; max-width: none; padding: 0; margin: 0; }
+.blog-card {
+    background: #ffffff;
+    border: 1px solid var(--lt-border);
+    border-radius: var(--lt-radius-card);
+    overflow: hidden;
+    box-shadow: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.blog-card:hover { border-color: var(--lt-primary); box-shadow: var(--lt-shadow); transform: none; }
+.blog-card__link { color: var(--lt-text); text-decoration: none; display: flex; flex-direction: column; height: 100%; }
+.blog-card__link:hover { color: var(--lt-text); }
+.blog-card__img { position: relative; aspect-ratio: 16 / 9; height: auto; background: #f3f4f6; overflow: hidden; }
+.blog-card__image { width: 100%; height: 100%; object-fit: cover; }
+.blog-card__placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c7ccd4; background: #f3f4f6; }
+.blog-card__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--lt-primary-darker);
+    background: var(--lt-tint);
+    padding: 5px 10px;
+    border-radius: 999px;
+}
+.blog-card__body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+.blog-card__title { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -.01em; color: var(--lt-text); }
+.blog-card__excerpt { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: var(--lt-text-body); }
+.blog-card__meta { margin-top: 14px; font-size: 13px; color: var(--lt-text-muted); }
+/* Le CMS ecrit la date avec date('d M Y') : mois en anglais, on la masque */
+.blog-card__meta time,
+.blog-card__meta .blog-card__dot { display: none; }
+.blog-card__tags { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12.5px;
+    color: #374151;
+    background: #f3f4f6;
+    border: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-decoration: none;
+}
+.tag-pill::before { content: '#'; }
+a.tag-pill:hover { color: var(--lt-primary-darker); background: var(--lt-tint); }
+
+/* Le theme vitrine du CMS est plus specifique sur ces elements */
+main .blog-card .blog-card__link,
+main .blog-card .blog-card__link:hover { text-decoration: none; }
+main .blog-card .blog-card__img .blog-card__badge {
+    right: auto;
+    bottom: auto;
+    display: inline-block;
+    width: auto;
+    background: var(--lt-tint);
+    color: var(--lt-primary-darker);
+}
+main .blog-card .blog-card__body { padding: 20px 22px 22px; }
+main .blog-card .blog-card__title { margin: 0; }
+
+/* Colonne laterale : cartes sobres */
+.blog-sidebar .widget_categories,
+.blog-sidebar .widget_archives {
+    margin-bottom: 1.5rem;
+    padding: 20px !important;
+    background: #ffffff;
+    border: 1px solid var(--lt-border);
+    border-radius: 14px;
+}
+.blog-sidebar .widget_categories h4,
+.blog-sidebar .widget_archives h4 {
+    margin: 0 0 12px;
+    font-style: normal !important;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--lt-text-muted);
+}
+.blog-sidebar .widget_categories ol,
+.blog-sidebar .widget_archives ol,
+.blog-sidebar .widget_categories ul,
+.blog-sidebar .widget_archives ul { margin: 0; padding: 0; list-style: none; font-size: 14.5px; line-height: 1.9; }
+.blog-sidebar { padding-top: 24px; }
+.blog-sidebar .widget-card {
+    background: #ffffff;
+    border: 1px solid var(--lt-border);
+    border-radius: 14px;
+    box-shadow: none;
+    padding: 20px;
+}
+.blog-sidebar .widget-card__title {
+    margin: 0 0 12px;
+    padding: 0;
+    border: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--lt-text-muted);
+}
+.blog-sidebar .widget-card__title::after { display: none; }
+.blog-sidebar a { color: var(--lt-text-body); text-decoration: none; }
+.blog-sidebar a:hover { color: var(--lt-primary-dark); }
+
+/* Pagination Bootstrap des gabarits du CMS */
+main .pagination { gap: 6px; flex-wrap: wrap; }
+main .page-link {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px !important;
+    border: 1px solid var(--lt-border);
+    color: var(--lt-text);
+    font-weight: 600;
+    font-size: 14px;
+}
+main .page-link:hover { border-color: var(--lt-primary); color: var(--lt-primary-dark); background: #ffffff; }
+main .page-item.active .page-link { background: var(--lt-primary); border-color: var(--lt-primary); color: #ffffff; }
+
 /* ---------- Footer ---------- */
 .lt-footer {
     background: #ffffff;
