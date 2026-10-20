@@ -1,0 +1,57 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Contenus{% endblock %}
+
+{% block content_header %}
+    <div class="bw-page-head">
+        <div>
+            <h1 class="bw-page-head__title">Contenus</h1>
+            <p class="bw-page-head__text">Tous vos contenus au même endroit.</p>
+        </div>
+        {% include 'admin/hub/_create_menu.html.twig' %}
+    </div>
+{% endblock %}
+
+{% block main %}
+<div class="bw-simple">
+    <form class="bw-filters" method="get" action="{{ path('admin_contents') }}">
+        <a class="bw-pill{{ currentType is null ? ' is-active' }}" href="{{ path('admin_contents', search ? {q: search} : {}) }}">
+            Tout <span class="bw-pill__count">{{ counts|reduce((sum, n) => sum + n, 0) }}</span>
+        </a>
+        {% for type in types %}
+            <a class="bw-pill{{ currentType == type.key ? ' is-active' }}" href="{{ path('admin_contents', {type: type.key}|merge(search ? {q: search} : {})) }}">
+                {{ type.plural }} <span class="bw-pill__count">{{ counts[type.key]|default(0) }}</span>
+            </a>
+        {% endfor %}
+        {% if currentType %}<input type="hidden" name="type" value="{{ currentType }}">{% endif %}
+        <label class="visually-hidden" for="bw-content-search">Rechercher un contenu</label>
+        <input id="bw-content-search" class="bw-filters__search" type="search" name="q" value="{{ search }}" placeholder="Rechercher…">
+    </form>
+
+    {% if items is empty %}
+        <div class="bw-empty">
+            {% if search %}
+                <p>Aucun contenu ne contient « {{ search }} ».</p>
+                <a href="{{ path('admin_contents', currentType ? {type: currentType} : {}) }}">Effacer la recherche</a>
+            {% else %}
+                <p>Rien ici pour l'instant. Utilisez « Créer » pour commencer.</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="bw-list">
+            {% for item in items %}
+                <a class="bw-list__row" href="{{ item.editUrl }}">
+                    <span class="bw-type bw-type--{{ item.type }}">{{ item.typeLabel }}</span>
+                    <span class="bw-list__title">{{ item.title }}</span>
+                    <span class="bw-list__date">{{ item.date ? item.date|format_date('medium', locale='fr') : '' }}</span>
+                    {% if item.published %}
+                        <span class="bw-status bw-status--on">En ligne</span>
+                    {% else %}
+                        <span class="bw-status bw-status--off">{{ item.type in ['article', 'page', 'landing'] ? 'Brouillon' : 'Masqué' }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

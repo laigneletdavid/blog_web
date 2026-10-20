@@ -35,6 +35,7 @@ class PageCrudController extends AbstractCrudController
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
         private readonly SeoAnalyzer $seoAnalyzer,
+        private readonly \App\Service\AdminModeService $adminMode,
     ) {
     }
 
@@ -121,18 +122,22 @@ class PageCrudController extends AbstractCrudController
             });
     }
 
+    /**
+     * Formulaire en deux colonnes : ecrire a gauche, publier a droite.
+     * Mise en page, adresse et reglages SEO techniques ne sortent qu'en mode expert.
+     */
     public function configureFields(string $pageName): iterable
     {
-        // --- Panel Contenu ---
-        yield FormField::addPanel('Contenu')
-            ->setIcon('fa fa-pen')
-            ->collapsible();
+        $expert = $this->adminMode->isExpert();
 
         yield $this->seoScoreField();
 
-        yield TextField::new('title', 'Titre de la page');
+        // ===== Colonne principale : le contenu =====
+        yield FormField::addColumn('col-lg-8');
 
-        yield TextareaField::new('blocksJson', 'Contenu de la page')
+        yield TextField::new('title', 'Titre');
+
+        yield TextareaField::new('blocksJson', 'Contenu')
             ->setFormTypeOptions([
                 'attr' => [
                     'data-tiptap-editor' => '',
@@ -140,47 +145,74 @@ class PageCrudController extends AbstractCrudController
                 ],
             ])
             ->setColumns('col-12')
-            ->setHelp('Editeur visuel : mise en forme, images, videos, encarts, colonnes. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
+            ->setHelp('Tapez <strong>/</strong> pour insérer rapidement un bloc : image, vidéo, encart, colonnes, document.')
             ->hideOnIndex();
 
-        // --- Panel Paramètres ---
-        yield FormField::addPanel('Paramètres')
-            ->setIcon('fa fa-cog')
-            ->collapsible();
+        // Apercu Google : le JS admin-simple affiche le rendu au-dessus de ces deux champs
+        yield FormField::addFieldset('Dans Google')
+            ->setHelp('Laissez vide pour reprendre le titre de la page.');
 
-        yield AssociationField::new('featuredMedia', 'Image mise en avant');
+        yield TextField::new('seoTitle', 'Titre dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
+            ->hideOnIndex();
 
-        yield BooleanField::new('published', 'Publiée');
+        yield TextareaField::new('seoDescription', 'Description dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 2]])
+            ->hideOnIndex();
 
-        if ($this->siteContext->hasModule('private_pages')) {
-            yield ChoiceField::new('visibility', 'Visibilite')
-                ->setChoices(VisibilityEnum::choices())
+        // ===== Colonne laterale =====
+        yield FormField::addColumn('col-lg-4');
+
+        yield FormField::addFieldset('Publication')->setIcon('fa fa-paper-plane');
+
+        yield BooleanField::new('published', 'En ligne')
+            ->setHelp('Décoché : brouillon, visible de vous seul.');
+
+        yield FormField::addFieldset('Image')->setIcon('fa fa-image');
+
+        yield AssociationField::new('featuredMedia', 'Image')
+            ->setHelp('Son texte alternatif se règle dans Médias.');
+
+        if ($expert) {
+            yield FormField::addFieldset('Options avancées')
+                ->setIcon('fa fa-sliders-h')
+                ->setCssClass('bw-fieldset-expert');
+
+            yield ChoiceField::new('template', 'Mise en page')
+                ->setChoices([
+                    'Par défaut (colonne à droite)' => 'default',
+                    'Pleine largeur' => 'full-width',
+                    'Colonne à gauche' => 'sidebar-left',
+                ])
                 ->renderExpanded(false)
-                ->setHelp('Public = visible par tous. Membres = connectes uniquement. Admin = administrateurs uniquement.');
+                ->hideOnIndex();
+
+            if ($this->siteContext->hasModule('private_pages')) {
+                yield ChoiceField::new('visibility', 'Visible par')
+                    ->setChoices(VisibilityEnum::choices())
+                    ->renderExpanded(false);
+            }
+
+            yield $this->slugField('title');
+
+            yield TextField::new('seoKeywords', 'Mots-clés')
+                ->setHelp('Ignorés par Google, utiles seulement à certains outils.')
+                ->hideOnIndex();
+
+            yield BooleanField::new('noIndex', 'Masquer des moteurs de recherche')
+                ->hideOnIndex();
+
+            yield TextField::new('canonicalUrl', 'Adresse canonique')
+                ->setHelp('Seulement si ce texte existe aussi sur un autre site.')
+                ->hideOnIndex();
+
+            yield BooleanField::new('isSystem', 'Page système')
+                ->renderAsSwitch(false)
+                ->setFormTypeOption('disabled', true)
+                ->hideOnIndex();
         }
 
-        yield ChoiceField::new('template', 'Mise en page')
-            ->setChoices([
-                'Par défaut (sidebar droite)' => 'default',
-                'Pleine largeur' => 'full-width',
-                'Sidebar gauche' => 'sidebar-left',
-            ])
-            ->renderExpanded(false)
-            ->setHelp('Choisissez la disposition de la page.');
-
-        // --- Panel Avancé (collapsed) ---
-        yield FormField::addPanel('Avancé')
-            ->setIcon('fa fa-sliders-h')
-            ->collapsible()
-            ->renderCollapsed();
-
-        yield $this->slugField('title');
-
-        yield BooleanField::new('isSystem', 'Page système')
-            ->renderAsSwitch(false)
-            ->setFormTypeOption('disabled', true)
-            ->hideOnIndex();
-
+        // Colonnes de la liste uniquement
         $pvRepo = $this->pageViewRepository;
         yield IntegerField::new('viewCount', 'Vues')
             ->hideOnForm()
@@ -193,34 +225,6 @@ class PageCrudController extends AbstractCrudController
 
         yield DateTimeField::new('updatedAt', 'Modifiée le')
             ->hideOnForm();
-
-        // --- Panel SEO ---
-        yield FormField::addPanel('SEO')
-            ->setIcon('fa fa-search')
-            ->collapsible()
-            ->renderCollapsed();
-
-        yield TextField::new('seoTitle', 'Titre SEO')
-            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Un bon titre attire les clics. Max 70 caracteres. Laissez vide = titre de la page.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
-            ->hideOnIndex();
-
-        yield TextareaField::new('seoDescription', 'Meta description')
-            ->setHelp('Texte affiche sous le titre dans les resultats Google. Un bon resume incite au clic et ameliore le taux de visite. Max 160 caracteres.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
-            ->hideOnIndex();
-
-        yield TextField::new('seoKeywords', 'Mots-cles')
-            ->setHelp('Mots-cles principaux de la page, separes par des virgules. Aide au referencement thematique.')
-            ->hideOnIndex();
-
-        yield BooleanField::new('noIndex', 'Masquer des moteurs')
-            ->setHelp('Si active, Google n\'indexera pas cette page. Utile pour les pages privees ou en construction.')
-            ->hideOnIndex();
-
-        yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
-            ->hideOnIndex();
     }
 
     public function persistEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void

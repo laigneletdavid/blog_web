@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Media;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -54,9 +56,13 @@ class MediaCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, 'Medias')
-            ->setPageTitle(Crud::PAGE_NEW, 'Ajouter un media')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier le media')
+            ->setPageTitle(Crud::PAGE_INDEX, 'Médias')
+            ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une image')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l\'image')
+            // Medias et documents sont deux onglets d'un meme espace "Medias"
+            ->setHelp(Crud::PAGE_INDEX, 'Images de votre site. Pour les fichiers à télécharger (PDF, plaquettes) : <a href="'
+                . $this->container->get(AdminUrlGenerator::class)->unsetAll()->setController(DocumentCrudController::class)->setAction(Action::INDEX)->generateUrl()
+                . '">Documents</a>.')
             ->setDefaultSort(['id' => 'DESC']);
     }
 

@@ -5,6 +5,10 @@ namespace App\Service;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 
+/**
+ * Visite guidee de l'admin : une etape par zone de l'accueil et par entree du menu.
+ * Les selecteurs suivent les classes posees dans DashboardController et le layout admin.
+ */
 class WalkthroughService
 {
     public function __construct(
@@ -23,55 +27,27 @@ class WalkthroughService
         $steps = [];
 
         $steps[] = [
-            'element' => '#dashboardTip',
+            'element' => '.bw-dashboard .bw-panel',
             'popover' => [
-                'title' => 'Bienvenue sur votre tableau de bord',
-                'description' => 'C\'est votre point d\'arrivée à chaque connexion. Vous y retrouvez les statistiques de fréquentation, vos derniers articles et des raccourcis vers les actions courantes.',
+                'title' => 'Ce qui vous attend',
+                'description' => 'À chaque connexion, l\'accueil liste ce qui demande votre attention : messages à lire, brouillons à finir, pistes pour votre référencement. Chaque ligne a son bouton pour s\'en occuper.',
             ],
         ];
 
         $steps[] = [
-            'element' => '.bw-kpi:first-child',
+            'element' => '.bw-create',
             'popover' => [
-                'title' => 'Vos statistiques en un coup d\'œil',
-                'description' => 'Ces indicateurs vous montrent la fréquentation du site, le nombre d\'articles et de pages publiés. Ils se mettent à jour automatiquement.',
-            ],
-        ];
-
-        $steps[] = [
-            'element' => '.bw-quick-actions',
-            'popover' => [
-                'title' => 'Actions rapides',
-                'description' => 'Créez un nouvel article, une page, ou ajoutez un média en un clic. Ces raccourcis vous font gagner du temps au quotidien.',
-            ],
-        ];
-
-        $steps[] = [
-            'element' => '.tour-menu-dashboard',
-            'popover' => [
-                'title' => 'Le menu principal',
-                'description' => 'Ce menu vous accompagne sur toutes les pages de l\'admin. Il est organisé par sections : contenu, modules, réglages.',
-                'side' => 'right',
+                'title' => 'Créer',
+                'description' => 'Un article, une page, un service : tout commence ici.',
             ],
         ];
 
         if ($this->security->isGranted('ROLE_AUTHOR')) {
-            if ($this->siteContext->hasModule('blog')) {
-                $steps[] = [
-                    'element' => '.tour-menu-blog',
-                    'popover' => [
-                        'title' => 'Gérer votre blog',
-                        'description' => 'Créez et modifiez vos articles, organisez-les par catégories. L\'éditeur vous permet de mettre en forme vos textes comme dans un traitement de texte.',
-                        'side' => 'right',
-                    ],
-                ];
-            }
-
             $steps[] = [
-                'element' => '.tour-menu-pages',
+                'element' => '.tour-menu-contents',
                 'popover' => [
-                    'title' => 'Vos pages',
-                    'description' => 'Les pages fonctionnent comme les articles : même éditeur, même logique. Une seule façon de faire pour tout le site.',
+                    'title' => 'Vos contenus',
+                    'description' => 'Tous vos contenus au même endroit' . $this->contentTypesSentence() . '. Filtrez par type, cherchez par titre, cliquez pour modifier.',
                     'side' => 'right',
                 ],
             ];
@@ -79,17 +55,8 @@ class WalkthroughService
             $steps[] = [
                 'element' => '.tour-menu-medias',
                 'popover' => [
-                    'title' => 'Médiathèque',
-                    'description' => 'Toutes vos images sont centralisées ici. Elles sont automatiquement converties en WebP pour un chargement plus rapide.',
-                    'side' => 'right',
-                ],
-            ];
-
-            $steps[] = [
-                'element' => '.tour-menu-documents',
-                'popover' => [
-                    'title' => 'Documents',
-                    'description' => 'Ajoutez vos PDF, plaquettes et tarifs ici. Insérez-les ensuite dans vos articles via le bouton Document de l\'éditeur. Si vous mettez à jour un fichier, tous les articles qui l\'incluent se mettent à jour automatiquement.',
+                    'title' => 'Médias',
+                    'description' => 'Vos images, et vos documents à télécharger (PDF, plaquettes). Donnez à chaque image un texte alternatif : il est lu par Google et par les personnes malvoyantes.',
                     'side' => 'right',
                 ],
             ];
@@ -97,73 +64,67 @@ class WalkthroughService
 
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $steps[] = [
-                'element' => '.tour-menu-classification',
+                'element' => '.tour-menu-messages',
                 'popover' => [
-                    'title' => 'Classification',
-                    'description' => 'Organisez vos contenus avec des tags et des familles de tags. Les tags sont partagés entre modules : un même tag peut relier un article, un service et un événement.',
+                    'title' => 'Messages',
+                    'description' => 'Les demandes envoyées depuis votre formulaire de contact. Le chiffre rouge indique les messages non lus.',
                     'side' => 'right',
                 ],
             ];
-            $activeModules = $this->getActiveModuleSteps();
-            if (!empty($activeModules)) {
+
+            if ($this->siteContext->hasModule('marketing')) {
                 $steps[] = [
-                    'element' => '.tour-menu-modules-section',
+                    'element' => '.tour-menu-stats',
                     'popover' => [
-                        'title' => 'Vos modules',
-                        'description' => 'BlogWeb fonctionne par modules activés selon vos besoins : ' . implode(', ', $activeModules) . '. Chaque module se gère de la même façon.',
+                        'title' => 'Statistiques',
+                        'description' => 'Combien de visiteurs, d\'où ils viennent, ce qu\'ils regardent.',
                         'side' => 'right',
                     ],
                 ];
             }
 
             $steps[] = [
-                'element' => '.tour-menu-site-identity',
-                'popover' => [
-                    'title' => 'Identité du site',
-                    'description' => 'Nom du site, description, coordonnées, logo — tout se configure ici. Ces informations apparaissent sur le site public et dans les résultats Google.',
-                    'side' => 'right',
-                ],
-            ];
-
-            $steps[] = [
                 'element' => '.tour-menu-seo',
                 'popover' => [
                     'title' => 'Référencement',
-                    'description' => 'Dites ce que vous proposez, à qui et où vous voulez être trouvé. On y règle aussi la fiche entreprise Google et l\'image de partage sur les réseaux sociaux.',
+                    'description' => 'Dites ce que vous proposez, à qui et où vous voulez être trouvé. Le bilan en haut de page vous indique quoi améliorer.',
                     'side' => 'right',
                 ],
             ];
-
-            $steps[] = [
-                'element' => '.tour-menu-navigation',
-                'popover' => [
-                    'title' => 'Gestion de la navigation',
-                    'description' => 'Organisez votre menu par glisser-déposer. Ajoutez des liens vers vos pages, catégories ou URLs externes.',
-                    'side' => 'right',
-                ],
-            ];
-
-            $apparenceDesc = 'Changez les couleurs, les polices, les images du thème. C\'est ici que votre identité visuelle prend forme — la structure est fournie, le design reste le vôtre.';
-            if ($this->security->isGranted('ROLE_FREELANCE')) {
-                $apparenceDesc = 'Changez de thème via le catalogue, personnalisez les couleurs, les polices et les images. C\'est ici que votre identité visuelle prend forme — la structure est fournie, le design reste le vôtre.';
-            }
 
             $steps[] = [
                 'element' => '.tour-menu-apparence',
                 'popover' => [
-                    'title' => 'Personnaliser l\'apparence',
-                    'description' => $apparenceDesc,
+                    'title' => 'Apparence',
+                    'description' => 'Logo, couleurs, polices et images de votre site. La structure est fournie, le style reste le vôtre.',
                     'side' => 'right',
                 ],
-                'expandSubmenu' => true,
+            ];
+
+            $steps[] = [
+                'element' => '.tour-menu-settings',
+                'popover' => [
+                    'title' => 'Réglages',
+                    'description' => 'Ce qu\'on règle une fois : identité du site, menu, catégories, utilisateurs.',
+                    'side' => 'right',
+                ],
             ];
         }
+
+        $steps[] = [
+            'element' => '.bw-expert-toggle',
+            'popover' => [
+                'title' => 'Mode expert',
+                'description' => 'Par défaut, l\'admin n\'affiche que l\'essentiel. Le mode expert ajoute les réglages techniques : adresse des pages, options avancées de référencement, modules.',
+                'side' => 'right',
+            ],
+        ];
 
         $steps[] = [
             'element' => '.tour-menu-visit-site',
             'popover' => [
                 'title' => 'Voir le résultat',
-                'description' => 'Ce lien ouvre votre site public dans un nouvel onglet. Le va-et-vient admin ↔ site, c\'est votre quotidien : vous montez côté admin, vous vérifiez côté site.',
+                'description' => 'Ouvre votre site dans un nouvel onglet, pour vérifier ce que voient vos visiteurs.',
                 'side' => 'right',
             ],
         ];
@@ -172,7 +133,7 @@ class WalkthroughService
             'element' => '.tour-menu-guide',
             'popover' => [
                 'title' => 'Besoin d\'aide ?',
-                'description' => 'Le guide complet est toujours accessible ici. Vous pouvez aussi relancer cette visite guidée à tout moment depuis ce menu.',
+                'description' => 'Le guide complet est toujours accessible ici, et cette visite peut être relancée depuis l\'accueil.',
                 'side' => 'right',
             ],
         ];
@@ -180,24 +141,35 @@ class WalkthroughService
         return $steps;
     }
 
-    private function getActiveModuleSteps(): array
+    /**
+     * " : articles, pages, services..." selon les modules actifs.
+     */
+    private function contentTypesSentence(): string
     {
         $labels = [];
         $map = [
-            'services' => 'Services',
-            'events' => 'Événements',
-            'catalogue' => 'Catalogue',
-            'faq' => 'FAQ',
-            'portfolio' => 'Portfolio',
-            'directory' => 'Annuaire',
+            'blog' => 'articles',
+            null => 'pages',
+            'services' => 'services',
+            'events' => 'événements',
+            'portfolio' => 'réalisations',
+            'catalogue' => 'produits',
+            'faq' => 'questions',
+            'directory' => 'fiches de l\'annuaire',
         ];
 
         foreach ($map as $module => $label) {
-            if ($this->siteContext->hasModule($module)) {
+            if ($module === '' || $this->siteContext->hasModule($module)) {
                 $labels[] = $label;
             }
         }
 
-        return $labels;
+        if (count($labels) < 2) {
+            return '';
+        }
+
+        $last = array_pop($labels);
+
+        return ' : ' . implode(', ', $labels) . ' et ' . $last;
     }
 }
