@@ -1,0 +1,209 @@
+{# ======================================================================
+   ARTICLE — LintellO
+   Surcouche client du corps de l'article (voir article/show.html.twig, qui
+   garde le JSON-LD du CMS).
+
+   Spec vitrine, contrainte 8 : un auteur, une date de mise a jour, un seul
+   encart d'appel vers LintellO, des alts renseignes, une categorie et des
+   tags.
+   - L'encart se place apres la premiere partie (avant le 2e intertitre),
+     comme sur le canvas ; sans intertitre, il suit le texte. Sa phrase
+     depend du premier tag de public de l'article.
+   - Le sommaire reprend toc_extract et le controleur Stimulus « toc » du
+     CMS (suivi du defilement).
+   - Pas de commentaires : les lecteurs n'ont pas de compte sur la vitrine.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as lt %}
+{% set lt_app = 'https://www.lintello.ai' %}
+
+{% set cat = article.categories|first %}
+{% set published = article.publishedAt ?? article.createdAt %}
+{% set updated = article.updatedAt %}
+{% set showUpdated = updated and updated|date('Y-m-d') != published|date('Y-m-d') %}
+{% set author = article.author %}
+{% set articleUrl = url('app_article_show', {slug: article.slug}) %}
+
+{# Phrase de l'encart selon le public de l'article #}
+{% set pitches = {
+    etudiants: 'Révisez avec LintellO : cinq modes pensés pour comprendre, pas pour recopier.',
+    maison: 'Essayez LintellO au quotidien : une IA française qui respecte vos données.',
+    pros: 'Travaillez avec LintellO : une IA hébergée en France, sans exposer vos documents.',
+} %}
+{% set pitch = null %}
+{% for t in article.tags %}
+    {% if pitch is null and pitches[t.slug] is defined %}
+        {% set pitch = pitches[t.slug] %}
+    {% endif %}
+{% endfor %}
+{% set pitch = pitch ?? 'Essayez LintellO : un chat, un éditeur et une recherche, hébergés en France.' %}
+
+{% set encart %}
+    <aside class="lt-encart" aria-label="Essayer LintellO">
+        <div class="lt-encart__text">
+            <p class="lt-encart__title">{{ pitch }}</p>
+            <p class="lt-encart__note">Gratuit : 20 messages par jour avec l'IA du quotidien.</p>
+        </div>
+        <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Essayer LintellO</a>
+    </aside>
+{% endset %}
+
+{# Decoupe du contenu au 2e intertitre pour y glisser l'encart #}
+{% set content = article.content|toc_anchors %}
+{% set parts = content|split('<h2') %}
+
+{% set toc_items = toc_extract(article.content) %}
+
+<div class="lt-article">
+
+{# ====== EN-TETE ====== #}
+<section class="lt-article__head">
+    <div class="lt-container">
+        <nav class="lt-breadcrumb" aria-label="Fil d'Ariane">
+            <a href="{{ path('app_home') }}">Accueil</a>
+            <span aria-hidden="true">/</span>
+            <a href="{{ path('app_article_show_all') }}">Apprendre</a>
+            {% if cat %}
+                <span aria-hidden="true">/</span>
+                <a href="{{ path('app_article_show_all', {categorie: cat.slug}) }}">{{ cat.name }}</a>
+            {% endif %}
+        </nav>
+
+        <div class="lt-article__intro">
+            {% if cat %}<a href="{{ path('app_article_show_all', {categorie: cat.slug}) }}" class="lt-article__cat">{{ cat.name }}</a>{% endif %}
+            <h1 class="lt-article__title">{{ article.title }}</h1>
+            {% if article.featuredText %}
+                <p class="lt-article__lead">{{ article.featuredText }}</p>
+            {% endif %}
+            <div class="lt-byline">
+                <span class="lt-avatar" aria-hidden="true">{{ author ? author.initials : (site.name|default('L')|first|upper) }}</span>
+                <span>
+                    <span class="lt-byline__name">{{ author ? author.displayName : site.name|default('LintellO') }}</span>
+                    <span class="lt-byline__meta">
+                        Publié le <time datetime="{{ published|date('Y-m-d') }}">{{ lt.date_fr(published) }}</time>
+                        {%- if showUpdated %} · Mis à jour le <time datetime="{{ updated|date('Y-m-d') }}">{{ lt.date_fr(updated) }}</time>{% endif %}
+                        · {{ article.content|readingTime }} min de lecture
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        {% if article.featuredMedia %}
+            <figure class="lt-article__figure">
+                {{ responsive_img(article.featuredMedia, '(max-width: 1200px) 100vw, 1152px', 'lt-article__img', null, true, article) }}
+            </figure>
+        {% endif %}
+    </div>
+</section>
+
+{# ====== CORPS : SOMMAIRE + TEXTE ====== #}
+<section class="lt-article__body">
+    <div class="lt-container lt-article__grid">
+        <aside class="lt-article__side">
+            {% if toc_items|length > 0 %}
+                <nav class="lt-toc" aria-label="Sommaire" data-controller="toc">
+                    <p class="lt-toc__title">Sommaire</p>
+                    <ol class="lt-toc__list">
+                        {% for item in toc_items %}
+                            <li class="lt-toc__item lt-toc__item--h{{ item.level }}">
+                                <a href="#{{ item.id }}" class="lt-toc__link" data-toc-target="link" data-section-id="{{ item.id }}">{{ item.text }}</a>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </nav>
+            {% endif %}
+            <div class="lt-share">
+                <button type="button" class="lt-share__btn" data-lt-copy="{{ articleUrl }}">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+                    <span data-lt-copy-label>Copier le lien</span>
+                </button>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ articleUrl|url_encode }}" class="lt-share__btn" target="_blank" rel="noopener">Partager sur LinkedIn</a>
+            </div>
+        </aside>
+
+        <article class="lt-prose">
+            {% if parts|length >= 3 %}
+                {{ parts[0]|raw }}<h2{{ parts[1]|raw }}
+                {{ encart }}
+                {% for part in parts|slice(2) %}<h2{{ part|raw }}{% endfor %}
+            {% else %}
+                {{ content|raw }}
+                {{ encart }}
+            {% endif %}
+
+            {% if article.tags|length > 0 %}
+                <div class="lt-tags lt-article__tags">
+                    {% for t in article.tags %}
+                        <a href="{{ path('app_tag_show', {slug: t.slug}) }}" class="lt-tag lt-tag--link">#{{ t.name }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="lt-author">
+                <span class="lt-avatar lt-avatar--lg" aria-hidden="true">{{ author ? author.initials : (site.name|default('L')|first|upper) }}</span>
+                <div>
+                    <p class="lt-author__label">Écrit par</p>
+                    <p class="lt-author__name">{{ author ? author.displayName : site.name|default('LintellO') }}</p>
+                    {% if author and author.jobTitle %}<p class="lt-author__job">{{ author.jobTitle }}</p>{% endif %}
+                    {% if author and author.bio %}<p class="lt-author__bio">{{ author.bio }}</p>{% endif %}
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+{# ====== A LIRE AUSSI ====== #}
+{% if relatedArticles is defined and relatedArticles|length > 0 %}
+<section class="lt-related">
+    <div class="lt-container">
+        <h2 class="lt-related__title">À lire aussi</h2>
+        <div class="lt-cards lt-cards--280">
+            {% for rel in relatedArticles %}
+                {% set rcat = rel.categories|first %}
+                <a href="{{ path('app_article_show', {slug: rel.slug}) }}" class="lt-card lt-card--link">
+                    {% if rcat %}<span class="lt-eyebrow">{{ rcat.name }}</span>{% endif %}
+                    <span class="lt-card__title lt-card__title--sm">{{ rel.title }}</span>
+                    <span class="lt-post__meta">{{ rel.author ? rel.author.displayName ~ ' · ' }}{{ rel.content|readingTime }} min de lecture</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+</div>
+
+<script>
+(function () {
+    // Presse-papiers moderne, sinon repli sur execCommand (contextes ou
+    // l'API est refusee : iframe, navigateur ancien, http).
+    function fallbackCopy(text) {
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(area);
+        return ok;
+    }
+
+    document.querySelectorAll('[data-lt-copy]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var text = btn.getAttribute('data-lt-copy');
+            var label = btn.querySelector('[data-lt-copy-label]');
+            function done(ok) {
+                label.textContent = ok ? 'Lien copié' : 'Copie impossible';
+                setTimeout(function () { label.textContent = 'Copier le lien'; }, 1800);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); });
+            } else {
+                done(fallbackCopy(text));
+            }
+        });
+    });
+})();
+</script>
