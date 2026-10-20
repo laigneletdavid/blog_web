@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use App\Enum\VisibilityEnum;
 use App\Repository\PageViewRepository;
 use App\Service\ArticleNotificationService;
@@ -152,6 +154,21 @@ class ArticleCrudController extends AbstractCrudController
             ->setHelp('Court résumé affiché dans les listes d\'articles')
             ->hideOnIndex();
 
+        // Seuls les comptes qui ecrivent (ROLE_AUTHOR et +) sont proposes, pas les membres
+        yield AssociationField::new('author', 'Auteur')
+            ->setHelp('Affiché sur l\'article. Par défaut, le compte qui crée l\'article.')
+            ->setFormTypeOption('choice_label', 'displayName')
+            ->setQueryBuilder(static fn (QueryBuilder $qb) => $qb
+                ->andWhere(sprintf(
+                    '(%1$s.roles LIKE :author OR %1$s.roles LIKE :admin OR %1$s.roles LIKE :freelance OR %1$s.roles LIKE :superAdmin)',
+                    $qb->getRootAliases()[0],
+                ))
+                ->setParameter('author', '%ROLE_AUTHOR%')
+                ->setParameter('admin', '%ROLE_ADMIN%')
+                ->setParameter('freelance', '%ROLE_FREELANCE%')
+                ->setParameter('superAdmin', '%ROLE_SUPER_ADMIN%'))
+            ->hideOnIndex();
+
         yield BooleanField::new('published', 'Publié')
             ->setHelp('Si une date de programmation est définie dans le futur, l\'article sera publié automatiquement à cette date.');
 
@@ -224,6 +241,19 @@ class ArticleCrudController extends AbstractCrudController
         yield TextField::new('canonicalUrl', 'URL canonique')
             ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
             ->hideOnIndex();
+    }
+
+    public function createEntity(string $entityFqcn): Article
+    {
+        $article = new Article();
+
+        // L'auteur par defaut est le compte qui cree l'article (modifiable dans le formulaire)
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $article->setAuthor($user);
+        }
+
+        return $article;
     }
 
     public function persistEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void

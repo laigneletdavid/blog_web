@@ -298,6 +298,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->first_name ?? $this->name ?? $this->email;
     }
 
+    /**
+     * Initiales pour la pastille auteur (pas d'avatar) : "DL" pour David Laignelet.
+     */
+    public function getInitials(): string
+    {
+        $parts = array_filter([$this->first_name, $this->name], static fn (?string $p) => $p !== null && trim($p) !== '');
+
+        if ($parts === []) {
+            $parts = [(string) $this->email];
+        }
+
+        $initials = '';
+        foreach ($parts as $part) {
+            $initials .= mb_substr(trim($part), 0, 1);
+        }
+
+        return mb_strtoupper($initials);
+    }
+
     public function __toString(): string
     {
         return $this->email;

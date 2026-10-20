@@ -12,6 +12,8 @@
 {% set _theme_config = theme_service.getConfig(_theme) %}
 {% set _theme_vars = theme_service.getThemeVars(_theme) %}
 {% set _appearance = _is_preview ? theme_service.resolveAppearanceForTheme(_theme) : theme_service.resolveAppearance() %}
+{# Image de partage quand la page ne fournit pas la sienne : ogImage > hero > logo du site #}
+{% set _og_fallback = site ? (site.ogImage ?? site.heroImage ?? site.logo) : null %}
 
 
 <!DOCTYPE html>
@@ -54,6 +56,12 @@
         {% if seo.imageAlt|default('') is not empty %}
         <meta property="og:image:alt" content="{{ seo.imageAlt }}">
         {% endif %}
+        {% elseif _og_fallback %}
+        <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ _og_fallback.fileName)) }}">
+        {% if _og_fallback.width|default(0) > 0 %}
+        <meta property="og:image:width" content="{{ _og_fallback.width }}">
+        <meta property="og:image:height" content="{{ _og_fallback.height }}">
+        {% endif %}
         {% else %}
         <meta property="og:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
         {% endif %}
@@ -67,6 +75,8 @@
         {% endif %}
         {% if seo.image|default('') is not empty %}
         <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% elseif _og_fallback %}
+        <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ _og_fallback.fileName)) }}">
         {% else %}
         <meta name="twitter:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
         {% endif %}

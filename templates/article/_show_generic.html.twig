@@ -48,7 +48,12 @@
                     {% for cat in article.categories %}
                         <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}" class="article-detail__badge">{{ cat.name }}</a>
                     {% endfor %}
-                    <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|date('d M Y') }}</time>
+                    {% set _published = article.publishedAt ?? article.createdAt %}
+                    {% if article.author %}
+                    <span class="article-detail__author">Par {{ article.author.displayName }}</span>
+                    <span class="article-detail__dot"></span>
+                    {% endif %}
+                    <time datetime="{{ _published|date('Y-m-d') }}">{{ _published|format_date('long', locale='fr') }}</time>
                     <span class="article-detail__dot"></span>
                     <span>{{ article.content|readingTime }} min de lecture</span>
                     {% if viewCount|default(0) > 0 %}
@@ -95,22 +100,27 @@
                 </div>
 
                 {# --- Bloc auteur --- #}
-                {% if article.comments is defined %}
-                    {% set author = article.comments|length > 0 ? null : null %}
-                {% endif %}
+                {# Auteur de l'article ; sans auteur (articles anterieurs), le site signe #}
+                {% set _author = article.author %}
                 <div class="author-card">
                     <div class="author-card__avatar">
-                        {% if app.user and app.user.avatar %}
-                            <img src="{{ asset('documents/medias/' ~ app.user.avatar.fileName) }}" alt="" class="author-card__img">
-                        {% else %}
-                            <div class="author-card__placeholder">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            </div>
-                        {% endif %}
+                        <div class="author-card__initials" aria-hidden="true">
+                            {{- _author ? _author.initials : (site.name|default('B')|first|upper) -}}
+                        </div>
                     </div>
                     <div class="author-card__info">
-                        <p class="author-card__name">Blog</p>
-                        <p class="author-card__bio">Retrouvez tous nos articles et actualit&eacute;s sur notre blog.</p>
+                        {% if _author %}
+                            <p class="author-card__name">{{ _author.displayName }}</p>
+                            {% if _author.jobTitle %}
+                                <p class="author-card__job">{{ _author.jobTitle }}</p>
+                            {% endif %}
+                            {% if _author.bio %}
+                                <p class="author-card__bio">{{ _author.bio }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="author-card__name">{{ site.name|default('Blog') }}</p>
+                            <p class="author-card__bio">Retrouvez tous nos articles et actualités sur notre blog.</p>
+                        {% endif %}
                     </div>
                 </div>
             </article>
