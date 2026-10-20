@@ -33,6 +33,9 @@ function initGooglePreview() {
     const title = document.querySelector('input[name$="[title]"], input[name$="[name]"]');
     const summary = document.querySelector('input[name$="[featuredText]"], textarea[name$="[shortDescription]"]');
     const slug = document.querySelector('input[name$="[slug]"]');
+    // Mode simple : pas de champ d'adresse, on reprend le lien "Voir sur le site" de la page
+    const viewOnSite = document.querySelector('a.action-viewOnSite[href]');
+    const publicPath = viewOnSite ? new URL(viewOnSite.href, window.location.origin).pathname : '';
 
     const box = document.createElement('div');
     box.className = 'bw-google';
@@ -57,7 +60,8 @@ function initGooglePreview() {
         const d = seoDesc.value.trim() || summary?.value.trim() || 'Ajoutez une description pour donner envie de cliquer.';
         titleEl.textContent = t.length > TITLE_MAX ? t.slice(0, TITLE_MAX - 1) + '…' : t;
         descEl.textContent = d.length > DESC_MAX ? d.slice(0, DESC_MAX - 1) + '…' : d;
-        urlEl.textContent = window.location.host + (slug?.value ? ' › ' + slug.value : '');
+        const path = slug?.value || publicPath.replace(/^\/+|\/+$/g, '');
+        urlEl.textContent = window.location.host + (path ? ' › ' + path.split('/').join(' › ') : '');
         updateTitleCount?.();
         updateDescCount?.();
     };

@@ -76,6 +76,7 @@ class SiteCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $crud->setPageTitle(Crud::PAGE_DETAIL, 'Mon site');
+        $crud->setPageTitle(Crud::PAGE_EDIT, 'Identité du site');
 
         return $crud;
     }

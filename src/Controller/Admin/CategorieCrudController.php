@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Categorie;
 use App\Service\SeoAnalyzer;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -60,6 +61,13 @@ class CategorieCrudController extends AbstractCrudController
                 'Vous pouvez ajouter une categorie dans le menu principal via Reglages > Navigation.',
             ],
         ];
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Catégorie')
+            ->setEntityLabelInPlural('Catégories du blog');
     }
 
     public function configureFields(string $pageName): iterable

@@ -15,9 +15,17 @@
     {% endif %}
 {% endblock %}
 
+{# Le texte d'aide d'une page (Crud::setHelp) s'affiche en clair sous le titre :
+   il porte des liens vers les ecrans voisins, inutilisables dans l'infobulle d'origine #}
+{% block content_help %}{% endblock %}
+
 {% block content_header_wrapper %}
     {{ parent() }}
-    {% if seo_report is defined and seo_report is not null and ea.crud.currentPage in ['edit', 'new'] %}
+    {% if ea.crud is not null and ea.crud.helpMessage is not empty %}
+        <p class="bw-page-help">{{ ea.crud.helpMessage|trans|raw }}</p>
+    {% endif %}
+    {# Pas de bilan SEO sur un formulaire de creation : tout y serait "a corriger" #}
+    {% if seo_report is defined and seo_report is not null and ea.crud.currentPage == 'edit' %}
         <section class="px-0 mt-2">
             {% include 'admin/field/seo_report_panel.html.twig' %}
         </section>
