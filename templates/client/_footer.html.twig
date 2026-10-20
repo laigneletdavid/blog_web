@@ -1,0 +1,54 @@
+{# ======================================================================
+   FOOTER — LintellO
+   Quatre colonnes : Produit, Pour qui, Apprendre (avec Confiance), Légal.
+   Les pages légales du site viennent du menu "footer_legal" de l'admin ;
+   les CGU et CGV sont celles de l'app.
+   ====================================================================== #}
+{% set lt_app = 'https://www.lintello.ai' %}
+
+<footer class="lt-footer">
+    <div class="lt-container lt-footer__grid">
+        <div class="lt-footer__brand">
+            <a href="{{ path('app_home') }}" aria-label="{{ site.name|default('LintellO') }}, accueil">
+                <img src="{{ asset('images/lintello/logo-lintello.png') }}" alt="LintellO" width="119" height="26">
+            </a>
+            <p>Assistant IA français, construit sur Mistral et hébergé chez OVH à Strasbourg.</p>
+        </div>
+
+        <nav class="lt-footer__col" aria-label="Produit">
+            <p class="lt-footer__title">Produit</p>
+            <a href="{{ path('app_home') }}#outils">Chat</a>
+            <a href="{{ path('app_home') }}#outils">Documents</a>
+            <a href="{{ path('app_home') }}#outils">Recherche</a>
+            <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}">Tarifs</a>
+        </nav>
+
+        <nav class="lt-footer__col" aria-label="Pour qui">
+            <p class="lt-footer__title">Pour qui</p>
+            <a href="{{ path('app_page_show', {slug: 'etudiants'}) }}">Étudiants</a>
+            <a href="{{ path('app_page_show', {slug: 'particuliers'}) }}">À la maison</a>
+            <a href="{{ path('app_page_show', {slug: 'professionnels'}) }}">Pros</a>
+        </nav>
+
+        <nav class="lt-footer__col" aria-label="Apprendre">
+            <p class="lt-footer__title">Apprendre</p>
+            <a href="{{ path('app_article_show_all') }}">Guides et actualités</a>
+            <a href="{{ path('app_faq_index') }}">Questions fréquentes</a>
+            <a href="{{ path('app_page_show', {slug: 'confiance'}) }}">Confiance</a>
+        </nav>
+
+        <nav class="lt-footer__col" aria-label="Informations légales">
+            <p class="lt-footer__title">Légal</p>
+            {% for menu in footer_legal_menus %}
+                <a href="{{ menu|menuLink }}">{{ menu.name }}</a>
+            {% endfor %}
+            <a href="{{ lt_app }}/conditions">CGU et CGV de l'app</a>
+            <a href="{{ path('app_contact') }}">Contact</a>
+        </nav>
+    </div>
+
+    <div class="lt-container lt-footer__bottom">
+        <span>&copy; {{ "now"|date("Y") }} {{ site.name|default('LintellO') }}</span>
+        <span>Site propulsé par <a href="https://blogweb.comwebsolutions.fr" target="_blank" rel="noopener">BlogWeb</a></span>
+    </div>
+</footer>

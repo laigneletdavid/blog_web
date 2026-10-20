@@ -1,0 +1,82 @@
+{# ======================================================================
+   HEADER — LintellO
+   Surcouche client, prioritaire sur le theme (voir base.html.twig).
+
+   Cinq rubriques lues depuis le menu "header" de l'admin
+   (Produit · Pour qui · Apprendre · Confiance · Tarifs), puis la connexion
+   et l'appel principal, qui pointent vers l'app.
+   ====================================================================== #}
+{% set lt_app = 'https://www.lintello.ai' %}
+
+<header class="header lt-header">
+    {% include '_partials/_admin_bar.html.twig' %}
+
+    <div class="lt-header__bar">
+        <div class="lt-container lt-header__inner">
+            <a href="{{ path('app_home') }}" class="lt-header__logo" aria-label="{{ site.name|default('LintellO') }}, accueil">
+                {% if site is not null and site.logo is not null %}
+                    {{ logo_img(site.logo, 30, site.name|default('')) }}
+                {% else %}
+                    <img src="{{ asset('images/lintello/logo-lintello.png') }}" alt="LintellO" width="137" height="30">
+                {% endif %}
+            </a>
+
+            <nav class="lt-header__nav" aria-label="Navigation principale">
+                {% for menu in header_menus %}
+                    {% set visibleChildren = menu.children|filter(c => c.isVisible) %}
+                    {% if visibleChildren|length > 0 %}
+                        <div class="dropdown">
+                            <a class="lt-header__link dropdown-toggle" href="{{ menu|menuLink }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ menu.name }}</a>
+                            <ul class="dropdown-menu lt-header__dropdown">
+                                {% for child in visibleChildren %}
+                                    <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ menu|menuLink }}" class="lt-header__link">{{ menu.name }}</a>
+                    {% endif %}
+                {% endfor %}
+            </nav>
+
+            <div class="lt-header__actions">
+                <a href="{{ lt_app }}/login" class="lt-header__login">Se connecter</a>
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Essayer gratuitement</a>
+            </div>
+
+            <button class="lt-header__toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#ltOffcanvas" aria-controls="ltOffcanvas" aria-label="Ouvrir le menu">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+{# Hors du <header> : l'en-tete collant forme son propre contexte d'empilement,
+   le voile de Bootstrap (ajoute au body) passerait par-dessus le menu. #}
+<div class="offcanvas offcanvas-end lt-offcanvas" tabindex="-1" id="ltOffcanvas" aria-label="Menu">
+        <div class="offcanvas-header">
+            <img src="{{ asset('images/lintello/logo-lintello.png') }}" alt="LintellO" width="110" height="24">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer le menu"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="lt-offcanvas__list">
+                {% for menu in header_menus %}
+                    <li>
+                        <a href="{{ menu|menuLink }}" class="lt-offcanvas__link">{{ menu.name }}</a>
+                        {% set visibleChildren = menu.children|filter(c => c.isVisible) %}
+                        {% if visibleChildren|length > 0 %}
+                            <ul class="lt-offcanvas__sub">
+                                {% for child in visibleChildren %}
+                                    <li><a href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="lt-offcanvas__actions">
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Essayer gratuitement</a>
+                <a href="{{ lt_app }}/login" class="lt-btn lt-btn--outline">Se connecter</a>
+            </div>
+        </div>
+</div>
