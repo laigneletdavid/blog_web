@@ -3721,3 +3721,33 @@ main { overflow-x: clip; }
 .bm-d .d-hero {
     padding-top: calc(var(--bm-nav-hauteur) + 2rem);
 }
+
+/* ======================================================================
+   21. PETITS ECRANS ET DOIGTS
+
+   Deux mesures relevees au banc d'essai responsive, sur dix largeurs de
+   320 a 1920 pixels.
+   ====================================================================== */
+
+/* Les liens du pied tiennent sur la hauteur de leur texte, soit 14 pixels,
+   separes de 5 a 6 pixels : trop petits et trop proches pour un doigt. Un
+   retrait vertical porte la zone sensible a 33 pixels sans changer ni la
+   taille du texte ni la mise en page. */
+@media (max-width: 860px) {
+    .bm-pied nav a,
+    .bm-pied__fin a {
+        display: inline-block;
+        padding: .6rem 0;
+    }
+}
+
+/* Sous 340 pixels, « Immobilier » -- le plus large des titres de pole, a
+   21vw -- depassait de 2 pixels et perdait un bout de sa derniere lettre.
+   Les gouttieres se resserrent le temps de lui faire place. */
+@media (max-width: 340px) {
+    .bm-xp .xp-hero,
+    .bm-d .d-hero {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
