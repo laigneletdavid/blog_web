@@ -1070,6 +1070,49 @@ a:hover { color: #1e40af; }
 .lt-related__title { margin: 0; font-size: 28px; letter-spacing: -.02em; font-weight: 700; color: var(--lt-text); }
 .lt-related .lt-cards { margin-top: 28px; gap: 24px; }
 
+/* ---------- Contact ---------- */
+.lt-contact__head { padding-bottom: 40px; }
+.lt-contact__body { padding: 0 0 104px; }
+.lt-contact__grid { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+.lt-contact__form {
+    flex: 1.6 1 520px;
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid var(--lt-border);
+    border-radius: 20px;
+    padding: 36px;
+}
+.lt-form .mb-3 { margin-bottom: 20px !important; }
+.lt-form__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 0 20px; }
+.lt-form .form-label { margin-bottom: 6px; font-size: 14px; font-weight: 600; color: var(--lt-text); }
+.lt-form .form-label.required::after { content: none; }
+.lt-form .form-control {
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 15.5px;
+    color: var(--lt-text);
+    box-shadow: none;
+}
+.lt-form textarea.form-control { min-height: 160px; resize: vertical; }
+.lt-form .form-control:focus { border-color: var(--lt-primary); box-shadow: 0 0 0 3px var(--lt-tint); outline: none; }
+.lt-form .invalid-feedback,
+.lt-form .form-error-message { font-size: 13.5px; color: #b91c1c; }
+.lt-form .lt-btn { margin-top: 8px; border: 0; cursor: pointer; }
+.lt-form__note { margin: 16px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--lt-text-muted); }
+
+.lt-contact__side { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.lt-contact__card { background: #ffffff; border: 1px solid var(--lt-border); border-radius: var(--lt-radius-card); padding: 24px; }
+.lt-contact__card--soft { background: var(--lt-grey); border-color: #eef0f3; }
+.lt-contact__card-title { margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--lt-text-muted); }
+.lt-contact__card > a:not(.lt-btn) { font-size: 17px; font-weight: 600; color: var(--lt-primary-dark); text-decoration: none; word-break: break-word; }
+.lt-contact__card > a:not(.lt-btn):hover { text-decoration: underline; }
+.lt-contact__card p:not(.lt-contact__card-title) { margin: 0 0 16px; font-size: 15px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-contact__links { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.lt-contact__links a { display: inline-flex; min-height: 36px; align-items: center; font-size: 15px; font-weight: 600; color: var(--lt-primary-dark); text-decoration: none; }
+.lt-contact__links a:hover { text-decoration: underline; }
+
 /* ---------- Pages standard du CMS (tag, categorie, pages legales) ----------
    Ces gabarits n'ont pas de surcouche client : on habille leurs classes
    communes pour qu'ils rejoignent la charte de la vitrine. */
@@ -1301,6 +1344,9 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-prose h2 { font-size: 24px; margin-top: 40px; }
     .lt-encart { padding: 22px; }
     .lt-related { padding: 56px 0 64px; }
+    .lt-contact__form { padding: 24px 20px; border-radius: 16px; }
+    .lt-contact__grid { gap: 24px; }
+    .lt-contact__body { padding-bottom: 64px; }
     .lt-offer-alt__card { padding: 20px; }
     .lt-poster-section { padding-bottom: 64px; }
     .lt-pricing__table { min-width: 780px; }

@@ -1,0 +1,64 @@
+{# ======================================================================
+   CONTACT — LintellO
+   Surcouche client de la page contact (voir home/contact.html.twig).
+   Pas de planche dans le canvas : en-tete des pages interieures, formulaire
+   a gauche, renvois utiles a droite.
+
+   Pas de reCAPTCHA (spec vitrine, contrainte 5) : sans cle, le validateur
+   laisse passer, le formulaire reste protege par le pot de miel (champ
+   website, rendu par form_rest) et la limite d'envois.
+   Pas d'adresse ni de carte : l'adresse de l'editeur figure dans les
+   mentions legales. Les messages arrivent a l'e-mail du site.
+   ====================================================================== #}
+<div class="lt-contact">
+
+<section class="lt-page-head lt-contact__head">
+    <div class="lt-container">
+        <p class="lt-eyebrow">Contact</p>
+        <h1 class="lt-page-head__title">Une question ? <span>Écrivez-nous.</span></h1>
+        <p class="lt-page-head__lead">Une question sur LintellO, ses offres ou vos données : le message arrive directement à l'équipe.</p>
+    </div>
+</section>
+
+<section class="lt-contact__body">
+    <div class="lt-container lt-contact__grid">
+        <div class="lt-contact__form">
+            {{ form_start(contactForm, {attr: {class: 'lt-form'}}) }}
+                <div class="lt-form__row">
+                    {{ form_row(contactForm.firstname, {label: 'Prénom'}) }}
+                    {{ form_row(contactForm.name, {label: 'Nom'}) }}
+                </div>
+                {{ form_row(contactForm.email, {label: 'Adresse e-mail'}) }}
+                {{ form_row(contactForm.subject, {label: 'Sujet'}) }}
+                {{ form_row(contactForm.message, {label: 'Votre message', attr: {placeholder: ''}}) }}
+                {{ form_rest(contactForm) }}
+                <button class="lt-btn lt-btn--primary lt-btn--lg" type="submit">Envoyer le message</button>
+                <p class="lt-form__note">Vos coordonnées servent uniquement à vous répondre. <a href="{{ path('app_legal_page', {type: 'politique-de-confidentialite'}) }}">Politique de confidentialité du site</a></p>
+            {{ form_end(contactForm) }}
+        </div>
+
+        <aside class="lt-contact__side">
+            {% if site.email %}
+                <div class="lt-contact__card">
+                    <p class="lt-contact__card-title">Par e-mail</p>
+                    <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+                </div>
+            {% endif %}
+            <div class="lt-contact__card">
+                <p class="lt-contact__card-title">Avant d'écrire</p>
+                <ul class="lt-contact__links">
+                    <li><a href="{{ path('app_faq_index') }}">Questions fréquentes →</a></li>
+                    <li><a href="{{ path('app_page_show', {slug: 'tarifs'}) }}">Les offres et les prix →</a></li>
+                    <li><a href="{{ path('app_page_show', {slug: 'confiance'}) }}">Où sont vos données →</a></li>
+                </ul>
+            </div>
+            <div class="lt-contact__card lt-contact__card--soft">
+                <p class="lt-contact__card-title">Essayer LintellO</p>
+                <p>L'offre Gratuite donne 20 messages par jour avec l'IA du quotidien, sans engagement.</p>
+                <a href="https://www.lintello.ai/register" class="lt-btn lt-btn--primary">Commencer gratuitement</a>
+            </div>
+        </aside>
+    </div>
+</section>
+
+</div>
