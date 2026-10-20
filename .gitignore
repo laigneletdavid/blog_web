@@ -3,6 +3,8 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+# Les copies de sauvegarde portent les memes secrets que l'original.
+/.env.local.*
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
