@@ -40,8 +40,8 @@ class TagCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Tag')
-            ->setEntityLabelInPlural('Tags')
+            ->setEntityLabelInSingular('Étiquette')
+            ->setEntityLabelInPlural('Étiquettes')
             ->setDefaultSort(['name' => 'ASC']);
     }
 

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Media;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -64,6 +65,12 @@ class MediaCrudController extends AbstractCrudController
                 . $this->container->get(AdminUrlGenerator::class)->unsetAll()->setController(DocumentCrudController::class)->setAction(Action::INDEX)->generateUrl()
                 . '">Documents</a>.')
             ->setDefaultSort(['id' => 'DESC']);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->update(Crud::PAGE_INDEX, Action::NEW, fn (Action $action) => $action->setLabel('Ajouter une image'));
     }
 
     public function configureFields(string $pageName): iterable

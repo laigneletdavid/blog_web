@@ -306,7 +306,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('<img src="public/images/BlogWebbeta.svg" alt="Blog & Web"/>')
+            ->setTitle('<img src="/images/BlogWebbeta.svg" alt="Blog & Web"/>')
             ->setLocales(['fr'])
             ->setFaviconPath('images/favicon-16x16.png')
             ->disableDarkMode();
@@ -319,7 +319,7 @@ class DashboardController extends AbstractDashboardController
      */
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToUrl('Accueil', 'fas fa-house', $this->generateUrl('admin'))
+        yield MenuItem::linkToDashboard('Accueil', 'fas fa-house')
             ->setCssClass('tour-menu-dashboard');
 
         if ($this->isGranted('ROLE_AUTHOR')) {

@@ -602,3 +602,14 @@ $bw-orange: #c2410c;
         font-weight: 600;
     }
 }
+
+// Texte d'aide d'une page, sous son titre (remplace l'infobulle d'EasyAdmin)
+.bw-page-help {
+    margin: 4px 0 12px;
+    color: $bw-muted;
+    font-size: 0.9rem;
+
+    a {
+        font-weight: 500;
+    }
+}

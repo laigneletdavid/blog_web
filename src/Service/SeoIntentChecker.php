@@ -75,7 +75,7 @@ class SeoIntentChecker
         }
 
         if ($missing !== []) {
-            return new SeoCheck('profile', 'Votre fiche', SeoStatus::ORANGE, 'À compléter : ' . implode(' et ', $missing) . '. Les contrôles ci-dessous en dépendent.');
+            return new SeoCheck('profile', 'Votre fiche', SeoStatus::ORANGE, 'À compléter : ' . implode(' et ', $missing) . '. Les autres contrôles du bilan en dépendent.');
         }
 
         return new SeoCheck('profile', 'Votre fiche', SeoStatus::GREEN, 'Renseignée');
