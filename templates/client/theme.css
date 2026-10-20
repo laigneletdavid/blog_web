@@ -631,6 +631,21 @@ a:hover { color: #1e40af; }
 .lt-retention__table tbody th { font-weight: 500; }
 
 .lt-final__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Qui est derriere LintellO */
+.lt-founder {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 48px;
+    align-items: flex-start;
+    border: 1px solid var(--lt-border);
+    border-radius: 20px;
+    padding: 40px;
+}
+.lt-founder__photo { flex: none; width: 160px; height: 160px; border-radius: 999px; object-fit: cover; }
+.lt-founder__text { flex: 1 1 420px; min-width: 0; max-width: 720px; }
+.lt-founder__text p { margin: 16px 0 0; font-size: 16.5px; line-height: 1.7; color: var(--lt-text-body); }
+.lt-founder__text a { color: var(--lt-primary-dark); font-weight: 600; }
 .lt-btn--ghost { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, .6); }
 .lt-btn--ghost:hover { background: rgba(255, 255, 255, .12); color: #ffffff; }
 
@@ -1405,6 +1420,8 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-trust__block--tight { padding-top: 0; }
     .lt-trust__exceptions { padding: 64px 0; }
     .lt-retention { gap: 24px; }
+    .lt-founder { padding: 24px 20px; gap: 20px; }
+    .lt-founder__photo { width: 112px; height: 112px; }
     .lt-retention__table tbody th,
     .lt-retention__table tbody td { padding: 14px 16px; }
     .lt-hero--page { padding: 56px 0 64px; }
