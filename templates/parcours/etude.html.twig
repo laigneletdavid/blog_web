@@ -166,7 +166,9 @@
 
     {# ====== RENCONTRONS-NOUS ====== #}
     <section class="cta">
-        <span class="no">06 / Rencontrons-nous</span>
+        {# .no ne met pas en capitales, contrairement a .et-no des sections
+           precedentes : le libelle les porte, comme partout ailleurs. #}
+        <span class="no">06 / RENCONTRONS-NOUS</span>
         <h2>Parlons de<br><em>votre projet.</em></h2>
         <div class="buttons">
             <a href="{{ path('app_contact') }}">Contacter l’étude ↗</a>
