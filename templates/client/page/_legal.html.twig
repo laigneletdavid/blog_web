@@ -4,6 +4,8 @@
    (generees par LegalPageContentService, completees en base).
    Spec vitrine, contrainte 6 : elles couvrent le site lui-meme ; les textes
    du service LintellO restent sur l'app, vers laquelle on renvoie.
+   Reutilise par _cgu-cgv-app.html.twig (copie des CGU et CGV de l'app),
+   qui change le surtitre via legalEyebrow.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
 {% set legalPages = [
@@ -15,7 +17,7 @@
 
 <section class="lt-page-head lt-legal__head">
     <div class="lt-container">
-        <p class="lt-eyebrow">Informations légales · site lintello.fr</p>
+        <p class="lt-eyebrow">{{ legalEyebrow|default('Informations légales · site lintello.fr') }}</p>
         <h1 class="lt-page-head__title">{{ page.title }}</h1>
     </div>
 </section>
