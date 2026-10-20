@@ -168,17 +168,25 @@
             {% endfor %}
         }</style>
 
-        {# ====== Google Fonts (non-blocking + display=swap) ====== #}
+        {% if site.googleAnalyticsId|default('') is not empty %}
+        <link rel="dns-prefetch" href="//www.googletagmanager.com">
+        {% endif %}
+
+        {# ====== Polices ======
+           Un client peut heberger ses polices (client/_fonts.html.twig) :
+           aucun appel a Google Fonts n'est alors fait. Sinon, Google Fonts
+           (non bloquant + display=swap). #}
+        {% if theme_service.hasClientTemplate('_fonts.html.twig') %}
+        {% include 'client/_fonts.html.twig' %}
+        {% else %}
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="dns-prefetch" href="//fonts.googleapis.com">
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        {% if site.googleAnalyticsId|default('') is not empty %}
-        <link rel="dns-prefetch" href="//www.googletagmanager.com">
-        {% endif %}
         {% set _google_fonts_url = font_service.buildGoogleFontsUrl([_appearance.fontFamily, _appearance.fontFamilySecondary]) %}
         <link rel="preload" href="{{ _google_fonts_url }}&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link href="{{ _google_fonts_url }}&display=swap" rel="stylesheet"></noscript>
+        {% endif %}
 
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
