@@ -15,6 +15,20 @@
     {% endif %}
 {% endblock %}
 
+{# Identite du site client (logo + nom, reglages Identite du site) en tete de la barre du haut #}
+{% block content_top_header %}
+    {% set _bw_site = seo_service.currentSite %}
+    {% if _bw_site %}
+        <a class="bw-site-identity" href="{{ path('app_home') }}" target="_blank" rel="noopener" title="Voir le site">
+            {% if _bw_site.logo and _bw_site.logo.fileName %}
+                <img class="bw-site-identity__logo" src="{{ asset('documents/medias/' ~ _bw_site.logo.fileName) }}" alt="">
+            {% endif %}
+            <span class="bw-site-identity__name">{{ _bw_site.name }}</span>
+        </a>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
 {# Le texte d'aide d'une page (Crud::setHelp) s'affiche en clair sous le titre :
    il porte des liens vers les ecrans voisins, inutilisables dans l'infobulle d'origine #}
 {% block content_help %}{% endblock %}
