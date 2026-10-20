@@ -555,6 +555,26 @@ main { overflow-x: clip; }
     padding: clamp(2.5rem, 6vw, 5rem) var(--bm-gouttiere);
 }
 
+/* Le bandeau d'un outil est plus court que celui d'une page de
+   presentation : le premier champ doit rester visible sans defiler.
+
+   Les regles reprises de portal.css arrivent plus bas dans cette feuille,
+   a specificite egale : il faut donc doubler la classe pour passer devant. */
+.bm-portal .ph.ph--outil {
+    min-height: min(52vh, 460px);
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+.bm-portal .ph.ph--outil h1 {
+    font-size: clamp(42px, 6vw, 92px);
+    margin: 18px 0 22px;
+}
+
+.bm-portal .ph.ph--outil p.lead {
+    font-size: clamp(16px, 1.5vw, 22px);
+    max-width: 62ch;
+}
+
 .bm-sim .hero { margin-bottom: clamp(2rem, 4vw, 3.5rem); }
 
 .bm-sim .hero .eyebrow {

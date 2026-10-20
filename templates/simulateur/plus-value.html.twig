@@ -13,12 +13,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'simulateur/_hero.html.twig' with {
+    titre: 'Plus-value<br><em>immobilière.</em>',
+    chapo: 'Estimez à titre indicatif l’imposition susceptible de s’appliquer lors de la vente d’un bien immobilier.'
+} only %}
+
 <div class="bm-sim">
-<section class="hero">
-    <div class="eyebrow">Étude notariale</div>
-    <h1>Simulateur de plus-value immobilière</h1>
-    <p>Estimez à titre indicatif l’imposition susceptible de s’appliquer lors de la vente d’un bien immobilier.</p>
-  </section>
 
   <div class="grid">
     <section class="card">

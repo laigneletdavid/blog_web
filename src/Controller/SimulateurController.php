@@ -30,27 +30,27 @@ class SimulateurController extends AbstractController
         'frais-acquisition' => [
             'titre' => "Frais d'acquisition",
             'chapo' => "Estimer les frais d'un achat immobilier, dans l'ancien comme dans le neuf.",
-            'resume' => "Droits de mutation, emoluments, debours : le detail de ce que l'on appelle « frais de notaire ».",
+            'resume' => "Droits de mutation, émoluments, débours : le détail de ce que l'on appelle « frais de notaire ».",
         ],
         'donation' => [
             'titre' => 'Donation',
-            'chapo' => 'Mesurer la fiscalite d\'une donation selon le lien de parente.',
-            'resume' => 'Abattements, bareme progressif et rappel des donations anterieures.',
+            'chapo' => 'Mesurer la fiscalité d\'une donation selon le lien de parenté.',
+            'resume' => 'Abattements, barème progressif et rappel des donations antérieures.',
         ],
         'succession' => [
             'titre' => 'Succession',
-            'chapo' => 'Apprecier les droits dus par chaque heritier.',
-            'resume' => 'Part taxable, abattement applicable et bareme selon le lien avec le defunt.',
+            'chapo' => 'Apprécier les droits dus par chaque héritier.',
+            'resume' => 'Part taxable, abattement applicable et barème selon le lien avec le défunt.',
         ],
         'plus-value' => [
-            'titre' => 'Plus-value immobiliere',
-            'chapo' => "Evaluer l'imposition a la revente d'un bien.",
-            'resume' => "Abattements pour duree de detention, impot sur le revenu et prelevements sociaux.",
+            'titre' => 'Plus-value immobilière',
+            'chapo' => "Évaluer l'imposition à la revente d'un bien.",
+            'resume' => "Abattements pour durée de détention, impôt sur le revenu et prélèvements sociaux.",
         ],
         'viager' => [
             'titre' => 'Viager',
-            'chapo' => 'Repartir un prix entre bouquet et rente.',
-            'resume' => "Valeur occupee, droit d'usage et d'habitation, rente mensuelle.",
+            'chapo' => 'Répartir un prix entre bouquet et rente.',
+            'resume' => "Valeur occupée, droit d'usage et d'habitation, rente mensuelle.",
         ],
     ];
 

@@ -13,9 +13,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'simulateur/_hero.html.twig' with {
+    titre: 'Frais<br><em>d’acquisition.</em>',
+    chapo: 'Estimez le budget à prévoir pour votre acquisition immobilière et visualisez les principaux postes qui composent les frais d’acquisition.'
+} only %}
+
 <div class="bm-sim">
-<section class="hero"><div class="eyebrow">Étude notariale</div><h1>Simulateur de frais d’acquisition</h1>
-<p>Estimez le budget à prévoir pour votre acquisition immobilière et visualisez les principaux postes qui composent les frais d’acquisition.</p></section>
 
 <div class="grid">
 <section class="card">

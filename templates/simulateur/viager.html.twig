@@ -13,9 +13,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'simulateur/_hero.html.twig' with {
+    titre: 'Le<br><em>viager.</em>',
+    chapo: 'Estimez le bouquet et la rente viagère à partir de la valeur du bien, de l’âge du ou des vendeurs et des principales modalités du viager.'
+} only %}
+
 <div class="bm-sim">
-<section class="hero"><div class="eyebrow">Étude notariale</div><h1>Simulateur de viager</h1>
-<p>Estimez le bouquet et la rente viagère à partir de la valeur du bien, de l’âge du ou des vendeurs et des principales modalités du viager.</p></section>
 
 <div class="grid">
 <section class="card"><h2>Le bien</h2>

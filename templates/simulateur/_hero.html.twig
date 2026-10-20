@@ -1,0 +1,24 @@
+{# ======================================================================
+   BANDEAU DES SIMULATEURS
+
+   Reprend celui des pages de parcours -- meme degrade, meme typographie --
+   pour que l'outil appartienne visiblement au site. Les cinq pages
+   portaient trois balisages differents, hérités du lot.
+
+   Il est raccourci : une page de presentation peut occuper l'ecran, un
+   outil doit laisser voir son premier champ.
+
+   Attend : titre, chapo, et eventuellement surtitre.
+   ====================================================================== #}
+
+<div class="bm-portal">
+    <section class="ph ph--outil">
+        <div>
+            <p class="ey">{{ surtitre|default('BM Notaire · Simulateur')|upper }}</p>
+            <h1>{{ titre|raw }}</h1>
+            {% if chapo is defined and chapo %}
+                <p class="lead">{{ chapo }}</p>
+            {% endif %}
+        </div>
+    </section>
+</div>

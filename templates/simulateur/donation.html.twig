@@ -13,14 +13,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'simulateur/_hero.html.twig' with {
+    titre: 'La<br><em>donation.</em>',
+    chapo: 'Estimez les droits et les principaux frais d’une donation, puis préparez une demande de rendez-vous avec l’étude pour obtenir un chiffrage personnalisé.'
+} only %}
+
 <div class="bm-sim">
 
 <div class="wrap">
-  <section class="hero">
-    <div class="eyebrow">Outil d'information — étude notariale</div>
-    <div class="title">Simulateur de donation</div>
-    <div class="intro">Estimez les droits et les principaux frais d'une donation, puis préparez une demande de rendez-vous avec l'étude pour obtenir un chiffrage personnalisé.</div>
-  </section>
 
   <div class="grid">
     <div class="card">

@@ -32,7 +32,7 @@
 {% endfor %}
 
 {% set _route = app.request.attributes.get('_route') %}
-{% set _routes_sombres = ['app_home', 'app_etude', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier', 'app_contact'] %}
+{% set _routes_sombres = ['app_home', 'app_etude', 'app_votre_projet', 'app_rendez_vous', 'app_demarrer_dossier', 'app_contact', 'app_simulateurs', 'app_simulateur_show'] %}
 {# Les deux niveaux de l'offre ouvrent desormais sur un bandeau sombre. #}
 {% set _sur_visuel = _route in _routes_sombres or _route == 'app_service_show' %}
 
@@ -89,7 +89,8 @@
                     + '.bm-dossier .section:not(.alt), .bm-dossier .final,'
                     + '.bm-xp .xp-overview, .bm-xp .xp-menu, .bm-xp .xp-cta,'
                     + '.bm-d .d-intro, .bm-d .d-docs, .bm-d .d-faq,'
-                    + '.bm-ct .ct-info, .bm-ct .ct-hours, .bm-ct .ct-action';
+                    + '.bm-ct .ct-info, .bm-ct .ct-hours, .bm-ct .ct-action,'
+                    + '.bm-sim';
 
                 var barre = document.currentScript.closest('.bm-nav');
                 var zones = null;

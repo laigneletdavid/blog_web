@@ -13,14 +13,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'simulateur/_hero.html.twig' with {
+    titre: 'Droits de<br><em>succession.</em>',
+    chapo: 'Estimez les droits de succession à partir de la part nette reçue par un héritier, de son lien avec le défunt et des principaux abattements fiscaux.'
+} only %}
+
 <div class="bm-sim">
 
 <div class="wrap">
-  <div class="header">
-    <div class="eyebrow">Outil d'information — étude notariale</div>
-    <div class="title">Simulateur de droits de succession</div>
-    <div class="intro">Estimez rapidement les droits de succession à partir de la part nette reçue par un héritier, de son lien avec le défunt et des principaux abattements fiscaux.</div>
-  </div>
 
   <div class="grid">
     <div class="card">
