@@ -21,6 +21,10 @@
     --bm-filet: rgba(20, 32, 25, .14);
     --bm-filet-clair: rgba(242, 234, 223, .32);
 
+    /* Hauteur de l'en-tete fixe, pour que les bandeaux sachent de combien
+       se degager. Elle suit la taille du logo et des boutons. */
+    --bm-nav-hauteur: 106px;
+
     --bm-serif: "Playfair Display", Georgia, serif;
     --bm-sans: "DM Sans", Arial, sans-serif;
 
@@ -560,8 +564,15 @@ main { overflow-x: clip; }
 
    Les regles reprises de portal.css arrivent plus bas dans cette feuille,
    a specificite egale : il faut donc doubler la classe pour passer devant. */
+/* Le contenu du bandeau est cale en bas : c'est donc la hauteur qui decide
+   de l'air au-dessus du titre. A 460 px il ne restait que vingt pixels
+   entre l'en-tete fixe et le surtitre.
+
+   Le retrait haut ne deplace rien tant que le contenu tient, mais il
+   l'empeche de passer sous la barre sur un ecran court. */
 .bm-portal .ph.ph--outil {
-    min-height: min(52vh, 460px);
+    min-height: min(62vh, 540px);
+    padding-top: calc(var(--bm-nav-hauteur) + 2rem);
     padding-bottom: clamp(2.5rem, 6vw, 5rem);
 }
 
