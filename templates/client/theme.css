@@ -719,6 +719,30 @@ main { overflow-x: clip; }
     color: var(--bm-sourdine);
 }
 
+/* Date du bareme applique. Un visiteur qui lit un montant doit pouvoir
+   savoir de quand datent les taux qui l'ont produit. Tant que l'etude ne
+   l'a pas datee, la mention se distingue au lieu de se fondre. */
+.bm-sim__bareme {
+    margin: 1.5rem 0 0;
+    font-size: .8rem;
+    line-height: 1.6;
+    letter-spacing: .02em;
+    color: var(--bm-sourdine);
+}
+
+.bm-sim__bareme--attente {
+    padding: .9rem 1.1rem;
+    border-left: 2px solid var(--bm-encre);
+    background: rgba(20, 32, 25, .05);
+    color: var(--bm-encre);
+}
+
+.bm-sim__bareme--attente span {
+    display: block;
+    margin-top: .2rem;
+    color: var(--bm-sourdine);
+}
+
 @media (max-width: 720px) {
     .bm-sim .grid { grid-template-columns: 1fr; }
 }

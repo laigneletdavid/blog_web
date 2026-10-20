@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\BaremeNotarial;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,6 +57,7 @@ class SimulateurController extends AbstractController
     public function __construct(
         private readonly SiteContext $siteContext,
         private readonly SeoService $seoService,
+        private readonly BaremeNotarial $bareme,
     ) {
     }
 
@@ -81,6 +83,7 @@ class SimulateurController extends AbstractController
             'title_page' => $simulateur['titre'],
             'simulateur' => $simulateur,
             'slug' => $slug,
+            'bareme' => $this->bareme,
             'seo' => $this->seoService->resolveForPage($simulateur['titre']),
         ]);
     }

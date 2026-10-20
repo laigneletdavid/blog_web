@@ -1,0 +1,14 @@
+{# ======================================================================
+   MENTION DE BAREME — commune aux cinq simulateurs
+
+   Un visiteur qui lit un montant doit pouvoir savoir de quand datent les
+   taux qui l'ont produit. Tant que l'etude n'a pas date son bareme, la
+   page le dit plutot que de laisser croire a un chiffre a jour.
+   ====================================================================== #}
+
+<p class="bm-sim__bareme{{ bareme.estValide ? '' : ' bm-sim__bareme--attente' }}">
+    {{ bareme.mention }}
+    {% if not bareme.estValide %}
+        <span>Les montants restent indicatifs et ne constituent pas un devis.</span>
+    {% endif %}
+</p>
