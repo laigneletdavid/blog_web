@@ -25,6 +25,13 @@
        se degager. Elle suit la taille du logo et des boutons. */
     --bm-nav-hauteur: 106px;
 
+    /* Hauteur commune des bandeaux de page. Le lot livre en portait dix
+       valeurs differentes, de 62vh a 100vh, et l'ecart se voyait d'une page
+       a l'autre : le vide au-dessus du titre passait de 73 a 406 pixels.
+       Une seule valeur ici, et toutes les pages s'y tiennent -- sauf
+       l'accueil, dont la scene cinematographique a sa propre mecanique. */
+    --bm-bandeau-hauteur: 82vh;
+
     --bm-serif: "Playfair Display", Georgia, serif;
     --bm-sans: "DM Sans", Arial, sans-serif;
 
@@ -571,7 +578,7 @@ main { overflow-x: clip; }
    Le retrait haut ne deplace rien tant que le contenu tient, mais il
    l'empeche de passer sous la barre sur un ecran court. */
 .bm-portal .ph.ph--outil {
-    min-height: min(62vh, 540px);
+    min-height: var(--bm-bandeau-hauteur);
     padding-top: calc(var(--bm-nav-hauteur) + 2rem);
     padding-bottom: clamp(2.5rem, 6vw, 5rem);
 }
@@ -898,7 +905,7 @@ main { overflow-x: clip; }
    ====================================================================== */
 
 .bm-ct .ct-hero {
-    min-height:92vh;
+    min-height: var(--bm-bandeau-hauteur);
     background:radial-gradient(circle at 75% 25%,#46584a 0,#26362b 27%,#15231b 67%,#101a14 100%);
     color:var(--cream);
     display:flex;
@@ -1126,7 +1133,6 @@ main { overflow-x: clip; }
 
 @media (max-width:800px) {
     .bm-ct .ct-hero {
-        min-height:85vh;
         padding:0 22px 65px;
     }
 
@@ -1219,7 +1225,7 @@ main { overflow-x: clip; }
 
 .bm-xp .xp-hero {
     position:relative;
-    min-height:100vh;
+    min-height: var(--bm-bandeau-hauteur);
     display:flex;
     align-items:flex-end;
     padding:0 6vw 9vh;
@@ -1580,7 +1586,7 @@ main { overflow-x: clip; }
    ====================================================================== */
 
 .bm-d .d-hero {
-    min-height:86vh;
+    min-height: var(--bm-bandeau-hauteur);
     position:relative;
     display:flex;
     align-items:flex-end;
@@ -2427,7 +2433,7 @@ main { overflow-x: clip; }
 .bm-portal .pn nav {display:flex;gap:28px}
 .bm-portal .pn nav a {opacity:.78}
 .bm-portal .pn .pill {justify-self:end;border:1px solid rgba(242,234,223,.5);border-radius:999px;padding:13px 19px}
-.bm-portal .ph {min-height:88vh;background:radial-gradient(circle at 75% 25%,#46584a 0,#26362b 27%,#15231b 67%,#101a14 100%);color:var(--cream);display:flex;align-items:flex-end;position:relative;padding:0 6vw 10vh;overflow:hidden}
+.bm-portal .ph {min-height:var(--bm-bandeau-hauteur);background:radial-gradient(circle at 75% 25%,#46584a 0,#26362b 27%,#15231b 67%,#101a14 100%);color:var(--cream);display:flex;align-items:flex-end;position:relative;padding:0 6vw 10vh;overflow:hidden}
 .bm-portal .ph:after {content:"";position:absolute;inset:-30%;background:linear-gradient(115deg,transparent 38%,rgba(255,245,225,.07) 49%,transparent 58%);transform:rotate(-6deg)}
 .bm-portal .ph>div {position:relative;z-index:2}
 .bm-portal .ey, .bm-portal .no {font-size:10px;letter-spacing:.27em;font-weight:600}
@@ -2463,7 +2469,7 @@ main { overflow-x: clip; }
     .bm-portal .pn {grid-template-columns:1fr auto;padding:20px}
     .bm-portal .pn nav {display:none}
     .bm-portal .pn img {width:108px}
-    .bm-portal .ph {min-height:82vh;padding:0 22px 65px}
+    .bm-portal .ph {padding:0 22px 65px}
     .bm-portal .ph h1 {font-size:17vw}
     .bm-portal .introsec, .bm-portal .cards-head {grid-template-columns:1fr;padding-left:22px;padding-right:22px}
     .bm-portal .cards, .bm-portal .prep, .bm-portal .cta {padding-left:22px;padding-right:22px}
@@ -2614,7 +2620,7 @@ main { overflow-x: clip; }
    ====================================================================== */
 
 .bm-dossier .hero {
-    min-height:72vh;
+    min-height: var(--bm-bandeau-hauteur);
     background:radial-gradient(circle at 75% 20%,#455749,#26362b 30%,#101a14 75%);
     color:var(--cream);
     padding:0 6vw 9vh;
@@ -2787,9 +2793,9 @@ main { overflow-x: clip; }
     font-size:clamp(50px,6vw,95px);
 }
 
-.bm-dossier .wizard-hero {
-    min-height:82vh;
-}
+/* .wizard-hero, .secure-hero et .client-hero portaient chacune leur propre
+   hauteur (82, 78 et 70vh). Elles s'ajoutent toutes a .hero, qui suit
+   desormais --bm-bandeau-hauteur : leurs surcharges ont ete retirees. */
 
 .bm-dossier .hero-meta {
     display:flex;
@@ -3485,10 +3491,6 @@ main { overflow-x: clip; }
     font-weight:400;
 }
 
-.bm-dossier .secure-hero {
-    min-height:78vh;
-}
-
 .bm-dossier .upload-panel {
     max-width:860px;
 }
@@ -3586,10 +3588,6 @@ main { overflow-x: clip; }
 .bm-dossier .prepared {
     font:500 18px/1.5 var(--serif);
     margin-top:20px;
-}
-
-.bm-dossier .client-hero {
-    min-height:70vh;
 }
 
 .bm-dossier .client-entry {
@@ -3736,4 +3734,28 @@ main { overflow-x: clip; }
         right:25px;
         bottom:23px;
     }
+}
+
+/* ======================================================================
+   20. RETRAIT HAUT DES BANDEAUX
+
+   Les bandeaux calent leur contenu en bas. Tant que la hauteur suffit,
+   le titre descend naturellement ; sur un ecran bas, il remonte sous
+   la barre fixe. Mesure a 1024x480 avant ce retrait : le surtitre de
+   l'espace client passait 45 pixels sous la barre, celui du contact 51.
+
+   Ce retrait ne deplace rien tant que la place est la -- le contenu
+   reste cale en bas -- et pousse le bandeau des que la place manque.
+   Il figure en fin de feuille pour l'emporter sur les raccourcis
+   « padding » des regles de base et de leurs media queries.
+
+   .ph--outil porte deja le sien, plus specifique : il n'est pas touche.
+   ====================================================================== */
+
+.bm-portal .ph,
+.bm-dossier .hero,
+.bm-ct .ct-hero,
+.bm-xp .xp-hero,
+.bm-d .d-hero {
+    padding-top: calc(var(--bm-nav-hauteur) + 2rem);
 }
