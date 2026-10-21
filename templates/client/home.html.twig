@@ -178,6 +178,7 @@
 
         {# --- Carrousel : affiche par le script (ecran large, animations permises) --- #}
         <div class="lt-rel__carousel" hidden>
+            {# Deux colonnes sur grand ecran : le plateau a gauche, le texte a droite #}
             <div class="lt-rel__stage" role="group" aria-roledescription="carrousel" aria-label="Les outils de LintellO autour du Cloud LintellO. Flèches gauche et droite pour tourner." tabindex="0">
                 <div class="lt-rel__plate" aria-hidden="true"></div>
                 <svg class="lt-rel__links" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
@@ -193,6 +194,7 @@
                 {% endfor %}
             </div>
 
+            <div class="lt-rel__side">
             <div class="lt-rel__controls">
                 <button type="button" class="lt-rel__arrow" data-step="-1" aria-label="Outil précédent">
                     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
@@ -209,7 +211,8 @@
             <div class="lt-rel__panel" aria-live="polite">
                 <h3 class="lt-rel__panel-title"></h3>
                 <div class="lt-rel__edges"></div>
-                <p class="lt-rel__hint">Cliquez un outil, glissez le carrousel ou utilisez la molette.</p>
+                <p class="lt-rel__hint">Changez d’outil avec les flèches, en glissant le carrousel ou avec la molette.</p>
+            </div>
             </div>
         </div>
     </div>
@@ -244,10 +247,10 @@
     // Formule de la maquette : outil i, outil f devant
     function pos(i) {
         var t = (i - front) * (2 * Math.PI / n);
-        return { x: 50 + 40 * Math.sin(t), y: 52 + 30 * Math.cos(t), depth: (1 + Math.cos(t)) / 2 };
+        return { x: 50 + 36 * Math.sin(t), y: 42 + 37 * Math.cos(t), depth: (1 + Math.cos(t)) / 2 };
     }
     function point(id) {
-        if (id === 'hub') return { x: 50, y: 52 };
+        if (id === 'hub') return { x: 50, y: 42 };
         for (var i = 0; i < n; i++) if (tools[i].id === id) return pos(i);
     }
 
@@ -289,8 +292,13 @@
             card.style.left = p.x + '%';
             card.style.top = p.y + '%';
             card.style.transform = 'translate(-50%, -50%) scale(' + (0.7 + 0.3 * p.depth).toFixed(3) + ')';
-            card.style.opacity = (0.55 + 0.45 * p.depth).toFixed(3);
+            // Seul l'outil devant est visible ; « Tout le systeme » montre les quatre
+            var away = !all && i !== k;
+            card.style.opacity = away ? '0' : (0.55 + 0.45 * p.depth).toFixed(3);
             card.style.zIndex = String(Math.round(p.depth * 10) + 20);
+            card.classList.toggle('is-away', away);
+            card.setAttribute('aria-hidden', away ? 'true' : 'false');
+            card.tabIndex = away ? -1 : 0;
             card.setAttribute('aria-pressed', i === k ? 'true' : 'false');
             card.classList.toggle('is-front', i === k);
             card.classList.toggle('is-lit', all || i === k);
@@ -298,8 +306,10 @@
 
         var shown = all ? edges : edges.filter(function (e) { return e.a === frontId || e.b === frontId; });
 
+        // Les autres outils etant caches, l'outil devant n'est relie qu'au Cloud
+        var lines = all ? edges : [{ a: frontId, b: 'hub' }];
         while (svg.firstChild) svg.removeChild(svg.firstChild);
-        shown.forEach(function (e) {
+        lines.forEach(function (e) {
             var p = point(e.a), q = point(e.b);
             var line = document.createElementNS(SVGNS, 'line');
             line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
