@@ -1836,8 +1836,6 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 
 /* Confiance (handoff v0.3) : signature, pastilles, histoires */
 .lt-trust__sign { margin: 10px 0 0; font-size: 15px; font-weight: 600; color: var(--lt-text); }
-.lt-trust__badges { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
-.lt-trust__badges .lt-pill { margin: 0; }
 .lt-trust .lt-commit__list { margin-top: 36px; }
 .lt-stories { margin-top: 40px; display: flex; flex-direction: column; gap: 24px; }
 .lt-story {
