@@ -1557,13 +1557,13 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 /* Qui est derriere, version courte */
 .lt-section--tight { padding: 72px 0; }
 .lt-founder--short { align-items: center; padding: 32px; }
-.lt-founder--short .lt-founder__photo { width: 140px; height: 140px; }
+.lt-founder--short .lt-founder__photo { width: 200px; height: 200px; }
 .lt-founder__quote { margin: 12px 0 0; }
 .lt-founder__quote blockquote { margin: 0; }
 .lt-founder__text .lt-founder__quote p { margin: 0; font-size: 18px; font-style: italic; line-height: 1.6; color: var(--lt-text); }
 .lt-founder__quote figcaption { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--lt-text-body); }
 @media (max-width: 767.98px) {
-    .lt-founder--short .lt-founder__photo { width: 100px; height: 100px; }
+    .lt-founder--short .lt-founder__photo { width: 140px; height: 140px; }
 }
 .lt-founder--short .lt-founder__text p { margin-top: 10px; }
 .lt-founder--short .lt-link { display: inline-block; margin-top: 12px; }
