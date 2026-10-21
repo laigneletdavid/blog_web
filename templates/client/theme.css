@@ -401,7 +401,7 @@ a:hover { color: #1e40af; }
 .lt-post__meta { margin-top: 14px; font-size: 13px; color: var(--lt-text-muted); }
 
 /* ---------- 6. FAQ ---------- */
-.lt-faq { padding-top: 0; }
+.lt-section:not(.lt-section--grey) + .lt-faq { padding-top: 0; }
 .lt-faq__list { margin-top: 36px; border-top: 1px solid var(--lt-border); }
 .lt-faq__item { border-bottom: 1px solid var(--lt-border); }
 .lt-faq__q {
@@ -1416,7 +1416,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-hero__lead { font-size: 17px; }
     .lt-section { padding: 72px 0; }
     .lt-section--grey { padding: 64px 0; }
-    .lt-faq { padding-top: 0; }
+    .lt-section:not(.lt-section--grey) + .lt-faq { padding-top: 0; }
     .lt-card { padding: 24px; }
     .lt-page-head { padding: 56px 0 32px; }
     .lt-final__box { padding: 40px 24px; }
