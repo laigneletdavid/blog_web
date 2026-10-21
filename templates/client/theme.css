@@ -169,6 +169,14 @@ a:hover { color: #1e40af; }
 .lt-offcanvas__sub a { display: block; padding: 8px 0; color: var(--lt-text-body); text-decoration: none; }
 .lt-offcanvas__actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
 
+/* Ecrans intermediaires : le menu tient sur une ligne */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .lt-header__inner { gap: 16px 24px; }
+    .lt-header__nav { gap: 4px 16px; }
+    .lt-header__link,
+    .lt-header__login { font-size: 14px; }
+}
+
 @media (max-width: 991.98px) {
     .lt-header__nav,
     .lt-header__actions { display: none; }
