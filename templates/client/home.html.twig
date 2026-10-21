@@ -11,6 +11,7 @@
      6. Offres : trois publics, trois prix
      7. Apprendre et actualites : derniers articles, un par categorie
      8. FAQ : cinq questions, lues depuis le module FAQ
+     9. Appel final : aplat bleu clair, inscription et offres
 
    Regles : une seule couleur, le bleu primaire ; aucun degrade ; le
    tricolore n'apparait que dans la pastille du heros. Aucun fournisseur
@@ -30,12 +31,12 @@
                 Votre intello personnel, 100&nbsp;% français
             </p>
             <h1 class="lt-hero__title lt-hero__title--home">Une IA simple et efficace qui travaille avec vous. <span>Vos données restent chez vous.</span></h1>
-            <p class="lt-hero__lead">Rédiger, analyser, chercher : LintellO vous aide au quotidien sur un moteur IA français, hébergé à Strasbourg. Vos échanges restent chiffrés et ne servent jamais à entraîner l'IA.</p>
+            <p class="lt-hero__lead">Rédigez vos documents, répondez à vos clients, cherchez sur le web : LintellO vous fait gagner du temps, chaque jour.</p>
             <div class="lt-hero__actions">
                 <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
                 <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
             </div>
-            <p class="lt-hero__note">Offre Gratuite : 20 messages par jour avec l'IA du quotidien.</p>
+            <p class="lt-hero__note">Offre Gratuite : 20 messages par jour, sans engagement.</p>
         </div>
 
         {# Maquette de l'editeur de documents : un cas TPE, un passage
@@ -124,7 +125,7 @@
         <div class="lt-rel__head">
             <p class="lt-eyebrow">Tout est relié</p>
             <h2 class="lt-h2">Vos outils se parlent. Vous ne faites plus de copier-coller.</h2>
-            <p class="lt-rel__lead">Le chat, l'éditeur, la recherche et vos fichiers travaillent ensemble, dans un seul espace hébergé à Strasbourg.</p>
+            <p class="lt-rel__lead">Le chat, l'éditeur, la recherche et vos fichiers travaillent ensemble, dans un seul espace.</p>
         </div>
 
         {% set relCloud %}
@@ -427,9 +428,9 @@
                 <h2 class="lt-h3">Qui est derrière LintellO</h2>
                 <figure class="lt-founder__quote">
                     <blockquote>
-                        <p>« Je vois chaque semaine ce qui fait gagner du temps et améliore notre travail, mais également ce qui fonctionne moins bien. LintellO c'est l'outil IA que je voulais pour moi, mes clients et mes élèves. »</p>
+                        <p>« Je vois chaque semaine ce qui fait gagner du temps, et ce qui en fait perdre. LintellO, c'est l'outil IA que je voulais pour moi, mes clients et mes élèves. »</p>
                     </blockquote>
-                    <figcaption>David LAIGNELET — Créateur de LintellO, développeur web et enseignant, en Occitanie</figcaption>
+                    <figcaption>David Laignelet — Créateur de LintellO, développeur web et enseignant, en Occitanie</figcaption>
                 </figure>
                 <a href="{{ path('app_page_show', {slug: 'confiance'}) }}" class="lt-link">En savoir plus →</a>
             </div>
@@ -442,9 +443,9 @@
    "des" seulement quand la carte regroupe plusieurs offres (Pros).
    La carte Pros est mise en avant (cible prioritaire de l'accueil : TPE/PME). #}
 {% set audiences = [
-    {who: 'Pros', title: 'Rédiger, analyser, gérer vos dossiers clients.', offer: 'Offres Pro et LintellO', from: true, highlight: true, price: '19,90 €', per: 'HT / mois', cta: 'LintellO pour les pros', slug: 'professionnels'},
-    {who: 'À la maison', title: 'Les démarches, les devoirs, les projets.', offer: 'Offre Perso', from: false, price: '9,90 €', per: 'TTC / mois', cta: 'LintellO à la maison', slug: 'particuliers'},
-    {who: 'Études', title: 'Comprendre ses cours, réviser, rédiger.', offer: 'Offre Étudiant', from: false, price: '4,99 €', per: 'TTC / mois', cta: 'LintellO pour les études', slug: 'etudiants'},
+    {who: 'Pros', title: 'Rédiger, analyser, gérer vos dossiers clients.', offer: 'Offres Pro et LintellO', benefit: '9 modes métier, modèles Compte rendu et Fiche produit, export Word et PDF.', from: true, highlight: true, price: '19,90 €', per: 'HT / mois', cta: 'LintellO pour les pros', slug: 'professionnels'},
+    {who: 'À la maison', title: 'Les démarches, les devoirs, les projets.', offer: 'Offre Perso', benefit: 'Les modes du quotidien et l’aide aux devoirs, pour toute la maison.', from: false, price: '9,90 €', per: 'TTC / mois', cta: 'LintellO à la maison', slug: 'particuliers'},
+    {who: 'Études', title: 'Comprendre ses cours, réviser, rédiger.', offer: 'Offre Étudiant', benefit: '5 modes pour apprendre, sans faire le devoir à votre place.', from: false, price: '4,99 €', per: 'TTC / mois', cta: 'LintellO pour les études', slug: 'etudiants'},
 ] %}
 <section class="lt-section lt-section--grey">
     <div class="lt-container">
@@ -458,6 +459,7 @@
                     <span class="lt-eyebrow">{{ a.who }}</span>
                     <span class="lt-card__title lt-card__title--lg">{{ a.title }}</span>
                     <span class="lt-card__offer">{{ a.offer }}</span>
+                    <span class="lt-card__benefit">{{ a.benefit }}</span>
                     <span class="lt-price">
                         {% if a.from %}<span class="lt-price__from">dès</span>{% endif %}
                         <span class="lt-price__amount">{{ a.price }}</span>
@@ -467,6 +469,7 @@
                 </a>
             {% endfor %}
         </div>
+        <p class="lt-offers__free">Pas encore décidé ? <a href="{{ lt_app }}/register">Commencez gratuitement</a> : 20 messages par jour, sans engagement.</p>
     </div>
 </section>
 
@@ -533,5 +536,21 @@
     </div>
 </section>
 {% endif %}
+
+{# ====== 9. APPEL FINAL ====== #}
+<section class="lt-final lt-final--light">
+    <div class="lt-container">
+        <div class="lt-final__box">
+            <div class="lt-final__text">
+                <h2>Votre intello vous attend.</h2>
+                <p>Essayez LintellO gratuitement : 20 messages par jour, sans engagement.</p>
+            </div>
+            <div class="lt-final__actions">
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
+                <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
+            </div>
+        </div>
+    </div>
+</section>
 
 </div>

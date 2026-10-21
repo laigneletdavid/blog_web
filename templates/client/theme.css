@@ -1787,3 +1787,23 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-rel__links line { animation: none; }
     .lt-rel__card { transition: none; }
 }
+
+/* Accueil, offres : ligne de benefice et rappel de l'offre gratuite */
+.lt-card__benefit { display: block; margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--lt-text-body); }
+.lt-card__benefit + .lt-price { margin-top: 12px; }
+.lt-offers__free { margin: 32px 0 0; text-align: center; font-size: 16px; color: var(--lt-text-body); }
+.lt-offers__free a { color: var(--lt-primary-dark); font-weight: 600; }
+
+/* Appel final clair : aplat bleu pale, centre */
+.lt-final--light .lt-final__box {
+    background: var(--lt-soft);
+    border: 1px solid var(--lt-tint);
+    color: var(--lt-text);
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+.lt-final--light .lt-final__text { flex: none; }
+.lt-final--light .lt-final__text h2 { color: var(--lt-text); }
+.lt-final--light .lt-final__text p { color: var(--lt-text-body); }
+.lt-final--light .lt-final__actions { justify-content: center; align-items: center; gap: 12px 24px; }
