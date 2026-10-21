@@ -25,7 +25,7 @@
 ] %}
 
 {% set stories = [
-    {who: 'Pros', title: 'Le contrat de votre client reste chez vous.', text: 'Prenons une gérante de PME. Lundi matin, elle colle le contrat d’un client dans une IA pour en tirer les points clés. Avec beaucoup d’assistants grand public, souvent hébergés hors d’Europe, ce contrat part sur des serveurs qu’elle ne connaît pas et peut, selon les réglages, servir à améliorer le modèle. Avec LintellO, il reste chiffré à Strasbourg et ne sert qu’à lui répondre. Ses clients n’ont rien à craindre, et elle peut le leur dire.', cta: 'LintellO pour les pros', slug: 'professionnels', icon: 'M4 8h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zM9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18'},
+    {who: 'Pros', title: 'Les données de vos clients restent sous votre contrôle.', text: 'Prenons une PME de dix salariés. Un commercial colle la grille tarifaire d’un client dans une IA gratuite pour préparer un devis, une assistante y dépose une fiche de paie à reformuler. Personne ne pense à mal, mais ces données viennent de sortir de l’entreprise, vers des serveurs qu’elle ne connaît pas, souvent hors d’Europe. Une fuite commence souvent ainsi : pas par un piratage, par un copier-coller. Avec LintellO, ces informations restent chiffrées sur un serveur en France, avec une clé conservée à part, et ne servent qu’à répondre. Le gérant garde la main, et peut le dire à ses clients.', cta: 'LintellO pour les pros', slug: 'professionnels', icon: 'M4 8h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zM9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18'},
     {who: 'Études', title: 'J’accompagne, je ne fais pas à votre place.', text: 'Prenons un lycéen, la veille d’un devoir. Une IA grand public lui donne la réponse en dix secondes : le devoir est rendu, la notion n’est pas comprise. LintellO fait l’inverse. Il explique, reprend autrement quand ça ne passe pas, pose des questions pour vérifier, corrige en expliquant chaque règle. Il ne rédige jamais le devoir à sa place. Le jour du contrôle, ce qu’il a appris est à lui.', cta: 'LintellO pour les études', slug: 'etudiants', icon: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5M22 9v6'},
     {who: 'À la maison', title: 'Votre vie de famille reste privée.', text: 'Prenons un parent, un dimanche soir. Il écrit à la CAF, prépare un courrier pour son propriétaire, note ses questions avant un rendez-vous chez le médecin. Chaque message raconte un peu de la vie de la famille. Avec LintellO, ces échanges sont chiffrés en France, ne servent à aucune publicité et ne sont jamais revendus.', cta: 'LintellO à la maison', slug: 'particuliers', icon: 'M3 11l9-7 9 7M5 10v10h14V10M10 20v-6h4v6'},
 ] %}
@@ -62,7 +62,7 @@
 
 {# ====== EN-TETE (seule section en fond doux bleu) ====== #}
 <section class="lt-trust__head">
-    <div class="lt-container">
+    <div class="lt-container lt-trust__head-inner">
         <div class="lt-trust__head-text">
             <p class="lt-eyebrow">Confiance</p>
             <h1 class="lt-page-head__title">Vos données restent en France. <span>Voici exactement comment.</span></h1>
@@ -73,6 +73,14 @@
                 <li class="lt-pill">Moteur IA français</li>
                 <li class="lt-pill">Recherche web européenne</li>
             </ul>
+        </div>
+        <div class="lt-seal">
+            <span class="lt-flag lt-flag--lg" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span>
+                <span class="lt-seal__title">Hébergé en France</span>
+                <span class="lt-seal__line">Serveur dédié à Strasbourg</span>
+                <span class="lt-seal__line">Moteur IA français</span>
+            </span>
         </div>
     </div>
 </section>
