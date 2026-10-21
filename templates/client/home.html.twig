@@ -5,7 +5,7 @@
    Ordre des sections (handoff vitrine v0.1, partie 2, section 10) :
      1. Heros : promettre et faire commencer
      2. Nos engagements : vos donnees, le detail est sur la page Confiance
-     3. Trois outils : l'editeur en premier
+     3. Tout est relie : quatre outils autour du Cloud LintellO (carrousel)
      4. (Temoignages : a venir, composant BlogWeb)
      5. Qui est derriere
      6. Offres : trois publics, trois prix
@@ -93,29 +93,318 @@
     </div>
 </section>
 
-{# ====== 3. TROIS OUTILS ======
-   L'editeur est mis en avant : carte pleine largeur, chat et recherche dessous. #}
-{% set tools = [
-    {title: 'Éditeur de documents', lead: 'Une réponse devient un vrai document : compte rendu, courrier, fiche produit. Sélectionnez un passage, demandez une reprise, LintellO modifie avec vous. Export en Word ou en PDF.', icon: 'M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM14 3v5h5M9 13h6M9 17h6', wide: true},
-    {title: 'Le chat', lead: 'Posez votre question comme à un collègue. LintellO comprend ce que vous voulez et s’adapte : réponse courte, analyse, code.', icon: 'M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10l-5 4V6a1 1 0 0 1 1-1z', wide: false},
-    {title: 'La recherche web', lead: 'LintellO cherche sur le web à votre place, lit les pages et vous rend une synthèse avec ses sources. La recherche part de moteurs européens, et les sites visités ne voient ni votre adresse ni vos cookies.', icon: 'M11 5a6 6 0 1 0 0 12a6 6 0 1 0 0-12M20 20l-4.5-4.5', wide: false},
+{# ====== 3. TOUT EST RELIE ======
+   Handoff « Tout est relie » (21/10), maquette « C. Le carrousel »
+   (Lintello/docs/vitrine/maquettes/tout-est-relie-carrousel.dc.html).
+   Un seul espace, le Cloud LintellO, et quatre outils qui se passent ce
+   que fait l'utilisateur. Six echanges, tous verifies dans LintellO :
+   la recherche web n'est reliee ni au projet ni a l'editeur.
+
+   Le HTML de base est la version empilee (sans JS, mobile, mouvement
+   reduit). Le script plus bas la remplace par le carrousel quand l'ecran
+   est assez large et que les animations sont permises. #}
+{% set relTools = [
+    {id: 'chat', label: 'Chat', lead: 'Il comprend et choisit seul le bon modèle.', icon: 'M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10l-5 4V6a1 1 0 0 1 1-1z'},
+    {id: 'doc', label: 'Éditeur', lead: 'Un document que l’IA modifie avec vous.', icon: 'M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM14 3v5h5M9 13h6M9 17h6'},
+    {id: 'files', label: 'Fichiers', lead: 'Vos Word, PDF et images.', icon: 'M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7zM14 3v4h4M12 11v6M9 14l3 3 3-3'},
+    {id: 'search', label: 'Recherche web', lead: 'Une synthèse sourcée, sans pistage.', icon: 'M11 5a6 6 0 1 0 0 12a6 6 0 1 0 0-12M20 20l-4.5-4.5'},
 ] %}
-<section class="lt-section" id="outils">
+{# a, b : outils relies ('hub' = le projet / le Cloud LintellO au centre) #}
+{% set relEdges = [
+    {a: 'chat', b: 'doc', from: 'Chat', to: 'Éditeur', arrow: '→', title: 'La réponse devient un document', text: '« Créer un document » transforme une réponse en document modifiable, mis en forme au clic.'},
+    {a: 'doc', b: 'hub', from: 'Éditeur', to: 'Projet', arrow: '→', title: 'Le document se range dans un projet', text: 'Il s’enregistre tout seul, dans le projet de votre choix, et se retrouve dans le Cloud LintellO.'},
+    {a: 'files', b: 'hub', from: 'Fichiers', to: 'Projet', arrow: '→', title: 'Vos fichiers rejoignent le projet', text: 'Un Word déposé ressort en texte structuré, titres compris.'},
+    {a: 'hub', b: 'chat', from: 'Projet', to: 'Chat', arrow: '→', title: 'Le chat lit le projet', text: 'Il connaît le sommaire du projet et ouvre la pièce utile, en vous disant laquelle.'},
+    {a: 'chat', b: 'search', from: 'Chat', to: 'Recherche web', arrow: '⇄', title: 'Le chat et la recherche web se passent le relais', text: '« Vérifier par une recherche » ; et une source ou une synthèse repart vers le chat.'},
+    {a: 'search', b: 'hub', from: 'Recherche web', to: 'Cloud LintellO', arrow: '→', title: 'Ce que vous gardez va dans le Cloud LintellO', text: 'Une image aimée dans la recherche web se range dans le Cloud LintellO.'},
+] %}
+
+<section class="lt-section lt-rel" id="outils" data-lt-rel data-lt-rel-tools="{{ relTools|json_encode|e('html_attr') }}" data-lt-rel-edges="{{ relEdges|json_encode|e('html_attr') }}">
     <div class="lt-container">
-        <h2 class="lt-h2 lt-h2--narrow">Un éditeur, un chat, une recherche. Rien à régler.</h2>
-        <div class="lt-tools">
-            {% for t in tools %}
-                <div class="lt-card{{ t.wide ? ' lt-tools__wide' }}">
-                    <span class="lt-card__icon" aria-hidden="true">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"/></svg>
+        <div class="lt-rel__head">
+            <p class="lt-eyebrow">Un seul espace</p>
+            <h2 class="lt-h2">Quatre outils, un seul Cloud LintellO.</h2>
+            <p class="lt-rel__lead">Amenez un outil devant : vous voyez ce qu'il échange avec les autres, et ce qu'il range dans vos projets, sur le Cloud LintellO hébergé à Strasbourg.</p>
+        </div>
+
+        {% set relCloud %}
+            <div class="lt-rel__cloud">
+                <div class="lt-rel__cloud-box">
+                    <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9.5a4.2 4.2 0 0 1-.5 8.5z"/></svg>
+                    <span>
+                        <span class="lt-rel__cloud-name">Cloud LintellO</span>
+                        <span class="lt-rel__cloud-sub">hébergé à Strasbourg · vos projets et vos fichiers</span>
                     </span>
-                    <h3 class="lt-card__title">{{ t.title }}</h3>
-                    <p class="lt-card__lead">{{ t.lead }}</p>
                 </div>
-            {% endfor %}
+                <p class="lt-rel__projects">
+                    <span class="visually-hidden">Exemples de projets :</span>
+                    <span>Rénovation maison</span>
+                    <span>Devoirs de Léo</span>
+                </p>
+            </div>
+        {% endset %}
+
+        {# --- Version empilee : la base, sans JS --- #}
+        <div class="lt-rel__stack">
+            {{ relCloud }}
+            <div class="lt-rel__stack-tools">
+                {% for t in relTools %}
+                    <article class="lt-rel__stack-tool">
+                        <div class="lt-rel__tool-head">
+                            <span class="lt-rel__icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"/></svg>
+                            </span>
+                            <div>
+                                <h3 class="lt-rel__tool-name">{{ t.label }}</h3>
+                                <p class="lt-rel__tool-lead">{{ t.lead }}</p>
+                            </div>
+                        </div>
+                        {% for e in relEdges|filter(e => e.a == t.id or e.b == t.id) %}
+                            <div class="lt-rel__edge">
+                                <p class="lt-rel__route">
+                                    <span>{{ e.from }}</span>
+                                    <span aria-hidden="true">{{ e.arrow }}</span>
+                                    <span class="visually-hidden">{{ e.arrow == '⇄' ? 'et' : 'vers' }}</span>
+                                    <span>{{ e.to }}</span>
+                                </p>
+                                <p class="lt-rel__edge-title">{{ e.title }}</p>
+                                <p class="lt-rel__edge-text">{{ e.text }}</p>
+                            </div>
+                        {% endfor %}
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# --- Carrousel : affiche par le script (ecran large, animations permises) --- #}
+        <div class="lt-rel__carousel" hidden>
+            <div class="lt-rel__stage" role="group" aria-roledescription="carrousel" aria-label="Les outils de LintellO autour du Cloud LintellO. Flèches gauche et droite pour tourner." tabindex="0">
+                <div class="lt-rel__plate" aria-hidden="true"></div>
+                <svg class="lt-rel__links" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+                {{ relCloud }}
+                {% for t in relTools %}
+                    <button type="button" class="lt-rel__card" data-index="{{ loop.index0 }}" aria-pressed="false">
+                        <span class="lt-rel__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"/></svg>
+                        </span>
+                        <span class="lt-rel__card-name">{{ t.label }}</span>
+                        <span class="lt-rel__card-lead">{{ t.lead }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+
+            <div class="lt-rel__controls">
+                <button type="button" class="lt-rel__arrow" data-step="-1" aria-label="Outil précédent">
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+                </button>
+                <div class="lt-rel__switch" role="group" aria-label="Ce que montre le carrousel">
+                    <button type="button" data-mode="front" aria-pressed="true">L'outil devant</button>
+                    <button type="button" data-mode="all" aria-pressed="false">Tout le système</button>
+                </div>
+                <button type="button" class="lt-rel__arrow lt-rel__arrow--next" data-step="1" aria-label="Outil suivant">
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+            </div>
+
+            <div class="lt-rel__panel" aria-live="polite">
+                <h3 class="lt-rel__panel-title"></h3>
+                <div class="lt-rel__edges"></div>
+                <p class="lt-rel__hint">Cliquez un outil, glissez le carrousel ou utilisez la molette.</p>
+            </div>
         </div>
     </div>
 </section>
+
+<script>
+/* Carrousel « Tout est relie » : ameliore la version empilee. Ecouteurs
+   poses sur le plateau seulement, aucun ecouteur clavier global. */
+(function () {
+    var section = document.querySelector('[data-lt-rel]');
+    if (!section) return;
+
+    var tools = JSON.parse(section.getAttribute('data-lt-rel-tools'));
+    var edges = JSON.parse(section.getAttribute('data-lt-rel-edges'));
+    var n = tools.length;
+    var carousel = section.querySelector('.lt-rel__carousel');
+    var stage = section.querySelector('.lt-rel__stage');
+    var svg = section.querySelector('.lt-rel__links');
+    var cards = Array.prototype.slice.call(section.querySelectorAll('.lt-rel__card'));
+    var modeButtons = section.querySelectorAll('[data-mode]');
+    var panelTitle = section.querySelector('.lt-rel__panel-title');
+    var panelEdges = section.querySelector('.lt-rel__edges');
+    var SVGNS = 'http://www.w3.org/2000/svg';
+
+    var front = 0;      // entier non borne : garde le sens de rotation
+    var all = false;
+    var wide = window.matchMedia('(min-width: 768px)');
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function mod(i) { return ((i % n) + n) % n; }
+
+    // Formule de la maquette : outil i, outil f devant
+    function pos(i) {
+        var t = (i - front) * (2 * Math.PI / n);
+        return { x: 50 + 40 * Math.sin(t), y: 52 + 30 * Math.cos(t), depth: (1 + Math.cos(t)) / 2 };
+    }
+    function point(id) {
+        if (id === 'hub') return { x: 50, y: 52 };
+        for (var i = 0; i < n; i++) if (tools[i].id === id) return pos(i);
+    }
+
+    function edgeCard(e) {
+        var box = document.createElement('div');
+        box.className = 'lt-rel__edge';
+        var route = document.createElement('p');
+        route.className = 'lt-rel__route';
+        [e.from, e.arrow, e.to].forEach(function (txt, j) {
+            var s = document.createElement('span');
+            s.textContent = txt;
+            if (j === 1) s.setAttribute('aria-hidden', 'true');
+            route.appendChild(s);
+            if (j === 1) {
+                var sr = document.createElement('span');
+                sr.className = 'visually-hidden';
+                sr.textContent = e.arrow === '⇄' ? 'et' : 'vers';
+                route.appendChild(sr);
+            }
+        });
+        var title = document.createElement('p');
+        title.className = 'lt-rel__edge-title';
+        title.textContent = e.title;
+        var text = document.createElement('p');
+        text.className = 'lt-rel__edge-text';
+        text.textContent = e.text;
+        box.appendChild(route);
+        box.appendChild(title);
+        box.appendChild(text);
+        return box;
+    }
+
+    function render() {
+        var k = mod(front);
+        var frontId = tools[k].id;
+
+        cards.forEach(function (card, i) {
+            var p = pos(i);
+            card.style.left = p.x + '%';
+            card.style.top = p.y + '%';
+            card.style.transform = 'translate(-50%, -50%) scale(' + (0.7 + 0.3 * p.depth).toFixed(3) + ')';
+            card.style.opacity = (0.55 + 0.45 * p.depth).toFixed(3);
+            card.style.zIndex = String(Math.round(p.depth * 10) + 20);
+            card.setAttribute('aria-pressed', i === k ? 'true' : 'false');
+            card.classList.toggle('is-front', i === k);
+            card.classList.toggle('is-lit', all || i === k);
+        });
+
+        var shown = all ? edges : edges.filter(function (e) { return e.a === frontId || e.b === frontId; });
+
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        shown.forEach(function (e) {
+            var p = point(e.a), q = point(e.b);
+            var line = document.createElementNS(SVGNS, 'line');
+            line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
+            line.setAttribute('x2', q.x); line.setAttribute('y2', q.y);
+            line.setAttribute('vector-effect', 'non-scaling-stroke');
+            svg.appendChild(line);
+        });
+
+        panelTitle.textContent = all
+            ? 'Les six échanges du système'
+            : 'Ce que fait l’outil « ' + tools[k].label + ' » avec les autres';
+        while (panelEdges.firstChild) panelEdges.removeChild(panelEdges.firstChild);
+        shown.forEach(function (e) { panelEdges.appendChild(edgeCard(e)); });
+
+        modeButtons.forEach(function (b) {
+            b.setAttribute('aria-pressed', (b.getAttribute('data-mode') === 'all') === all ? 'true' : 'false');
+        });
+    }
+
+    function step(d) { front += d; all = false; render(); }
+
+    // Clic sur une carte : devant, par le plus court chemin
+    cards.forEach(function (card, i) {
+        card.addEventListener('click', function () {
+            if (dragged) return;
+            var d = i - mod(front);
+            if (d > n / 2) d -= n;
+            if (d < -n / 2) d += n;
+            if (d !== 0 || all) step(d);
+        });
+    });
+    section.querySelectorAll('[data-step]').forEach(function (b) {
+        b.addEventListener('click', function () { step(parseInt(b.getAttribute('data-step'), 10)); });
+    });
+    modeButtons.forEach(function (b) {
+        b.addEventListener('click', function () { all = b.getAttribute('data-mode') === 'all'; render(); });
+    });
+
+    // Clavier : fleches quand le plateau (ou une de ses cartes) a le focus
+    stage.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    });
+
+    // Glisse horizontal : un cran tous les 120 px
+    var drag = null, dragged = false;
+    stage.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        drag = { x: e.clientX, id: e.pointerId };
+        dragged = false;
+    });
+    stage.addEventListener('pointermove', function (e) {
+        if (!drag) return;
+        var dx = e.clientX - drag.x;
+        if (Math.abs(dx) > 8 && !stage.classList.contains('is-dragging')) {
+            stage.classList.add('is-dragging');
+            try { stage.setPointerCapture(drag.id); } catch (err) {}
+        }
+        if (Math.abs(dx) > 120) {
+            drag.x = e.clientX;
+            dragged = true;
+            step(dx < 0 ? 1 : -1);
+        }
+    });
+    function endDrag() {
+        if (!drag) return;
+        drag = null;
+        stage.classList.remove('is-dragging');
+        // Le clic qui suit un glisse ne doit pas re-tourner le plateau
+        setTimeout(function () { dragged = false; }, 0);
+    }
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    stage.addEventListener('pointerleave', endDrag);
+
+    // Molette : un cran au plus toutes les 600 ms, seulement sous le pointeur.
+    // Au premier ou au dernier outil, la page reprend son defilement.
+    var lastWheel = 0;
+    stage.addEventListener('wheel', function (e) {
+        var delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+        if (delta === 0) return;
+        var dir = delta > 0 ? 1 : -1;
+        var k = mod(front);
+        if ((dir > 0 && k === n - 1) || (dir < 0 && k === 0)) return;
+        e.preventDefault();
+        var now = Date.now();
+        if (now - lastWheel < 600) return;
+        lastWheel = now;
+        step(dir);
+    }, { passive: false });
+
+    // Carrousel seulement sur ecran large et animations permises
+    function apply() {
+        var on = wide.matches && !calm.matches;
+        section.classList.toggle('is-carousel', on);
+        carousel.hidden = !on;
+        if (on) render();
+    }
+    [wide, calm].forEach(function (mq) {
+        if (mq.addEventListener) mq.addEventListener('change', apply);
+        else if (mq.addListener) mq.addListener(apply);
+    });
+    apply();
+})();
+</script>
 
 {# ====== 4. TEMOIGNAGES ======
    A venir : composant BlogWeb a creer sur main (handoff, section 4). #}
