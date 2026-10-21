@@ -10,7 +10,7 @@
      5. Qui est derriere
      6. Offres : trois publics, trois prix
      7. Apprendre et actualites : derniers articles, un par categorie
-     8. FAQ : quatre questions, lues depuis le module FAQ
+     8. FAQ : cinq questions, lues depuis le module FAQ
 
    Regles : une seule couleur, le bleu primaire ; aucun degrade ; le
    tricolore n'apparait que dans la pastille du heros. Aucun fournisseur
@@ -512,8 +512,8 @@
 {% endif %}
 
 {# ====== 8. FAQ ======
-   Les quatre premieres questions actives du module FAQ (ordre de l'admin). #}
-{% set homeFaqs = faqs|default([])|slice(0, 4) %}
+   Les cinq premieres questions actives du module FAQ (ordre de l'admin). #}
+{% set homeFaqs = faqs|default([])|slice(0, 5) %}
 {% if homeFaqs|length > 0 %}
 <section class="lt-section lt-faq" id="faq">
     <div class="lt-container lt-container--narrow">
