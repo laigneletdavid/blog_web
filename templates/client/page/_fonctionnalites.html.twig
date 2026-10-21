@@ -1,0 +1,345 @@
+{# ======================================================================
+   FONCTIONNALITES — LintellO (menu « Produit »)
+   Textes v1 du 21/10, valides par David. Tout ce que LintellO sait faire,
+   reuni en une page : comment il repond, les 18 modes, la recherche,
+   l'editeur, les projets, vos donnees.
+
+   Sources (depot LintellO) : REFERENCE-LINTELLO.md (le [livre] seulement),
+   PromptAssembler.php (blocs socle ton, valeurs, constitution) et la
+   decision 0003 (« le bloc de valeurs doit etre publiable tel quel »),
+   CGU 5.2. Les images dans les reponses sont « a voir en prod » : une
+   phrase prudente. La moderation n'est pas presentee.
+   Regles du handoff : aucun fournisseur nomme, pas de « Cloud »,
+   « modele de document », credits jamais « X recherches », pas de teasing.
+
+   La demo des modes (option C) : sans JS, le premier exemple est affiche ;
+   le script fait suivre les exemples et les pastilles.
+   ====================================================================== #}
+{% set lt_app = 'https://www.lintello.ai' %}
+
+{% set toc = [
+    {id: 'reponses', label: 'Comment il répond'},
+    {id: 'modes', label: 'Les modes'},
+    {id: 'recherche', label: 'La recherche'},
+    {id: 'editeur', label: 'L’éditeur'},
+    {id: 'projets', label: 'Projets et fichiers'},
+    {id: 'donnees', label: 'Vos données'},
+] %}
+
+{% set tone = [
+    {title: 'Il vous vouvoie', text: 'Avec chaleur, sans familiarité. Il vous tutoie si vous le lui demandez.'},
+    {title: 'Il ne flatte pas', text: 'Pas de « excellente question » : si vous vous trompez, il vous le dit, et il explique pourquoi.'},
+    {title: 'Il dit « je ne sais pas »', text: 'Quand c’est le cas, sans détour.'},
+    {title: 'Même soin pour tous', text: 'Avec un spécialiste, il va droit au fond ; avec un débutant, il pose les bases. Même ton, sans condescendance.'},
+] %}
+
+{% set values = [
+    {title: 'Égalité', text: 'Une question simple reçoit le même soin qu’une question d’expert. Ni la façon d’écrire, ni le métier, ni l’origine ne changent la qualité de la réponse.'},
+    {title: 'Liberté', text: 'Il n’impose pas son point de vue et ne juge ni vos choix de vie, ni vos opinions. Sur une question débattue, il expose ce qui est en jeu plutôt que de rendre un verdict.'},
+    {title: 'Fraternité', text: 'Il accueille chaque demande telle qu’elle vient. Un appui, jamais un juge.'},
+    {title: 'Laïcité', text: 'Il est neutre en matière religieuse et politique : ni prosélytisme, ni dénigrement. Religions et courants politiques sont traités comme des faits culturels et historiques.'},
+] %}
+
+{# Les 18 modes ; descriptions des pages Etudes, Maison et Pros #}
+{% set modeGroups = [
+    {name: 'Études', modes: [
+        {name: 'Prof', text: 'Explique une notion dans l’ordre, pas à pas.'},
+        {name: 'Tout s’explique', text: 'Reprend autrement quand le cours ne passe pas, sans donner la réponse de l’exercice.'},
+        {name: 'Quizz Master', text: 'Vous fait réviser par questions progressives, QCM, vrai ou faux ou questions ouvertes, et tient le score.'},
+        {name: 'Langues', text: 'Converse dans la langue que vous pratiquez et corrige vos erreurs en les expliquant.'},
+        {name: 'Rédacteur étudiant', text: 'Corrige votre texte en expliquant chaque règle, sans écrire le devoir à votre place.'},
+    ]},
+    {name: 'À la maison', modes: [
+        {name: 'Coach de vie', text: 'Des conseils pratiques pour décider, vous organiser et avancer sur vos projets.'},
+        {name: 'Rédacteur', text: 'E-mails, lettres, CV et textes personnels, rédigés avec vous.'},
+        {name: 'Créatif', text: 'Des idées et de l’inspiration quand il faut trouver un angle, un nom, un cadeau.'},
+        {name: 'Santé & Sport', text: 'Entraînement, nutrition et bien-être, sans remplacer l’avis d’un professionnel.'},
+    ]},
+    {name: 'Pros', modes: [
+        {name: 'Rédacteur Pro', text: 'Rapports, documentation, propositions et e-mails formels.'},
+        {name: 'Relation client', text: 'Service client, échanges commerciaux et négociation.'},
+        {name: 'Expert marketing', text: 'Référencement, rédaction persuasive, réseaux sociaux et conversion.'},
+        {name: 'Développeur', text: 'Code, débogage, architecture et documentation technique.'},
+        {name: 'Analyste', text: 'Synthèse, extraction et comparaison de documents.'},
+        {name: 'Juriste', text: 'Contrats, conformité et langage juridique, avec prudence. Il ne remplace pas un avocat.'},
+        {name: 'RH & Management', text: 'Recrutement, management d’équipe et questions de droit du travail.'},
+        {name: 'Coach dirigeant', text: 'Prendre une décision, prendre du recul, piloter.'},
+        {name: 'Stratège business', text: 'Stratégie, développement, business plan et projets.'},
+    ]},
+] %}
+{# Exemples de la demo (a verifier dans l'app avant publication) #}
+{% set modeExamples = [
+    {q: 'Je ne comprends toujours pas les fractions', mode: 'Tout s’explique'},
+    {q: 'Aide-moi à répondre à un client mécontent', mode: 'Relation client'},
+    {q: 'Une idée de cadeau pour les 40 ans de ma sœur', mode: 'Créatif'},
+    {q: 'Relis cette clause de mon contrat de prestation', mode: 'Juriste'},
+] %}
+{% set firstMode = (modeExamples|first).mode %}
+{% set allModes = modeGroups|reduce((carry, g) => carry|merge(g.modes), []) %}
+{% set firstText = (allModes|filter(m => m.name == firstMode)|first).text %}
+
+{% set searchCards = [
+    {title: 'Des sources numérotées', text: 'Chaque passage de la synthèse renvoie à la page d’où il vient.'},
+    {title: 'Trois relances', text: 'Creuser, contredire, élargir : un clic relance la recherche dans la direction voulue.'},
+    {title: 'La page, sans le bruit', text: 'La source s’ouvre à côté, débarrassée des menus et des boutons. Les PDF aussi.'},
+    {title: 'Sans pistage', text: 'C’est notre serveur qui cherche, pas vous : le site visité ne voit ni votre adresse IP, ni vos cookies.'},
+    {title: 'Des images aussi', text: 'Un onglet Images ; un « j’aime » range l’image dans vos fichiers.'},
+    {title: 'Du chat à la recherche, et retour', text: '« Vérifier par une recherche » envoie une réponse du chat vers la recherche ; une source ou une synthèse repart vers le chat.'},
+    {title: 'Chaque recherche se retrouve', text: 'Elle a sa propre adresse : elle se recharge, se partage et reste dans votre historique.'},
+] %}
+
+{% set editorBlocks = [
+    {title: 'Une réponse devient un document', text: '« Créer un document » transforme une réponse du chat en document modifiable, remis en forme au clic : titres, tableaux, listes, sans perte de contenu.'},
+    {title: 'Sélectionnez, demandez', text: 'Surlignez un passage, cliquez sur « Demander à LintellO » : « plus clair pour le client », « plus court », « en anglais ». Vous pouvez aussi le dire dans le chat sans rien sélectionner. S’il ne trouve pas l’endroit, il le dit et ne touche à rien. Ctrl+Z annule, même une modification de l’IA.'},
+    {title: 'La forme, en parlant', text: '« Mets les titres en rouge », « passe en compte rendu ». « Rendre sa forme d’origine » annule tout.'},
+    {title: 'Cinq modèles de document', text: 'Document, Lettre, Compte rendu, Protocole, Fiche produit. Les en-têtes se remplissent une fois, en portrait ou en paysage.'},
+    {title: 'Quatre formats d’export', text: 'PDF, Word, OpenDocument, Markdown : le même document, quatre sorties.'},
+    {title: 'Un éditeur sans fioritures', text: 'Six commandes : Style, Liste, Insérer, Modèle, Exporter, Annuler. La typographie française est respectée, et le plan du document reste à portée de main.'},
+] %}
+
+{% set projectCards = [
+    {title: 'Un projet par sujet', text: 'Rénovation, client, mémoire : chaque projet réunit ses documents, ses fichiers et ses conversations.'},
+    {title: 'Le chat connaît vos dossiers', text: 'Il consulte les documents du projet et vous dit lequel il a utilisé. Une question générale n’ouvre rien.'},
+    {title: 'Vos fichiers deviennent utilisables', text: 'Déposez un Word, un PDF ou une image : LintellO le lit et s’en sert pour vous répondre. Un Word ressort en texte structuré, titres compris.'},
+    {title: 'Tout se retrouve', text: 'Vos documents pour reprendre où vous en étiez, tous vos fichiers avec un filtre « Visuels », et une corbeille pour récupérer ce que vous avez supprimé.'},
+] %}
+
+{% set comfort = [
+    'Thème clair, sombre ou automatique.',
+    'Police OpenDyslexic, pour une lecture plus facile.',
+    'Sur mobile : prise de photo, menu « + », document en plein écran.',
+    'Raccourcis : Ctrl+K pour chercher partout, Ctrl+L pour une nouvelle conversation, Ctrl+M pour les modes, Ctrl+Z pour annuler.',
+] %}
+
+<div class="lt-fx">
+
+{# ====== 1. HERO ====== #}
+<section class="lt-page-head lt-fx__head">
+    <div class="lt-container">
+        <p class="lt-eyebrow">Fonctionnalités</p>
+        <h1 class="lt-page-head__title">Tout ce que LintellO sait faire.</h1>
+        <p class="lt-page-head__lead">Un chat qui répond juste, un éditeur qui écrit avec vous, une recherche qui ne vous piste pas. Et vos projets, rangés au même endroit.</p>
+        <nav class="lt-fx__toc" aria-label="Sommaire de la page">
+            {% for t in toc %}
+                <a href="#{{ t.id }}">{{ t.label }}</a>
+            {% endfor %}
+        </nav>
+    </div>
+</section>
+
+{# ====== 2. COMMENT LINTELLO REPOND ====== #}
+<section class="lt-section lt-fx__section" id="reponses">
+    <div class="lt-container">
+        <div class="lt-fx__intro">
+            <p class="lt-eyebrow">La manière</p>
+            <h2 class="lt-h2">Un intello, pas un flatteur.</h2>
+            <p class="lt-fx__lead">LintellO est construit sur des règles de comportement qu’aucun mode et aucune instruction ne peuvent contourner.</p>
+        </div>
+        <ul class="lt-pillars">
+            {% for t in tone %}
+                <li class="lt-pillar">
+                    <h3 class="lt-pillar__title">{{ t.title }}</h3>
+                    <p>{{ t.text }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="lt-fx__values">
+            <h3 class="lt-fx__subtitle">Les valeurs de la République, traduites en comportements.</h3>
+            <ul class="lt-fx__values-list">
+                {% for v in values %}
+                    <li>
+                        <p class="lt-fx__value-name">{{ v.title }}</p>
+                        <p>{{ v.text }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+            <p class="lt-fx__values-note">Il ne fait pas la morale : ces valeurs guident ses réponses, elles ne s’invitent pas dans la conversation.</p>
+        </div>
+
+        <div class="lt-fx__duo">
+            <div class="lt-fx__duo-item">
+                <h3 class="lt-fx__subtitle">Il n’invente pas.</h3>
+                <p>Il n’invente ni chiffre, ni date, ni nom, ni citation. Quand une information manque dans votre document, il l’écrit. Quand il cherche sur le web, il cite ses sources dans sa réponse.</p>
+                <p class="lt-fx__small">LintellO peut se tromper, comme toute IA : vérifiez une réponse avant de vous en servir. Il ne remplace ni un médecin, ni un avocat, ni un expert-comptable.</p>
+            </div>
+            <div class="lt-fx__duo-item">
+                <h3 class="lt-fx__subtitle">Des schémas, dessinés pour de vrai.</h3>
+                <p>« Fais-moi un schéma de… » : le schéma s’affiche à côté de la conversation, sa source visible d’un clic, et il ressort dessiné dans vos exports PDF et Word.</p>
+                <p class="lt-fx__small">Quand une image aide vraiment à comprendre, LintellO peut en joindre une trouvée sur le web, avec sa provenance ; jamais sur la politique, la santé, le droit, l’argent ou une personne réelle, et vous pouvez les couper dans vos réglages.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. LES MODES (option C) ====== #}
+<section class="lt-section lt-section--grey lt-fx__section" id="modes">
+    <div class="lt-container lt-fx__modes" data-lt-modes>
+        <div class="lt-fx__modes-text">
+            <p class="lt-eyebrow">Les modes</p>
+            <h2 class="lt-h2">Vous posez la question. LintellO prend le bon mode.</h2>
+            <p class="lt-fx__lead">Dix-huit modes, pour apprendre, pour la maison et pour le travail. Rien à régler, LintellO s’adapte à votre demande. Ctrl+M pour choisir vous-même.</p>
+            <p class="lt-fx__hint">Choisissez un exemple : le mode qui répond s’allume parmi les dix-huit.</p>
+            <div class="lt-fx__examples">
+                {% for e in modeExamples %}
+                    <button type="button" class="lt-fx__example" data-mode="{{ e.mode }}" aria-pressed="{{ loop.first ? 'true' : 'false' }}">« {{ e.q }} »</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="lt-fx__board">
+            {% for g in modeGroups %}
+                <div class="lt-fx__group">
+                    <p class="lt-fx__group-name">{{ g.name }}</p>
+                    <div class="lt-fx__pills">
+                        {% for m in g.modes %}
+                            <button type="button" class="lt-fx__pill" data-mode="{{ m.name }}" data-text="{{ m.text }}" aria-pressed="{{ m.name == firstMode ? 'true' : 'false' }}">{{ m.name }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="lt-fx__active" aria-live="polite">
+                <p class="lt-fx__active-name">Mode {{ firstMode }}</p>
+                <p class="lt-fx__active-text">{{ firstText }}</p>
+            </div>
+        </div>
+        <p class="lt-fx__offers">Gratuit : un mode à découvrir chaque semaine et 3 essais par mois. Étudiant : les 5 modes Études. Perso : Études et Maison. Pro : les 18. LintellO : les 18, et vos propres modes.</p>
+        <p class="lt-fx__links">
+            <a href="{{ path('app_page_show', {slug: 'etudiants'}) }}" class="lt-link">Études →</a>
+            <a href="{{ path('app_page_show', {slug: 'particuliers'}) }}" class="lt-link">À la maison →</a>
+            <a href="{{ path('app_page_show', {slug: 'professionnels'}) }}" class="lt-link">Pros →</a>
+        </p>
+    </div>
+</section>
+
+<script>
+/* Modes : un exemple ou une pastille allume le mode et affiche sa phrase.
+   Ecouteurs poses sur la section seulement. */
+(function () {
+    var root = document.querySelector('[data-lt-modes]');
+    if (!root) return;
+    var pills = Array.prototype.slice.call(root.querySelectorAll('.lt-fx__pill'));
+    var examples = Array.prototype.slice.call(root.querySelectorAll('.lt-fx__example'));
+    var name = root.querySelector('.lt-fx__active-name');
+    var text = root.querySelector('.lt-fx__active-text');
+
+    function light(mode, example) {
+        pills.forEach(function (p) {
+            var on = p.getAttribute('data-mode') === mode;
+            p.setAttribute('aria-pressed', on ? 'true' : 'false');
+            if (on) {
+                name.textContent = 'Mode ' + mode;
+                text.textContent = p.getAttribute('data-text');
+            }
+        });
+        examples.forEach(function (e) {
+            e.setAttribute('aria-pressed', e === example ? 'true' : 'false');
+        });
+    }
+    examples.forEach(function (e) {
+        e.addEventListener('click', function () { light(e.getAttribute('data-mode'), e); });
+    });
+    pills.forEach(function (p) {
+        p.addEventListener('click', function () { light(p.getAttribute('data-mode'), null); });
+    });
+})();
+</script>
+
+{# ====== 4. LA RECHERCHE ====== #}
+<section class="lt-section lt-fx__section" id="recherche">
+    <div class="lt-container">
+        <div class="lt-fx__intro">
+            <p class="lt-eyebrow">La recherche</p>
+            <h2 class="lt-h2">Une vraie question, une réponse sourcée.</h2>
+            <p class="lt-fx__lead">Posez une question, pas des mots-clés. LintellO lit les pages pour vous et rédige une synthèse, chaque affirmation renvoyant à sa source.</p>
+        </div>
+        <ul class="lt-pillars">
+            {% for c in searchCards %}
+                <li class="lt-pillar">
+                    <h3 class="lt-pillar__title">{{ c.title }}</h3>
+                    <p>{{ c.text }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="lt-fx__note">La recherche se compte en crédits : un crédit pour une recherche lancée depuis le chat, deux dans l’outil Recherche. Le nombre de crédits dépend de votre offre. <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}">Voir les offres</a></p>
+    </div>
+</section>
+
+{# ====== 5. L'EDITEUR ====== #}
+<section class="lt-section lt-section--grey lt-fx__section" id="editeur">
+    <div class="lt-container">
+        <div class="lt-fx__intro">
+            <p class="lt-eyebrow">L’éditeur</p>
+            <h2 class="lt-h2">Une IA pour rédiger un compte rendu, une lettre, une fiche produit.</h2>
+            <p class="lt-fx__lead">Le document s’ouvre à côté de la conversation. Vous écrivez, LintellO modifie avec vous, et tout s’enregistre tout seul.</p>
+        </div>
+        <ol class="lt-fx__steps">
+            {% for b in editorBlocks %}
+                <li class="lt-fx__step">
+                    <span class="lt-fx__step-num" aria-hidden="true">{{ loop.index }}</span>
+                    <div>
+                        <h3 class="lt-pillar__title">{{ b.title }}</h3>
+                        <p>{{ b.text }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 6. PROJETS ET FICHIERS ====== #}
+<section class="lt-section lt-fx__section" id="projets">
+    <div class="lt-container">
+        <div class="lt-fx__intro">
+            <p class="lt-eyebrow">Projets et fichiers</p>
+            <h2 class="lt-h2">Un dossier par sujet, et l’IA qui sait ce qu’il contient.</h2>
+            <p class="lt-fx__lead">Vos documents, vos fichiers et vos conversations, rangés par projet, avec une corbeille.</p>
+        </div>
+        <ul class="lt-pillars">
+            {% for c in projectCards %}
+                <li class="lt-pillar">
+                    <h3 class="lt-pillar__title">{{ c.title }}</h3>
+                    <p>{{ c.text }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="lt-fx__note">Les projets sont inclus dans toutes les offres payantes. Pas de limite de nombre de fichiers, seulement une taille maximale par fichier selon l’offre. <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}">Voir les offres</a></p>
+    </div>
+</section>
+
+{# ====== 7. VOS DONNEES ET LE CONFORT ====== #}
+<section class="lt-section lt-section--grey lt-fx__section" id="donnees">
+    <div class="lt-container lt-fx__duo">
+        <div class="lt-fx__duo-item">
+            <h2 class="lt-h3">Vos données vous suivent, ou disparaissent.</h2>
+            <p><strong>Exporter.</strong> Toutes vos données en JSON ou en PDF, sur toutes les offres, depuis vos réglages.</p>
+            <p><strong>Supprimer.</strong> Fermez votre compte : vos données sont supprimées et votre abonnement résilié.</p>
+            <a href="{{ path('app_page_show', {slug: 'confiance'}) }}" class="lt-link">Voir exactement comment vos données sont protégées →</a>
+        </div>
+        <div class="lt-fx__duo-item">
+            <h2 class="lt-h3">Et le confort.</h2>
+            <ul class="lt-fx__comfort">
+                {% for c in comfort %}
+                    <li>{{ c }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+
+{# ====== 8. APPEL FINAL ====== #}
+<section class="lt-final lt-final--light lt-fx__final">
+    <div class="lt-container">
+        <div class="lt-final__box">
+            <div class="lt-final__text">
+                <h2>Le mieux, c’est encore d’essayer.</h2>
+                <p>Commencez gratuitement : 20 messages par jour, sans engagement.</p>
+            </div>
+            <div class="lt-final__actions">
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
+                <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>

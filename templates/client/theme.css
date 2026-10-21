@@ -1878,3 +1878,143 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-story__icon { width: 56px; height: 56px; border-radius: 16px; }
     .lt-story__icon svg { width: 28px; height: 28px; }
 }
+
+/* ======================================================================
+   Fonctionnalites (page « Produit ») : sommaire, valeurs, demo des modes,
+   etapes de l'editeur. Reutilise lt-page-head, lt-pillars, lt-final.
+   ====================================================================== */
+.lt-fx__toc { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+.lt-fx__toc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 8px 16px;
+    border: 1px solid var(--lt-border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--lt-text);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+.lt-fx__toc a:hover { border-color: var(--lt-primary); color: var(--lt-primary-dark); }
+.lt-fx__section { scroll-margin-top: 96px; }
+.lt-fx__intro { max-width: 760px; }
+.lt-fx__lead { margin: 16px 0 0; font-size: 17px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-fx__subtitle { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.01em; color: var(--lt-text); }
+.lt-fx .lt-pillar__title { margin-top: 0; }
+
+/* Les valeurs */
+.lt-fx__values {
+    margin-top: 48px;
+    padding: 36px;
+    border: 1px solid var(--lt-tint);
+    border-radius: var(--lt-radius-card);
+    background: var(--lt-soft);
+}
+.lt-fx__values-list {
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 24px;
+}
+.lt-fx__value-name { margin: 0; font-size: 17px; font-weight: 700; color: var(--lt-primary-dark); }
+.lt-fx__values-list p:not(.lt-fx__value-name) { margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-fx__values-note { margin: 24px 0 0; font-size: 14px; color: var(--lt-text-body); }
+
+/* Deux blocs cote a cote */
+.lt-fx__duo { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 24px; }
+.lt-container.lt-fx__duo { margin-top: 0; }
+.lt-fx__duo-item { padding: 32px; border: 1px solid var(--lt-border); border-radius: var(--lt-radius-card); background: #ffffff; }
+.lt-fx__duo-item p { margin: 12px 0 0; font-size: 15.5px; line-height: 1.65; color: var(--lt-text-body); }
+.lt-fx__duo-item .lt-fx__small { font-size: 14px; color: var(--lt-text-muted); }
+.lt-fx__duo-item .lt-link { display: inline-block; margin-top: 16px; }
+.lt-fx__comfort { margin: 16px 0 0; padding-left: 20px; }
+.lt-fx__comfort li { margin-top: 8px; font-size: 15px; line-height: 1.6; color: var(--lt-text-body); }
+
+/* Demo des modes : un exemple allume le mode parmi les dix-huit */
+.lt-fx__modes { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 32px 56px; align-items: start; }
+.lt-fx__hint { margin: 24px 0 0; font-size: 14px; color: var(--lt-text-body); }
+.lt-fx__examples { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.lt-fx__example {
+    min-height: 52px;
+    padding: 14px 18px;
+    border: 1px solid var(--lt-border);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--lt-text);
+    font-family: inherit;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+}
+.lt-fx__example[aria-pressed="true"] { border-color: var(--lt-primary); box-shadow: 0 0 0 1px var(--lt-primary); background: var(--lt-soft); }
+.lt-fx__board { display: flex; flex-direction: column; gap: 22px; padding: 32px; border: 1px solid var(--lt-tint); border-radius: 24px; background: #ffffff; }
+.lt-fx__group-name { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--lt-primary-darker); }
+.lt-fx__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.lt-fx__pill {
+    min-height: 40px;
+    padding: 8px 14px;
+    border: 1px solid var(--lt-tint);
+    border-radius: 999px;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s, color .2s, border-color .2s;
+}
+.lt-fx__pill[aria-pressed="true"] { border-color: var(--lt-primary); background: var(--lt-primary); color: #ffffff; }
+.lt-fx__example:focus-visible,
+.lt-fx__pill:focus-visible { outline: 2px solid var(--lt-primary); outline-offset: 2px; }
+.lt-fx__active { padding: 18px 20px; border: 1px solid var(--lt-tint); border-radius: 16px; background: var(--lt-soft); }
+.lt-fx__active-name { margin: 0; font-size: 15px; font-weight: 600; color: var(--lt-text); }
+.lt-fx__active-text { margin: 4px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--lt-text-body); }
+.lt-fx__offers { grid-column: 1 / -1; margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-fx__links { grid-column: 1 / -1; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 28px; }
+
+.lt-fx__note { margin: 24px 0 0; font-size: 14.5px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-fx__note a { color: var(--lt-primary-dark); font-weight: 600; }
+
+/* Editeur : six etapes numerotees */
+.lt-fx__steps {
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+    gap: 20px;
+}
+.lt-fx__step { display: flex; gap: 16px; padding: 24px; border: 1px solid var(--lt-border); border-radius: 14px; background: #ffffff; }
+.lt-fx__step-num {
+    flex: none;
+    display: flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--lt-primary);
+    color: #ffffff;
+    font-weight: 700;
+}
+.lt-fx__step .lt-pillar__title { margin-top: 6px; }
+.lt-fx__step p { margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--lt-text-body); }
+
+.lt-fx__final { padding-top: 104px; }
+
+@media (max-width: 991.98px) {
+    .lt-fx__modes { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767.98px) {
+    .lt-fx__values { padding: 24px; }
+    .lt-fx__board { padding: 20px; }
+    .lt-fx__duo-item { padding: 24px; }
+    .lt-fx__final { padding-top: 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .lt-fx__pill { transition: none; }
+}
