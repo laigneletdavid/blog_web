@@ -50,12 +50,19 @@
     'Votre identité de facturation',
 ] %}
 
+{# Meme grille que la politique de confidentialite de l'app (§ 2.3) #}
 {% set retention = [
-    {what: 'Conversations et documents', how: 'Tant que vous les gardez'},
+    {what: 'Compte utilisateur', how: 'Jusqu’à la suppression du compte'},
+    {what: 'Conversations', how: 'Jusqu’à leur suppression par vous, ou celle du compte'},
+    {what: 'Documents', how: 'Jusqu’à leur suppression par vous, ou celle du compte'},
+    {what: 'Fichiers déposés', how: 'Supprimés immédiatement après extraction du texte (le texte extrait, chiffré, suit la durée du document ou de la conversation)'},
     {what: 'Recherches', how: '12 mois, puis seulement des volumes anonymes'},
     {what: 'Journaux d’erreurs', how: '6 mois, adresse IP hachée'},
     {what: 'Journaux du serveur', how: '6 mois'},
+    {what: 'Logs d’utilisation', how: 'Anonymisés après la suppression du compte'},
+    {what: 'Traces de modération (sans le contenu des messages)', how: '6 mois'},
     {what: 'Preuve d’acceptation des conditions', how: 'Durée du compte + 5 ans'},
+    {what: 'Données de facturation', how: '10 ans (obligation légale comptable)'},
 ] %}
 
 <div class="lt-trust">
