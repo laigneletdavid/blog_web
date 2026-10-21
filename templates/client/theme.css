@@ -1807,3 +1807,35 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 .lt-final--light .lt-final__text h2 { color: var(--lt-text); }
 .lt-final--light .lt-final__text p { color: var(--lt-text-body); }
 .lt-final--light .lt-final__actions { justify-content: center; align-items: center; gap: 12px 24px; }
+
+/* Tout est relie, sans carrousel : onglets d'outils, un outil a la fois */
+.lt-rel__tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 32px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.lt-rel__tabs[hidden] { display: none; }
+.lt-rel__tabs::-webkit-scrollbar { display: none; }
+.lt-rel__tab {
+    flex: none;
+    min-height: 40px;
+    padding: 8px 16px;
+    border: 1px solid var(--lt-border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--lt-text-body);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.lt-rel__tab[aria-selected="true"] { border-color: var(--lt-primary); background: var(--lt-primary); color: #ffffff; }
+.lt-rel__tab:focus-visible { outline: 2px solid var(--lt-primary); outline-offset: 2px; }
+.lt-rel.is-tabs .lt-rel__stack-tools { margin-top: 16px; }
+.lt-rel__stack-tool[hidden] { display: none; }
+.lt-rel:not(.is-tabs) .lt-rel__edge--dup { display: none; }
