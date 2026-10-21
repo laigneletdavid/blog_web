@@ -178,7 +178,8 @@
 
         {# --- Carrousel : affiche par le script (ecran large, animations permises) --- #}
         <div class="lt-rel__carousel" hidden>
-            {# Deux colonnes sur grand ecran : le plateau a gauche, le texte a droite #}
+            {# Deux colonnes sur grand ecran : le plateau et ses commandes a gauche, le texte a droite #}
+            <div class="lt-rel__visual">
             <div class="lt-rel__stage" role="group" aria-roledescription="carrousel" aria-label="Les outils de LintellO autour du Cloud LintellO. Flèches gauche et droite pour tourner." tabindex="0">
                 <div class="lt-rel__plate" aria-hidden="true"></div>
                 <svg class="lt-rel__links" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
@@ -194,7 +195,6 @@
                 {% endfor %}
             </div>
 
-            <div class="lt-rel__side">
             <div class="lt-rel__controls">
                 <button type="button" class="lt-rel__arrow" data-step="-1" aria-label="Outil précédent">
                     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
@@ -207,11 +207,13 @@
                     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
                 </button>
             </div>
+            </div>
 
+            <div class="lt-rel__side">
             <div class="lt-rel__panel" aria-live="polite">
                 <h3 class="lt-rel__panel-title"></h3>
                 <div class="lt-rel__edges"></div>
-                <p class="lt-rel__hint">Changez d’outil avec les flèches, en glissant le carrousel ou avec la molette.</p>
+                <p class="lt-rel__hint">Cliquez un outil, utilisez les flèches, glissez le carrousel ou la molette.</p>
             </div>
             </div>
         </div>
@@ -292,13 +294,11 @@
             card.style.left = p.x + '%';
             card.style.top = p.y + '%';
             card.style.transform = 'translate(-50%, -50%) scale(' + (0.7 + 0.3 * p.depth).toFixed(3) + ')';
-            // Seul l'outil devant est visible ; « Tout le systeme » montre les quatre
-            var away = !all && i !== k;
-            card.style.opacity = away ? '0' : (0.55 + 0.45 * p.depth).toFixed(3);
+            // Les outils qui ne sont pas devant restent en petit, icone seule ;
+            // « Tout le systeme » les montre en entier
+            card.style.opacity = (0.55 + 0.45 * p.depth).toFixed(3);
             card.style.zIndex = String(Math.round(p.depth * 10) + 20);
-            card.classList.toggle('is-away', away);
-            card.setAttribute('aria-hidden', away ? 'true' : 'false');
-            card.tabIndex = away ? -1 : 0;
+            card.classList.toggle('is-mini', !all && i !== k);
             card.setAttribute('aria-pressed', i === k ? 'true' : 'false');
             card.classList.toggle('is-front', i === k);
             card.classList.toggle('is-lit', all || i === k);
@@ -306,10 +306,8 @@
 
         var shown = all ? edges : edges.filter(function (e) { return e.a === frontId || e.b === frontId; });
 
-        // Les autres outils etant caches, l'outil devant n'est relie qu'au Cloud
-        var lines = all ? edges : [{ a: frontId, b: 'hub' }];
         while (svg.firstChild) svg.removeChild(svg.firstChild);
-        lines.forEach(function (e) {
+        shown.forEach(function (e) {
             var p = point(e.a), q = point(e.b);
             var line = document.createElementNS(SVGNS, 'line');
             line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
