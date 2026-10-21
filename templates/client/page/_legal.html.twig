@@ -2,12 +2,11 @@
    PAGES LEGALES DU SITE — LintellO
    Mentions legales et politique de confidentialite de la vitrine
    (generees par LegalPageContentService, completees en base).
-   Spec vitrine, contrainte 6 : elles couvrent le site lui-meme ; les textes
-   du service LintellO restent sur l'app, vers laquelle on renvoie.
+   Le menu lateral ne renvoie pas vers l'app (decision du 21/10) : la
+   politique de confidentialite du site reprend celle de l'app.
    Reutilise par _cgu-cgv-app.html.twig (copie des CGU et CGV de l'app),
    qui change le surtitre via legalEyebrow.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
 {% set legalPages = [
     {label: 'Mentions légales', type: 'mentions-legales', slug: 'mentions-legales'},
     {label: 'Politique de confidentialité', type: 'politique-de-confidentialite', slug: 'politique-confidentialite'},
@@ -31,12 +30,6 @@
                     {% for l in legalPages %}
                         <li><a href="{{ path('app_legal_page', {type: l.type}) }}" class="lt-toc__link{{ page.slug == l.slug ? ' widget-toc__link--active' }}"{% if page.slug == l.slug %} aria-current="page"{% endif %}>{{ l.label }}</a></li>
                     {% endfor %}
-                </ul>
-                <p class="lt-toc__title lt-legal__side-title">L'application LintellO</p>
-                <ul class="lt-toc__list">
-                    <li><a href="{{ lt_app }}/conditions" class="lt-toc__link">CGU et CGV</a></li>
-                    <li><a href="{{ lt_app }}/mentions-legales" class="lt-toc__link">Mentions légales de l'app</a></li>
-                    <li><a href="{{ lt_app }}/politique-confidentialite" class="lt-toc__link">Confidentialité de l'app</a></li>
                 </ul>
             </nav>
         </aside>
