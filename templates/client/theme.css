@@ -1569,3 +1569,11 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 /* Offres : nom de l'offre au-dessus du prix */
 .lt-card__offer { margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--lt-primary-dark); }
 .lt-card__offer + .lt-price { margin-top: 4px; }
+
+/* Accueil : titre du heros un cran plus petit, pour garder les boutons
+   visibles sans defiler (handoff accueil, retour du 21/10) */
+.lt-hero__title--home { font-size: clamp(30px, 3.2vw, 44px); line-height: 1.1; }
+.lt-home .lt-hero { padding-top: 64px; }
+
+/* Offre mise en avant (carte Pros de l'accueil) */
+.lt-card--highlight { border: 2px solid var(--lt-primary); box-shadow: var(--lt-shadow); }

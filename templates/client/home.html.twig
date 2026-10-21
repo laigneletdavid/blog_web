@@ -27,9 +27,9 @@
         <div class="lt-hero__text">
             <p class="lt-pill">
                 <span class="lt-flag" aria-hidden="true"><span></span><span></span><span></span></span>
-                Votre intello personnel, vos données chez vous
+                Votre intello personnel, 100&nbsp;% français
             </p>
-            <h1 class="lt-hero__title">L'IA française qui travaille avec vous, <span>pas avec vos dossiers.</span></h1>
+            <h1 class="lt-hero__title lt-hero__title--home">Une IA simple et efficace qui travaille avec vous. <span>Vos données restent chez vous.</span></h1>
             <p class="lt-hero__lead">Rédiger, analyser, chercher : LintellO vous aide au quotidien sur un moteur IA français, hébergé à Strasbourg. Vos échanges restent chiffrés et ne servent jamais à entraîner l'IA.</p>
             <div class="lt-hero__actions">
                 <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
@@ -128,7 +128,7 @@
             <img src="{{ asset('images/lintello/david-laignelet.jpg') }}" alt="David Laignelet, créateur de LintellO" width="96" height="96" class="lt-founder__photo" loading="lazy">
             <div class="lt-founder__text">
                 <h2 class="lt-h3">Qui est derrière LintellO</h2>
-                <p>LintellO est conçu par David Laignelet, développeur chez Com Web Solutions et enseignant, depuis la Haute-Garonne. Une IA pensée pour travailler avec vous, pas à votre place.</p>
+                <p>LintellO est conçu par David Laignelet, fondateur de Com Web Solutions et enseignant, depuis la Haute-Garonne. Une IA pensée pour travailler avec vous, pas à votre place.</p>
                 <a href="{{ path('app_page_show', {slug: 'confiance'}) }}" class="lt-link">En savoir plus →</a>
             </div>
         </div>
@@ -137,9 +137,10 @@
 
 {# ====== 6. OFFRES ======
    Le public titre la carte, le nom d'offre accompagne le prix.
-   "des" seulement quand la carte regroupe plusieurs offres (Pros). #}
+   "des" seulement quand la carte regroupe plusieurs offres (Pros).
+   La carte Pros est mise en avant (cible prioritaire de l'accueil : TPE/PME). #}
 {% set audiences = [
-    {who: 'Pros', title: 'Écrire, analyser, coder au quotidien.', offer: 'Offres Pro et LintellO', from: true, price: '19,90 €', per: 'HT / mois', cta: 'LintellO pour les pros', slug: 'professionnels'},
+    {who: 'Pros', title: 'Écrire, analyser, coder au quotidien.', offer: 'Offres Pro et LintellO', from: true, highlight: true, price: '19,90 €', per: 'HT / mois', cta: 'LintellO pour les pros', slug: 'professionnels'},
     {who: 'À la maison', title: 'Les démarches, les devoirs, les projets.', offer: 'Offre Perso', from: false, price: '9,90 €', per: 'TTC / mois', cta: 'LintellO à la maison', slug: 'particuliers'},
     {who: 'Études', title: 'Comprendre ses cours, réviser, rédiger.', offer: 'Offre Étudiant', from: false, price: '4,99 €', per: 'TTC / mois', cta: 'LintellO pour les études', slug: 'etudiants'},
 ] %}
@@ -151,7 +152,7 @@
         </div>
         <div class="lt-cards lt-cards--280">
             {% for a in audiences %}
-                <a href="{{ path('app_page_show', {slug: a.slug}) }}" class="lt-card lt-card--link">
+                <a href="{{ path('app_page_show', {slug: a.slug}) }}" class="lt-card lt-card--link{{ a.highlight|default(false) ? ' lt-card--highlight' }}">
                     <span class="lt-eyebrow">{{ a.who }}</span>
                     <span class="lt-card__title lt-card__title--lg">{{ a.title }}</span>
                     <span class="lt-card__offer">{{ a.offer }}</span>
