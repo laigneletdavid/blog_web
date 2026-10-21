@@ -1,0 +1,23 @@
+{# ======================================================================
+   QUI EST DERRIERE LINTELLO — bloc commun (accueil, Confiance)
+   Variables :
+   - contact (bool) : ligne « Une question ? Écrivez-moi » a la place du
+     lien vers la page Confiance (sur la page Confiance elle-meme)
+   ====================================================================== #}
+<div class="lt-founder lt-founder--short">
+    <img src="{{ asset('images/lintello/david-laignelet.jpg') }}" alt="David Laignelet, créateur de LintellO" width="200" height="200" class="lt-founder__photo" loading="lazy">
+    <div class="lt-founder__text">
+        <h2 class="lt-h3">Qui est derrière LintellO</h2>
+        <figure class="lt-founder__quote">
+            <blockquote>
+                <p>« Je vois chaque semaine ce qui fait gagner du temps, et ce qui en fait perdre. LintellO, c'est l'outil IA que je voulais pour moi, mes clients et mes élèves. »</p>
+            </blockquote>
+            <figcaption>David Laignelet — Créateur de LintellO, développeur web et enseignant, en Occitanie</figcaption>
+        </figure>
+        {% if contact|default(false) %}
+            <p class="lt-founder__contact">Une question ? Écrivez-moi : <a href="mailto:david@lintello.ai">david@lintello.ai</a></p>
+        {% else %}
+            <a href="{{ path('app_page_show', {slug: 'confiance'}) }}" class="lt-link">En savoir plus →</a>
+        {% endif %}
+    </div>
+</div>

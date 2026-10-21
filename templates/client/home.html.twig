@@ -452,22 +452,10 @@
    A venir : composant BlogWeb a creer sur main (handoff, section 4). #}
 
 {# ====== 5. QUI EST DERRIERE ======
-   Version courte du bloc de la page Confiance. #}
+   Bloc commun avec la page Confiance (client/_founder.html.twig). #}
 <section class="lt-section lt-section--tight">
     <div class="lt-container">
-        <div class="lt-founder lt-founder--short">
-            <img src="{{ asset('images/lintello/david-laignelet.jpg') }}" alt="David Laignelet, créateur de LintellO" width="200" height="200" class="lt-founder__photo" loading="lazy">
-            <div class="lt-founder__text">
-                <h2 class="lt-h3">Qui est derrière LintellO</h2>
-                <figure class="lt-founder__quote">
-                    <blockquote>
-                        <p>« Je vois chaque semaine ce qui fait gagner du temps, et ce qui en fait perdre. LintellO, c'est l'outil IA que je voulais pour moi, mes clients et mes élèves. »</p>
-                    </blockquote>
-                    <figcaption>David Laignelet — Créateur de LintellO, développeur web et enseignant, en Occitanie</figcaption>
-                </figure>
-                <a href="{{ path('app_page_show', {slug: 'confiance'}) }}" class="lt-link">En savoir plus →</a>
-            </div>
-        </div>
+        {% include 'client/_founder.html.twig' only %}
     </div>
 </section>
 

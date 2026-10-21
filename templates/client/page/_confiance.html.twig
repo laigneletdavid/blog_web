@@ -1,23 +1,40 @@
 {# ======================================================================
    CONFIANCE — LintellO
-   La franchise est l'argument : ce que LintellO fait vraiment, ses limites
-   et ses deux exceptions. Cette page tient la promesse du titre de la home
-   (« Vos données restent en France ») : si elle disparait, le titre change.
+   La franchise est l'argument : ce que LintellO fait vraiment, y compris
+   ce qui reste a ameliorer. Cette page tient la promesse du titre de la
+   home (« Vos donnees restent chez vous ») : si elle disparait, le titre
+   change.
+
+   Handoff v0.3 § 12 (21/10). Aucun fournisseur nomme sur cette page
+   (moteur IA, recherche, hebergeur, paiement) : ils ne le sont que dans
+   la politique de confidentialite. Les histoires sont des exemples
+   (« Prenons… »), jamais des temoignages.
 
    Sources (depot LintellO) :
    - REFERENCE-LINTELLO.md § 7 (ce qu'on peut affirmer)
-   - PrivacyPolicy.tsx § 8.1 / 8.2 (chiffre / pas encore chiffre) : la
-     colonne « pas encore chiffré » se raccourcit a chaque colonne chiffree
+   - PrivacyPolicy.tsx § 8.1 / 8.2 (chiffre / pas encore chiffre)
    - docs/specs/admin/durees-de-conservation.md
    Non affiches tant qu'ils sont [à voir en prod] : profil sante, moderation.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
 
+{% set essentials = [
+    {title: 'En France, de bout en bout', text: 'Un moteur IA français, un serveur dédié à Strasbourg, une recherche web européenne.', icon: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'},
+    {title: "Jamais d'entraînement", text: 'Vos conversations et vos documents servent à vous répondre, à rien d’autre (CGU, article 6.2).', icon: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3'},
+    {title: 'Ni pub, ni pistage, ni revente', text: 'Pas d’outil d’analyse tiers, et vos données s’exportent ou se suppriment en un clic.', icon: 'M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6zM4 4l16 16'},
+] %}
+
+{% set stories = [
+    {who: 'Pros', title: 'Le contrat de votre client reste chez vous.', text: 'Prenons une gérante de PME. Lundi matin, elle colle le contrat d’un client dans une IA pour en tirer les points clés. Avec beaucoup d’assistants grand public, souvent hébergés hors d’Europe, ce contrat part sur des serveurs qu’elle ne connaît pas et peut, selon les réglages, servir à améliorer le modèle. Avec LintellO, il reste chiffré à Strasbourg et ne sert qu’à lui répondre. Ses clients n’ont rien à craindre, et elle peut le leur dire.', cta: 'LintellO pour les pros', slug: 'professionnels', icon: 'M4 8h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zM9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18'},
+    {who: 'Études', title: 'J’accompagne, je ne fais pas à votre place.', text: 'Prenons un lycéen, la veille d’un devoir. Une IA grand public lui donne la réponse en dix secondes : le devoir est rendu, la notion n’est pas comprise. LintellO fait l’inverse. Il explique, reprend autrement quand ça ne passe pas, pose des questions pour vérifier, corrige en expliquant chaque règle. Il ne rédige jamais le devoir à sa place. Le jour du contrôle, ce qu’il a appris est à lui.', cta: 'LintellO pour les études', slug: 'etudiants', icon: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5M22 9v6'},
+    {who: 'À la maison', title: 'Votre vie de famille reste privée.', text: 'Prenons un parent, un dimanche soir. Il écrit à la CAF, prépare un courrier pour son propriétaire, note ses questions avant un rendez-vous chez le médecin. Chaque message raconte un peu de la vie de la famille. Avec LintellO, ces échanges sont chiffrés en France, ne servent à aucune publicité et ne sont jamais revendus.', cta: 'LintellO à la maison', slug: 'particuliers', icon: 'M3 11l9-7 9 7M5 10v10h14V10M10 20v-6h4v6'},
+] %}
+
 {% set pillars = [
-    {title: 'Hébergé à Strasbourg', text: 'Un serveur dédié OVH, en France.', icon: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'},
-    {title: 'Mistral, seul fournisseur d’IA', text: 'Vos données ne servent pas à entraîner les modèles (CGU, art. 6.2).', icon: 'M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16M12 8v4l3 2'},
-    {title: 'Chiffré en base', text: 'Messages, documents, fichiers et recherches, en AES-256-GCM, avec une clé gardée hors de la base.', icon: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3'},
-    {title: 'Recherche sans pistage', text: 'LintellO va chercher la page lui-même : le site visité ne voit ni votre IP ni de cookie.', icon: 'M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6zM4 4l16 16'},
+    {title: 'Hébergé à Strasbourg', text: 'Un serveur dédié, en France.', icon: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'},
+    {title: 'Un moteur IA français', text: 'Vos données ne servent pas à entraîner les modèles (CGU, article 6.2).', icon: 'M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16M12 8v4l3 2'},
+    {title: 'Chiffré sur nos serveurs', text: 'Messages, documents, fichiers et recherches, chiffrés en AES-256, avec une clé conservée à part.', icon: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3'},
+    {title: 'Recherche sans pistage', text: 'LintellO va chercher la page lui-même, depuis un index européen : le site visité ne voit ni votre adresse IP ni vos cookies.', icon: 'M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6zM4 4l16 16'},
     {title: 'Aucun outil d’analyse tiers', text: 'La mesure d’audience de l’application est faite par nous, en statistiques d’ensemble.', icon: 'M5 19V9M12 19V5M19 19v-7'},
     {title: 'Vos données, exportables', text: 'Export en JSON ou en PDF sur toutes les offres, et suppression du compte.', icon: 'M12 4v11M7 10l5 5 5-5M5 20h14'},
 ] %}
@@ -33,14 +50,6 @@
     'Votre identité de facturation',
 ] %}
 
-{% set plain = [
-    'Les titres de conversation',
-    'Les noms de projets, d’étiquettes et de fichiers',
-    'Les signalements, leurs captures et les commentaires laissés sur une réponse',
-    'Les champs à choix de votre profil (style de réponse, niveau d’études…)',
-    'Le code postal, la ville et le pays de facturation',
-] %}
-
 {% set retention = [
     {what: 'Conversations et documents', how: 'Tant que vous les gardez'},
     {what: 'Recherches', how: '12 mois, puis seulement des volumes anonymes'},
@@ -51,29 +60,69 @@
 
 <div class="lt-trust">
 
-{# ====== EN-TETE ET SCEAU (seule section en fond doux bleu) ====== #}
+{# ====== EN-TETE (seule section en fond doux bleu) ====== #}
 <section class="lt-trust__head">
-    <div class="lt-container lt-trust__head-inner">
+    <div class="lt-container">
         <div class="lt-trust__head-text">
             <p class="lt-eyebrow">Confiance</p>
             <h1 class="lt-page-head__title">Vos données restent en France. <span>Voici exactement comment.</span></h1>
-            <p class="lt-page-head__lead">Nous n'écrivons ici que ce que LintellO fait vraiment, avec ses limites et ses deux exceptions.</p>
-        </div>
-        <div class="lt-seal">
-            <span class="lt-flag lt-flag--lg" aria-hidden="true"><span></span><span></span><span></span></span>
-            <span>
-                <span class="lt-seal__title">Hébergé en France</span>
-                <span class="lt-seal__line">Serveur dédié OVH, Strasbourg</span>
-                <span class="lt-seal__line">IA Mistral, seul fournisseur</span>
-            </span>
+            <p class="lt-page-head__lead">Je préfère vous dire exactement ce qui se passe avec vos données, y compris ce qui reste à améliorer. Tout ce qui est écrit ici, LintellO le fait vraiment.</p>
+            <p class="lt-trust__sign">— David Laignelet</p>
+            <ul class="lt-trust__badges">
+                <li class="lt-pill">Hébergé à Strasbourg</li>
+                <li class="lt-pill">Moteur IA français</li>
+                <li class="lt-pill">Recherche web européenne</li>
+            </ul>
         </div>
     </div>
 </section>
 
-{# ====== EN CLAIR ====== #}
+{# ====== L'ESSENTIEL (les engagements de l'accueil) ====== #}
 <section class="lt-trust__block">
     <div class="lt-container">
-        <h2 class="lt-h3">En clair</h2>
+        <h2 class="lt-h3">L'essentiel, en trois phrases.</h2>
+        <div class="lt-commit__list">
+            {% for c in essentials %}
+                <div class="lt-commit__item">
+                    <span class="lt-proofs__icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ c.icon }}"/></svg>
+                    </span>
+                    <h3 class="lt-commit__title">{{ c.title }}</h3>
+                    <p class="lt-commit__text">{{ c.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ====== POURQUOI C'EST IMPORTANT POUR VOUS ======
+   Trois exemples, l'un sous l'autre ; la pastille alterne de cote. #}
+<section class="lt-section lt-section--grey">
+    <div class="lt-container">
+        <h2 class="lt-h2">Ce que vous confiez à une IA mérite d'être protégé.</h2>
+        <p class="lt-trust__intro">Selon ce que vous lui confiez, ça ne change pas la même chose. Trois exemples.</p>
+        <div class="lt-stories">
+            {% for s in stories %}
+                <article class="lt-story">
+                    <span class="lt-story__icon" aria-hidden="true">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ s.icon }}"/></svg>
+                    </span>
+                    <div class="lt-story__text">
+                        <p class="lt-eyebrow">{{ s.who }}</p>
+                        <h3 class="lt-story__title">{{ s.title }}</h3>
+                        <p>{{ s.text }}</p>
+                        <a href="{{ path('app_page_show', {slug: s.slug}) }}" class="lt-link">{{ s.cta }} →</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ====== COMMENT C'EST FAIT ====== #}
+<section class="lt-trust__block">
+    <div class="lt-container">
+        <h2 class="lt-h3">Comment c'est fait.</h2>
         <ul class="lt-pillars">
             {% for p in pillars %}
                 <li class="lt-pillar">
@@ -88,61 +137,28 @@
     </div>
 </section>
 
-{# ====== CHIFFRE / PAS ENCORE CHIFFRE ====== #}
+{# ====== CE QUI EST CHIFFRE ====== #}
 <section class="lt-trust__block lt-trust__block--tight">
     <div class="lt-container">
-        <h2 class="lt-h3">Ce qui est chiffré, et ce qui ne l'est pas</h2>
-        <p class="lt-trust__intro">Le chiffrement se fait en base, avec une clé gardée hors de la base. Ce n'est pas du chiffrement de bout en bout : pour vous répondre, votre message est déchiffré et envoyé à Mistral.</p>
-        <div class="lt-split">
-            <div class="lt-split__col lt-split__col--on">
-                <h3 class="lt-split__title">
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3"/></svg>
-                    Chiffré
-                </h3>
-                <ul class="lt-list">
-                    {% for e in encrypted %}
-                        <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>{{ e }}</span></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="lt-split__col">
-                <h3 class="lt-split__title lt-split__title--muted">
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 7.5-2"/></svg>
-                    Pas encore chiffré
-                </h3>
-                <ul class="lt-list lt-list--muted">
-                    {% for e in plain %}
-                        <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12"/></svg><span>{{ e }}</span></li>
-                    {% endfor %}
-                </ul>
-                <p class="lt-split__note">Ces données restent sur nos serveurs en France, et leur chiffrement est prévu.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-{# ====== LES DEUX EXCEPTIONS ====== #}
-<section class="lt-section lt-section--grey lt-trust__exceptions">
-    <div class="lt-container">
-        <h2 class="lt-h3">Les deux exceptions</h2>
-        <p class="lt-trust__intro">Deux services peuvent faire sortir une information de l'Union européenne. Les voici.</p>
-        <div class="lt-split">
-            <div class="lt-card">
-                <span class="lt-exception__num">1</span>
-                <h3 class="lt-exception__title">La recherche web de recours</h3>
-                <p class="lt-card__lead">LintellO interroge d'abord un moteur européen. S'il ne répond pas, un moteur britannique puis un métamoteur qui peut consulter des moteurs hors UE prennent le relais. Seul le texte de la requête part, au nom de LintellO, jamais votre identité.</p>
-            </div>
-            <div class="lt-card">
-                <span class="lt-exception__num">2</span>
-                <h3 class="lt-exception__title">Le paiement</h3>
-                <p class="lt-card__lead">Les paiements passent par Stripe Payments Europe, en Irlande, qui peut transférer des données vers les États-Unis. LintellO ne voit jamais votre numéro de carte.</p>
-            </div>
+        <h2 class="lt-h3">Ce qui est chiffré.</h2>
+        <p class="lt-trust__intro">Le chiffrement se fait sur nos serveurs, avec une clé conservée à part. Ce n'est pas du chiffrement de bout en bout : pour vous répondre, votre message est déchiffré et transmis au moteur IA.</p>
+        <div class="lt-split__col lt-split__col--on lt-trust__encrypted">
+            <h3 class="lt-split__title">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                Chiffré
+            </h3>
+            <ul class="lt-list">
+                {% for e in encrypted %}
+                    <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>{{ e }}</span></li>
+                {% endfor %}
+            </ul>
+            <p class="lt-split__note">Quelques informations d'organisation, comme les titres de conversation et les noms de projets ou de fichiers, ne sont pas encore chiffrées. Elles restent sur nos serveurs en France, et leur chiffrement est prévu.</p>
         </div>
     </div>
 </section>
 
 {# ====== DUREES DE CONSERVATION ====== #}
-<section class="lt-trust__block">
+<section class="lt-trust__block lt-trust__block--tight">
     <div class="lt-container lt-retention">
         <div class="lt-retention__text">
             <h2 class="lt-h3">Combien de temps nous gardons quoi</h2>
@@ -164,35 +180,31 @@
     </div>
 </section>
 
-{# ====== QUI EST DERRIERE LINTELLO ======
-   Remplace la page A propos (decision du 20/10) : texte de David, retravaille. #}
+{# ====== QUI EST DERRIERE LINTELLO (bloc commun avec l'accueil) ====== #}
 <section class="lt-trust__block lt-trust__block--tight">
     <div class="lt-container">
-        <div class="lt-founder">
-            <img src="{{ asset('images/lintello/david-laignelet.jpg') }}" alt="David Laignelet, créateur de LintellO" width="160" height="160" class="lt-founder__photo" loading="lazy">
-            <div class="lt-founder__text">
-                <h2 class="lt-h3">Qui est derrière LintellO</h2>
-                <p>Je m’appelle David Laignelet. Je suis développeur : je conçois des sites et des outils web avec <a href="https://comwebsolutions.fr" target="_blank" rel="noopener">Com Web Solutions</a>. Je suis aussi enseignant, et je vois chaque semaine comment on apprend, et ce qui bloque.</p>
-                <p>LintellO est né à la croisée de ces deux métiers : un besoin réel, une IA qui travaille avec vous plutôt qu’à votre place, et les moyens de la construire.</p>
-                <p>Je le développe depuis la Haute-Garonne. Le serveur est chez OVH, à Strasbourg, et l’IA vient de Mistral. Une question ? Écrivez-moi : <a href="mailto:david@lintello.ai">david@lintello.ai</a>.</p>
-            </div>
-        </div>
+        {% include 'client/_founder.html.twig' with {contact: true} only %}
     </div>
 </section>
 
-{# ====== VOS DROITS ====== #}
+{# ====== APPEL FINAL ====== #}
 <section class="lt-final">
     <div class="lt-container">
         <div class="lt-final__box">
             <div class="lt-final__text">
-                <h2>Vos données vous appartiennent.</h2>
-                <p>Export en JSON ou en PDF sur toutes les offres, et suppression du compte quand vous le souhaitez.</p>
+                <h2>Une IA qui garde votre travail pour vous.</h2>
+                <p>Essayez LintellO gratuitement : 20 messages par jour, sans engagement.</p>
             </div>
             <div class="lt-final__actions">
-                <a href="{{ lt_app }}/politique-confidentialite" class="lt-btn lt-btn--white">Politique de confidentialité</a>
-                <a href="{{ lt_app }}/conditions" class="lt-btn lt-btn--ghost">CGU et CGV</a>
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--white lt-btn--lg">Commencer gratuitement</a>
+                <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-final__link">Voir les offres</a>
             </div>
         </div>
+        <p class="lt-final__legal">
+            <a href="{{ lt_app }}/politique-confidentialite">Politique de confidentialité</a>
+            <span aria-hidden="true">·</span>
+            <a href="{{ lt_app }}/conditions">CGU et CGV</a>
+        </p>
     </div>
 </section>
 
