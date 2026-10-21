@@ -1583,7 +1583,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 .lt-rel__head .lt-h2 { margin-top: 12px; }
 .lt-rel__lead { margin: 16px auto 0; max-width: 620px; font-size: 17px; line-height: 1.6; color: var(--lt-text-body); }
 
-/* Le Cloud LintellO */
+/* Le centre : les projets */
 .lt-rel__cloud { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .lt-rel__cloud-box {
     display: flex;
