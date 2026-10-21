@@ -1459,3 +1459,113 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-pricing__table th,
     .lt-pricing__table td { padding-left: 12px; padding-right: 12px; }
 }
+
+/* ======================================================================
+   Accueil, handoff vitrine v0.1 (21/10) : maquette de l'editeur, engagements,
+   outils avec l'editeur en avant, qui est derriere en version courte, offres.
+   ====================================================================== */
+
+/* Maquette de l'editeur (heros) */
+.lt-editor {
+    position: relative;
+    border: 1px solid var(--lt-border);
+    border-radius: var(--lt-radius-card);
+    background: #ffffff;
+    box-shadow: var(--lt-shadow);
+    overflow: hidden;
+}
+.lt-editor__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid #f1f2f4;
+    font-size: 13px;
+    color: var(--lt-text-body);
+}
+.lt-editor__file { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.lt-editor__tools { display: flex; gap: 4px; }
+.lt-editor__tools span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 26px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+.lt-editor__page { padding: 28px 28px 92px; font-size: 14.5px; line-height: 1.65; color: #1f2937; }
+.lt-editor__page p { margin: 0 0 12px; }
+.lt-editor__title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: var(--lt-text); }
+.lt-editor__meta { margin-top: -6px !important; font-size: 13px; color: var(--lt-text-muted); }
+.lt-editor__page mark {
+    background: var(--lt-tint);
+    color: var(--lt-primary-darker);
+    padding: 2px 0;
+    box-shadow: 0 0 0 2px var(--lt-tint);
+    border-radius: 2px;
+}
+.lt-editor__line { height: 10px; border-radius: 6px; background: #f1f2f4; }
+.lt-editor__line--short { width: 60%; }
+.lt-editor__ask {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px 10px 16px;
+    border: 1px solid var(--lt-soft-border);
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: var(--lt-shadow);
+    font-size: 14px;
+    color: var(--lt-text);
+}
+.lt-editor__ask > span:first-child { flex: 1; }
+
+/* Nos engagements (remplace la ligne de preuves, garde son fond doux bleu) */
+.lt-commit {
+    padding: 80px 0;
+    background: var(--lt-soft);
+    border-top: 1px solid var(--lt-soft-border);
+    border-bottom: 1px solid var(--lt-soft-border);
+}
+.lt-commit__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: 24px 40px;
+    margin-top: 36px;
+}
+.lt-commit__title { margin: 16px 0 0; font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--lt-text); }
+.lt-commit__text { margin: 8px 0 0; font-size: 15.5px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-commit__more { display: inline-block; margin-top: 32px; }
+
+/* Trois outils : l'editeur sur toute la largeur, chat et recherche dessous */
+.lt-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+}
+.lt-tools__wide { grid-column: 1 / -1; }
+.lt-tools__wide .lt-card__lead { max-width: 760px; font-size: 16.5px; }
+@media (max-width: 767px) {
+    .lt-tools { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Qui est derriere, version courte */
+.lt-section--tight { padding: 72px 0; }
+.lt-founder--short { align-items: center; padding: 32px; }
+.lt-founder--short .lt-founder__photo { width: 96px; height: 96px; }
+.lt-founder--short .lt-founder__text p { margin-top: 10px; }
+.lt-founder--short .lt-link { display: inline-block; margin-top: 12px; }
+
+/* Offres : nom de l'offre au-dessus du prix */
+.lt-card__offer { margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--lt-primary-dark); }
+.lt-card__offer + .lt-price { margin-top: 4px; }
