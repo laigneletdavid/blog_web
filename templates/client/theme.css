@@ -2282,11 +2282,27 @@ main { overflow-x: clip; }
         justify-self: end;
     }
 
+    /* Deux filets d'un pixel sans ombre portee disparaissent des que l'image
+       du bandeau s'eclaircit -- le film de l'accueil passe par des ciels
+       pales, et c'est la que le client a vu l'en-tete « disparaitre ». Le
+       logo, lui, a de la matiere et une ombre. On donne les deux au burger :
+       deux pixels d'epaisseur, et le meme halo, dans le seul etat ou le fond
+       est une image. Le lot n'offre aucune reference ici, il n'a pas de
+       menu deroulant : il se contente de masquer ses liens. */
     .bm-nav__burger span {
         display: block;
-        height: 1px;
+        height: 2px;
         width: 24px;
         background: currentColor;
+    }
+
+    .bm-nav--clair .bm-nav__burger {
+        filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .45));
+    }
+
+    .bm-nav--clair.bm-nav--sombre .bm-nav__burger,
+    .bm-nav--plein .bm-nav__burger {
+        filter: none;
     }
 }
 
