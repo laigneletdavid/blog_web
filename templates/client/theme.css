@@ -2269,6 +2269,13 @@ main { overflow-x: clip; }
         width: 44px;
         height: 44px;
         padding: 0;
+        /* Un bouton n'herite pas de la couleur de son parent : le navigateur
+           lui impose la sienne, noire. Ses barres etant en currentColor,
+           elles disparaissaient sur le bandeau sombre. Avec l'heritage, le
+           burger suit les trois etats de l'en-tete comme le logo : creme
+           sur un visuel sombre, encre au-dessus d'une section claire et sur
+           les pages a fond creme. */
+        color: inherit;
         background: none;
         border: 0;
         cursor: pointer;
