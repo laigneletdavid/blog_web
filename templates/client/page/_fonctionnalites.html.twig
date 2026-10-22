@@ -113,7 +113,7 @@
 <div class="lt-fx">
 
 {# ====== 1. HERO ====== #}
-<section class="lt-fx__hero">
+<section class="lt-fx__hero" id="haut">
     <div class="lt-container lt-fx__hero-grid">
         <div class="lt-fx__hero-text">
             <p class="lt-eyebrow">Fonctionnalités</p>
@@ -184,8 +184,8 @@
 
         <div class="lt-fx__duo">
             <div class="lt-fx__duo-item lt-fx__duo-item--soft">
-                <h3 class="lt-fx__subtitle">Il n’invente pas.</h3>
-                <p>Il n’invente ni chiffre, ni date, ni nom, ni citation. Quand une information manque dans votre document, il l’écrit. Quand il cherche sur le web, il cite ses sources dans sa réponse.</p>
+                <h3 class="lt-fx__subtitle">Sa règle : ne rien inventer.</h3>
+                <p>Ni chiffre, ni date, ni nom, ni citation. Quand une information manque dans votre document, il l’écrit. Quand il cherche sur le web, il cite ses sources dans sa réponse.</p>
                 <span class="lt-fx__missing" aria-hidden="true">Budget : non précisé dans le document</span>
                 <p class="lt-fx__small">LintellO peut se tromper, comme toute IA : vérifiez une réponse avant de vous en servir. Il ne remplace ni un médecin, ni un avocat, ni un expert-comptable.</p>
             </div>
@@ -207,7 +207,7 @@
         <div class="lt-fx__modes-text">
             <p class="lt-eyebrow">Les modes</p>
             <h2 class="lt-h2">Vous posez la question. LintellO prend le bon mode.</h2>
-            <p class="lt-fx__lead">Dix-huit modes, pour apprendre, pour la maison et pour le travail. Rien à régler, LintellO s’adapte à votre demande. Ctrl+M pour choisir vous-même.</p>
+            <p class="lt-fx__lead">Dix-huit modes, pour apprendre, pour la maison et pour le travail. Pas de réglage : LintellO s’adapte à votre demande. Ctrl+M pour choisir vous-même.</p>
             <p class="lt-fx__hint">Choisissez un exemple : le mode qui répond s’allume parmi les dix-huit.</p>
             <div class="lt-fx__examples">
                 {% for e in modeExamples %}
@@ -231,7 +231,7 @@
                 <p class="lt-fx__active-text">{{ firstText }}</p>
             </div>
         </div>
-        <p class="lt-fx__offers">Gratuit : un mode à découvrir chaque semaine et 3 essais par mois. Étudiant : les 5 modes Études. Perso : Études et Maison. Pro : les 18. LintellO : les 18, et vos propres modes.</p>
+        <p class="lt-fx__offers">Gratuit : la découverte des modes et 3 essais par mois. Étudiant : les 5 modes Études. Perso : Études et Maison. Pro : les 18. LintellO : les 18, et vos propres modes.</p>
         <p class="lt-fx__links">
             <a href="{{ path('app_page_show', {slug: 'etudiants'}) }}" class="lt-link">Études →</a>
             <a href="{{ path('app_page_show', {slug: 'particuliers'}) }}" class="lt-link">À la maison →</a>
@@ -423,5 +423,21 @@
         </div>
     </div>
 </section>
+
+{# Mobile : retour en haut, visible une fois le hero depasse #}
+<a href="#haut" class="lt-fx__top" data-lt-top hidden>
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    Retour en haut
+</a>
+<script>
+(function () {
+    var top = document.querySelector('[data-lt-top]');
+    var hero = document.getElementById('haut');
+    if (!top || !hero || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (entries) {
+        top.hidden = entries[0].isIntersecting;
+    }).observe(hero);
+})();
+</script>
 
 </div>

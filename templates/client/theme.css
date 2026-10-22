@@ -171,8 +171,9 @@ a:hover { color: #1e40af; }
 
 /* Ecrans intermediaires : le menu tient sur une ligne */
 @media (min-width: 992px) and (max-width: 1199.98px) {
-    .lt-header__inner { gap: 16px 24px; }
-    .lt-header__nav { gap: 4px 16px; }
+    .lt-header__inner { gap: 16px 20px; }
+    .lt-header__nav { gap: 4px 14px; }
+    .lt-header__actions { gap: 8px; }
     .lt-header__link,
     .lt-header__login { font-size: 14px; }
 }
@@ -2248,4 +2249,28 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 }
 @media (prefers-reduced-motion: reduce) {
     .lt-fx__pill { transition: none; }
+}
+
+/* Fonctionnalites : retour en haut, sur mobile seulement */
+.lt-fx__top { display: none; }
+@media (max-width: 767.98px) {
+    .lt-fx__top:not([hidden]) {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 1030;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 999px;
+        background: var(--lt-primary);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, .3);
+    }
+    .lt-fx__top:focus-visible { outline: 2px solid var(--lt-primary-darker); outline-offset: 3px; }
 }
