@@ -2527,3 +2527,37 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-pricing.is-js .lt-pricing__plans .lt-chip { flex: none; }
     .lt-pricing.is-js .lt-pricing__scroll { border: 2px solid var(--lt-primary); }
 }
+
+/* Accueil, heros : avant / apres dans la maquette de l'editeur (22/10).
+   Cycle de 7,4 s : A 2,5 s, fondu 0,6 s, B 4 s, retour 0,3 s. Les deux
+   paragraphes partagent la meme case de grille : la hauteur ne saute pas. */
+.lt-editor__swap { display: grid; margin: 0 0 12px; }
+.lt-editor__swap > p { grid-area: 1 / 1; margin: 0; }
+.lt-editor__new { padding: 2px 4px; border-radius: 4px; background: #dcfce7; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.lt-editor__tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 10px;
+    border: 1px solid #bbf7d0;
+    border-radius: 999px;
+    background: #f0fdf4;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 600;
+}
+.lt-editor__before { animation: lt-editor-before 7.4s ease-in-out infinite; }
+.lt-editor__after { opacity: 0; animation: lt-editor-after 7.4s ease-in-out infinite; }
+@keyframes lt-editor-before {
+    0%, 33.8% { opacity: 1; }
+    41.9%, 95.9% { opacity: 0; }
+    100% { opacity: 1; }
+}
+@keyframes lt-editor-after {
+    0%, 33.8% { opacity: 0; }
+    41.9%, 95.9% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .lt-editor__before { animation: none; opacity: 0; }
+    .lt-editor__after { animation: none; opacity: 1; }
+}

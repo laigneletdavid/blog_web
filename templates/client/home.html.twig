@@ -43,7 +43,7 @@
            surligne et la demande de reprise. Decor, sans contenu lisible
            par les lecteurs d'ecran au-dela de sa description. #}
         <div class="lt-hero__visual">
-            <div class="lt-editor" role="img" aria-label="Exemple : un compte rendu de réunion dans l'éditeur de LintellO, avec un paragraphe surligné et la demande « Rends ce paragraphe plus clair pour le client »">
+            <div class="lt-editor" role="img" aria-label="Exemple : LintellO réécrit un paragraphe d'un compte rendu pour le rendre plus clair pour le client.">
                 <div class="lt-editor__head" aria-hidden="true">
                     <img src="{{ asset('images/lintello/icone-lintello.png') }}" alt="" width="22" height="22">
                     <span class="lt-editor__file">Compte rendu — Réunion client</span>
@@ -55,7 +55,12 @@
                     <p class="lt-editor__title">Compte rendu de réunion</p>
                     <p class="lt-editor__meta">Projet de rénovation · 14 octobre</p>
                     <p>Points abordés : planning des travaux, choix des matériaux, budget.</p>
-                    <p><mark>Compte tenu des contraintes d'approvisionnement évoquées, le démarrage initialement prévu fait l'objet d'un report dont la durée reste à confirmer.</mark></p>
+                    {# Boucle : la demande (A, 2,5 s), fondu (0,6 s), le resultat (B, 4 s).
+                       Mouvement reduit : B directement. #}
+                    <div class="lt-editor__swap">
+                        <p class="lt-editor__before"><mark>Compte tenu des contraintes d'approvisionnement évoquées, le démarrage initialement prévu fait l'objet d'un report dont la durée reste à confirmer.</mark></p>
+                        <p class="lt-editor__after"><span class="lt-editor__new">Le chantier démarrera avec deux à trois semaines de retard, à cause d'un délai de livraison des matériaux. Nous vous confirmerons la nouvelle date dès que possible.</span><span class="lt-editor__tag">Modifié par LintellO · Annuler</span></p>
+                    </div>
                     <p class="lt-editor__line"></p>
                     <p class="lt-editor__line lt-editor__line--short"></p>
                 </div>
