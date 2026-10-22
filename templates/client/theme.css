@@ -1869,7 +1869,27 @@ main { overflow-x: clip; }
     .bm-cine .statement h2, .bm-cine .territory h2 {font-size:13vw}
     .bm-cine .cinema-expert {padding-left:22px}
     .bm-cine .cinema-expert h2 {font-size:12vw}
-    .bm-cine .cinema-track article {width:78vw}
+    /* Le rail cesse d'etre tire par le defilement vertical : il devient un
+       conteneur a defilement horizontal, que le doigt fait avancer. Le
+       calage retient une carte a la fois. Le script neutralise sa course
+       sous cette largeur, --track-x reste donc a zero, mais on annule la
+       translation explicitement pour ne dependre que de la feuille. */
+    .bm-cine .cinema-track {
+        width:100%;
+        transform:none;
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        scroll-padding-left:22px;
+        padding-right:22px;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+
+    .bm-cine .cinema-track::-webkit-scrollbar {display:none}
+
+    /* Sans cela les cartes se compriment : le conteneur n'est plus large
+       comme son contenu, et flex-shrink vaut 1 par defaut. */
+    .bm-cine .cinema-track article {width:78vw;flex:0 0 78vw;scroll-snap-align:start}
     .bm-cine .expertises {padding:90px 22px}
     .bm-cine .expert-head {grid-template-columns:1fr;gap:30px;margin-bottom:55px}
     .bm-cine .expert-head h2 {font-size:17vw}

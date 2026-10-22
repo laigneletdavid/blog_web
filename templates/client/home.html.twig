@@ -242,6 +242,32 @@ let tx=0,ty=0,mx=0,my=0,target=0,current=0;
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const smooth=(a,b,x)=>{x=clamp((x-a)/(b-a));return x*x*(3-2*x)};
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+
+// --- Course du rail d'expertises -------------------------------------
+// Le lot calculait ce parcours sur des valeurs supposees : quatre cartes
+// de 408 pixels, et une fenetre d'animation fixee entre 3440 et 4380
+// pixels de defilement. Or la scene se raccourcit a 4500 pixels sous
+// 800 de large, et le defilement utile n'y depasse jamais 3700 : la
+// fenetre ne s'ouvrait donc presque pas. Mesure a 768 de large, le rail
+// parcourait 4 pixels sur les 1704 necessaires, et une carte sur quatre
+// restait atteignable.
+//
+// On mesure donc la geometrie reelle, et on termine la course avec la
+// scene plutot qu'a une abscisse ecrite d'avance.
+const rail=document.querySelector('.cinema-track');
+const sectionRail=document.querySelector('.cinema-expert');
+// Sous 800 pixels le rail devient un conteneur a defilement horizontal :
+// le doigt le fait avancer, le defilement vertical ne le pilote plus.
+const railTactile=()=>matchMedia('(max-width: 800px)').matches;
+let maxTrack=0,sceneMax=0;
+function mesurerRail(){
+ sceneMax=Math.max(1,cinema.offsetHeight-innerHeight);
+ if(!rail||railTactile()){maxTrack=0;return}
+ const retrait=parseFloat(getComputedStyle(sectionRail).paddingLeft)||0;
+ maxTrack=Math.max(0,rail.scrollWidth-(innerWidth-retrait));
+}
+mesurerRail();
+addEventListener('resize',mesurerRail,{passive:true});
 function update(){
  const r=cinema.getBoundingClientRect();target=clamp(-r.top,0,cinema.offsetHeight-innerHeight);current=reduce.matches?target:current+(target-current)*.11;if(Math.abs(target-current)<.08)current=target;
  mx=reduce.matches?0:mx+(tx-mx)*.08;my=reduce.matches?0:my+(ty-my)*.08;
@@ -251,7 +277,11 @@ function update(){
  const tunnel=smooth(1260,1840,s);
  const territoryIn=smooth(1700,2220,s),territoryOut=smooth(2480,2880,s),territory=territoryIn*(1-territoryOut);
  const expertIn=smooth(2760,3500,s),expertHead=smooth(3220,3720,s);
- const maxTrack=Math.max(0,4*408-innerWidth*.9);const track=smooth(3440,4380,s)*maxTrack;
+ // La course s'ouvre quand le titre a fini d'entrer et se ferme avec la
+ // scene : elle tient donc dans le defilement disponible, quelle que soit
+ // la hauteur de la fenetre.
+ const railDebut=Math.min(3440,sceneMax*.78);
+ const track=smooth(railDebut,sceneMax,s)*maxTrack;
  root.style.setProperty('--hero-o',(1-hero).toFixed(4));root.style.setProperty('--hero-y',`${-190*hero}px`);root.style.setProperty('--hero-scale',(1+hero*.22).toFixed(4));
  root.style.setProperty('--s-o',statement.toFixed(4));root.style.setProperty('--s-y',`${70*(1-statementIn)-100*statementOut}px`);root.style.setProperty('--s-scale',(0.94+statementIn*.06+statementOut*.05).toFixed(4));
  root.style.setProperty('--edge-o',(tunnel*(1-smooth(1950,2300,s))).toFixed(4));root.style.setProperty('--edge-l',`${-105+104*tunnel}%`);root.style.setProperty('--edge-r',`${105-104*tunnel}%`);
