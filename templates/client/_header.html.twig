@@ -92,7 +92,9 @@
         <script>
             (function () {
                 var CLAIRES = '.bm-cine .office-story, .bm-cine .manifesto,'
-                    + '.bm-portal .cta,'
+                    {# La page de l'etude alterne sections claires et sombres :
+                       seules les premieres font passer l'en-tete a l'encre. #}
+                    + '.bm-portal .cta, .bm-etude .et-sec:not(.et-sec--sombre),'
                     + '.bm-dossier .section:not(.alt), .bm-dossier .final,'
                     + '.bm-xp .xp-overview, .bm-xp .xp-menu, .bm-xp .xp-cta,'
                     + '.bm-d .d-intro, .bm-d .d-docs, .bm-d .d-faq,'
