@@ -15,6 +15,7 @@
    Les maquettes sont decoratives (aria-hidden) : le texte porte le sens.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
+{% import 'client/_macros.html.twig' as lt %}
 
 {% set toc = [
     {id: 'reponses', label: 'Comment il répond'},
@@ -221,7 +222,7 @@
                     <p class="lt-fx__group-name">{{ g.name }}</p>
                     <div class="lt-fx__pills">
                         {% for m in g.modes %}
-                            <button type="button" class="lt-fx__pill" data-mode="{{ m.name }}" data-text="{{ m.text }}" aria-pressed="{{ m.name == firstMode ? 'true' : 'false' }}">{{ m.name }}</button>
+                            <button type="button" class="lt-fx__pill" data-mode="{{ m.name }}" data-text="{{ m.text }}" aria-pressed="{{ m.name == firstMode ? 'true' : 'false' }}">{{ lt.mode_icon(m.name, 16) }}{{ m.name }}</button>
                         {% endfor %}
                     </div>
                 </div>

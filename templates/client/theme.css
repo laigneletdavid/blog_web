@@ -2382,3 +2382,15 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-why-section { padding-top: 64px; }
     .lt-why { padding: 28px 24px; }
 }
+
+/* Icones des modes (celles de l'app) */
+.lt-pq__mode-badge svg { display: block; }
+.lt-fx__pill { display: inline-flex; align-items: center; gap: 6px; }
+.lt-fx__pill svg { flex: none; }
+
+/* Heros : le visuel a droite du texte des 1024 px (accueil, Pour qui,
+   Fonctionnalites), au lieu de passer dessous */
+@media (min-width: 1024px) {
+    .lt-hero__grid,
+    .lt-fx__hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+}

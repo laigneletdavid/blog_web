@@ -9,7 +9,7 @@
      1. heros sur fond bleu doux, sous-menu des publics en onglets
         (Pros, Etudes, A la maison), apercu d'un chat dans le mode du public
      2. « Pourquoi c'est important » : bande bleu fonce, lien Confiance
-     3. les modes du public, une initiale et une phrase chacun
+     3. les modes du public, l'icone de l'app et une phrase chacun
      4. l'offre : titre et bascule mensuel / annuel en tete ; avec
         offer.alt (Pros), deux cartes cote a cote, sinon texte et carte
      5. un bloc propre au public
@@ -21,8 +21,8 @@
    (relation Tag <-> Page, posee en base). Sans article, le bloc disparait.
 
    Variables attendues : hero, story, modes, offer (offer.alt facultatif),
-   guides, faqs. Une mode peut porter « badge » (initiale affichee), sinon
-   la premiere lettre de son nom.
+   guides, faqs. Les icones des modes viennent de lt.mode_icon (celles de
+   l'app).
    Volumes d'IA en niveaux d'usage (handoff v0.4, Q3) : le detail chiffre
    n'est que sur /page/tarifs.
    ====================================================================== #}
@@ -122,7 +122,7 @@
         <ul class="lt-pq__modes">
             {% for m in modes.items %}
                 <li class="lt-pq__mode">
-                    <span class="lt-pq__mode-badge" aria-hidden="true">{{ m.badge ?? m.name|first }}</span>
+                    <span class="lt-pq__mode-badge">{{ lt.mode_icon(m.name, 20) }}</span>
                     <div>
                         <h3 class="lt-mode__name">{{ m.name }}</h3>
                         <p>{{ m.text }}</p>
