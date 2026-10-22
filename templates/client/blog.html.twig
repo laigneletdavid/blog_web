@@ -10,16 +10,20 @@
      liste par tag : les pastilles « Pour : » menent aux pages de tag.
    L'article a la une est celui coche « mis en avant » dans l'admin
    (page 1, sans filtre).
+   Mise en page : design A du 22/10 (artifact « Page Apprendre LintellO —
+   design ») ; les portes sont dans l'en-tete bleu, l'inscription sur une
+   bande bleu fonce. Pas de « bientot » (handoff, § 1).
    ====================================================================== #}
+{% import 'client/_macros.html.twig' as lt %}
 {% set families = [
     {slug: 'guides-pratiques', label: 'Guides pratiques', lead: 'Partir d’un vrai besoin et le régler pas à pas avec LintellO.', icon: 'M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2zM8 7h6M8 11h6'},
     {slug: 'comprendre-l-ia', label: 'Comprendre l’IA', lead: 'Ce que fait une IA, ce qu’elle fait de vos données, comment la choisir.', icon: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z'},
     {slug: 'nouveautes', label: 'Nouveautés', lead: 'Ce qui arrive dans LintellO, version après version.', icon: 'M5 4h11v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1zM16 8h3a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3'},
 ] %}
 {% set publics = [
-    {slug: 'etudiants', label: 'étudiants'},
-    {slug: 'maison', label: 'maison'},
-    {slug: 'pros', label: 'pros'},
+    {slug: 'pros', label: 'Pros'},
+    {slug: 'etudiants', label: 'Études'},
+    {slug: 'maison', label: 'À la maison'},
 ] %}
 {% set currentCat = filterCategorie|default(null) %}
 
@@ -35,23 +39,24 @@
 
 {# ====== EN-TETE ====== #}
 <section class="lt-page-head lt-learn__head">
-    <div class="lt-container">
+    <div class="lt-container lt-learn__head-inner">
         <p class="lt-eyebrow">Apprendre</p>
         <h1 class="lt-page-head__title">Tirer le meilleur de l'IA, <span>sans jargon.</span></h1>
         <p class="lt-page-head__lead">Des guides pas à pas, des explications pour comprendre ce que fait une IA de vos données, et les nouveautés de LintellO.</p>
     </div>
-</section>
 
-{# ====== LES TROIS PORTES (categories) ====== #}
-<section class="lt-learn__doors">
+    {# ====== LES TROIS PORTES (categories) ====== #}
     <div class="lt-container lt-doors">
         {% for f in families %}
             <a href="{{ path('app_article_show_all', {categorie: f.slug}) }}" class="lt-door{{ currentCat == f.slug ? ' is-current' }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>
                 <span class="lt-door__icon" aria-hidden="true">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ f.icon }}"/></svg>
                 </span>
-                <span class="lt-door__label">{{ f.label }}</span>
-                <span class="lt-door__lead">{{ f.lead }}</span>
+                <span class="lt-door__text">
+                    <span class="lt-door__label">{{ f.label }}</span>
+                    <span class="lt-door__lead">{{ f.lead }}</span>
+                    <span class="lt-door__more">Voir les contenus →</span>
+                </span>
             </a>
         {% endfor %}
     </div>
@@ -79,6 +84,7 @@
                             {% for t in featuredArticle.tags %}<span class="lt-tag">#{{ t.name }}</span>{% endfor %}
                         </span>
                     {% endif %}
+                    <span class="lt-featured__more">Lire l’article →</span>
                 </span>
             </a>
         </div>
@@ -98,7 +104,7 @@
             <nav class="lt-learn__publics" aria-label="Contenus par public">
                 <span>Pour :</span>
                 {% for p in publics %}
-                    <a href="{{ path('app_tag_show', {slug: p.slug}) }}" class="lt-tag lt-tag--link">#{{ p.label }}</a>
+                    <a href="{{ path('app_tag_show', {slug: p.slug}) }}" class="lt-tag lt-tag--link">{{ p.label }}</a>
                 {% endfor %}
             </nav>
         </div>
@@ -116,18 +122,17 @@
                         <span class="lt-post__body">
                             {% if cat %}<span class="lt-eyebrow">{{ cat.name }}</span>{% endif %}
                             <span class="lt-post__title">{{ article.title }}</span>
-                            {% if article.tags|length > 0 %}
-                                <span class="lt-tags">
-                                    {% for t in article.tags %}<span class="lt-tag">#{{ t.name }}</span>{% endfor %}
-                                </span>
-                            {% endif %}
+                            <span class="lt-tags lt-post__foot">
+                                <span class="lt-post__meta">{{ lt.date_fr(article.publishedAt ?? article.createdAt) }}</span>
+                                {% for t in article.tags %}<span class="lt-tag">#{{ t.name }}</span>{% endfor %}
+                            </span>
                         </span>
                     </a>
                 {% endfor %}
             </div>
         {% else %}
             <p class="lt-learn__empty">
-                {% if currentCat %}Pas encore de contenu dans cette catégorie. <a href="{{ path('app_article_show_all') }}">Voir tous les contenus</a>.{% else %}Les premiers guides arrivent bientôt.{% endif %}
+                {% if currentCat %}Pas encore de contenu dans cette catégorie. <a href="{{ path('app_article_show_all') }}">Voir tous les contenus</a>.{% else %}Pas encore de contenu publié.{% endif %}
             </p>
         {% endif %}
 

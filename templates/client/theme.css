@@ -2394,3 +2394,73 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-hero__grid,
     .lt-fx__hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
 }
+
+/* ======================================================================
+   Apprendre : design A du 22/10 (portes dans l'en-tete, bande d'inscription)
+   ====================================================================== */
+.lt-learn__head { padding-bottom: 72px; background: var(--lt-soft); border-bottom: 1px solid var(--lt-tint); }
+.lt-learn__head .lt-doors { margin-top: 40px; gap: 16px; }
+.lt-learn__head .lt-door {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+    border-color: var(--lt-tint);
+    border-radius: 18px;
+    background: #ffffff;
+}
+.lt-learn__head .lt-door.is-current { padding: 23px; }
+.lt-learn__head .lt-door__icon { flex: none; width: 48px; height: 48px; border-radius: 14px; background: var(--lt-primary); color: #ffffff; }
+.lt-door__text { display: flex; flex-direction: column; min-width: 0; }
+.lt-learn__head .lt-door__label { margin-top: 0; font-size: 17px; font-weight: 700; }
+.lt-learn__head .lt-door__lead { margin-top: 4px; font-size: 14px; line-height: 1.55; }
+.lt-door__more { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--lt-primary-dark); }
+
+.lt-learn__featured { padding: 72px 0 0; }
+.lt-featured__media { background: var(--lt-tint); }
+.lt-featured__more { margin-top: 18px; font-size: 15px; font-weight: 600; color: var(--lt-primary-dark); }
+
+.lt-learn__list { padding: 56px 0 96px; }
+.lt-learn__filters { padding-bottom: 20px; border-bottom: 1px solid #eef0f3; }
+.lt-learn__publics .lt-tag--link { min-height: 36px; display: inline-flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 500; }
+.lt-learn__grid .lt-post__media { background: var(--lt-tint); }
+.lt-post__foot { align-items: center; }
+.lt-post__foot .lt-post__meta { margin: 0 4px 0 0; }
+
+/* Inscription a la lettre : bande bleu fonce */
+.lt-learn__subscribe { max-width: none; margin: 72px 0 0; }
+.lt-learn__subscribe .widget_register {
+    padding: 44px 48px;
+    border: 0;
+    border-radius: 24px;
+    background: var(--lt-primary-darker);
+    color: #ffffff;
+}
+.lt-learn__subscribe .widget_register h4 { color: #ffffff; font-size: 26px; }
+.lt-learn__subscribe .widget_register p { color: #e0e7ff !important; font-size: 15px !important; }
+.lt-learn__subscribe .widget_register label,
+.lt-learn__subscribe .widget_register .form-check-label,
+.lt-learn__subscribe .widget_register small { color: #e0e7ff; }
+.lt-learn__subscribe .widget_register a { color: #ffffff; }
+.lt-learn__subscribe .form-control { border: 0; }
+.lt-learn__subscribe .btn-primary { background: #ffffff; border-color: #ffffff; color: var(--lt-primary-darker); }
+.lt-learn__subscribe .btn-primary:hover { background: var(--lt-soft); border-color: var(--lt-soft); color: var(--lt-primary-darker); }
+
+/* Grand ecran : titre a gauche, formulaire a droite */
+@media (min-width: 992px) {
+    .lt-learn__subscribe .widget_register {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+        column-gap: 48px;
+        align-items: start;
+    }
+    .lt-learn__subscribe .widget_register > h4 { grid-column: 1; grid-row: 1; }
+    .lt-learn__subscribe .widget_register > p { grid-column: 1; grid-row: 2; }
+    .lt-learn__subscribe .widget_register > form { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+@media (max-width: 767.98px) {
+    .lt-learn__head { padding-bottom: 48px; }
+    .lt-learn__subscribe .widget_register { padding: 28px 24px; }
+}
