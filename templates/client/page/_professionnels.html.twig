@@ -14,11 +14,11 @@
 {% embed 'client/page/_pour_qui.html.twig' with {
     hero: {
         eyebrow: 'LintellO pour les pros',
-        title: 'Travaillez avec une IA hébergée en France,',
-        accent: 'sans exposer vos documents.',
-        lead: 'Rédiger, analyser, coder : neuf modes professionnels, des documents que l’IA modifie avec vous et une recherche sans pistage. Vos données sont chiffrées en base, à Strasbourg.',
+        title: 'Vos dossiers clients',
+        accent: 'ne sortent pas de l’entreprise.',
+        lead: 'Rédiger, analyser, répondre à vos clients : neuf modes métier, un éditeur de documents et une recherche anonyme. Vos données sont chiffrées sur un serveur à Strasbourg.',
         cta: 'Choisir l’offre Pro',
-        secondary: {href: '#offre-lintello', label: 'L’offre LintellO'},
+        secondary: {href: path('app_page_show', {slug: 'tarifs'}), label: 'Comparer les offres'},
         note: '19,90 € HT par mois · résiliation en fin de période ou immédiate',
         chat: {
             title: 'Réunion d’équipe du lundi',
@@ -26,9 +26,13 @@
             user: 'Voici mes notes de la réunion de lundi. Pouvez-vous en faire un compte rendu ?',
             bot: [
                 'Le voici en trois parties : les décisions prises, les actions à mener avec leur responsable, et les points à revoir.',
-                'Créez-en un document au gabarit Compte rendu pour l’exporter en Word ou en PDF.',
+                'Créez-en un document au modèle Compte rendu pour l’exporter en Word ou en PDF.',
             ],
         },
+    },
+    story: {
+        title: 'Une fuite commence souvent par un copier-coller.',
+        text: 'Un commercial colle la grille tarifaire d’un client dans une IA gratuite, une assistante y dépose une fiche de paie. Personne ne pense à mal, mais ces données viennent de quitter l’entreprise. Avec LintellO, elles restent chiffrées sur un serveur en France et ne servent qu’à vous répondre.',
     },
     modes: {
         title: 'Neuf modes pour le travail',
@@ -48,14 +52,14 @@
     },
     offer: {
         title: 'L’offre Pro',
-        lead: 'Les 18 modes, l’IA code et les gabarits professionnels : Compte rendu, Protocole, Fiche produit. Sélectionnez un passage et demandez à LintellO de le reprendre.',
+        lead: 'Les 18 modes, l’IA code et les modèles de documents professionnels : Compte rendu, Protocole, Fiche produit. Sélectionnez un passage et demandez à LintellO de le reprendre.',
         name: 'Pro',
         m: '19,90 €', mp: 'HT / mois',
         y: '199 €', yp: 'HT / an',
         points: [
             'IA du quotidien illimitée',
-            'IA avancée : 1M tokens / mois',
-            'IA code : 200k tokens / mois',
+            'IA avancée : usage intensif',
+            'IA code : usage régulier',
             '3 000 crédits de recherche / mois',
             'Les 18 modes',
             'Projets, fichiers jusqu’à 25 Mo',
@@ -68,10 +72,11 @@
     },
     faqTitle: 'Questions des pros',
     faqs: [
-        {q: 'Mes documents servent-ils à entraîner l’IA ?', a: 'Non. Mistral est le seul fournisseur d’IA de LintellO, et vos données ne servent pas à l’entraînement (CGU, article 6.2).'},
-        {q: 'Où sont hébergées mes données ?', a: 'Sur un serveur dédié OVH à Strasbourg, chiffrées en base. Deux services peuvent sortir de l’Union européenne, la recherche web de recours et le paiement : la page Confiance les détaille.'},
+        {q: 'Mes documents servent-ils à entraîner l’IA ?', a: 'Non, jamais. Vos documents servent à vous répondre, à rien d’autre (CGU, article 6.2).'},
+        {q: 'Où sont hébergées mes données ?', a: 'En France, sur un serveur dédié à Strasbourg. Vos conversations, vos documents et vos fichiers y sont chiffrés. La page Confiance détaille tout.'},
         {q: 'Puis-je créer mes propres modes ?', a: 'Oui, avec l’offre LintellO : vous créez des modes adaptés à votre métier, en plus des 18 modes.'},
         {q: 'Puis-je récupérer mes données ?', a: 'Oui, sur toutes les offres : export en JSON ou en PDF, et suppression du compte quand vous le souhaitez.'},
+        {q: 'Fonctionne-t-il sur mobile ?', a: 'Oui, dans le navigateur de votre téléphone. Il n’y a pas d’application à installer.'},
     ],
 } %}
     {% block lt_specific %}
@@ -90,13 +95,14 @@
                         </p>
                         <ul class="lt-offer__points">
                             <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>Modes personnalisés</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>IA avancée : 3M tokens / mois</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>IA code : 1M tokens / mois</span></li>
+                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>IA avancée : usage très intensif</span></li>
+                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>IA code : usage intensif</span></li>
                             <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>8 000 crédits de recherche / mois</span></li>
                             <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>Fichiers jusqu’à 50 Mo</span></li>
                             <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>200 messages par conversation</span></li>
                         </ul>
                         <a href="{{ lt_app }}/register" class="lt-btn lt-btn--outline lt-offer__cta">Choisir l’offre LintellO</a>
+                        <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-offer__detail">Le détail des volumes →</a>
                     </div>
                 </div>
             </div>

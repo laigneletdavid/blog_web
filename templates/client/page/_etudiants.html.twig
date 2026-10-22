@@ -19,9 +19,9 @@
 {% embed 'client/page/_pour_qui.html.twig' with {
     hero: {
         eyebrow: 'LintellO pour les études',
-        title: 'Comprendre ses cours,',
-        accent: 'pas recopier une réponse.',
-        lead: 'Cinq modes pensés pour apprendre : expliquer une notion, la reprendre autrement quand elle ne passe pas, réviser, pratiquer une langue, rédiger.',
+        title: 'J’accompagne,',
+        accent: 'je ne fais pas à votre place.',
+        lead: 'Comprendre ses cours, pas recopier une réponse. Cinq modes pensés pour apprendre : expliquer une notion, la reprendre autrement quand elle ne passe pas, réviser, pratiquer une langue, rédiger.',
         cta: 'Choisir l’offre Étudiant',
         secondary: poster.pdf ? {href: '#affiche', label: 'L’affiche pour votre école'} : null,
         note: '4,99 € TTC par mois · sur simple déclaration · dès 15 ans',
@@ -34,6 +34,10 @@
                 'Et combien de fois ½ rentre dans 3 ? Six fois, autant que 3 × 2. À vous : combien de fois ¼ rentre dans 2 ?',
             ],
         },
+    },
+    story: {
+        title: 'Le jour du contrôle, ce que vous avez appris est à vous.',
+        text: 'Une IA grand public donne la réponse en dix secondes : le devoir est rendu, la notion n’est pas comprise. LintellO explique, reprend autrement quand ça ne passe pas, pose des questions pour vérifier. Il ne rédige jamais le devoir à votre place.',
     },
     modes: {
         title: 'Cinq modes pour apprendre',
@@ -54,9 +58,9 @@
         y: '49,90 €', yp: 'TTC / an',
         points: [
             'IA du quotidien illimitée',
-            'IA avancée : 100k tokens / mois',
+            'IA avancée : usage léger',
             '500 crédits de recherche / mois',
-            'Les 5 modes Éducation',
+            'Les 5 modes Études',
             'Projets pour ranger ses cours',
             'Fichiers jusqu’à 15 Mo',
         ],
@@ -71,6 +75,8 @@
         {q: 'Faut-il un justificatif ?', a: 'Non. L’offre Étudiant s’ouvre sur simple déclaration.'},
         {q: 'LintellO fait-il mes devoirs à ma place ?', a: 'Le mode Tout s’explique est fait pour l’inverse : il change d’angle jusqu’à ce que la notion passe, et ne donne pas la réponse de l’exercice. Le Rédacteur étudiant corrige votre texte, il ne l’écrit pas.'},
         {q: 'À partir de quel âge ?', a: 'LintellO est ouvert à partir de 15 ans.'},
+        {q: 'Mes conversations restent-elles privées ?', a: 'Oui. Elles sont chiffrées sur un serveur en France et ne servent jamais à entraîner l’IA.'},
+        {q: 'Fonctionne-t-il sur mobile ?', a: 'Oui, dans le navigateur de votre téléphone. Il n’y a pas d’application à installer.'},
     ],
 } %}
     {% block lt_specific %}

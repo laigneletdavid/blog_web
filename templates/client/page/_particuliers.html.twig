@@ -14,9 +14,9 @@
 {% embed 'client/page/_pour_qui.html.twig' with {
     hero: {
         eyebrow: 'LintellO à la maison',
-        title: 'Une IA pour le quotidien,',
-        accent: 'qui respecte vos données.',
-        lead: 'Écrire une lettre, préparer une décision, trouver des idées, chercher une information : LintellO s’en charge avec vous, et vos échanges restent chiffrés sur un serveur en France.',
+        title: 'Votre vie de famille',
+        accent: 'reste privée.',
+        lead: 'Écrire une lettre, préparer une décision, aider aux devoirs, chercher une information : LintellO s’en charge avec vous. Vos échanges restent chiffrés sur un serveur en France.',
         cta: 'Commencer gratuitement',
         secondary: {href: '#gratuit', label: 'L’offre Gratuite'},
         note: 'Offre Gratuite : 20 messages par jour · Perso : 9,90 € TTC par mois',
@@ -26,13 +26,17 @@
             user: 'Je voudrais résilier mon abonnement internet. Vous pouvez m’écrire la lettre ?',
             bot: [
                 'Volontiers. Il me faut le nom de votre fournisseur, votre numéro de client et la date de résiliation souhaitée.',
-                'Je rédige ensuite la lettre. Vous pourrez la transformer en document au gabarit Lettre et l’exporter en PDF.',
+                'Je rédige ensuite la lettre. Vous pourrez la transformer en document au modèle Lettre et l’exporter en PDF.',
             ],
         },
     },
+    story: {
+        title: 'Chaque message raconte un peu de votre vie.',
+        text: 'Un courrier à la CAF, une lettre au propriétaire, les questions à poser avant un rendez-vous chez le médecin. Avec LintellO, ces échanges sont chiffrés en France, ne servent à aucune publicité et ne sont jamais revendus.',
+    },
     modes: {
         title: 'Quatre modes pour le quotidien',
-        lead: 'LintellO choisit le mode selon votre question. L’offre Perso y ajoute les cinq modes Éducation, pour accompagner les devoirs.',
+        lead: 'LintellO choisit le mode selon votre question. L’offre Perso y ajoute les cinq modes Études, pour accompagner les devoirs.',
         items: [
             {name: 'Coach de vie', text: 'Des conseils pratiques pour décider, vous organiser et avancer sur vos projets.'},
             {name: 'Rédacteur', text: 'E-mails, lettres, CV et textes personnels, rédigés avec vous.'},
@@ -48,11 +52,11 @@
         y: '99 €', yp: 'TTC / an',
         points: [
             'IA du quotidien illimitée',
-            'IA avancée : 200k tokens / mois',
+            'IA avancée : usage régulier',
             '1 200 crédits de recherche / mois',
-            'Les 9 modes Quotidien et Éducation',
-            'Gabarit Lettre et export PDF ou Word',
-            'Projets et Cloud, avec corbeille',
+            'Les 9 modes Études et Maison',
+            'Modèle Lettre et export PDF ou Word',
+            'Vos fichiers rangés par projet, avec corbeille',
         ],
         cta: 'Choisir l’offre Perso',
     },
@@ -62,8 +66,8 @@
     },
     faqTitle: 'Questions fréquentes',
     faqs: [
-        {q: 'Puis-je commencer sans payer ?', a: 'Oui. L’offre Gratuite donne 20 messages par jour avec l’IA du quotidien, sans engagement. Vous passez à Perso quand vous le souhaitez.'},
-        {q: 'Mes conversations restent-elles privées ?', a: 'Elles sont chiffrées en base sur un serveur à Strasbourg, et ne servent pas à entraîner l’IA. Pour vous répondre, votre message est déchiffré et envoyé à Mistral : la page Confiance détaille tout.'},
+        {q: 'Puis-je commencer sans payer ?', a: 'Oui. L’offre Gratuite donne 20 messages par jour, sans engagement. Vous passez à Perso quand vous le souhaitez.'},
+        {q: 'Mes conversations restent-elles privées ?', a: 'Oui. Elles sont chiffrées sur un serveur à Strasbourg et ne servent jamais à entraîner l’IA. Pour vous répondre, votre message est déchiffré puis transmis au moteur IA : la page Confiance détaille tout.'},
         {q: 'LintellO remplace-t-il un médecin ou un avocat ?', a: 'Non. LintellO vous aide à comprendre, préparer et rédiger, mais il ne remplace aucun professionnel (CGU, article 5.2).'},
         {q: 'Fonctionne-t-il sur mobile ?', a: 'Oui, dans le navigateur de votre téléphone. Il n’y a pas d’application à installer.'},
     ],
@@ -74,7 +78,7 @@
                 <div class="lt-poster lt-poster--plain">
                     <div class="lt-poster__text">
                         <h2>Commencez par l’offre Gratuite</h2>
-                        <p>20 messages par jour avec l’IA du quotidien, les trois outils et l’export de vos données, sans engagement. LintellO vous aide à comprendre, préparer et rédiger ; il ne remplace aucun professionnel.</p>
+                        <p>20 messages par jour, le chat, l’éditeur et la recherche, et l’export de vos données, sans engagement. LintellO vous aide à comprendre, préparer et rédiger ; il ne remplace aucun professionnel.</p>
                         <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Créer mon compte gratuit</a>
                     </div>
                 </div>

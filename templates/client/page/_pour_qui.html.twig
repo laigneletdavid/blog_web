@@ -5,26 +5,30 @@
    (block lt_specific).
 
    Structure (spec vitrine) :
-     1. sous-menu des trois publics
+     1. sous-menu des trois publics (Pros, Etudes, A la maison)
      2. heros avec l'apercu d'un chat dans le mode du public
-     3. les modes du public, chacun en une phrase
-     4. l'offre, avec la bascule mensuel / annuel
-     5. un bloc propre au public
-     6. les guides du tag du public
-     7. une FAQ du public
+     3. « Pourquoi c'est important » : une histoire courte, lien Confiance
+     4. les modes du public, chacun en une phrase
+     5. l'offre, avec la bascule mensuel / annuel
+     6. un bloc propre au public
+     7. les guides du tag du public
+     8. une FAQ du public
+     9. l'appel final, le meme que sur l'accueil
 
    Les guides sont les articles publies des tags poses sur la page
    (relation Tag <-> Page, posee en base). Sans article, le bloc disparait.
 
-   Variables attendues : hero, modes, offer, guides, faqs.
+   Variables attendues : hero, story, modes, offer, guides, faqs.
+   Volumes d'IA en niveaux d'usage (handoff v0.4, Q3) : le detail chiffre
+   n'est que sur /page/tarifs.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
 {% import 'client/_macros.html.twig' as lt %}
 
 {% set audiences = [
-    {label: 'Étudiants', slug: 'etudiants'},
-    {label: 'À la maison', slug: 'particuliers'},
     {label: 'Pros', slug: 'professionnels'},
+    {label: 'Études', slug: 'etudiants'},
+    {label: 'À la maison', slug: 'particuliers'},
 ] %}
 
 {# Articles publies des tags de la page, du plus recent au plus ancien #}
@@ -86,7 +90,21 @@
     </div>
 </section>
 
-{# ====== 3. LES MODES DU PUBLIC ====== #}
+{# ====== 3. POURQUOI C'EST IMPORTANT ====== #}
+{% if story is defined and story %}
+<section class="lt-why-section">
+    <div class="lt-container">
+        <div class="lt-why">
+            <p class="lt-eyebrow">Pourquoi c’est important</p>
+            <h2 class="lt-why__title">{{ story.title }}</h2>
+            <p class="lt-why__text">{{ story.text }}</p>
+            <a href="{{ path('app_page_show', {slug: 'confiance'}) }}" class="lt-link">Voir exactement comment →</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ====== 4. LES MODES DU PUBLIC ====== #}
 <section class="lt-section lt-section--grey">
     <div class="lt-container">
         <h2 class="lt-h3">{{ modes.title }}</h2>
@@ -102,7 +120,7 @@
     </div>
 </section>
 
-{# ====== 4. L'OFFRE ====== #}
+{# ====== 5. L'OFFRE ====== #}
 <section class="lt-trust__block">
     <div class="lt-container lt-offer">
         <div class="lt-offer__text">
@@ -130,14 +148,15 @@
                 {% endfor %}
             </ul>
             <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-offer__cta">{{ offer.cta }}</a>
+            <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-offer__detail">Le détail des volumes →</a>
         </div>
     </div>
 </section>
 
-{# ====== 5. BLOC PROPRE AU PUBLIC ====== #}
+{# ====== 6. BLOC PROPRE AU PUBLIC ====== #}
 {% block lt_specific %}{% endblock %}
 
-{# ====== 6. LES GUIDES DU TAG ====== #}
+{# ====== 7. LES GUIDES DU TAG ====== #}
 {% if guideArticles|length > 0 %}
 <section class="lt-trust__block lt-trust__block--tight">
     <div class="lt-container">
@@ -161,7 +180,7 @@
 </section>
 {% endif %}
 
-{# ====== 7. FAQ DU PUBLIC ====== #}
+{# ====== 8. FAQ DU PUBLIC ====== #}
 {% if faqs|length > 0 %}
 <section class="lt-section lt-faq lt-faq--page">
     <div class="lt-container lt-container--narrow">
@@ -180,6 +199,22 @@
     </div>
 </section>
 {% endif %}
+
+{# ====== 9. APPEL FINAL (le meme que sur l'accueil) ====== #}
+<section class="lt-final lt-final--light">
+    <div class="lt-container">
+        <div class="lt-final__box">
+            <div class="lt-final__text">
+                <h2>Votre intello vous attend.</h2>
+                <p>Essayez LintellO gratuitement : 20 messages par jour, sans engagement.</p>
+            </div>
+            <div class="lt-final__actions">
+                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
+                <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
+            </div>
+        </div>
+    </div>
+</section>
 
 </div>
 
