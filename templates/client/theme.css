@@ -2561,3 +2561,63 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-editor__before { animation: none; opacity: 0; }
     .lt-editor__after { animation: none; opacity: 1; }
 }
+
+/* ======================================================================
+   Harmonisation du design, toutes pages (22/10). Ce bloc vient en dernier
+   et l'emporte sur les reglages page par page :
+   - un seul H2 de section : 40 px sur ordinateur ;
+   - un seul espacement vertical de section : 96 px (64 px sur mobile),
+     sauf les heros et l'appel final ;
+   - accueil : titre a la taille des pages interieures, heros bleu pale.
+   ====================================================================== */
+:root { --lt-h2-size: clamp(28px, 3.2vw, 40px); --lt-section-y: 96px; }
+
+.lt-h2,
+.lt-h3,
+.lt-why__title,
+.lt-final__text h2,
+.lt-fx__final-box h2 { font-size: var(--lt-h2-size); line-height: 1.15; letter-spacing: -.03em; }
+
+.lt-section,
+.lt-section--grey,
+.lt-section--tight,
+.lt-commit,
+.lt-trust__block,
+.lt-fx__section,
+.lt-pq__section { padding-top: var(--lt-section-y); padding-bottom: var(--lt-section-y); }
+.lt-why-section { padding-top: var(--lt-section-y); }
+.lt-poster-section,
+.lt-pricing__notes,
+.lt-learn__list,
+.lt-contact__body { padding-bottom: var(--lt-section-y); }
+/* Deux sections blanches qui se suivent : un seul espace, pas deux */
+.lt-section:not(.lt-section--grey) + .lt-faq,
+.lt-trust__block--tight { padding-top: 0; }
+.lt-pq__section--guides { padding-bottom: 0; }
+
+/* Accueil */
+.lt-hero__title--home { font-size: clamp(34px, 4.1vw, 52px); line-height: 1.08; }
+.lt-home .lt-hero { padding: 56px 0 72px; background: var(--lt-soft); border-bottom: 1px solid var(--lt-tint); }
+.lt-home .lt-hero__lead { margin-top: 20px; }
+.lt-home .lt-hero__actions { margin-top: 28px; }
+/* Le bandeau d'engagements suit le heros : il passe en blanc pour ne pas
+   se fondre dans le bleu pale */
+.lt-home .lt-commit { background: #ffffff; border-top: 0; }
+
+@media (max-width: 767.98px) {
+    :root { --lt-section-y: 64px; }
+    .lt-home .lt-hero { padding: 40px 0 56px; }
+}
+
+/* Passage design sur l'harmonisation : un seul H1 (52 px, celui des pages
+   Pour qui), et sur l'accueil une colonne de texte un peu plus large pour
+   que le titre tienne en quatre lignes */
+:root { --lt-h1-size: clamp(34px, 4.1vw, 52px); }
+.lt-page-head__title,
+.lt-hero--page .lt-page-head__title,
+.lt-pq__hero .lt-page-head__title,
+.lt-fx__title,
+.lt-hero__title--home { font-size: var(--lt-h1-size); }
+@media (min-width: 1024px) {
+    .lt-home .lt-hero__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+}

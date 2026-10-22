@@ -545,8 +545,11 @@
 {% set homeFaqs = faqs|default([])|slice(0, 5) %}
 {% if homeFaqs|length > 0 %}
 <section class="lt-section lt-faq" id="faq">
-    <div class="lt-container lt-container--narrow">
-        <h2 class="lt-h2">Questions fréquentes</h2>
+    <div class="lt-container lt-pq__faq-grid">
+        <div class="lt-pq__faq-head">
+            <h2 class="lt-h2">Questions fréquentes</h2>
+            <p>Une autre question ? <a href="{{ path('app_faq_index') }}">Toutes les questions</a></p>
+        </div>
         <div class="lt-faq__list">
             {% for faq in homeFaqs %}
                 <details class="lt-faq__item"{% if loop.first %} open{% endif %}>
@@ -558,7 +561,6 @@
                 </details>
             {% endfor %}
         </div>
-        <p class="lt-faq__more">D'autres questions ? <a href="{{ path('app_faq_index') }}">Toutes les questions</a> ou <a href="{{ path('app_article_show_all') }}">les guides</a>.</p>
     </div>
 </section>
 {% endif %}
