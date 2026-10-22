@@ -10,6 +10,9 @@
    Sans JavaScript : prix mensuels, colonne « À la maison » mise en avant.
    Mobile (moins de 768 px, avec JavaScript) : une seule offre a la fois,
    choisie par le profil ou par les pastilles des cinq offres.
+   Mise en page : maquette du 22/10 (artifact « Page Tarifs LintellO —
+   design ») : reglages dans une carte sur l'en-tete bleu, lignes alternees,
+   « Bon a savoir » avec icones, appel final centre.
    Volumes d'IA : niveau d'usage puis chiffre (handoff v0.4, § 14.3) ; le
    detail chiffre n'est que sur cette page.
    ====================================================================== #}
@@ -46,14 +49,14 @@
 <div class="lt-pricing" data-lt-pricing data-default-plan="{{ defaultPlan }}">
 
 {# ====== EN-TETE ET REGLAGES ====== #}
-<section class="lt-page-head">
+<section class="lt-page-head lt-pricing__head-section">
     <div class="lt-container">
         <p class="lt-eyebrow">Tarifs</p>
         <h1 class="lt-page-head__title">Comparez les offres, <span>ligne par ligne.</span></h1>
         <p class="lt-page-head__lead">Toutes les offres donnent accès au chat, aux documents et à la recherche. Ce qui change : le volume d'IA avancée, les crédits de recherche et les modes.</p>
 
         <div class="lt-pricing__controls" hidden data-lt-controls>
-            <div>
+            <div class="lt-pricing__profiles">
                 <p class="lt-pricing__label" id="lt-profile-label">Vous êtes plutôt…</p>
                 <div class="lt-chips" role="group" aria-labelledby="lt-profile-label">
                     {% for p in profiles %}
@@ -119,32 +122,50 @@
 
 {# ====== NOTES ====== #}
 <section class="lt-pricing__notes">
-    <div class="lt-container lt-notes">
+    <div class="lt-container">
+    <h2 class="lt-h3 lt-pricing__notes-title">Bon à savoir</h2>
+    <div class="lt-notes">
         <div class="lt-note">
-            <h2 class="lt-note__title">Les crédits de recherche</h2>
+            <span class="lt-note__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5a6 6 0 1 0 0 12a6 6 0 1 0 0-12M20 20l-4.5-4.5"/></svg></span>
+            <div>
+            <h3 class="lt-note__title">Les crédits de recherche</h3>
             <p>Une recherche lancée depuis le chat coûte un crédit, une recherche dans l'outil Recherche en coûte deux.</p>
+            </div>
         </div>
         <div class="lt-note">
-            <h2 class="lt-note__title">Changer d'offre</h2>
+            <span class="lt-note__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg></span>
+            <div>
+            <h3 class="lt-note__title">Changer d’offre</h3>
             <p>La différence est facturée tout de suite, au prorata. Résiliation en fin de période ou immédiate.</p>
+            </div>
         </div>
         <div class="lt-note">
-            <h2 class="lt-note__title">Rétractation</h2>
+            <span class="lt-note__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg></span>
+            <div>
+            <h3 class="lt-note__title">Rétractation</h3>
             <p>14 jours pour les consommateurs, remboursés au prorata. <a href="{{ lt_app }}/conditions">Lire les CGV</a></p>
+            </div>
         </div>
         <div class="lt-note">
-            <h2 class="lt-note__title">Et quand j’arrive au bout de mon volume ?</h2>
+            <span class="lt-note__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4h-4"/></svg></span>
+            <div>
+            <h3 class="lt-note__title">Et quand j’arrive au bout de mon volume ?</h3>
             <p>LintellO continue avec l’IA du quotidien, sans limite. Votre volume d’IA avancée se recharge chaque mois.</p>
+            </div>
         </div>
         <div class="lt-note">
-            <h2 class="lt-note__title">Offre Étudiant</h2>
+            <span class="lt-note__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5"/></svg></span>
+            <div>
+            <h3 class="lt-note__title">Offre Étudiant</h3>
             <p>Sur simple déclaration, sans justificatif à fournir.</p>
+            </div>
         </div>
+    </div>
     </div>
 </section>
 
 {# ====== APPEL FINAL ====== #}
-<section class="lt-final">
+<section class="lt-final lt-final--center">
     <div class="lt-container">
         <div class="lt-final__box">
             <div class="lt-final__text">

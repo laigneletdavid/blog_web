@@ -2484,3 +2484,46 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-pricing.is-js .lt-pricing__table { min-width: 0; width: 100%; }
     .lt-pricing.is-js .lt-pricing__table th[scope="row"] { width: 46%; }
 }
+
+/* Tarifs : maquette du 22/10 */
+.lt-pricing__head-section { background: var(--lt-soft); border-bottom: 1px solid var(--lt-tint); }
+.lt-pricing__controls:not([hidden]) {
+    justify-content: space-between;
+    padding: 20px 24px;
+    border: 1px solid var(--lt-tint);
+    border-radius: 18px;
+    background: #ffffff;
+}
+.lt-pricing__controls .lt-chip[aria-pressed="true"] { background: var(--lt-primary); border-color: var(--lt-primary); color: #ffffff; font-weight: 600; }
+.lt-pricing__table-section { padding-top: 56px; }
+.lt-pricing__scroll { border-radius: 20px; }
+.lt-pricing__table tbody tr:nth-child(even) > * { background: #fbfcfe; }
+.lt-pricing__table tbody tr > .is-hi { background: var(--lt-soft); font-weight: 600; }
+.lt-pricing__notes { padding-top: 16px; }
+.lt-pricing__notes-title { margin: 0 0 24px; }
+.lt-pricing__notes .lt-notes { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+.lt-note { display: flex; gap: 14px; border: 0; border-radius: 16px; }
+.lt-note__icon {
+    flex: none;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--lt-tint);
+    color: var(--lt-primary-darker);
+}
+.lt-note .lt-note__title { margin-top: 2px; font-size: 16px; }
+.lt-final--center .lt-final__box { flex-direction: column; justify-content: center; text-align: center; }
+.lt-final--center .lt-final__text { flex: none; }
+
+@media (max-width: 767.98px) {
+    /* Les pastilles des offres suffisent : le profil se cache */
+    .lt-pricing.is-js .lt-pricing__profiles { display: none; }
+    .lt-pricing__controls:not([hidden]) { padding: 16px; }
+    .lt-pricing.is-js .lt-pricing__plans { width: 100%; min-width: 0; }
+    .lt-pricing.is-js .lt-pricing__plans .lt-chips { display: flex; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding-bottom: 4px; }
+    .lt-pricing.is-js .lt-pricing__plans .lt-chip { flex: none; }
+    .lt-pricing.is-js .lt-pricing__scroll { border: 2px solid var(--lt-primary); }
+}
