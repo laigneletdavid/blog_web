@@ -8,15 +8,19 @@
    Le profil choisi met en avant une seule colonne. Aucune offre n'est
    etiquetee « la plus choisie » : rien ne permet de l'affirmer.
    Sans JavaScript : prix mensuels, colonne « À la maison » mise en avant.
+   Mobile (moins de 768 px, avec JavaScript) : une seule offre a la fois,
+   choisie par le profil ou par les pastilles des cinq offres.
+   Volumes d'IA : niveau d'usage puis chiffre (handoff v0.4, § 14.3) ; le
+   detail chiffre n'est que sur cette page.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
 
 {% set plans = [
-    {name: 'Gratuit',  m: '0 €',     mp: 'sans engagement', y: '0 €',     yp: 'sans engagement', cta: 'Commencer'},
-    {name: 'Étudiant', m: '4,99 €',  mp: 'TTC / mois',      y: '49,90 €', yp: 'TTC / an',        cta: 'Choisir'},
-    {name: 'Perso',    m: '9,90 €',  mp: 'TTC / mois',      y: '99 €',    yp: 'TTC / an',        cta: 'Choisir'},
-    {name: 'Pro',      m: '19,90 €', mp: 'HT / mois',       y: '199 €',   yp: 'HT / an',         cta: 'Choisir'},
-    {name: 'LintellO', m: '49 €',    mp: 'HT / mois',       y: '490 €',   yp: 'HT / an',         cta: 'Choisir'},
+    {name: 'Gratuit',  offer: 'l’offre Gratuite',  m: '0 €',     mp: 'sans engagement', y: '0 €',     yp: 'sans engagement', ye: '',                      cta: 'Commencer'},
+    {name: 'Étudiant', offer: 'l’offre Étudiant',  m: '4,99 €',  mp: 'TTC / mois',      y: '49,90 €', yp: 'TTC / an',        ye: 'soit 4,16 € / mois',    cta: 'Choisir'},
+    {name: 'Perso',    offer: 'l’offre Perso',     m: '9,90 €',  mp: 'TTC / mois',      y: '99 €',    yp: 'TTC / an',        ye: 'soit 8,25 € / mois',    cta: 'Choisir'},
+    {name: 'Pro',      offer: 'l’offre Pro',       m: '19,90 €', mp: 'HT / mois',       y: '199 €',   yp: 'HT / an',         ye: 'soit 16,58 € HT / mois', cta: 'Choisir'},
+    {name: 'LintellO', offer: 'l’offre LintellO',  m: '49 €',    mp: 'HT / mois',       y: '490 €',   yp: 'HT / an',         ye: 'soit 40,83 € HT / mois', cta: 'Choisir'},
 ] %}
 
 {% set profiles = [
@@ -29,14 +33,14 @@
 
 {% set rows = [
     ['IA du quotidien', '20 messages / jour', 'Illimitée', 'Illimitée', 'Illimitée', 'Illimitée'],
-    ['IA avancée / mois', '—', '100k tokens', '200k tokens', '1M tokens', '3M tokens'],
-    ['IA code / mois', '—', '—', '—', '200k tokens', '1M tokens'],
-    ['Analyse d’images / mois', 'environ 5', 'environ 25', 'environ 50', 'environ 200', 'quasi illimitée'],
+    ['IA avancée / mois', '—', 'Usage léger · 100 000 tokens', 'Usage régulier · 200 000 tokens', 'Usage intensif · 1 million de tokens', 'Usage très intensif · 3 millions de tokens'],
+    ['IA code / mois', '—', '—', '—', 'Usage régulier · 200 000 tokens', 'Usage intensif · 1 million de tokens'],
+    ['Analyse d’images / mois', 'environ 5', 'environ 25', 'environ 50', 'environ 200', 'Usage intensif'],
     ['Crédits de recherche / mois', '50', '500', '1 200', '3 000', '8 000'],
-    ['Modes', 'Découverte + 3 essais / mois', 'Éducation (5)', 'Éducation + Quotidien (9)', 'Les 18', 'Les 18 + les vôtres'],
+    ['Modes', 'Découverte + 3 essais / mois', 'Études (5)', 'Études + Maison (9)', 'Les 18', 'Les 18 + les vôtres'],
     ['Projets', '—', 'Oui', 'Oui', 'Oui', 'Oui'],
     ['Taille max fichier / image', '10 / 5 Mo', '15 / 10 Mo', '15 / 10 Mo', '25 / 20 Mo', '50 / 20 Mo'],
-    ['Messages par conversation', '20', '50', '50', '100', '200'],
+    ['Messages par conversation (maximum)', '20', '50', '50', '100', '200'],
 ] %}
 
 <div class="lt-pricing" data-lt-pricing data-default-plan="{{ defaultPlan }}">
@@ -64,6 +68,14 @@
                     <button type="button" data-lt-period="y" aria-pressed="false">Annuel · environ −17 %</button>
                 </div>
             </div>
+            <div class="lt-pricing__plans">
+                <p class="lt-pricing__label" id="lt-plan-label">Offre affichée</p>
+                <div class="lt-chips" role="group" aria-labelledby="lt-plan-label">
+                    {% for plan in plans %}
+                        <button type="button" class="lt-chip" data-lt-plan="{{ loop.index0 }}" aria-pressed="{{ loop.index0 == defaultPlan ? 'true' : 'false' }}">{{ plan.name }}</button>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -82,7 +94,8 @@
                                 <span class="lt-pricing__name">{{ plan.name }}</span>
                                 <span class="lt-pricing__price" data-m="{{ plan.m }}" data-y="{{ plan.y }}">{{ plan.m }}</span>
                                 <span class="lt-pricing__per" data-m="{{ plan.mp }}" data-y="{{ plan.yp }}">{{ plan.mp }}</span>
-                                <a href="{{ lt_app }}/register" class="lt-btn lt-pricing__cta">{{ plan.cta }}<span class="visually-hidden"> l'offre {{ plan.name }}</span></a>
+                                <span class="lt-pricing__eq" data-m="" data-y="{{ plan.ye }}"></span>
+                                <a href="{{ lt_app }}/register" class="lt-btn lt-pricing__cta">{{ plan.cta }}<span class="visually-hidden"> {{ plan.offer }}</span></a>
                             </th>
                         {% endfor %}
                     </tr>
@@ -99,6 +112,8 @@
                 </tbody>
             </table>
         </div>
+        <p class="lt-pricing__foot">Les tokens mesurent la longueur des textes traités par l’IA avancée, question et réponse comprises.</p>
+        <p class="lt-pricing__foot">Prix Pro et LintellO hors taxes, TVA 20 % en sus.</p>
     </div>
 </section>
 
@@ -118,6 +133,10 @@
             <p>14 jours pour les consommateurs, remboursés au prorata. <a href="{{ lt_app }}/conditions">Lire les CGV</a></p>
         </div>
         <div class="lt-note">
+            <h2 class="lt-note__title">Et quand j’arrive au bout de mon volume ?</h2>
+            <p>LintellO continue avec l’IA du quotidien, sans limite. Votre volume d’IA avancée se recharge chaque mois.</p>
+        </div>
+        <div class="lt-note">
             <h2 class="lt-note__title">Offre Étudiant</h2>
             <p>Sur simple déclaration, sans justificatif à fournir.</p>
         </div>
@@ -130,7 +149,7 @@
         <div class="lt-final__box">
             <div class="lt-final__text">
                 <h2>Commencez avec l'offre Gratuite.</h2>
-                <p>20 messages par jour avec l'IA du quotidien, sans engagement.</p>
+                <p>20 messages par jour, sans engagement.</p>
             </div>
             <a href="{{ lt_app }}/register" class="lt-btn lt-btn--white lt-btn--lg">Créer mon compte</a>
         </div>
@@ -145,6 +164,8 @@
     if (!root) return;
     var controls = root.querySelector('[data-lt-controls]');
     controls.hidden = false;
+    // Sous 768 px, le tableau ne montre que l'offre en avant (voir theme.css)
+    root.classList.add('is-js');
 
     function highlight(plan) {
         root.querySelectorAll('[data-col]').forEach(function (el) {
@@ -153,10 +174,13 @@
         root.querySelectorAll('[data-lt-profile]').forEach(function (b) {
             b.setAttribute('aria-pressed', b.getAttribute('data-lt-profile') === String(plan) ? 'true' : 'false');
         });
+        root.querySelectorAll('[data-lt-plan]').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-lt-plan') === String(plan) ? 'true' : 'false');
+        });
     }
 
     function period(p) {
-        root.querySelectorAll('.lt-pricing__price, .lt-pricing__per').forEach(function (el) {
+        root.querySelectorAll('.lt-pricing__price, .lt-pricing__per, .lt-pricing__eq').forEach(function (el) {
             el.textContent = el.getAttribute('data-' + p);
         });
         root.querySelectorAll('[data-lt-period]').forEach(function (b) {
@@ -166,6 +190,9 @@
 
     root.querySelectorAll('[data-lt-profile]').forEach(function (b) {
         b.addEventListener('click', function () { highlight(b.getAttribute('data-lt-profile')); });
+    });
+    root.querySelectorAll('[data-lt-plan]').forEach(function (b) {
+        b.addEventListener('click', function () { highlight(b.getAttribute('data-lt-plan')); });
     });
     root.querySelectorAll('[data-lt-period]').forEach(function (b) {
         b.addEventListener('click', function () { period(b.getAttribute('data-lt-period')); });

@@ -2464,3 +2464,23 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-learn__head { padding-bottom: 48px; }
     .lt-learn__subscribe .widget_register { padding: 28px 24px; }
 }
+
+/* ======================================================================
+   Tarifs (handoff v0.4, § 14)
+   ====================================================================== */
+/* Les libelles masques des boutons (.visually-hidden, en absolu) restent
+   dans la boite defilante : sans ce repere, ils elargissaient la page a
+   375 px (scrollWidth 732). */
+.lt-pricing__scroll { position: relative; }
+.lt-pricing__eq { display: block; min-height: 1em; margin-top: 2px; font-size: 12.5px; color: var(--lt-text-muted); }
+.lt-pricing__eq:empty { min-height: 0; }
+.lt-pricing__foot { margin: 12px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-pricing__plans { display: none; }
+
+/* Mobile : une offre a la fois, choisie par le profil ou les pastilles */
+@media (max-width: 767.98px) {
+    .lt-pricing.is-js .lt-pricing__plans { display: block; }
+    .lt-pricing.is-js .lt-pricing__table [data-col]:not(.is-hi) { display: none; }
+    .lt-pricing.is-js .lt-pricing__table { min-width: 0; width: 100%; }
+    .lt-pricing.is-js .lt-pricing__table th[scope="row"] { width: 46%; }
+}
