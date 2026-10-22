@@ -662,6 +662,23 @@ main { overflow-x: clip; }
     border-color: var(--bm-encre);
 }
 
+/* Sans cette teinte, le navigateur dessine ses cases et ses boutons radio
+   avec son bleu : un carre bleu vif au milieu d'une page creme et verte.
+   Le lot le reglait -- accent-color sur .check input -- mais dans un seul
+   de ses cinq simulateurs, et la case « Repartir automatiquement » de la
+   succession est cochee d'origine : le carre s'affichait sans rien
+   toucher. */
+.bm-sim input[type="checkbox"],
+.bm-sim input[type="radio"] {
+    accent-color: var(--bm-encre);
+}
+
+/* Dans une gelule selectionnee, le fond est deja a l'encre : le bouton
+   radio y disparaitrait. Il passe au creme, comme le texte. */
+.bm-sim .choice label:has(input:checked) input {
+    accent-color: var(--bm-creme);
+}
+
 .bm-sim button {
     display: inline-flex;
     align-items: center;
