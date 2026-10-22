@@ -2275,20 +2275,110 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-fx__top:focus-visible { outline: 2px solid var(--lt-primary-darker); outline-offset: 3px; }
 }
 
-/* Pour qui (handoff v0.4) : « Pourquoi c'est important », lien des volumes */
-.lt-why-section { padding: 0 0 88px; background: #ffffff; }
-.lt-why {
-    max-width: 860px;
-    padding: 36px 40px;
+/* ======================================================================
+   Pour qui (Pros, Etudes, A la maison) : maquette du 22/10
+   ====================================================================== */
+.lt-pq__hero { background: var(--lt-soft); border-bottom: 1px solid var(--lt-tint); }
+.lt-pq__tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 28px;
+    padding: 5px;
     border: 1px solid var(--lt-tint);
-    border-radius: var(--lt-radius-card);
-    background: var(--lt-soft);
+    border-radius: 14px;
+    background: #ffffff;
 }
-.lt-why__title { margin: 10px 0 0; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.25; font-weight: 700; letter-spacing: -.01em; color: var(--lt-text); }
-.lt-why__text { margin: 14px 0 0; font-size: 16.5px; line-height: 1.7; color: var(--lt-text-body); }
-.lt-why .lt-link { display: inline-block; margin-top: 16px; }
+.lt-pq__tabs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 18px;
+    border-radius: 10px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+.lt-pq__tabs a:hover { background: var(--lt-soft); color: var(--lt-primary-dark); }
+.lt-pq__tabs a[aria-current="page"] { background: var(--lt-primary); color: #ffffff; font-weight: 600; }
+.lt-pq__hero-grid { padding-top: 48px; padding-bottom: 88px; }
+.lt-pq__hero .lt-page-head__title { font-size: clamp(36px, 4.4vw, 52px); }
+.lt-pq__hero .lt-hero__lead { font-size: 18px; }
+.lt-pq__chat { box-shadow: 0 16px 40px rgba(37, 99, 235, .12); }
+
+.lt-pq__section { padding: 88px 0; background: #ffffff; }
+.lt-pq__section--grey { background: var(--lt-grey); }
+.lt-pq__section--guides { padding-bottom: 0; }
+.lt-pq__intro { max-width: 720px; }
+.lt-pq__lead { margin: 14px 0 0; font-size: 16.5px; line-height: 1.6; color: var(--lt-text-body); }
+
+/* Pourquoi c'est important : bande bleu fonce */
+.lt-why-section { padding: 88px 0 0; background: #ffffff; }
+.lt-why {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 32px 56px;
+    padding: 48px;
+    border-radius: 24px;
+    background: var(--lt-primary-darker);
+    color: #ffffff;
+}
+.lt-why__head { flex: 1 1 380px; min-width: 0; }
+.lt-why__head .lt-eyebrow { color: #bfdbfe; }
+.lt-why__title { margin: 12px 0 0; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.2; font-weight: 700; color: #ffffff; }
+.lt-why__body { flex: 1 1 420px; min-width: 0; }
+.lt-why__text { margin: 0; font-size: 16px; line-height: 1.7; color: #e0e7ff; }
+.lt-why__link { display: inline-block; margin-top: 16px; color: #ffffff; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.lt-why__link:hover { color: #ffffff; text-decoration: none; }
+
+/* Modes : une initiale et une phrase */
+.lt-pq__modes {
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 16px;
+}
+.lt-pq__mode { display: flex; gap: 14px; padding: 22px; border: 1px solid var(--lt-border); border-radius: 16px; background: #ffffff; }
+.lt-pq__mode-badge {
+    flex: none;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--lt-tint);
+    color: var(--lt-primary-darker);
+    font-weight: 700;
+}
+.lt-pq__mode .lt-mode__name { margin-top: 2px; }
+.lt-pq__mode p { margin: 4px 0 0; font-size: 14px; line-height: 1.55; color: var(--lt-text-body); }
+
+/* Offres */
+.lt-pq__offer-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.lt-pq__offer-head .lt-segmented[hidden] { display: none; }
+.lt-pq__offers { margin-top: 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; }
+.lt-pq__card { display: flex; flex-direction: column; }
+.lt-pq__card .lt-offer__points { flex-grow: 1; }
+.lt-pq__card--main { border: 2px solid var(--lt-primary); box-shadow: 0 16px 40px rgba(37, 99, 235, .12); }
+.lt-pq__card-intro { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: var(--lt-text-body); }
 .lt-offer__detail { display: block; margin-top: 12px; text-align: center; font-size: 13.5px; color: var(--lt-primary-dark); }
+
+/* FAQ en deux colonnes */
+.lt-pq__faq-grid { display: flex; flex-wrap: wrap; gap: 32px 64px; }
+.lt-pq__faq-head { flex: 1 1 280px; min-width: 0; }
+.lt-pq__faq-head p { margin: 12px 0 0; font-size: 15px; line-height: 1.6; color: var(--lt-text-body); }
+.lt-pq__faq-head a { color: var(--lt-primary-dark); font-weight: 600; }
+.lt-pq__faq-grid .lt-faq__list { flex: 2 1 520px; min-width: 0; margin-top: 0; }
+.lt-pq__faq + .lt-final { padding-top: 0; }
+
 @media (max-width: 767.98px) {
-    .lt-why-section { padding-bottom: 64px; }
-    .lt-why { padding: 24px; }
+    .lt-pq__hero-grid { padding-top: 32px; padding-bottom: 56px; }
+    .lt-pq__section { padding: 64px 0; }
+    .lt-why-section { padding-top: 64px; }
+    .lt-why { padding: 28px 24px; }
 }

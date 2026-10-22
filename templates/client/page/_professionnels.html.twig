@@ -6,8 +6,8 @@
    (§ 2 modes, § 3 documents, § 7 confiance, § 8 offre) ; descriptions des
    modes Pro tirees de InitModesCommand.php.
    Pas d'API, pas de support dedie, pas de collaboration, pas de « Suite ».
-   Une seule offre mise en avant (Pro) ; l'offre LintellO est presentee a
-   cote, sans mise en avant.
+   Une seule offre mise en avant (Pro) ; l'offre LintellO est la deuxieme
+   carte (offer.alt), sans mise en avant.
    ====================================================================== #}
 {% set lt_app = 'https://www.lintello.ai' %}
 
@@ -39,15 +39,15 @@
         wide: true,
         lead: 'L’offre Pro donne accès aux 18 modes de LintellO, dont ces neuf modes professionnels. LintellO choisit le bon selon votre demande.',
         items: [
-            {name: 'Rédacteur Pro', text: 'Rapports, documentation, propositions et e-mails formels.'},
-            {name: 'Relation client', text: 'Service client, échanges commerciaux et négociation.'},
-            {name: 'Expert marketing', text: 'Référencement, rédaction persuasive, réseaux sociaux et conversion.'},
-            {name: 'Développeur', text: 'Code, débogage, architecture et documentation technique, avec l’IA code.'},
-            {name: 'Analyste', text: 'Synthèse, extraction et comparaison de documents.'},
-            {name: 'Juriste', text: 'Contrats, conformité et langage juridique, avec prudence. Il ne remplace pas un avocat.'},
-            {name: 'RH & Management', text: 'Recrutement, management d’équipe et questions de droit du travail.'},
-            {name: 'Coach dirigeant', text: 'Prendre une décision, prendre du recul, piloter.'},
-            {name: 'Stratège business', text: 'Stratégie, développement, business plan et projets.'},
+            {name: 'Rédacteur Pro', badge: 'R', text: 'Rapports, documentation, propositions et e-mails formels.'},
+            {name: 'Relation client', badge: 'C', text: 'Service client, échanges commerciaux et négociation.'},
+            {name: 'Expert marketing', badge: 'M', text: 'Référencement, rédaction persuasive, réseaux sociaux et conversion.'},
+            {name: 'Développeur', badge: 'D', text: 'Code, débogage, architecture et documentation technique, avec l’IA code.'},
+            {name: 'Analyste', badge: 'A', text: 'Synthèse, extraction et comparaison de documents.'},
+            {name: 'Juriste', badge: 'J', text: 'Contrats, conformité et langage juridique, avec prudence. Il ne remplace pas un avocat.'},
+            {name: 'RH & Management', badge: 'H', text: 'Recrutement, management d’équipe et questions de droit du travail.'},
+            {name: 'Coach dirigeant', badge: 'G', text: 'Prendre une décision, prendre du recul, piloter.'},
+            {name: 'Stratège business', badge: 'S', text: 'Stratégie, développement, business plan et projets.'},
         ],
     },
     offer: {
@@ -65,6 +65,21 @@
             'Projets, fichiers jusqu’à 25 Mo',
         ],
         cta: 'Choisir l’offre Pro',
+        alt: {
+            name: 'L’offre LintellO',
+            intro: 'Tout ce que contient Pro, avec des volumes plus larges et vos propres modes, créés pour votre métier.',
+            m: '49 €', mp: 'HT / mois',
+            y: '490 €', yp: 'HT / an',
+            points: [
+                'Modes personnalisés',
+                'IA avancée : usage très intensif',
+                'IA code : usage intensif',
+                '8 000 crédits de recherche / mois',
+                'Fichiers jusqu’à 50 Mo',
+                '200 messages par conversation',
+            ],
+            cta: 'Choisir l’offre LintellO',
+        },
     },
     guides: {
         title: 'Guides pour les pros',
@@ -79,33 +94,4 @@
         {q: 'Fonctionne-t-il sur mobile ?', a: 'Oui, dans le navigateur de votre téléphone. Il n’y a pas d’application à installer.'},
     ],
 } %}
-    {% block lt_specific %}
-        <section class="lt-poster-section" id="offre-lintello">
-            <div class="lt-container">
-                <div class="lt-offer-alt">
-                    <div class="lt-offer-alt__text">
-                        <p class="lt-eyebrow">Pour aller plus loin</p>
-                        <h2>L’offre LintellO</h2>
-                        <p>Tout ce que contient Pro, avec des volumes plus larges et vos propres modes, créés pour votre métier.</p>
-                    </div>
-                    <div class="lt-offer-alt__card">
-                        <p class="lt-offer__price">
-                            <span class="lt-offer__amount">49 €</span>
-                            <span class="lt-offer__per">HT / mois · 490 € HT / an</span>
-                        </p>
-                        <ul class="lt-offer__points">
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>Modes personnalisés</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>IA avancée : usage très intensif</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>IA code : usage intensif</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>8 000 crédits de recherche / mois</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>Fichiers jusqu’à 50 Mo</span></li>
-                            <li><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span>200 messages par conversation</span></li>
-                        </ul>
-                        <a href="{{ lt_app }}/register" class="lt-btn lt-btn--outline lt-offer__cta">Choisir l’offre LintellO</a>
-                        <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-offer__detail">Le détail des volumes →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    {% endblock %}
 {% endembed %}
