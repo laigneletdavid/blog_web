@@ -16,7 +16,7 @@
     <div class="lt-container">
         <p class="lt-eyebrow">Contact</p>
         <h1 class="lt-page-head__title">Une question ? <span>Écrivez-nous.</span></h1>
-        <p class="lt-page-head__lead">Une question sur LintellO, ses offres ou vos données : le message arrive directement à l'équipe.</p>
+        <p class="lt-page-head__lead">Une question sur LintellO, ses offres ou vos données : votre message m'arrive directement.</p>
     </div>
 </section>
 
@@ -25,15 +25,18 @@
         <div class="lt-contact__form">
             {{ form_start(contactForm, {attr: {class: 'lt-form'}}) }}
                 <div class="lt-form__row">
-                    {{ form_row(contactForm.firstname, {label: 'Prénom'}) }}
-                    {{ form_row(contactForm.name, {label: 'Nom'}) }}
+                    {{ form_row(contactForm.firstname, {label: 'Prénom', attr: {autocomplete: 'given-name'}}) }}
+                    {{ form_row(contactForm.name, {label: 'Nom', attr: {autocomplete: 'family-name'}}) }}
                 </div>
-                {{ form_row(contactForm.email, {label: 'Adresse e-mail'}) }}
+                {{ form_row(contactForm.email, {label: 'Adresse e-mail', attr: {autocomplete: 'email'}}) }}
                 {{ form_row(contactForm.subject, {label: 'Sujet'}) }}
                 {{ form_row(contactForm.message, {label: 'Votre message', attr: {placeholder: ''}}) }}
+                {# Pot de miel : masque aux lecteurs d'ecran, sans la marge de mb-3
+                   (une classe dans row_attr remplace mb-3 dans bootstrap_5_layout) #}
+                {{ form_row(contactForm.website, {row_attr: {class: 'lt-form__hp', 'aria-hidden': 'true'}}) }}
                 {{ form_rest(contactForm) }}
                 <button class="lt-btn lt-btn--primary lt-btn--lg" type="submit">Envoyer le message</button>
-                <p class="lt-form__note">Vos coordonnées servent uniquement à vous répondre. <a href="https://www.lintello.ai/politique-confidentialite">Politique de confidentialité</a></p>
+                <p class="lt-form__note">Vos coordonnées servent uniquement à vous répondre et sont conservées 3 ans au plus. <a href="https://www.lintello.ai/politique-confidentialite">Politique de confidentialité</a></p>
             {{ form_end(contactForm) }}
         </div>
 
@@ -54,7 +57,7 @@
             </div>
             <div class="lt-contact__card lt-contact__card--soft">
                 <p class="lt-contact__card-title">Essayer LintellO</p>
-                <p>L'offre Gratuite donne 20 messages par jour avec l'IA du quotidien, sans engagement.</p>
+                <p>L'offre Gratuite donne 20 messages par jour, sans engagement.</p>
                 <a href="https://www.lintello.ai/register" class="lt-btn lt-btn--primary">Commencer gratuitement</a>
             </div>
         </aside>

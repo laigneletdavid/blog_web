@@ -2621,3 +2621,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 @media (min-width: 1024px) {
     .lt-home .lt-hero__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
 }
+
+/* Contact (22/10) : 16 px minimum dans les champs, sinon iOS zoome au focus */
+.lt-form .form-control { font-size: 16px; }
+.lt-form__hp { margin: 0; }
