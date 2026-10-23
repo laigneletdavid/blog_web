@@ -556,7 +556,7 @@ CREATE TABLE `page_view` (
   KEY `idx_pageview_is_bot` (`is_bot`),
   KEY `idx_pageview_session` (`session_id`),
   CONSTRAINT `FK_7939B754613FECDF` FOREIGN KEY (`session_id`) REFERENCES `stat_session` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=599 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=601 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1003,7 +1003,7 @@ CREATE TABLE `stat_session` (
   KEY `idx_session_source` (`source`),
   KEY `idx_session_token` (`session_token`),
   KEY `idx_session_bot` (`is_bot`)
-) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=257 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1184,7 +1184,7 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-10-23  4:09:56
+-- Dump completed on 2026-10-23  4:24:24
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-11.8.6-MariaDB, for debian-linux-gnu (x86_64)
 --
@@ -1613,7 +1613,7 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
 INSERT INTO `site` VALUES
-(1,'LintellO','Assitant IA 100% Français et souverain','david@lintello.ai','Montsaunes','31260','3 place des Templiers',NULL,NULL,NULL,'LintellO — l\'assistant IA français : documents, chat, recherche','Un assistant IA français hébergé à Strasbourg : un chat qui comprend, un éditeur que l\'IA modifie, une recherche sans pistage.',NULL,NULL,'#2563eb','#1d4ed8','#1e3a8a','\'Poppins\', sans-serif',NULL,'vitrine','ttc','[\"vitrine\",\"blog\",\"faq\",\"marketing\"]',NULL,NULL,NULL,1,NULL,NULL,5,1,NULL,2,5,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+(1,'LintellO','Assitant IA 100% Français et souverain','david@lintello.ai','Montsaunes','31260','3 place des Templiers',NULL,NULL,NULL,'LintellO — l\'assistant IA français : documents, chat, recherche','Un assistant IA français hébergé à Strasbourg : un chat qui comprend, un éditeur que l\'IA modifie, une recherche sans pistage.',NULL,NULL,'#2563eb','#1d4ed8','#1e3a8a','\'Poppins\', sans-serif',NULL,'vitrine','ttc','[\"vitrine\",\"blog\",\"faq\",\"marketing\"]',NULL,NULL,NULL,1,3,NULL,5,1,NULL,2,5,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -1734,4 +1734,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-10-23  4:09:56
+-- Dump completed on 2026-10-23  4:24:25
