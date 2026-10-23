@@ -2709,6 +2709,17 @@ main { overflow-x: clip; }
     margin:0 0 8px;
 }
 
+/* La mention sous un champ suit la petite typographie du panneau. Sans
+   cette regle elle heritait du corps de la page, 17 pixels : plus grosse
+   que le libelle qu'elle precise. */
+.bm-dossier .field .hint {
+    margin:7px 0 0;
+    font-size:11px;
+    line-height:1.6;
+    letter-spacing:0;
+    color:var(--muted);
+}
+
 .bm-dossier .field input,
 .bm-dossier .field select,
 .bm-dossier .field textarea {

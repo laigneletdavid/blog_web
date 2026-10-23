@@ -12,7 +12,6 @@ use App\Service\SystemMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -20,33 +19,23 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Espace client : depot de pieces a destination de l'etude.
+ * Espace client : demande d'acces securise.
  *
- * Le lot livre un script autonome qui passait par mail(). Il rejoint ici la
- * mecanique du CMS -- jeton de session, pot de miel, limitation de cadence,
- * reCAPTCHA, trace en base -- et son envoi passe par le transport configure.
+ * Le visiteur ne depose plus de piece ici. Il laisse ses coordonnees et
+ * demande un acces ; l'etude ouvre pour lui un espace securise, lui en
+ * transmet le lien, et le code de connexion lui parvient par SMS.
  *
- * Les pieces ne sont jamais ecrites sur le disque du site : PHP les garde
- * dans son repertoire temporaire pendant la requete, elles sont lues pour
- * etre jointes au courriel, et disparaissent a la fin de la requete.
+ * Ce site ne porte donc aucun document, et n'envoie ni lien ni code : il
+ * transmet une demande, rien de plus. Le reste se passe dans l'outil de
+ * l'etude.
  *
- * Reserve connue, signalee a l'etude par ecrit : le courrier electronique
- * ne chiffre que le transport. Les pieces se posent en clair chez le
- * prestataire d'envoi puis dans la boite du destinataire.
+ * C'est ce qui leve la reserve ecrite a l'etude lors du premier montage :
+ * un depot par formulaire finissait en piece jointe, et voyageait donc en
+ * clair chez le prestataire d'envoi puis dans la boite du destinataire.
+ * Plus rien de tel ici.
  */
 class EspaceClientController extends AbstractController
 {
-    /** Formats acceptes, verifies sur le contenu reel et non sur l'extension. */
-    private const TYPES = [
-        'application/pdf' => 'pdf',
-        'image/jpeg' => 'jpg',
-        'image/png' => 'png',
-    ];
-
-    private const TAILLE_FICHIER = 8 * 1024 * 1024;
-    private const TAILLE_TOTALE = 20 * 1024 * 1024;
-    private const NOMBRE_MAX = 12;
-
     public function __construct(
         private readonly SeoService $seoService,
     ) {
@@ -59,9 +48,6 @@ class EspaceClientController extends AbstractController
             'title_page' => 'Espace client',
             'seo' => $this->seoService->resolveForPage('Espace client'),
             'recaptcha_site_key' => $recaptcha->isEnabled() ? $recaptcha->getSiteKey() : null,
-            'taille_fichier' => self::TAILLE_FICHIER,
-            'taille_totale' => self::TAILLE_TOTALE,
-            'nombre_max' => self::NOMBRE_MAX,
         ]);
     }
 
@@ -86,17 +72,14 @@ class EspaceClientController extends AbstractController
             'title_page' => 'Espace client',
             'seo' => $this->seoService->resolveForPage('Espace client'),
             'recaptcha_site_key' => $recaptcha->isEnabled() ? $recaptcha->getSiteKey() : null,
-            'taille_fichier' => self::TAILLE_FICHIER,
-            'taille_totale' => self::TAILLE_TOTALE,
-            'nombre_max' => self::NOMBRE_MAX,
             'erreurs' => $erreurs,
             'saisie' => $request->request->all(),
         ]);
     }
 
     /**
-     * Rend une redirection quand le depot est parti, null pour reafficher la
-     * page avec ses erreurs et la saisie du visiteur.
+     * Rend une redirection quand la demande est partie, null pour reafficher
+     * la page avec ses erreurs et la saisie du visiteur.
      *
      * @param list<string> $erreurs
      */
@@ -110,21 +93,8 @@ class EspaceClientController extends AbstractController
         RateLimiterFactory $limiter,
         array &$erreurs,
     ): ?Response {
-        // Au-dela de post_max_size, PHP jette la requete avant nous : plus de
-        // champs, plus de fichiers, mais un entete de longueur bien rempli.
-        // Sans ce test le visiteur lirait "session expiree", ce qui est faux.
-        if (0 === $request->request->count() && (int) $request->server->get('CONTENT_LENGTH') > 0) {
-            $erreurs[] = sprintf(
-                'Votre envoi dépasse ce que le serveur accepte en une fois (%s). '
-                .'Transmettez vos pièces en plusieurs dépôts.',
-                \ini_get('post_max_size') ?: 'limite inconnue'
-            );
-
-            return null;
-        }
-
-        if (!$this->isCsrfTokenValid('depot_documents', (string) $request->request->get('_token'))) {
-            $erreurs[] = 'Votre session a expiré. Merci de renvoyer votre dépôt.';
+        if (!$this->isCsrfTokenValid('demande_acces', (string) $request->request->get('_token'))) {
+            $erreurs[] = 'Votre session a expiré. Merci de renvoyer votre demande.';
 
             return null;
         }
@@ -158,143 +128,57 @@ class EspaceClientController extends AbstractController
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $erreurs[] = 'Merci d’indiquer une adresse e-mail valide.';
         }
+        // Le code de connexion part par SMS : sans numero, l'etude ne peut
+        // pas ouvrir l'acces. On verifie qu'il reste assez de chiffres pour
+        // etre un numero, sans presumer de sa forme ni de son pays.
+        if (preg_match_all('/\d/', $telephone) < 9) {
+            $erreurs[] = 'Merci d’indiquer un numéro de téléphone portable : le code de connexion y sera envoyé.';
+        }
         if (!$request->request->getBoolean('consentement')) {
-            $erreurs[] = 'Merci de confirmer la transmission de vos documents à l’étude.';
+            $erreurs[] = 'Merci de confirmer votre demande d’accès.';
         }
-
-        /** @var list<UploadedFile> $fichiers */
-        $fichiers = array_filter($request->files->all()['documents'] ?? []);
-        if (!$fichiers) {
-            $erreurs[] = 'Aucun document n’a été reçu.';
-        }
-
-        $pieces = $erreurs ? [] : $this->verifierFichiers($fichiers, $erreurs);
 
         if ($erreurs) {
             return null;
         }
 
-        // La liste accompagne les pieces : si une passerelle de messagerie
-        // retire une piece jointe en route, l'etude sait ce qui manque.
-        $listePieces = '';
-        foreach ($pieces as $piece) {
-            $listePieces .= sprintf(
-                '<li>%s <small>(%d Ko)</small></li>',
-                htmlspecialchars($piece['nom'], ENT_QUOTES, 'UTF-8'),
-                (int) ceil($piece['taille'] / 1024)
-            );
-        }
-
         $html = sprintf(
-            '<p><strong>Dépôt de pièces depuis le site.</strong></p>'
-            .'<p><strong>Déposant :</strong> %s (%s)</p>'
-            .'<p><strong>Téléphone :</strong> %s</p>'
+            '<p><strong>Demande d’accès sécurisé depuis le site.</strong></p>'
+            .'<p><strong>Demandeur :</strong> %s (%s)</p>'
+            .'<p><strong>Téléphone portable :</strong> %s</p>'
             .'<p><strong>Référence de dossier :</strong> %s</p><hr>'
-            .'<p><strong>Message</strong></p><p>%s</p>'
-            .'<p><strong>Pièces jointes : %d</strong></p><ul>%s</ul>',
+            .'<p><strong>Documents annoncés</strong></p><p>%s</p>'
+            .'<p>Ouvrir l’accès depuis l’outil de l’étude, puis transmettre le lien à '
+            .'l’adresse ci-dessus. Le code part sur le portable indiqué.</p>',
             htmlspecialchars($nom, ENT_QUOTES, 'UTF-8'),
             htmlspecialchars($email, ENT_QUOTES, 'UTF-8'),
-            htmlspecialchars('' !== $telephone ? $telephone : 'Non précisé', ENT_QUOTES, 'UTF-8'),
+            htmlspecialchars($telephone, ENT_QUOTES, 'UTF-8'),
             htmlspecialchars('' !== $reference ? $reference : 'Non précisée', ENT_QUOTES, 'UTF-8'),
-            '' !== $message ? nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8')) : 'Aucun message.',
-            \count($pieces),
-            $listePieces
+            '' !== $message ? nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8')) : 'Non précisé.'
         );
 
         $destinataire = $siteContext->getCurrentSite()?->getEmail() ?? 'contact@comwebsolutions.fr';
         $sujet = sprintf(
-            '[%s] Dépôt documentaire%s',
+            '[%s] Demande d’accès sécurisé%s',
             $mailer->getSiteName(),
             '' !== $reference ? ' — '.$reference : ''
         );
 
-        $courriel = $mailer->createEmail($sujet)->replyTo($email)->to($destinataire)->html($html);
-        foreach ($pieces as $piece) {
-            $courriel->attachFromPath($piece['chemin'], $piece['nom'], $piece['type']);
-        }
-
         try {
-            $mailer->send($courriel);
+            $mailer->send($mailer->createEmail($sujet)->replyTo($email)->to($destinataire)->html($html));
         } catch (TransportExceptionInterface) {
-            // Le service d'envoi plafonne la taille de ses requetes : un depot
-            // accepte ici peut lui rester en travers. On le dit plutot que de
-            // laisser croire a une transmission reussie.
-            $erreurs[] = 'La transmission a échoué. Essayez avec moins de pièces, '
-                .'ou joignez l’étude directement.';
+            $erreurs[] = 'La transmission a échoué. Merci de joindre l’étude directement.';
 
             return null;
         }
 
-        $this->enregistrer($request, $em, $sessions, $nom, $email, $reference, $message, $pieces);
+        $this->enregistrer($request, $em, $sessions, $nom, $email, $telephone, $reference, $message);
 
         return $this->redirectToRoute('app_espace_client', ['envoye' => 1]);
     }
 
     /**
-     * Verifie chaque piece sur son contenu reel, pas sur son extension.
-     *
-     * @param list<UploadedFile> $fichiers
-     * @param list<string>       $erreurs
-     *
-     * @return list<array{chemin: string, nom: string, type: string, taille: int}>
-     */
-    private function verifierFichiers(array $fichiers, array &$erreurs): array
-    {
-        if (\count($fichiers) > self::NOMBRE_MAX) {
-            $erreurs[] = sprintf('Pas plus de %d fichiers par envoi.', self::NOMBRE_MAX);
-
-            return [];
-        }
-
-        $pieces = [];
-        $total = 0;
-
-        foreach ($fichiers as $fichier) {
-            if (!$fichier instanceof UploadedFile || !$fichier->isValid()) {
-                $erreurs[] = 'Un fichier n’a pas pu être reçu.';
-
-                return [];
-            }
-
-            $taille = (int) $fichier->getSize();
-            $total += $taille;
-
-            if ($taille <= 0 || $taille > self::TAILLE_FICHIER) {
-                $erreurs[] = sprintf('Chaque fichier doit peser moins de %d Mo.', self::TAILLE_FICHIER >> 20);
-
-                return [];
-            }
-            if ($total > self::TAILLE_TOTALE) {
-                $erreurs[] = sprintf('L’ensemble des fichiers doit peser moins de %d Mo.', self::TAILLE_TOTALE >> 20);
-
-                return [];
-            }
-
-            // Le type est lu dans le fichier, une extension ne prouve rien.
-            $type = $fichier->getMimeType();
-            if (null === $type || !isset(self::TYPES[$type])) {
-                $erreurs[] = 'Seuls les fichiers PDF, JPEG et PNG sont acceptés.';
-
-                return [];
-            }
-
-            $nom = preg_replace('/[^A-Za-z0-9._ -]/u', '_', $fichier->getClientOriginalName() ?: '');
-            $pieces[] = [
-                'chemin' => $fichier->getPathname(),
-                'nom' => '' !== (string) $nom ? (string) $nom : 'document.'.self::TYPES[$type],
-                'type' => $type,
-                'taille' => $taille,
-            ];
-        }
-
-        return $pieces;
-    }
-
-    /**
-     * Garde une trace du depot dans l'administration. Les pieces, elles, ne
-     * sont pas conservees : seule leur liste l'est.
-     *
-     * @param list<array{nom: string, taille: int}> $pieces
+     * Garde une trace de la demande dans l'administration.
      */
     private function enregistrer(
         Request $request,
@@ -302,9 +186,9 @@ class EspaceClientController extends AbstractController
         StatSessionRepository $sessions,
         string $nom,
         string $email,
+        string $telephone,
         string $reference,
         string $message,
-        array $pieces,
     ): void {
         $session = null;
         $jeton = $request->cookies->get('_bw_sid');
@@ -312,20 +196,15 @@ class EspaceClientController extends AbstractController
             $session = $sessions->findOneBy(['sessionToken' => $jeton]);
         }
 
-        $lignes = array_map(
-            static fn (array $p) => sprintf('- %s (%d Ko)', $p['nom'], (int) ceil($p['taille'] / 1024)),
-            $pieces
-        );
-
-        $corps = "Référence : ".('' !== $reference ? $reference : 'Non précisée')."\n\n"
-            ."Pièces transmises :\n".implode("\n", $lignes)."\n\n"
-            .('' !== $message ? $message : 'Aucun message.');
+        $corps = "Téléphone : ".$telephone."\n\n"
+            ."Référence : ".('' !== $reference ? $reference : 'Non précisée')."\n\n"
+            ."Documents annoncés :\n".('' !== $message ? $message : 'Non précisé.');
 
         $trace = new ContactMessage();
         $trace->setName(mb_substr($nom, 0, 100));
         $trace->setFirstname('');
         $trace->setEmail($email);
-        $trace->setSubject(mb_substr('Dépôt documentaire'.('' !== $reference ? ' — '.$reference : ''), 0, 255));
+        $trace->setSubject(mb_substr('Demande d’accès sécurisé'.('' !== $reference ? ' — '.$reference : ''), 0, 255));
         $trace->setMessage($corps);
         $trace->setIpHash(hash('sha256', ($request->getClientIp() ?? '0.0.0.0').date('Y-m-d')));
         $trace->setSourcePage($request->getPathInfo());
@@ -333,10 +212,10 @@ class EspaceClientController extends AbstractController
         $em->persist($trace);
 
         $conversion = new StatConversion();
-        $conversion->setSession($session);
         $conversion->setType('form_submit');
         $conversion->setPageUrl($request->getPathInfo());
-        $conversion->setDetail(sprintf('Dépôt documentaire : %d pièce(s)', \count($pieces)));
+        $conversion->setDetail('Demande d’accès sécurisé');
+        $conversion->setSession($session);
         $em->persist($conversion);
 
         $em->flush();
