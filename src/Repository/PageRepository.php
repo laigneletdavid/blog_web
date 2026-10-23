@@ -44,9 +44,11 @@ class PageRepository extends ServiceEntityRepository
      */
     public function findAllPublishedForSitemap(): array
     {
+        // Les pages legales ont leur propre URL : voir findSystemPagesForSitemap()
         return $this->createQueryBuilder('p')
             ->where('p.published = true')
             ->andWhere('p.noIndex = false')
+            ->andWhere('p.isSystem = false')
             ->andWhere('p.visibility = :public')
             ->setParameter('public', 'public')
             ->orderBy('p.updatedAt', 'DESC')
@@ -79,6 +81,22 @@ class PageRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.isSystem = true')
             ->andWhere('p.published = true')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Pages legales publiees et indexables, pour le sitemap.
+     *
+     * @return Page[]
+     */
+    public function findSystemPagesForSitemap(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isSystem = true')
+            ->andWhere('p.published = true')
+            ->andWhere('p.noIndex = false')
             ->orderBy('p.title', 'ASC')
             ->getQuery()
             ->getResult();
