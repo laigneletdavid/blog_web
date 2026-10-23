@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\SystemPageEnum;
 use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
 use App\Repository\EventRepository;
@@ -126,10 +127,17 @@ class SitemapController extends AbstractController
             ];
         }
 
-        // Pages legales (systeme)
-        foreach ($repo->findAllSystemPages() as $legalPage) {
+        // Pages legales (systeme) : servies par LegalController sous leur
+        // type de route (« politique-de-confidentialite »), pas sous leur slug
+        // (« politique-confidentialite ») qui repond 404
+        foreach ($repo->findSystemPagesForSitemap() as $legalPage) {
+            $systemPage = SystemPageEnum::tryFrom((string) $legalPage->getSystemKey());
+            if ($systemPage === null) {
+                continue;
+            }
+
             $urls[] = [
-                'loc' => '/' . $legalPage->getSlug(),
+                'loc' => $this->generateUrl('app_legal_page', ['type' => $systemPage->routeType()]),
                 'lastmod' => $legalPage->getUpdatedAt() ?? $legalPage->getCreatedAt(),
                 'changefreq' => 'yearly',
                 'priority' => '0.3',
