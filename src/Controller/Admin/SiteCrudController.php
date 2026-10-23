@@ -102,7 +102,11 @@ class SiteCrudController extends AbstractCrudController
         yield FormField::addFieldset('Visuels');
 
         yield AssociationField::new('logo', 'Logo')
-            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header. Les favicons (onglet navigateur, ecran d\'accueil mobile) sont generes automatiquement.')
+            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header.')
+            ->hideOnIndex();
+
+        yield AssociationField::new('favicon', 'Icone du site')
+            ->setHelp('Image carree, PNG transparent de 512 px de cote de preference. Sert a l\'onglet du navigateur et a l\'ecran d\'accueil des mobiles. Si vide, le logo entier est utilise, sans rognage.')
             ->hideOnIndex();
 
         yield AssociationField::new('logoDark', 'Logo fond sombre')
