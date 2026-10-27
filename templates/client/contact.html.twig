@@ -51,7 +51,7 @@
                 <article>
                     <span>ADRESSE</span>
                     <h2>{{ site.address1 }}<br>{{ site.postCode|default('') }} {{ site.town|default('') }}</h2>
-                    <a href="{{ _itineraire }}" target="_blank" rel="noopener">Obtenir l’itinéraire ↗</a>
+                    <a href="{{ _itineraire }}" target="_blank" rel="noopener">Obtenir l’itinéraire ↗︎</a>
                 </article>
             {% endif %}
 
@@ -92,7 +92,7 @@
                      alt="Plan d’accès à l’étude, {{ _adresse }}"
                      loading="lazy" decoding="async">
                 <a class="map-button" href="{{ _itineraire }}" target="_blank" rel="noopener">
-                    Ouvrir l’itinéraire <span aria-hidden="true">↗</span>
+                    Ouvrir l’itinéraire <span aria-hidden="true">↗︎</span>
                 </a>
             </div>
         </section>
@@ -155,9 +155,9 @@
         <h2>Un projet.<br>Une question.<br><em>Échangeons.</em></h2>
         <div class="ct-actions">
             {% if site.phone %}
-                <a href="tel:{{ site.phone }}">Appeler l’étude <span aria-hidden="true">↗</span></a>
+                <a href="tel:{{ site.phone }}">Appeler l’étude <span aria-hidden="true">↗︎</span></a>
             {% endif %}
-            <a href="{{ path('app_rendez_vous') }}">Prendre rendez-vous <span aria-hidden="true">↗</span></a>
+            <a href="{{ path('app_rendez_vous') }}">Prendre rendez-vous <span aria-hidden="true">↗︎</span></a>
         </div>
     </section>
 

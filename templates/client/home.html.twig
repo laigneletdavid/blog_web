@@ -54,7 +54,7 @@
                 À {{ site.town|default('Saint-Martory') }}, nous accompagnons particuliers, familles,
                 entrepreneurs et professionnels à chaque étape de leurs projets.
             </p>
-            <a href="#expertises">Découvrir l’étude <span>↗</span></a>
+            <a href="#expertises">Découvrir l’étude <span>↗︎</span></a>
         </section>
 
         {% if services|default([])|length > 0 %}
@@ -89,7 +89,7 @@
                         {% elseif service.children|length > 0 %}
                             <p>{{ service.children|slice(0, 4)|map(e => e.title)|join(' · ') }}</p>
                         {% endif %}
-                        <b>↗</b>
+                        <b>↗︎</b>
                     </article>
                 {% endfor %}
             </div>
@@ -133,7 +133,7 @@
                     {% elseif service.children|length > 0 %}
                         <p>{{ service.children|slice(0, 5)|map(e => e.title)|join(' · ') }}</p>
                     {% endif %}
-                    <b>↗</b>
+                    <b>↗︎</b>
                 </a>
             {% endfor %}
         </div>
@@ -158,7 +158,7 @@
             sécuriser. L’étude privilégie une relation directe, lisible et durable à
             chaque étape de votre projet.
         </p>
-        <a href="{{ path('app_contact') }}">Découvrir l’étude <span>↗</span></a>
+        <a href="{{ path('app_contact') }}">Découvrir l’étude <span>↗︎</span></a>
     </div>
     <div class="office-aside">
         <span>{{ site.town|default('Saint-Martory')|upper }}</span>
@@ -182,7 +182,7 @@
         <div><span class="bm-kicker">ACTUALITÉS</span></div>
         <div>
             <h2 class="bm-titre">Les publications de <em>l’Étude.</em></h2>
-            <a href="{{ path('app_article_show_all') }}" class="bm-lien">Toutes les actualités <span aria-hidden="true">↗</span></a>
+            <a href="{{ path('app_article_show_all') }}" class="bm-lien">Toutes les actualités <span aria-hidden="true">↗︎</span></a>
         </div>
     </div>
     <div class="row mt-5">{% include 'article/article_liste.html.twig' with { articles } %}</div>
@@ -207,7 +207,7 @@
             <small>RENDEZ-VOUS</small>
             <h3>Rencontrer<br>l’étude.</h3>
             <p>Échangeons sur votre projet, et sur les documents utiles à réunir.</p>
-            <strong>Prendre rendez-vous <b>↗</b></strong>
+            <strong>Prendre rendez-vous <b>↗︎</b></strong>
         </a>
         <a class="contact-card contact-card--client contact-card--client-wide" href="{{ path('app_espace_client') }}">
             <span class="contact-card-no">02</span>
@@ -222,7 +222,7 @@
                 <span>01 · Dépôt documentaire</span>
                 <span>02 · Démarrer un dossier</span>
             </div>
-            <strong>Accéder à l’espace client <b>↗</b></strong>
+            <strong>Accéder à l’espace client <b>↗︎</b></strong>
         </a>
     </div>
 </section>

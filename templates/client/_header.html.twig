@@ -64,12 +64,12 @@
                aria-label="Espace client — dépôt documentaire">
                 <span class="bm-nav__long">Espace client</span>
                 <span class="bm-nav__court">Documents</span>
-                <b aria-hidden="true">↗</b>
+                <b aria-hidden="true">↗︎</b>
             </a>
             <a class="bm-nav__bouton bm-nav__bouton--plein" href="{{ path('app_rendez_vous') }}">
                 <span class="bm-nav__long">Prendre rendez-vous</span>
                 <span class="bm-nav__court">Rendez-vous</span>
-                <b aria-hidden="true">↗</b>
+                <b aria-hidden="true">↗︎</b>
             </a>
         </div>
 
@@ -148,12 +148,12 @@
                 {% endfor %}
             </ul>
             <a href="{{ path('app_rendez_vous') }}" class="bm-nav__bouton bm-nav__bouton--plein w-100 justify-content-center">
-                <span>Prendre rendez-vous</span><b aria-hidden="true">↗</b>
+                <span>Prendre rendez-vous</span><b aria-hidden="true">↗︎</b>
             </a>
             {# La barre d'actions disparait sous 860px : l'espace client doit
                rester joignable ici, sinon la page n'a plus d'entree mobile. #}
             <a href="{{ path('app_espace_client') }}" class="bm-nav__bouton w-100 justify-content-center mt-2">
-                <span>Espace client</span><b aria-hidden="true">↗</b>
+                <span>Espace client</span><b aria-hidden="true">↗︎</b>
             </a>
         </div>
     </div>
