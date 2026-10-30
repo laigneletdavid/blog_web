@@ -187,8 +187,17 @@ class SeoSettingsCrudController extends AbstractCrudController
         yield TextField::new('googleAnalyticsId', 'Google Analytics')
             ->setHelp($analyticsHelp);
 
-        yield TextField::new('googleSearchConsole', 'Code de vérification Search Console')
-            ->setHelp('Prouve à Google que le site vous appartient. À copier depuis Google Search Console, méthode « Balise HTML ».');
+        // Search Console se valide par le DNS (propriete « Domaine ») : plus de
+        // code a saisir ici. La colonne site.google_search_console reste lue par
+        // base.html.twig pour les sites deja valides par balise.
+        yield FormField::addFieldset('Google Search Console')
+            ->setIcon('fab fa-google')
+            ->setHelp('<p>Pensez à déclarer votre site dans <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console <i class="fa fa-arrow-up-right-from-square fa-xs"></i></a> dès sa mise en ligne. Vous y verrez sur quelles recherches il apparaît, et à quelle position.</p>
+                <ol class="mb-0">
+                    <li>Ajoutez une propriété de type <strong>Domaine</strong> (votre domaine sans <code>www</code> ni <code>https://</code>).</li>
+                    <li>Google donne un enregistrement <strong>TXT</strong> : ajoutez-le dans la zone DNS de votre domaine, <strong>sous-domaine vide</strong>, puis cliquez sur « Valider ».</li>
+                    <li>Dans le menu <em>Sitemaps</em>, envoyez <code>/sitemap.xml</code>.</li>
+                </ol>');
     }
 
     protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
@@ -258,7 +267,7 @@ class SeoSettingsCrudController extends AbstractCrudController
                 ],
                 [
                     'title' => 'Outils Google',
-                    'content' => '<p><strong>Search Console</strong> vous montre sur quelles recherches votre site apparaît, et à quelle position. Pour le relier : dans Search Console, ajoutez votre site, choisissez la méthode <em>Balise HTML</em>, puis copiez ici le code entre les guillemets de <code>content="..."</code>.</p>'
+                    'content' => '<p><strong>Search Console</strong> vous montre sur quelles recherches votre site apparaît, et à quelle position. Pour le relier : ajoutez une propriété de type <em>Domaine</em>, placez l\'enregistrement TXT donné par Google dans la zone DNS de votre domaine (sous-domaine vide), validez, puis envoyez <code>/sitemap.xml</code> dans le menu <em>Sitemaps</em>. Aucun code n\'est à copier sur cette page.</p>'
                         . $analytics,
                 ],
             ],

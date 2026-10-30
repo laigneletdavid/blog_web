@@ -79,7 +79,14 @@ _(Optionnel mais recommande en production)_
 | **Titre SEO par defaut** | _(le title Google, ex: "Boulangerie Martin - Pain artisanal a Lyon")_ |
 | **Description SEO par defaut** | _(meta description, ~155 caracteres)_ |
 | **Google Analytics ID** | _(optionnel, ex: G-XXXXXXXXXX)_ |
-| **Google Search Console** | _(optionnel, code de verification)_ |
+| **Activite** (que propose-t-il ?) | |
+| **Cible** (a qui s'adresse-t-il ?) | |
+| **Ce qui le distingue** | |
+| **Portee** | _(local / regional / national)_ |
+| **Villes visees** | _(une par ligne, celles ou il intervient vraiment)_ |
+| **Priorites** | _(services ou produits, par ordre d'importance)_ |
+| **Mots que tapent ses clients** | _(optionnel, ex: "notaire saint-martory")_ |
+| **Google Search Console** | _(apres mise en ligne : propriete Domaine, TXT dans la zone DNS — rien a saisir dans l'admin)_ |
 
 ## 9. Medias
 
