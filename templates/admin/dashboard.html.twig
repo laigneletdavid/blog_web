@@ -67,6 +67,20 @@
     </div>
     {% endif %}
 
+    {# --- Visites des 30 derniers jours : vues, visiteurs uniques et robots.
+         Le graphique est dessine par admin-dashboard.js (canvas #visitsChart). --- #}
+    {% if dailyStats is not null %}
+    <section class="bw-panel" aria-label="Visites des 30 derniers jours">
+        <div class="bw-panel__head">
+            <h2 class="bw-panel__title">Visites des 30 derniers jours</h2>
+            {% if hasStats %}<a href="{{ path('admin', {routeName: 'admin_stats_index'}) }}">Statistiques détaillées</a>{% endif %}
+        </div>
+        <div style="position: relative; height: 260px;">
+            <canvas id="visitsChart" data-stats="{{ dailyStats|json_encode|e('html_attr') }}"></canvas>
+        </div>
+    </section>
+    {% endif %}
+
     {# --- Derniers contenus modifies --- #}
     {% if recent is not empty %}
     <section class="bw-panel" aria-label="Modifiés récemment">
