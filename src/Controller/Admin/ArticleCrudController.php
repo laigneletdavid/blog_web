@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use App\Enum\VisibilityEnum;
 use App\Repository\PageViewRepository;
 use App\Service\ArticleNotificationService;
@@ -35,6 +37,7 @@ class ArticleCrudController extends AbstractCrudController
         private readonly SiteContext $siteContext,
         private readonly PageViewRepository $pageViewRepository,
         private readonly SeoAnalyzer $seoAnalyzer,
+        private readonly \App\Service\AdminModeService $adminMode,
     ) {
     }
 
@@ -54,35 +57,36 @@ class ArticleCrudController extends AbstractCrudController
             'title' => 'Aide — Articles',
             'sections' => [
                 [
-                    'title' => 'L\'editeur de contenu',
-                    'content' => '<p>L\'editeur visuel vous permet de mettre en forme vos articles : <strong>gras</strong>, <em>italique</em>, titres, listes, images, videos YouTube, citations et blocs de code.</p>
-                    <p>Vous pouvez aussi inserer des <strong>documents telechargeables</strong> (PDF, DOCX, XLSX, ZIP...) via le bouton <em>Document</em> de la barre d\'outils ou la commande <code>/document</code>. Ils s\'affichent en carte cliquable avec icone, nom et taille.</p>
-                    <p>Votre brouillon est <strong>sauvegarde automatiquement</strong> toutes les 30 secondes dans votre navigateur.</p>',
+                    'title' => 'Le formulaire',
+                    'content' => '<p><strong>À gauche, vous écrivez</strong> : titre, résumé (affiché dans la liste des articles), contenu, puis le bloc <em>Dans Google</em>.</p>
+                    <p><strong>À droite, vous publiez et classez</strong> : publication, auteur, image, catégories et étiquettes.</p>
+                    <p>Le contenu se met en forme avec l\'éditeur visuel. Tapez <code>/</code> pour insérer un bloc : image, vidéo, encart, colonnes, document à télécharger. Votre brouillon est sauvegardé automatiquement toutes les 30 secondes dans votre navigateur.</p>',
                 ],
                 [
                     'title' => 'Publication',
                     'content' => '<ul>
-                        <li>Par defaut, un article est en <strong>brouillon</strong> (non visible)</li>
-                        <li>Cochez <em>Publie</em> pour le rendre visible immediatement</li>
-                        <li>Ou definissez une <strong>date de publication programmee</strong> : l\'article sera publie automatiquement a la date et heure choisies, des qu\'un visiteur accede au site</li>
-                        <li>Si une date future est definie, l\'article reste en brouillon meme si <em>Publie</em> est coche</li>
-                        <li>Les abonnes sont notifies par email au moment de la publication (immediate ou programmee)</li>
+                        <li>Un nouvel article est un <strong>brouillon</strong> : vous seul le voyez</li>
+                        <li>Cochez <em>En ligne</em> pour le publier tout de suite</li>
+                        <li>Ou choisissez une date dans <em>Programmer une date</em> : il sera mis en ligne automatiquement à ce moment-là</li>
+                        <li>Les abonnés à la lettre sont prévenus par e-mail au moment de la mise en ligne</li>
                     </ul>',
                 ],
                 [
-                    'title' => 'Article vedette',
-                    'content' => '<p>Un article marque <em>vedette</em> est affiche en evidence en haut de la page Blog. Un seul article peut etre vedette a la fois.</p>',
+                    'title' => 'Auteur et mise en avant',
+                    'content' => '<p>L\'<em>Auteur</em> est rempli avec votre compte à la création. Il est affiché sous l\'article avec ses initiales et sa présentation, et Google valorise les contenus signés.</p>
+                    <p><em>Mettre en avant</em> affiche l\'article en tête de la page Blog.</p>',
                 ],
                 [
-                    'title' => 'SEO',
-                    'content' => '<p>Le panneau <em>SEO</em> (en bas du formulaire) vous permet de personnaliser le titre et la description qui apparaissent dans Google. Si vous les laissez vides, le titre et l\'accroche de l\'article sont utilises.</p>',
+                    'title' => 'Dans Google',
+                    'content' => '<p>Le bloc <em>Dans Google</em>, sous le contenu, règle le titre et la description affichés dans les résultats de recherche. L\'aperçu au-dessus montre le rendu pendant que vous tapez. Laissez vide pour reprendre le titre et le résumé.</p>
+                    <p>Le bilan en haut du formulaire vous indique ce qu\'il reste à améliorer.</p>',
                 ],
             ],
             'tips' => [
-                'Ajoutez toujours une image mise en avant et un texte d\'accroche pour rendre vos articles plus attractifs.',
-                'Un bon titre SEO fait entre 50 et 70 caracteres, et la meta-description entre 120 et 160.',
-                'Utilisez la publication programmee pour preparer vos articles a l\'avance et maintenir un rythme regulier.',
-                'Pour partager un PDF ou une plaquette, inserez-le directement depuis l\'editeur via le bouton Document : il s\'affichera en carte cliquable.',
+                'Ajoutez toujours une image et un résumé : vos articles seront plus attractifs dans les listes et sur les réseaux sociaux.',
+                'Un bon titre dans Google fait 30 à 60 caractères, et la description 120 à 160.',
+                'Programmez vos articles à l\'avance pour garder un rythme de publication régulier.',
+                'Pour partager un PDF ou une plaquette, insérez-le depuis l\'éditeur avec le bouton Document : il s\'affichera en carte cliquable.',
             ],
         ];
     }
@@ -108,18 +112,27 @@ class ArticleCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $viewOnSite);
     }
 
+    /**
+     * Formulaire en deux colonnes : ecrire a gauche, publier a droite.
+     * Les reglages techniques (adresse, canonique, mots-cles...) ne sortent qu'en mode expert.
+     */
     public function configureFields(string $pageName): iterable
     {
-        // --- Panel Contenu ---
-        yield FormField::addPanel('Contenu')
-            ->setIcon('fa fa-pen')
-            ->collapsible();
+        $expert = $this->adminMode->isExpert();
 
+        // Liste : score SEO, titre, categories, image, statut, vues, dates
         yield $this->seoScoreField();
 
-        yield TextField::new('title', 'Titre de l\'article');
+        // ===== Colonne principale : le contenu =====
+        yield FormField::addColumn('col-lg-8');
 
-        yield TextareaField::new('blocksJson', 'Contenu de l\'article')
+        yield TextField::new('title', 'Titre');
+
+        yield TextField::new('featuredText', 'Résumé')
+            ->setHelp('Une ou deux phrases, affichées dans la liste des articles.')
+            ->hideOnIndex();
+
+        yield TextareaField::new('blocksJson', 'Contenu')
             ->setFormTypeOptions([
                 'attr' => [
                     'data-tiptap-editor' => '',
@@ -127,13 +140,54 @@ class ArticleCrudController extends AbstractCrudController
                 ],
             ])
             ->setColumns('col-12')
-            ->setHelp('Editeur visuel : mise en forme, images, videos, encarts, colonnes. Tapez <strong>/</strong> pour inserer rapidement un bloc.')
+            ->setHelp('Tapez <strong>/</strong> pour insérer rapidement un bloc : image, vidéo, encart, colonnes, document.')
             ->hideOnIndex();
 
-        // --- Panel Paramètres ---
-        yield FormField::addPanel('Paramètres')
-            ->setIcon('fa fa-cog')
-            ->collapsible();
+        // Apercu Google : le JS admin-simple affiche le rendu au-dessus de ces deux champs
+        yield FormField::addFieldset('Dans Google')
+            ->setHelp('Laissez vide pour reprendre le titre et le résumé.');
+
+        yield TextField::new('seoTitle', 'Titre dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
+            ->hideOnIndex();
+
+        yield TextareaField::new('seoDescription', 'Description dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 2]])
+            ->hideOnIndex();
+
+        // ===== Colonne laterale : publier et classer =====
+        yield FormField::addColumn('col-lg-4');
+
+        yield FormField::addFieldset('Publication')->setIcon('fa fa-paper-plane');
+
+        yield BooleanField::new('published', 'En ligne')
+            ->setHelp('Décoché : brouillon, visible de vous seul.');
+
+        yield DateTimeField::new('scheduledAt', 'Programmer une date')
+            ->setHelp('L\'article sera mis en ligne automatiquement à cette date.')
+            ->hideOnIndex()
+            ->setRequired(false);
+
+        // Seuls les comptes qui ecrivent (ROLE_AUTHOR et +) sont proposes, pas les membres
+        yield AssociationField::new('author', 'Auteur')
+            ->setFormTypeOption('choice_label', 'displayName')
+            ->setQueryBuilder(static fn (QueryBuilder $qb) => $qb
+                ->andWhere(sprintf(
+                    '(%1$s.roles LIKE :author OR %1$s.roles LIKE :admin OR %1$s.roles LIKE :freelance OR %1$s.roles LIKE :superAdmin)',
+                    $qb->getRootAliases()[0],
+                ))
+                ->setParameter('author', '%ROLE_AUTHOR%')
+                ->setParameter('admin', '%ROLE_ADMIN%')
+                ->setParameter('freelance', '%ROLE_FREELANCE%')
+                ->setParameter('superAdmin', '%ROLE_SUPER_ADMIN%'))
+            ->hideOnIndex();
+
+        yield FormField::addFieldset('Image')->setIcon('fa fa-image');
+
+        yield AssociationField::new('featuredMedia', 'Image')
+            ->setHelp('Son texte alternatif se règle dans Médias.');
+
+        yield FormField::addFieldset('Classement')->setIcon('fa fa-tags');
 
         yield AssociationField::new('categories', 'Catégories');
 
@@ -141,45 +195,45 @@ class ArticleCrudController extends AbstractCrudController
         // Symfony Forms modifie la collection sans appeler addTag()/removeTag(),
         // donc rien n'est persiste cote owning (Tag). Ce flag force l'utilisation
         // des methodes add*/remove* qui propagent au cote proprietaire.
-        yield AssociationField::new('tags', 'Tags')
-            ->setHelp('Associez des tags pour organiser vos articles par thématique')
+        yield AssociationField::new('tags', 'Étiquettes')
             ->setFormTypeOption('by_reference', false)
             ->hideOnIndex();
 
-        yield AssociationField::new('featuredMedia', 'Image mise en avant');
-
-        yield TextField::new('featuredText', 'Texte mis en avant')
-            ->setHelp('Court résumé affiché dans les listes d\'articles')
+        yield BooleanField::new('isFeatured', 'Mettre en avant')
+            ->setHelp('Affiché en tête de la page blog.')
             ->hideOnIndex();
 
-        yield BooleanField::new('published', 'Publié')
-            ->setHelp('Si une date de programmation est définie dans le futur, l\'article sera publié automatiquement à cette date.');
+        if ($expert) {
+            yield FormField::addFieldset('Options avancées')
+                ->setIcon('fa fa-sliders-h')
+                ->setCssClass('bw-fieldset-expert');
 
-        yield DateTimeField::new('scheduledAt', 'Publication programmée')
-            ->setHelp('Laissez vide pour publier manuellement. Si une date future est définie, l\'article sera publié automatiquement.')
-            ->hideOnIndex()
-            ->setRequired(false);
+            yield $this->slugField('title');
 
-        yield BooleanField::new('isFeatured', 'Article vedette')
-            ->setHelp('L\'article vedette est mis en avant en haut de la page blog')
-            ->hideOnIndex();
+            if ($this->siteContext->hasModule('private_pages')) {
+                yield ChoiceField::new('visibility', 'Visible par')
+                    ->setChoices(VisibilityEnum::choices())
+                    ->renderExpanded(false)
+                    ->hideOnIndex();
+            }
 
-        if ($this->siteContext->hasModule('private_pages')) {
-            yield ChoiceField::new('visibility', 'Visibilite')
-                ->setChoices(VisibilityEnum::choices())
-                ->renderExpanded(false)
-                ->setHelp('Public = visible par tous. Membres = connectes uniquement. Admin = administrateurs uniquement.')
+            yield TextField::new('seoKeywords', 'Mots-clés')
+                ->setHelp('Ignorés par Google, utiles seulement à certains outils.')
+                ->hideOnIndex();
+
+            yield BooleanField::new('noIndex', 'Masquer des moteurs de recherche')
+                ->hideOnIndex();
+
+            yield TextField::new('canonicalUrl', 'Adresse canonique')
+                ->setHelp('Seulement si ce texte existe aussi sur un autre site.')
+                ->hideOnIndex();
+
+            yield DateTimeField::new('publishedAt', 'Date de publication')
+                ->setHelp('Remplie automatiquement à la première mise en ligne.')
                 ->hideOnIndex();
         }
 
-        // --- Panel Avancé (collapsed) ---
-        yield FormField::addPanel('Avancé')
-            ->setIcon('fa fa-sliders-h')
-            ->collapsible()
-            ->renderCollapsed();
-
-        yield $this->slugField('title');
-
+        // Colonnes de la liste uniquement
         $pvRepo = $this->pageViewRepository;
         yield IntegerField::new('viewCount', 'Vues')
             ->hideOnForm()
@@ -192,38 +246,19 @@ class ArticleCrudController extends AbstractCrudController
 
         yield DateTimeField::new('updatedAt', 'Modifié le')
             ->hideOnForm();
+    }
 
-        yield DateTimeField::new('publishedAt', 'Date de publication')
-            ->setHelp('Rempli automatiquement à la première publication')
-            ->hideOnIndex();
+    public function createEntity(string $entityFqcn): Article
+    {
+        $article = new Article();
 
-        // --- Panel SEO ---
-        yield FormField::addPanel('SEO')
-            ->setIcon('fa fa-search')
-            ->collapsible()
-            ->renderCollapsed();
+        // L'auteur par defaut est le compte qui cree l'article (modifiable dans le formulaire)
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $article->setAuthor($user);
+        }
 
-        yield TextField::new('seoTitle', 'Titre SEO')
-            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Un bon titre attire les clics. Max 70 caracteres. Laissez vide = titre de l\'article.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
-            ->hideOnIndex();
-
-        yield TextareaField::new('seoDescription', 'Meta description')
-            ->setHelp('Texte affiche sous le titre dans les resultats Google. Un bon resume incite au clic et ameliore le taux de visite. Max 160 caracteres.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
-            ->hideOnIndex();
-
-        yield TextField::new('seoKeywords', 'Mots-cles')
-            ->setHelp('Mots-cles principaux de l\'article, separes par des virgules. Aide au referencement thematique.')
-            ->hideOnIndex();
-
-        yield BooleanField::new('noIndex', 'Masquer des moteurs')
-            ->setHelp('Si active, Google n\'indexera pas cet article. Utile pour les brouillons ou contenus prives.')
-            ->hideOnIndex();
-
-        yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site, pour eviter le contenu duplique. Laissez vide sinon.')
-            ->hideOnIndex();
+        return $article;
     }
 
     public function persistEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void

@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -37,7 +36,7 @@ class SiteCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Aide — Identite du site',
+            'title' => 'Aide — Identité du site',
             'sections' => [
                 [
                     'title' => 'Identite',
@@ -46,17 +45,7 @@ class SiteCrudController extends AbstractCrudController
                         <li><strong>Nom du site</strong> — Affiche dans le header, le footer et les onglets du navigateur</li>
                         <li><strong>Phrase d\'accroche</strong> — Texte de presentation visible sur la page d\'accueil</li>
                         <li><strong>Logo</strong> — Affiche dans le header. Le <em>Logo fond sombre</em> est utilise dans le footer</li>
-                        <li><strong>Image Open Graph</strong> — Image par defaut lors du partage sur les reseaux sociaux (1200x630 px recommande)</li>
                         <li><strong>Coordonnees</strong> — Email, telephone, adresse. Utilises dans le footer et le schema.org</li>
-                    </ul>',
-                ],
-                [
-                    'title' => 'Fiche entreprise (Google)',
-                    'content' => '<p>Ces informations alimentent la <strong>fiche entreprise Google</strong> (schema.org) :</p>
-                    <ul>
-                        <li><strong>Type d\'activite</strong> — Definit comment Google categorise votre entreprise (commerce, restaurant, service...)</li>
-                        <li><strong>Gamme de prix</strong> — Indicateur affiche dans la fiche Google (€ a €€€€)</li>
-                        <li><strong>Horaires</strong> — Un horaire par ligne, ex: <code>Lu-Ve 09:00-18:00</code>. Transmis directement a Google</li>
                     </ul>',
                 ],
                 [
@@ -64,16 +53,14 @@ class SiteCrudController extends AbstractCrudController
                     'content' => '<p>Vos liens vers les reseaux sociaux. Ils sont affiches dans le footer et transmis a Google via le champ <code>sameAs</code> du schema.org, ce qui renforce votre presence en ligne.</p>',
                 ],
                 [
-                    'title' => 'SEO global',
-                    'content' => '<p>Les champs <em>Titre SEO par defaut</em> et <em>Description SEO par defaut</em> sont utilises comme valeurs de repli quand un article ou une page n\'a pas ses propres champs SEO remplis.</p>
-                    <p><strong>Google Analytics</strong> (format G-XXXXXXXXXX) active le suivi de visites. <strong>Search Console</strong> sert a prouver que vous etes proprietaire du site.</p>',
+                    'title' => 'Referencement',
+                    'content' => '<p>La fiche entreprise Google, le titre et la description par defaut, l\'image de partage, Google Analytics et Search Console se règlent dans l\'entrée <em>Référencement</em> du menu.</p>',
                 ],
             ],
             'tips' => [
                 'Commencez par remplir le nom, la description et l\'email de contact.',
                 'Le logo est affiche en petit dans le header. Privilegiez un format horizontal ou carre, en PNG transparent.',
-                'Remplir la fiche entreprise et les reseaux sociaux ameliore votre visibilite dans les resultats Google.',
-                'Les horaires doivent respecter le format <code>Lu-Ve 09:00-18:00</code> (un par ligne) pour etre compris par Google.',
+                'Remplir les reseaux sociaux ameliore votre visibilite dans les resultats Google.',
             ],
         ];
     }
@@ -89,6 +76,7 @@ class SiteCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $crud->setPageTitle(Crud::PAGE_DETAIL, 'Mon site');
+        $crud->setPageTitle(Crud::PAGE_EDIT, 'Identité du site');
 
         return $crud;
     }
@@ -114,15 +102,15 @@ class SiteCrudController extends AbstractCrudController
         yield FormField::addFieldset('Visuels');
 
         yield AssociationField::new('logo', 'Logo')
-            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header. Les favicons (onglet navigateur, ecran d\'accueil mobile) sont generes automatiquement.')
+            ->setHelp('Format horizontal ou carre recommande. PNG transparent ou JPG. Affiche dans le header.')
+            ->hideOnIndex();
+
+        yield AssociationField::new('favicon', 'Icone du site')
+            ->setHelp('Image carree, PNG transparent de 512 px de cote de preference. Sert a l\'onglet du navigateur et a l\'ecran d\'accueil des mobiles. Si vide, le logo entier est utilise, sans rognage.')
             ->hideOnIndex();
 
         yield AssociationField::new('logoDark', 'Logo fond sombre')
             ->setHelp('Pour le footer et les zones sombres. Si vide, le logo principal est utilise.')
-            ->hideOnIndex();
-
-        yield AssociationField::new('ogImage', 'Image Open Graph')
-            ->setHelp('Image affichee lors du partage sur les reseaux sociaux. Format recommande : 1200x630 px.')
             ->hideOnIndex();
 
         // Sous-section : Coordonnees
@@ -149,45 +137,7 @@ class SiteCrudController extends AbstractCrudController
         yield TextField::new('google_maps')
             ->setLabel('Lien Google Maps');
 
-        // --- Panel Fiche entreprise ---
-        yield FormField::addPanel('Fiche entreprise (Google)')
-            ->setIcon('fa fa-store')
-            ->collapsible()
-            ->renderCollapsed();
-
-        yield ChoiceField::new('businessType', 'Type d\'activite')
-            ->setChoices([
-                'Organisation (defaut)' => 'Organization',
-                'Commerce / Magasin' => 'Store',
-                'Restaurant' => 'Restaurant',
-                'Service professionnel' => 'ProfessionalService',
-                'Agence' => 'LocalBusiness',
-                'Sante / Medical' => 'MedicalBusiness',
-                'Hebergement' => 'LodgingBusiness',
-                'Sport / Loisirs' => 'SportsActivityLocation',
-            ])
-            ->setHelp('Definit le type schema.org affiche dans Google. "Organisation" par defaut.')
-            ->allowMultipleChoices(false)
-            ->renderExpanded(false)
-            ->hideOnIndex();
-
-        yield ChoiceField::new('priceRange', 'Gamme de prix')
-            ->setChoices([
-                'Non renseigne' => null,
-                '€ — Economique' => '€',
-                '€€ — Moyen' => '€€',
-                '€€€ — Haut de gamme' => '€€€',
-                '€€€€ — Luxe' => '€€€€',
-            ])
-            ->setHelp('Affiche dans la fiche Google. Laissez vide si non pertinent.')
-            ->allowMultipleChoices(false)
-            ->renderExpanded(false)
-            ->hideOnIndex();
-
-        yield TextareaField::new('openingHours', 'Horaires d\'ouverture')
-            ->setHelp('Un horaire par ligne, format : <code>Lu-Ve 09:00-18:00</code> ou <code>Sa 10:00-16:00</code>. Laissez vide si non applicable.')
-            ->setFormTypeOptions(['attr' => ['rows' => 4, 'placeholder' => "Lu-Ve 09:00-18:00\nSa 10:00-16:00"]])
-            ->hideOnIndex();
+        // Fiche entreprise Google, SEO par defaut et outils Google : voir SeoSettingsCrudController
 
         // --- Panel Reseaux sociaux ---
         yield FormField::addPanel('Reseaux sociaux')
@@ -209,29 +159,6 @@ class SiteCrudController extends AbstractCrudController
 
         yield TextField::new('twitterHandle', 'Twitter / X')
             ->setHelp('Votre identifiant Twitter sans le @, ex: monentreprise')
-            ->hideOnIndex();
-
-        // --- Panel SEO ---
-        yield FormField::addPanel('SEO')
-            ->setIcon('fa fa-search')
-            ->collapsible();
-
-        yield TextField::new('defaultSeoTitle', 'Titre SEO par defaut')
-            ->setHelp('Utilise quand un article ou une page n\'a pas de titre SEO propre. Apparait dans Google et l\'onglet navigateur. Max 70 caracteres.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
-            ->hideOnIndex();
-
-        yield TextareaField::new('defaultSeoDescription', 'Meta description par defaut')
-            ->setHelp('Description globale du site, affichee dans Google quand une page n\'a pas sa propre description. Max 160 caracteres.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
-            ->hideOnIndex();
-
-        yield TextField::new('googleAnalyticsId', 'Google Analytics ID')
-            ->setHelp('Permet de suivre le trafic du site. Format : G-XXXXXXXXXX. Disponible dans votre compte Google Analytics.')
-            ->hideOnIndex();
-
-        yield TextField::new('googleSearchConsole', 'Google Search Console')
-            ->setHelp('Code de verification pour prouver a Google que vous etes proprietaire du site. Disponible dans Google Search Console > Parametres.')
             ->hideOnIndex();
 
         // --- Panel Catalogue (si module actif) ---

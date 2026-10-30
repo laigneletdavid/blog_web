@@ -1,0 +1,49 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Réglages{% endblock %}
+
+{% block content_header %}
+    <div class="bw-page-head">
+        <div>
+            <h1 class="bw-page-head__title">Réglages</h1>
+            <p class="bw-page-head__text">Ce qu'on règle une fois, rarement ensuite.</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+<div class="bw-simple">
+    <div class="bw-cards">
+        {% for card in cards %}
+            <a class="bw-tile" href="{{ card.url }}">
+                <i class="fas {{ card.icon }} bw-tile__icon" aria-hidden="true"></i>
+                <strong class="bw-tile__title">{{ card.title }}</strong>
+                <span class="bw-tile__text">{{ card.text }}</span>
+            </a>
+        {% endfor %}
+
+        <div class="bw-tile bw-tile--static">
+            <i class="fas fa-tags bw-tile__icon" aria-hidden="true"></i>
+            <strong class="bw-tile__title">Catégories et étiquettes</strong>
+            <span class="bw-tile__text">Pour ranger vos contenus</span>
+            <ul class="bw-tile__links">
+                {% for link in classements %}
+                    <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% for card in expertCards %}
+            <a class="bw-tile bw-tile--expert" href="{{ card.url }}">
+                <i class="fas {{ card.icon }} bw-tile__icon" aria-hidden="true"></i>
+                <strong class="bw-tile__title">{{ card.title }}</strong>
+                <span class="bw-tile__text">{{ card.text }}</span>
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if not is_admin_expert() %}
+        <p class="bw-hint">Les réglages techniques (modules, abonnés, familles d'étiquettes) apparaissent en mode expert, en bas du menu.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -43,9 +44,12 @@ class ThemeImagesCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Image du theme')
-            ->setEntityLabelInPlural('Images du theme')
-            ->setPageTitle(Crud::PAGE_INDEX, 'Images du theme')
+            ->setEntityLabelInSingular('Image du thème')
+            ->setEntityLabelInPlural('Images du thème')
+            ->setPageTitle(Crud::PAGE_INDEX, 'Images du thème')
+            ->setHelp(Crud::PAGE_INDEX, 'Fait partie de l\'<a href="'
+                . $this->container->get(AdminUrlGenerator::class)->unsetAll()->setController(ThemeSettingsCrudController::class)->setAction(Action::EDIT)->setEntityId($this->siteContext->getCurrentSiteId())->generateUrl()
+                . '">Apparence</a> du site : photos de l\'accueil, galerie, témoignages.')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une image')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l\'image')
             ->setDefaultSort(['slot' => 'ASC', 'position' => 'ASC'])

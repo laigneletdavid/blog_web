@@ -24,6 +24,7 @@ class MediaApiController extends AbstractController
             'id' => $media->getId(),
             'name' => $media->getName(),
             'file_name' => $media->getFileName(),
+            'alt' => $media->getAlt(),
         ], $medias);
 
         return $this->json($data);

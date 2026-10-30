@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Categorie;
 use App\Service\SeoAnalyzer;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -39,7 +40,7 @@ class CategorieCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Aide — Categories',
+            'title' => 'Aide — Catégories du blog',
             'sections' => [
                 [
                     'title' => 'Organiser vos contenus',
@@ -57,9 +58,16 @@ class CategorieCrudController extends AbstractCrudController
             ],
             'tips' => [
                 'Limitez-vous a 5-10 categories. Trop de categories diluent la navigation et le SEO.',
-                'Vous pouvez ajouter une categorie dans le menu principal via Reglages > Navigation.',
+                'Vous pouvez ajouter une catégorie au menu du site dans Réglages → Menu du site.',
             ],
         ];
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Catégorie')
+            ->setEntityLabelInPlural('Catégories du blog');
     }
 
     public function configureFields(string $pageName): iterable

@@ -25,6 +25,7 @@ class ServiceCrudController extends AbstractCrudController
 
     public function __construct(
         private readonly SeoAnalyzer $seoAnalyzer,
+        private readonly \App\Service\AdminModeService $adminMode,
     ) {
     }
 
@@ -47,90 +48,100 @@ class ServiceCrudController extends AbstractCrudController
             ->setDefaultSort(['position' => 'ASC']);
     }
 
+    /**
+     * Formulaire en deux colonnes : decrire a gauche, publier et ranger a droite.
+     * Adresse, lien externe et reglages SEO techniques ne sortent qu'en mode expert.
+     */
     public function configureFields(string $pageName): iterable
     {
-        // --- Panel Contenu ---
-        yield FormField::addPanel('Contenu')
-            ->setIcon('fa fa-pen')
-            ->collapsible();
+        $expert = $this->adminMode->isExpert();
 
         yield $this->seoScoreField();
+
+        // ===== Colonne principale : le contenu =====
+        yield FormField::addColumn('col-lg-8');
 
         yield TextField::new('title', 'Titre');
 
         yield TextareaField::new('shortDescription', 'Description courte')
-            ->setHelp('Affichée dans la grille des services sur la page d\'accueil.')
+            ->setHelp('Affichée dans la liste des services, sur l\'accueil.')
             ->setFormTypeOptions(['attr' => ['rows' => 3]])
             ->hideOnIndex();
 
-        yield TextareaField::new('blocksJson', 'Contenu détaillé')
+        yield TextareaField::new('blocksJson', 'Page détaillée')
             ->setFormTypeOptions(['attr' => ['data-tiptap-editor' => '', 'style' => 'display: none']])
             ->setColumns('col-12')
-            ->setHelp('Page de detail du service (editeur visuel, optionnel). Tapez <strong>/</strong> pour inserer un bloc. Si vide, pas de page detail.')
+            ->setHelp('Facultatif : si vide, le service n\'a pas de page à lui. Tapez <strong>/</strong> pour insérer un bloc.')
+            ->hideOnIndex();
+
+        // Apercu Google : le JS admin-simple affiche le rendu au-dessus de ces deux champs
+        yield FormField::addFieldset('Dans Google')
+            ->setHelp('Laissez vide pour reprendre le titre et la description courte.');
+
+        yield TextField::new('seoTitle', 'Titre dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
+            ->hideOnIndex();
+
+        yield TextareaField::new('seoDescription', 'Description dans Google')
+            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 2]])
+            ->hideOnIndex();
+
+        // ===== Colonne laterale =====
+        yield FormField::addColumn('col-lg-4');
+
+        yield FormField::addFieldset('Publication')->setIcon('fa fa-paper-plane');
+
+        yield BooleanField::new('isActive', 'En ligne');
+
+        yield IntegerField::new('position', 'Ordre d\'affichage')
+            ->setHelp('0 = en premier.');
+
+        yield FormField::addFieldset('Visuel')->setIcon('fa fa-image');
+
+        yield AssociationField::new('image', 'Image')
+            ->setHelp('Son texte alternatif se règle dans Médias.')
             ->hideOnIndex();
 
         yield IconPickerField::new('icon', 'Icône')
             ->hideOnIndex();
 
-        yield AssociationField::new('image', 'Image')
-            ->hideOnIndex();
-
-        // --- Panel Paramètres ---
-        yield FormField::addPanel('Paramètres')
-            ->setIcon('fa fa-cog')
-            ->collapsible();
-
-        yield $this->slugField('title');
+        yield FormField::addFieldset('Rangement')->setIcon('fa fa-sitemap');
 
         // Rattachement facultatif : laisse vide, le service reste au premier
         // niveau. C'est le cas de figure ordinaire, une offre a plat.
-        yield AssociationField::new('parent', 'Rattacher a')
-            ->setHelp('Laisser vide pour un service de premier niveau. Renseigne, ce service devient une prestation du service choisi.')
+        yield AssociationField::new('parent', 'Rattacher à un service')
+            ->setHelp('Laissez vide pour un service principal.')
             ->setFormTypeOption('choice_label', 'title')
             ->setFormTypeOption('required', false)
             ->autocomplete()
             ->hideOnIndex();
 
         yield AssociationField::new('linkedPage', 'Page liée')
-            ->setHelp('Lier ce service à une page du site (prioritaire sur le lien externe)')
+            ->setHelp('Ouvre cette page au clic, à la place de la page détaillée.')
             ->hideOnIndex();
 
-        yield TextField::new('link', 'Lien externe')
-            ->setHelp('URL externe (utilisé uniquement si pas de page liée ni de contenu détaillé)')
-            ->hideOnIndex();
+        if ($expert) {
+            yield FormField::addFieldset('Options avancées')
+                ->setIcon('fa fa-sliders-h')
+                ->setCssClass('bw-fieldset-expert');
 
-        yield IntegerField::new('position', 'Ordre')
-            ->setHelp('Ordre d\'affichage (0 = premier)');
+            yield $this->slugField('title');
 
-        yield BooleanField::new('isActive', 'Actif');
+            yield TextField::new('link', 'Lien externe')
+                ->setHelp('Utilisé seulement sans page liée ni page détaillée.')
+                ->hideOnIndex();
 
-        // --- Panel SEO ---
-        yield FormField::addPanel('SEO')
-            ->setIcon('fa fa-search')
-            ->collapsible()
-            ->renderCollapsed();
+            yield TextField::new('seoKeywords', 'Mots-clés')
+                ->setHelp('Ignorés par Google, utiles seulement à certains outils.')
+                ->hideOnIndex();
 
-        yield TextField::new('seoTitle', 'Titre SEO')
-            ->setHelp('Apparait dans l\'onglet du navigateur et comme titre dans Google. Max 70 caracteres. Laissez vide = titre du service.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 70]])
-            ->hideOnIndex();
+            yield BooleanField::new('noIndex', 'Masquer des moteurs de recherche')
+                ->hideOnIndex();
 
-        yield TextareaField::new('seoDescription', 'Meta description')
-            ->setHelp('Texte affiche sous le titre dans les resultats Google. Max 160 caracteres.')
-            ->setFormTypeOptions(['attr' => ['maxlength' => 160, 'rows' => 3]])
-            ->hideOnIndex();
-
-        yield TextField::new('seoKeywords', 'Mots-cles')
-            ->setHelp('Mots-cles du service, separes par des virgules.')
-            ->hideOnIndex();
-
-        yield BooleanField::new('noIndex', 'Masquer des moteurs')
-            ->setHelp('Si active, Google n\'indexera pas ce service.')
-            ->hideOnIndex();
-
-        yield TextField::new('canonicalUrl', 'URL canonique')
-            ->setHelp('A remplir uniquement si ce contenu existe aussi sur un autre site. Laissez vide sinon.')
-            ->hideOnIndex();
+            yield TextField::new('canonicalUrl', 'Adresse canonique')
+                ->setHelp('Seulement si ce texte existe aussi sur un autre site.')
+                ->hideOnIndex();
+        }
     }
 
     protected function getHelpData(): ?array
@@ -140,21 +151,22 @@ class ServiceCrudController extends AbstractCrudController
             'sections' => [
                 [
                     'title' => 'Fiches de services',
-                    'content' => '<p>Presentez vos prestations sous forme de grille sur la page d\'accueil.</p>
+                    'content' => '<p>Présentez vos prestations en grille sur la page d\'accueil.</p>
                     <ul>
-                        <li><strong>Description courte</strong> — affichee dans la carte du service</li>
-                        <li><strong>Contenu detaille</strong> — page de detail optionnelle (editeur visuel)</li>
-                        <li><strong>Icone</strong> — classe Bootstrap Icons (ex: <code>bi-rocket</code>)</li>
+                        <li><strong>Description courte</strong> — affichée dans la liste des services</li>
+                        <li><strong>Page détaillée</strong> — facultative : si elle est vide, le service n\'a pas de page à lui</li>
+                        <li><strong>Icône</strong> et <strong>image</strong> — à choisir dans leurs sélecteurs</li>
+                        <li><strong>Rattacher à un service</strong> — fait de ce service une prestation d\'un autre</li>
                     </ul>',
                 ],
                 [
-                    'title' => 'Liens',
-                    'content' => '<p>Priorite des liens : page liee > lien externe > page de detail auto-generee (si contenu detaille rempli).</p>',
+                    'title' => 'Au clic sur le service',
+                    'content' => '<p>Le visiteur est envoyé, dans cet ordre de priorité, vers la <em>Page liée</em>, puis le lien externe (mode expert), puis la page détaillée si elle est remplie.</p>',
                 ],
             ],
             'tips' => [
-                'L\'icone s\'affiche dans la grille des services sur la home. Trouvez les icones sur icons.getbootstrap.com.',
-                '<strong>SEO</strong> : chaque service a sa propre page. Pensez à remplir le Titre SEO (max 70 car.) et la Meta description (max 160 car.) dans le panel SEO pour un meilleur référencement.',
+                'Chaque service avec une page détaillée a sa propre adresse : remplissez son bloc Dans Google (titre de 30 à 60 caractères, description de 120 à 160).',
+                'Citez la ville ou la zone où vous intervenez dans le titre dans Google : le bilan de la page Référencement le vérifie.',
             ],
         ];
     }

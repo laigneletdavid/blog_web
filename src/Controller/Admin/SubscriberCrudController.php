@@ -34,7 +34,7 @@ class SubscriberCrudController extends AbstractCrudController
     protected function getHelpData(): ?array
     {
         return [
-            'title' => 'Abonnes',
+            'title' => 'Aide — Abonnés à la lettre',
             'icon' => 'fas fa-envelope',
             'sections' => [
                 [
