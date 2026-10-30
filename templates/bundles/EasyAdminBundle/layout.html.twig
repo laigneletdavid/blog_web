@@ -1,9 +1,22 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 
-{# Bascule mode simple / expert, sous le menu principal #}
+{# Bascule mode simple / expert, sous le menu principal. Seulement sur les
+   ecrans ou elle change quelque chose : l'edition d'un article, d'une page ou
+   d'un service (options avancees) et la page Reglages (modules, abonnes,
+   familles d'etiquettes). Ailleurs, cliquer ne montrait rien. #}
 {% block main_menu_wrapper %}
     {{ parent() }}
-    {% if is_granted('ROLE_AUTHOR') %}
+    {% set _bw_crud = ea is defined and ea ? ea.crud : null %}
+    {% set _bw_expert_ici = (_bw_crud
+            and _bw_crud.controllerFqcn in [
+                'App\\Controller\\Admin\\ArticleCrudController',
+                'App\\Controller\\Admin\\PageCrudController',
+                'App\\Controller\\Admin\\ServiceCrudController',
+            ]
+            and _bw_crud.currentAction in ['new', 'edit'])
+        or app.request.attributes.get('_route') == 'admin_settings'
+        or app.request.query.get('routeName') == 'admin_settings' %}
+    {% if is_granted('ROLE_AUTHOR') and _bw_expert_ici %}
         <form class="bw-expert-toggle" method="post" action="{{ path('admin_expert_toggle') }}">
             <input type="hidden" name="_token" value="{{ csrf_token('admin_expert') }}">
             <button type="submit" class="bw-expert-toggle__btn" role="switch" aria-checked="{{ is_admin_expert() ? 'true' : 'false' }}">

@@ -20,32 +20,31 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SitemapController extends AbstractController
 {
+    private const SECTIONS = ['pages', 'misc', 'articles', 'categories', 'services', 'products', 'events', 'portfolio', 'directory', 'tags'];
+
+    public function __construct(
+        private readonly ArticleRepository $articleRepository,
+        private readonly PageRepository $pageRepository,
+        private readonly CategorieRepository $categorieRepository,
+        private readonly ServiceRepository $serviceRepository,
+        private readonly EventRepository $eventRepository,
+        private readonly ProductRepository $productRepository,
+        private readonly PortfolioItemRepository $portfolioItemRepository,
+        private readonly DirectoryEntryRepository $directoryEntryRepository,
+        private readonly TagRepository $tagRepository,
+        private readonly SiteContext $siteContext,
+    ) {
+    }
+
     /**
-     * Sitemap index : liste des sous-sitemaps disponibles selon les modules actifs.
+     * Sitemap index : liste des sous-sitemaps qui ont au moins une URL.
+     * Google refuse un <urlset> vide (« Balise XML manquante »), d'ou le
+     * filtre : un site sans page editoriale n'annonce pas sitemap-pages.
      */
     #[Route('/sitemap.xml', name: 'app_sitemap', defaults: ['_format' => 'xml'])]
-    public function index(SiteContext $siteContext): Response
+    public function index(): Response
     {
-        $sitemaps = ['pages', 'articles', 'categories', 'misc'];
-
-        if ($siteContext->hasModule('services')) {
-            $sitemaps[] = 'services';
-        }
-        if ($siteContext->hasModule('catalogue')) {
-            $sitemaps[] = 'products';
-        }
-        if ($siteContext->hasModule('events')) {
-            $sitemaps[] = 'events';
-        }
-        if ($siteContext->hasModule('portfolio')) {
-            $sitemaps[] = 'portfolio';
-        }
-        if ($siteContext->hasModule('directory')) {
-            $sitemaps[] = 'directory';
-        }
-        if ($siteContext->hasModule('blog')) {
-            $sitemaps[] = 'tags';
-        }
+        $sitemaps = array_values(array_filter(self::SECTIONS, fn (string $type) => $this->buildUrls($type) !== []));
 
         $response = $this->render('sitemap/index.xml.twig', [
             'sitemaps' => $sitemaps,
@@ -59,39 +58,33 @@ class SitemapController extends AbstractController
      * Sous-sitemap par type d'entite.
      */
     #[Route('/sitemap-{type}.xml', name: 'app_sitemap_section', defaults: ['_format' => 'xml'])]
-    public function section(
-        string $type,
-        ArticleRepository $articleRepository,
-        PageRepository $pageRepository,
-        CategorieRepository $categorieRepository,
-        ServiceRepository $serviceRepository,
-        EventRepository $eventRepository,
-        ProductRepository $productRepository,
-        PortfolioItemRepository $portfolioItemRepository,
-        DirectoryEntryRepository $directoryEntryRepository,
-        TagRepository $tagRepository,
-        SiteContext $siteContext,
-    ): Response {
-        $urls = match ($type) {
-            'articles' => $this->buildArticleUrls($articleRepository),
-            'pages' => $this->buildPageUrls($pageRepository),
-            'categories' => $this->buildCategoryUrls($categorieRepository),
-            'services' => $this->buildServiceUrls($serviceRepository, $siteContext),
-            'products' => $this->buildProductUrls($productRepository, $siteContext),
-            'events' => $this->buildEventUrls($eventRepository, $siteContext),
-            'portfolio' => $this->buildPortfolioUrls($portfolioItemRepository, $siteContext),
-            'directory' => $this->buildDirectoryUrls($directoryEntryRepository, $siteContext),
-            'tags' => $this->buildTagUrls($tagRepository, $siteContext),
-            'misc' => $this->buildMiscUrls($pageRepository, $siteContext),
-            default => throw new NotFoundHttpException('Sitemap section not found.'),
-        };
-
+    public function section(string $type): Response
+    {
         $response = $this->render('sitemap/section.xml.twig', [
-            'urls' => $urls,
+            'urls' => $this->buildUrls($type),
         ]);
         $response->headers->set('Content-Type', 'application/xml');
 
         return $response;
+    }
+
+    private function buildUrls(string $type): array
+    {
+        $siteContext = $this->siteContext;
+
+        return match ($type) {
+            'articles' => $siteContext->hasModule('blog') ? $this->buildArticleUrls($this->articleRepository) : [],
+            'pages' => $this->buildPageUrls($this->pageRepository),
+            'categories' => $siteContext->hasModule('blog') ? $this->buildCategoryUrls($this->categorieRepository) : [],
+            'services' => $this->buildServiceUrls($this->serviceRepository, $siteContext),
+            'products' => $this->buildProductUrls($this->productRepository, $siteContext),
+            'events' => $this->buildEventUrls($this->eventRepository, $siteContext),
+            'portfolio' => $this->buildPortfolioUrls($this->portfolioItemRepository, $siteContext),
+            'directory' => $this->buildDirectoryUrls($this->directoryEntryRepository, $siteContext),
+            'tags' => $this->buildTagUrls($this->tagRepository, $siteContext),
+            'misc' => $this->buildMiscUrls($this->pageRepository, $siteContext),
+            default => throw new NotFoundHttpException('Sitemap section not found.'),
+        };
     }
 
     // ──────────────────────────────────────────────
@@ -282,11 +275,13 @@ class SitemapController extends AbstractController
         ];
 
         // Blog index
-        $urls[] = [
-            'loc' => $this->generateUrl('app_article_show_all'),
-            'changefreq' => 'daily',
-            'priority' => '0.7',
-        ];
+        if ($siteContext->hasModule('blog')) {
+            $urls[] = [
+                'loc' => $this->generateUrl('app_article_show_all'),
+                'changefreq' => 'daily',
+                'priority' => '0.7',
+            ];
+        }
 
         // Contact
         $urls[] = [

@@ -109,9 +109,10 @@ class ServiceCrudController extends AbstractCrudController
 
         // Rattachement facultatif : laisse vide, le service reste au premier
         // niveau. C'est le cas de figure ordinaire, une offre a plat.
+        // Pas de choice_label : en autocomplete, le type de formulaire le
+        // refuse (erreur 500) ; le libelle vient de Service::__toString().
         yield AssociationField::new('parent', 'Rattacher à un service')
             ->setHelp('Laissez vide pour un service principal.')
-            ->setFormTypeOption('choice_label', 'title')
             ->setFormTypeOption('required', false)
             ->autocomplete()
             ->hideOnIndex();

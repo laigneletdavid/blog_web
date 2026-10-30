@@ -105,7 +105,7 @@ class WalkthroughService
                 'element' => '.tour-menu-settings',
                 'popover' => [
                     'title' => 'Réglages',
-                    'description' => 'Ce qu\'on règle une fois : identité du site, menu, catégories, utilisateurs.',
+                    'description' => 'Ce qu\'on règle une fois : identité du site, menu, catégories, utilisateurs. C\'est ici, et dans l\'édition d\'un contenu, qu\'apparaît le mode expert pour les réglages techniques.',
                     'side' => 'right',
                 ],
             ];
