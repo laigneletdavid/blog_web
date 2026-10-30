@@ -171,6 +171,13 @@ php bin/console app:stat:purge --dry-run --env=prod
 Les robots ne sont plus enregistres visite par visite : ils sont comptes par
 jour dans `stat_bot_daily` (courbe « Robots » de l'accueil de l'admin).
 
+Une visite n'est enregistree que si le navigateur la confirme : la page porte
+un ticket signe (`<meta name="bw-visit">`), `stat-tracker.js` le renvoie a
+`/api/vue`. Un robot qui n'execute pas le JavaScript ne laisse aucune ligne,
+meme avec un user-agent de navigateur et des milliers d'IP (bw_pro_dici,
+octobre 2026). Apres un deploy, verifier que la balise est dans le code
+source d'une page publique, vue sans etre connecte a l'admin.
+
 ### 4. Mises a jour
 
 Quand main evolue (nouvelle feature CMS) :
