@@ -120,6 +120,8 @@ class PageViewRepository extends ServiceEntityRepository
     /**
      * Stats journalières sur les N derniers jours.
      * Retourne vues humaines, visiteurs uniques humains, et vues bots séparément.
+     * Les robots viennent du compteur stat_bot_daily, plus les anciennes
+     * lignes is_bot = 1 enregistrees avant ce compteur.
      *
      * @return array<int, array{date: string, views: int, visitors: int, bot_views: int}>
      */
@@ -130,14 +132,20 @@ class PageViewRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = '
-            SELECT
-                DATE(created_at) AS date,
-                SUM(CASE WHEN is_bot = 0 THEN 1 ELSE 0 END) AS views,
-                COUNT(DISTINCT CASE WHEN is_bot = 0 THEN ip_hash END) AS visitors,
-                SUM(CASE WHEN is_bot = 1 THEN 1 ELSE 0 END) AS bot_views
-            FROM page_view
-            WHERE created_at >= :since
-            GROUP BY DATE(created_at)
+            SELECT date, SUM(views) AS views, SUM(visitors) AS visitors, SUM(bot_views) AS bot_views
+            FROM (
+                SELECT
+                    DATE(created_at) AS date,
+                    SUM(CASE WHEN is_bot = 0 THEN 1 ELSE 0 END) AS views,
+                    COUNT(DISTINCT CASE WHEN is_bot = 0 THEN ip_hash END) AS visitors,
+                    SUM(CASE WHEN is_bot = 1 THEN 1 ELSE 0 END) AS bot_views
+                FROM page_view
+                WHERE created_at >= :since
+                GROUP BY DATE(created_at)
+                UNION ALL
+                SELECT day, 0, 0, hits FROM stat_bot_daily WHERE day >= :since
+            ) jours
+            GROUP BY date
             ORDER BY date ASC
         ';
 
