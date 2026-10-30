@@ -55,6 +55,15 @@ class BotDetector
     }
 
     /**
+     * L'IP a-t-elle deja depasse la cadence aujourd'hui ? Lecture seule : la
+     * confirmation d'une visite ne doit pas compter une seconde fois la page.
+     */
+    public function isFlagged(string $ipHash): bool
+    {
+        return $this->cache->getItem('stat_bot_ip_' . $ipHash)->isHit();
+    }
+
+    /**
      * Compte la page pour cette IP et dit si elle depasse la cadence d'un humain.
      * $ipHash change chaque jour (voir PageViewSubscriber) : le marquage robot
      * s'eteint donc de lui-meme le lendemain.

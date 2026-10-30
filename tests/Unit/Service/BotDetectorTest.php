@@ -73,6 +73,21 @@ class BotDetectorTest extends TestCase
         $this->assertTrue($this->detector->isFlooding('ip-robot'));
     }
 
+    public function testIsFlaggedNeCompteRien(): void
+    {
+        for ($i = 0; $i < 50; ++$i) {
+            $this->assertFalse($this->detector->isFlagged('ip-humaine'));
+        }
+        $this->assertFalse($this->detector->isFlooding('ip-humaine'));
+
+        for ($i = 0; $i < 20; ++$i) {
+            $this->detector->isFlooding('ip-robot');
+        }
+        $this->assertFalse($this->detector->isFlagged('ip-robot'));
+        $this->detector->isFlooding('ip-robot');
+        $this->assertTrue($this->detector->isFlagged('ip-robot'));
+    }
+
     public function testLesIpSontCompteesSeparement(): void
     {
         for ($i = 0; $i < 25; ++$i) {
