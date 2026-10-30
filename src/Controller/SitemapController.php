@@ -26,8 +26,11 @@ class SitemapController extends AbstractController
     #[Route('/sitemap.xml', name: 'app_sitemap', defaults: ['_format' => 'xml'])]
     public function index(SiteContext $siteContext): Response
     {
-        $sitemaps = ['pages', 'articles', 'categories', 'misc'];
+        $sitemaps = ['pages', 'misc'];
 
+        if ($siteContext->hasModule('blog')) {
+            array_push($sitemaps, 'articles', 'categories');
+        }
         if ($siteContext->hasModule('services')) {
             $sitemaps[] = 'services';
         }
@@ -282,11 +285,13 @@ class SitemapController extends AbstractController
         ];
 
         // Blog index
-        $urls[] = [
-            'loc' => $this->generateUrl('app_article_show_all'),
-            'changefreq' => 'daily',
-            'priority' => '0.7',
-        ];
+        if ($siteContext->hasModule('blog')) {
+            $urls[] = [
+                'loc' => $this->generateUrl('app_article_show_all'),
+                'changefreq' => 'daily',
+                'priority' => '0.7',
+            ];
+        }
 
         // Contact
         $urls[] = [
