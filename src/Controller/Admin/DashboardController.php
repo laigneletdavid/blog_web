@@ -58,6 +58,7 @@ class DashboardController extends AbstractDashboardController
         private \App\Repository\ContactMessageRepository $contactMessageRepository,
         private \App\Service\AdminTodoService $adminTodoService,
         private \App\Service\ContentHubService $contentHub,
+        private \App\Repository\PageViewRepository $pageViewRepository,
     ) {
     }
 
@@ -91,6 +92,9 @@ class DashboardController extends AbstractDashboardController
             'types' => $this->contentHub->getTypes(),
             'todos' => $this->adminTodoService->getTodos(),
             'figures' => $this->isGranted('ROLE_ADMIN') ? $this->adminTodoService->getKeyFigures() : null,
+            // Vues, visiteurs uniques et robots, jour par jour (graphique de admin-dashboard.js)
+            'dailyStats' => $this->isGranted('ROLE_ADMIN') ? $this->pageViewRepository->dailyStats(30) : null,
+            'hasStats' => $this->siteContext->hasModule('marketing'),
             'recent' => array_slice($recent, 0, 5),
             'ecommerceStats' => $ecommerceStats,
             'tourSteps' => $tourSteps,
