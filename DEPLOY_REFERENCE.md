@@ -149,6 +149,35 @@ Google ne garde que 16 mois d'historique et ne compte qu'a partir de la declarat
 Plus de champ « code de verification » dans l'admin : la validation se fait par
 le DNS. L'ecran Referencement rappelle la procedure au client.
 
+### 3 ter. Purge automatique des statistiques (cron OVH)
+
+Les stats gardent 13 mois de detail. Sans purge, `page_view` et
+`stat_session` grossissent sans fin (bw_pro_dici : 11 Go en octobre 2026,
+surtout des robots). `app:stat:purge` supprime par paquets, sans bloquer la
+base.
+
+1. Espace client OVH → Hebergement → onglet **Taches planifiees - Cron** →
+   **Ajouter une planification**.
+2. Commande a executer : `scripts/cron-stat-purge.php` (chemin depuis la
+   racine du compte FTP, a adapter si le projet est dans un sous-dossier).
+3. Langage : **PHP 8.4**. Frequence : **une fois par semaine**, la nuit.
+4. Activer les alertes e-mail en cas d'erreur.
+
+Tester a la main avant de planifier :
+```bash
+php bin/console app:stat:purge --dry-run --env=prod
+```
+
+Les robots ne sont plus enregistres visite par visite : ils sont comptes par
+jour dans `stat_bot_daily` (courbe « Robots » de l'accueil de l'admin).
+
+Une visite n'est enregistree que si le navigateur la confirme : la page porte
+un ticket signe (`<meta name="bw-visit">`), `stat-tracker.js` le renvoie a
+`/api/vue`. Un robot qui n'execute pas le JavaScript ne laisse aucune ligne,
+meme avec un user-agent de navigateur et des milliers d'IP (bw_pro_dici,
+octobre 2026). Apres un deploy, verifier que la balise est dans le code
+source d'une page publique, vue sans etre connecte a l'admin.
+
 ### 4. Mises a jour
 
 Quand main evolue (nouvelle feature CMS) :
@@ -252,6 +281,7 @@ Le script `--import` corrige automatiquement :
 - [ ] Propriete **Domaine** creee dans Google Search Console, TXT a la racine, validee (section 3 bis)
 - [ ] `/sitemap.xml` envoye dans Search Console, toutes ses URL en 200
 - [ ] Indexation de la home demandee
+- [ ] Cron de purge des statistiques planifie, une fois par semaine (section 3 ter)
 
 ---
 
