@@ -16,7 +16,7 @@
    Volumes d'IA : niveau d'usage puis chiffre (handoff v0.4, § 14.3) ; le
    detail chiffre n'est que sur cette page.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
+{% import 'client/_macros.html.twig' as lt %}
 
 {% set plans = [
     {name: 'Gratuit',  offer: 'l’offre Gratuite',  m: '0 €',     mp: 'sans engagement', y: '0 €',     yp: 'sans engagement', ye: '',                      cta: 'Commencer'},
@@ -98,7 +98,7 @@
                                 <span class="lt-pricing__price" data-m="{{ plan.m }}" data-y="{{ plan.y }}">{{ plan.m }}</span>
                                 <span class="lt-pricing__per" data-m="{{ plan.mp }}" data-y="{{ plan.yp }}">{{ plan.mp }}</span>
                                 <span class="lt-pricing__eq" data-m="" data-y="{{ plan.ye }}"></span>
-                                <a href="{{ lt_app }}/register" class="lt-btn lt-pricing__cta">{{ plan.cta }}<span class="visually-hidden"> {{ plan.offer }}</span></a>
+                                {{ lt.cta(plan.cta, 'lt-btn lt-pricing__cta', plan.offer) }}
                             </th>
                         {% endfor %}
                     </tr>
@@ -143,7 +143,7 @@
             <span class="lt-note__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg></span>
             <div>
             <h3 class="lt-note__title">Rétractation</h3>
-            <p>14 jours pour les consommateurs, remboursés au prorata. <a href="{{ lt_app }}/conditions">Lire les CGV</a></p>
+            <p>14 jours pour les consommateurs, remboursés au prorata. <a href="https://www.lintello.ai/conditions">Lire les CGV</a></p>
             </div>
         </div>
         <div class="lt-note">
@@ -172,7 +172,7 @@
                 <h2>Commencez avec l'offre Gratuite.</h2>
                 <p>20 messages par jour, sans engagement.</p>
             </div>
-            <a href="{{ lt_app }}/register" class="lt-btn lt-btn--white lt-btn--lg">Créer mon compte</a>
+            {{ lt.cta('Créer mon compte', 'lt-btn lt-btn--white lt-btn--lg') }}
         </div>
     </div>
 </section>

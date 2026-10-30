@@ -14,7 +14,6 @@
    « modele de document », credits jamais « X recherches », pas de teasing.
    Les maquettes sont decoratives (aria-hidden) : le texte porte le sens.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
 {% import 'client/_macros.html.twig' as lt %}
 
 {% set toc = [
@@ -418,7 +417,7 @@
             <h2>Le mieux, c’est encore d’essayer.</h2>
             <p>Commencez gratuitement : 20 messages par jour, sans engagement.</p>
             <div class="lt-fx__final-actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--white lt-btn--lg">Commencer gratuitement</a>
+                {{ lt.cta('Commencer gratuitement', 'lt-btn lt-btn--white lt-btn--lg') }}
                 <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-fx__final-link">Voir les offres</a>
             </div>
         </div>

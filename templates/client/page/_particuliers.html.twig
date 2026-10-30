@@ -9,7 +9,6 @@
    Pas de « coach 24 h/24 ». Le livrable qui s'ouvre seul et la moderation
    sont [à voir en prod] : non cites.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
 
 {% embed 'client/page/_pour_qui.html.twig' with {
     hero: {
@@ -73,13 +72,15 @@
     ],
 } %}
     {% block lt_specific %}
+        {# Un bloc d'embed ne voit pas les imports du fichier : import ici #}
+        {% import 'client/_macros.html.twig' as lt %}
         <section class="lt-poster-section" id="gratuit">
             <div class="lt-container">
                 <div class="lt-poster lt-poster--plain">
                     <div class="lt-poster__text">
                         <h2>Commencez par l’offre Gratuite</h2>
                         <p>20 messages par jour, le chat, l’éditeur et la recherche, et l’export de vos données, sans engagement. LintellO vous aide à comprendre, préparer et rédiger ; il ne remplace aucun professionnel.</p>
-                        <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Créer mon compte gratuit</a>
+                        {{ lt.cta('Créer mon compte gratuit', 'lt-btn lt-btn--primary') }}
                     </div>
                 </div>
             </div>

@@ -17,7 +17,6 @@
    tricolore n'apparait que dans la pastille du heros. Aucun fournisseur
    nomme (moteur IA, recherche, hebergeur, paiement).
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
 {% import 'client/_macros.html.twig' as lt %}
 
 <div class="lt-home">
@@ -33,7 +32,7 @@
             <h1 class="lt-hero__title lt-hero__title--home">Une IA simple et efficace qui travaille avec vous. <span>Vos données restent chez vous.</span></h1>
             <p class="lt-hero__lead">Rédigez vos documents, répondez à vos clients, cherchez sur le web : LintellO vous fait gagner du temps, chaque jour.</p>
             <div class="lt-hero__actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
+                {{ lt.cta('Commencer gratuitement', 'lt-btn lt-btn--primary lt-btn--lg') }}
                 <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
             </div>
             <p class="lt-hero__note">Offre Gratuite : 20 messages par jour, sans engagement.</p>
@@ -495,7 +494,11 @@
                 </a>
             {% endfor %}
         </div>
-        <p class="lt-offers__free">Pas encore décidé ? <a href="{{ lt_app }}/register">Commencez gratuitement</a> : 20 messages par jour, sans engagement.</p>
+        {% if lt.app_url()|trim %}
+        <p class="lt-offers__free">Pas encore décidé ? <a href="{{ lt.app_url()|trim }}/register">Commencez gratuitement</a> : 20 messages par jour, sans engagement.</p>
+        {% else %}
+        <p class="lt-offers__free">Pas encore décidé ? <a href="{{ path('app_contact') }}">Écrivez-nous</a> : nous répondons à vos questions.</p>
+        {% endif %}
     </div>
 </section>
 
@@ -574,7 +577,7 @@
                 <p>Essayez LintellO gratuitement : 20 messages par jour, sans engagement.</p>
             </div>
             <div class="lt-final__actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
+                {{ lt.cta('Commencer gratuitement', 'lt-btn lt-btn--primary lt-btn--lg') }}
                 <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
             </div>
         </div>

@@ -9,7 +9,10 @@
    website, rendu par form_rest) et la limite d'envois.
    Pas d'adresse ni de carte : l'adresse de l'editeur figure dans les
    mentions legales. Les messages arrivent a l'e-mail du site.
+   La carte « Essayer LintellO » n'apparait que si l'app est ouverte
+   (interrupteur app_url dans _macros).
    ====================================================================== #}
+{% import 'client/_macros.html.twig' as lt %}
 <div class="lt-contact">
 
 <section class="lt-page-head lt-contact__head">
@@ -36,7 +39,7 @@
                 {{ form_row(contactForm.website, {row_attr: {class: 'lt-form__hp', 'aria-hidden': 'true'}}) }}
                 {{ form_rest(contactForm) }}
                 <button class="lt-btn lt-btn--primary lt-btn--lg" type="submit">Envoyer le message</button>
-                <p class="lt-form__note">Vos coordonnées servent uniquement à vous répondre et sont conservées 3 ans au plus. <a href="https://www.lintello.ai/politique-confidentialite">Politique de confidentialité</a></p>
+                <p class="lt-form__note">Vos coordonnées servent uniquement à vous répondre et sont conservées 3 ans au plus. <a href="{{ path('app_legal_page', {type: 'politique-de-confidentialite'}) }}">Politique de confidentialité</a></p>
             {{ form_end(contactForm) }}
         </div>
 
@@ -55,11 +58,13 @@
                     <li><a href="{{ path('app_page_show', {slug: 'confiance'}) }}">Où sont vos données →</a></li>
                 </ul>
             </div>
+            {% if lt.app_url()|trim %}
             <div class="lt-contact__card lt-contact__card--soft">
                 <p class="lt-contact__card-title">Essayer LintellO</p>
                 <p>L'offre Gratuite donne 20 messages par jour, sans engagement.</p>
-                <a href="https://www.lintello.ai/register" class="lt-btn lt-btn--primary">Commencer gratuitement</a>
+                {{ lt.cta('Commencer gratuitement', 'lt-btn lt-btn--primary') }}
             </div>
+            {% endif %}
         </aside>
     </div>
 </section>

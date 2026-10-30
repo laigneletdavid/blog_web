@@ -26,7 +26,6 @@
    Volumes d'IA en niveaux d'usage (handoff v0.4, Q3) : le detail chiffre
    n'est que sur /page/tarifs.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
 {% import 'client/_macros.html.twig' as lt %}
 
 {% set audiences = [
@@ -68,7 +67,7 @@
             <h1 class="lt-page-head__title">{{ hero.title }} <span>{{ hero.accent }}</span></h1>
             <p class="lt-hero__lead">{{ hero.lead }}</p>
             <div class="lt-hero__actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">{{ hero.cta }}</a>
+                {{ lt.cta(hero.cta, 'lt-btn lt-btn--primary lt-btn--lg') }}
                 {% if hero.secondary is defined and hero.secondary %}
                     <a href="{{ hero.secondary.href }}" class="lt-link">{{ hero.secondary.label }}</a>
                 {% endif %}
@@ -163,7 +162,7 @@
                     <ul class="lt-offer__points">
                         {% for pt in offer.points %}<li>{{ check }}<span>{{ pt }}</span></li>{% endfor %}
                     </ul>
-                    <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-offer__cta">{{ offer.cta }}</a>
+                    {{ lt.cta(offer.cta, 'lt-btn lt-btn--primary lt-offer__cta') }}
                     {{ detailLink }}
                 </div>
                 <div class="lt-offer__card lt-pq__card" id="offre-lintello">
@@ -176,7 +175,7 @@
                     <ul class="lt-offer__points">
                         {% for pt in offer.alt.points %}<li>{{ check }}<span>{{ pt }}</span></li>{% endfor %}
                     </ul>
-                    <a href="{{ lt_app }}/register" class="lt-btn lt-btn--outline lt-offer__cta">{{ offer.alt.cta }}</a>
+                    {{ lt.cta(offer.alt.cta, 'lt-btn lt-btn--outline lt-offer__cta') }}
                     {{ detailLink }}
                 </div>
             </div>
@@ -203,7 +202,7 @@
                 <ul class="lt-offer__points">
                     {% for pt in offer.points %}<li>{{ check }}<span>{{ pt }}</span></li>{% endfor %}
                 </ul>
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-offer__cta">{{ offer.cta }}</a>
+                {{ lt.cta(offer.cta, 'lt-btn lt-btn--primary lt-offer__cta') }}
                 {{ detailLink }}
             </div>
         </div>
@@ -269,7 +268,7 @@
                 <p>Essayez LintellO gratuitement : 20 messages par jour, sans engagement.</p>
             </div>
             <div class="lt-final__actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary lt-btn--lg">Commencer gratuitement</a>
+                {{ lt.cta('Commencer gratuitement', 'lt-btn lt-btn--primary lt-btn--lg') }}
                 <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-link">Voir les offres</a>
             </div>
         </div>

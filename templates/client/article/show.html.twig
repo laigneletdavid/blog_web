@@ -14,7 +14,6 @@
    - Pas de commentaires : les lecteurs n'ont pas de compte sur la vitrine.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as lt %}
-{% set lt_app = 'https://www.lintello.ai' %}
 
 {% set cat = article.categories|first %}
 {% set published = article.publishedAt ?? article.createdAt %}
@@ -43,7 +42,7 @@
             <p class="lt-encart__title">{{ pitch }}</p>
             <p class="lt-encart__note">Gratuit : 20 messages par jour avec l'IA du quotidien.</p>
         </div>
-        <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Essayer LintellO</a>
+        {{ lt.cta('Essayer LintellO', 'lt-btn lt-btn--primary') }}
     </aside>
 {% endset %}
 

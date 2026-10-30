@@ -16,7 +16,7 @@
    - docs/specs/admin/durees-de-conservation.md
    Non affiches tant qu'ils sont [à voir en prod] : profil sante, moderation.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
+{% import 'client/_macros.html.twig' as lt %}
 
 {% set essentials = [
     {title: 'En France, de bout en bout', text: 'Un moteur IA français, un serveur dédié à Strasbourg, une recherche web qui ne révèle jamais votre identité.', icon: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'},
@@ -206,14 +206,14 @@
                 <p>Essayez LintellO gratuitement : 20 messages par jour, sans engagement.</p>
             </div>
             <div class="lt-final__actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--white lt-btn--lg">Commencer gratuitement</a>
+                {{ lt.cta('Commencer gratuitement', 'lt-btn lt-btn--white lt-btn--lg') }}
                 <a href="{{ path('app_page_show', {slug: 'tarifs'}) }}" class="lt-final__link">Voir les offres</a>
             </div>
         </div>
         <p class="lt-final__legal">
-            <a href="{{ lt_app }}/politique-confidentialite">Politique de confidentialité</a>
+            <a href="{{ path('app_legal_page', {type: 'politique-de-confidentialite'}) }}">Politique de confidentialité</a>
             <span aria-hidden="true">·</span>
-            <a href="{{ lt_app }}/conditions">CGU et CGV</a>
+            <a href="https://www.lintello.ai/conditions">CGU et CGV</a>
         </p>
     </div>
 </section>

@@ -6,7 +6,7 @@
    (Confiance · Produit · Pour qui · Apprendre · Tarifs), puis la connexion
    et l'appel principal, qui pointent vers l'app.
    ====================================================================== #}
-{% set lt_app = 'https://www.lintello.ai' %}
+{% import 'client/_macros.html.twig' as lt %}
 {% set lt_path = app.request.pathInfo %}
 
 <header class="header lt-header">
@@ -44,8 +44,8 @@
             </nav>
 
             <div class="lt-header__actions">
-                <a href="{{ lt_app }}/login" class="lt-header__login">Se connecter</a>
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Essayer gratuitement</a>
+                {{ lt.login('lt-header__login') }}
+                {{ lt.cta('Essayer gratuitement', 'lt-btn lt-btn--primary') }}
             </div>
 
             <button class="lt-header__toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#ltOffcanvas" aria-controls="ltOffcanvas" aria-label="Ouvrir le menu">
@@ -79,8 +79,8 @@
                 {% endfor %}
             </ul>
             <div class="lt-offcanvas__actions">
-                <a href="{{ lt_app }}/register" class="lt-btn lt-btn--primary">Essayer gratuitement</a>
-                <a href="{{ lt_app }}/login" class="lt-btn lt-btn--outline">Se connecter</a>
+                {{ lt.cta('Essayer gratuitement', 'lt-btn lt-btn--primary') }}
+                {{ lt.login('lt-btn lt-btn--outline') }}
             </div>
         </div>
 </div>
