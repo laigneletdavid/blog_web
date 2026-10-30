@@ -59,6 +59,7 @@ class DashboardController extends AbstractDashboardController
         private \App\Service\AdminTodoService $adminTodoService,
         private \App\Service\ContentHubService $contentHub,
         private \App\Repository\PageViewRepository $pageViewRepository,
+        private \App\Service\StatService $statService,
     ) {
     }
 
@@ -80,6 +81,21 @@ class DashboardController extends AbstractDashboardController
         $user = $this->getUser();
         $tourCompleted = $user instanceof User && $user->isTourCompleted();
 
+        // Pages les plus vues : periode choisie par les pastilles (?period=)
+        $topPagesPeriods = [
+            'today' => "Aujourd'hui",
+            'week' => 'Cette semaine',
+            'month' => 'Ce mois',
+            'year' => 'Cette année',
+            'all' => 'Depuis le début',
+        ];
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $topPagesPeriod = $request?->query->getString('period', 'month') ?? 'month';
+        if (!isset($topPagesPeriods[$topPagesPeriod])) {
+            $topPagesPeriod = 'month';
+        }
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+
         // Accueil "a faire" : les taches d'abord, les chiffres detailles sont dans Statistiques
         $recent = array_values(array_filter(
             $this->contentHub->getItems(),
@@ -95,6 +111,10 @@ class DashboardController extends AbstractDashboardController
             // Vues, visiteurs uniques et robots, jour par jour (graphique de admin-dashboard.js)
             'dailyStats' => $this->isGranted('ROLE_ADMIN') ? $this->pageViewRepository->dailyStats(30) : null,
             'hasStats' => $this->siteContext->hasModule('marketing'),
+            'statsSummary' => $isAdmin ? $this->statService->dashboardSummary() : null,
+            'topPages' => $isAdmin ? $this->pageViewRepository->topPages(10, $topPagesPeriod) : null,
+            'topPagesPeriod' => $topPagesPeriod,
+            'topPagesPeriods' => $topPagesPeriods,
             'recent' => array_slice($recent, 0, 5),
             'ecommerceStats' => $ecommerceStats,
             'tourSteps' => $tourSteps,

@@ -81,6 +81,69 @@
     </section>
     {% endif %}
 
+    {# --- Resume du mois : source principale, rebond, duree, demandes --- #}
+    {% if statsSummary is not null %}
+    <section class="bw-panel" aria-label="Résumé du mois">
+        <div class="bw-panel__head">
+            <h2 class="bw-panel__title">Résumé du mois</h2>
+            {% if hasStats %}<a href="{{ path('admin', {routeName: 'admin_stats_index'}) }}">Voir tout</a>{% endif %}
+        </div>
+        <div class="bw-figures bw-figures--inline">
+            <div class="bw-figure">
+                <span class="bw-figure__label">Source principale</span>
+                <span class="bw-figure__value">{{ statsSummary.top_source ? statsSummary.top_source_pct|number_format(1, ',', ' ') ~ ' %' : '—' }}</span>
+                {% if statsSummary.top_source %}<span class="bw-figure__sub">{{ statsSummary.top_source|replace({'_': ' '})|capitalize }}</span>{% endif %}
+            </div>
+            <div class="bw-figure">
+                <span class="bw-figure__label">Taux de rebond</span>
+                <span class="bw-figure__value">{{ statsSummary.bounce_rate is not null ? statsSummary.bounce_rate|number_format(1, ',', ' ') ~ ' %' : '—' }}</span>
+                <span class="bw-figure__sub">Visites d'une seule page</span>
+            </div>
+            <div class="bw-figure">
+                <span class="bw-figure__label">Durée moyenne par page</span>
+                <span class="bw-figure__value">{{ statsSummary.avg_duration ? (statsSummary.avg_duration // 60) ~ ' min ' ~ '%02d'|format(statsSummary.avg_duration % 60) ~ ' s' : '—' }}</span>
+            </div>
+            <div class="bw-figure">
+                <span class="bw-figure__label">Demandes (leads)</span>
+                <span class="bw-figure__value">{{ statsSummary.conversions }}</span>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {# --- Pages les plus vues, par periode (visites humaines) --- #}
+    {% if topPages is not null %}
+    <section class="bw-panel" aria-label="Pages les plus vues">
+        <div class="bw-panel__head">
+            <h2 class="bw-panel__title">Pages les plus vues</h2>
+        </div>
+        <div class="bw-filters">
+            {% for key, label in topPagesPeriods %}
+                <a class="bw-pill{{ topPagesPeriod == key ? ' is-active' }}" href="{{ path('admin', {period: key}) }}">{{ label }}</a>
+            {% endfor %}
+        </div>
+        {% if topPages is not empty %}
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr><th>Page</th><th class="text-end">Vues</th></tr>
+                </thead>
+                <tbody>
+                    {% for page in topPages %}
+                    <tr>
+                        <td><a href="{{ page.url }}" target="_blank" rel="noopener">{{ page.url }}</a></td>
+                        <td class="text-end fw-bold">{{ page.views|number_format(0, ',', ' ') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="bw-hint">Aucune visite sur cette période.</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
     {# --- Derniers contenus modifies --- #}
     {% if recent is not empty %}
     <section class="bw-panel" aria-label="Modifiés récemment">
