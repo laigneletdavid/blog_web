@@ -1,5 +1,7 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{% block page_title %}Aide{% endblock %}
+
 {% block content_title %}
     <span style="font-size: 1.1rem; font-weight: 600;">
         <i class="fas fa-book-open me-2"></i>Guide d'utilisation
@@ -11,7 +13,7 @@
 
     <p class="text-muted mb-4" style="font-size: 0.92rem;">
         Bienvenue dans le guide BlogWeb. Cliquez sur une section pour en savoir plus.
-        Ce guide est toujours accessible depuis le menu <strong>Aide &rarr; Guide</strong>.
+        Ce guide est toujours accessible depuis l'entrée <strong>Aide</strong>, en bas du menu.
     </p>
 
     <div class="accordion" id="guideAccordion">
@@ -26,69 +28,92 @@
             <div id="guide-start" class="accordion-collapse collapse show" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
                     <h5>Qu'est-ce que BlogWeb ?</h5>
-                    <p>BlogWeb est un CMS (systeme de gestion de contenu) qui vous permet de gerer votre site web de maniere autonome : articles, pages, medias, navigation, et plus encore.</p>
+                    <p>BlogWeb vous permet de gérer votre site vous-même : textes, images, pages, articles, et plus selon les modules activés pour vous.</p>
 
-                    <h5>Votre tableau de bord</h5>
-                    <p>Le <strong>Tableau de bord</strong> est votre page d'accueil dans l'administration. Vous y trouvez :</p>
+                    <h5>L'accueil</h5>
+                    <p>L'<strong>Accueil</strong> est votre point d'arrivée dans l'administration. Il liste d'abord ce qui demande votre attention, chaque ligne avec son bouton pour s'en occuper :</p>
                     <ul>
-                        <li>Les <strong>statistiques de visites</strong> de votre site</li>
-                        <li>Vos <strong>derniers articles</strong> et <strong>commentaires</strong></li>
-                        <li>Des <strong>raccourcis</strong> vers les actions les plus courantes</li>
-                        <li>Des <strong>astuces</strong> pour mieux utiliser votre site</li>
+                        <li>Les <strong>demandes de contact</strong> non lues</li>
+                        <li>Vos <strong>brouillons</strong> en cours</li>
+                        <li>Les <strong>pistes d'amélioration</strong> de votre référencement</li>
+                        <li>Les <strong>images sans texte alternatif</strong></li>
                     </ul>
+                    <p>Viennent ensuite trois chiffres clés (visites et demandes de contact du mois, page la plus vue) et vos contenus modifiés récemment. Le bouton <strong>Créer</strong>, en haut à droite, lance un nouvel article, une nouvelle page ou un nouveau service.</p>
 
-                    <h5>Le menu de navigation</h5>
-                    <p>Le menu a gauche est organise par sections :</p>
+                    <h5>Le menu</h5>
+                    <p>Le menu de gauche est organisé par tâche :</p>
                     <ul>
-                        <li><strong>Contenu</strong> &mdash; Tout ce que vos visiteurs voient : articles, pages, medias</li>
-                        <li><strong>Communaute</strong> &mdash; Commentaires et utilisateurs</li>
-                        <li><strong>Reglages</strong> &mdash; Configuration du site (identite, navigation, apparence)</li>
-                        <li><strong>Aide</strong> &mdash; Ce guide, toujours accessible</li>
+                        <li><strong>Contenus</strong> &mdash; Tous vos contenus au même endroit : articles, pages, services, questions...</li>
+                        <li><strong>Médias</strong> &mdash; Vos images, et vos documents à télécharger</li>
+                        <li><strong>Messages</strong> &mdash; Les demandes reçues par le formulaire de contact. Le chiffre rouge indique les non lues</li>
+                        <li><strong>Statistiques</strong> &mdash; La fréquentation de votre site (selon les modules activés)</li>
+                        <li><strong>Référencement</strong> &mdash; Ce que vous attendez de Google, et le bilan de votre site</li>
+                        <li><strong>Apparence</strong> &mdash; Logo, couleurs, polices et images</li>
+                        <li><strong>Réglages</strong> &mdash; Ce qu'on règle une fois : identité du site, menu du site, catégories, utilisateurs</li>
                     </ul>
+                    <p>En bas du menu : <strong>Voir mon site</strong> ouvre votre site dans un nouvel onglet, et <strong>Aide</strong> ouvre ce guide.</p>
+
+                    <h5>Le mode expert</h5>
+                    <p>Par défaut, l'administration n'affiche que l'essentiel. L'interrupteur <strong>Mode expert</strong>, sous le menu, ajoute les réglages techniques : adresse des pages, options avancées de référencement, mise en page, modules, abonnés. Ces options apparaissent dans un encadré jaune. Le choix est mémorisé pour votre compte.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Commencez par configurer l'identite de votre site (nom, logo, coordonnees) dans <em>Reglages &rarr; Identite du site</em>.
+                        <strong>Astuce :</strong> Commencez par l'identité de votre site (nom, logo, coordonnées) dans <em>Réglages &rarr; Identité du site</em>, puis remplissez votre fiche dans <em>Référencement</em>.
                     </div>
                 </div>
             </div>
         </div>
 
-        {# ── 2. Articles ── #}
+        {# ── 2. Contenus et articles ── #}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-articles">
-                    <i class="fas fa-newspaper me-2 text-primary"></i> Gerer vos articles
+                    <i class="fas fa-newspaper me-2 text-primary"></i> Contenus et articles
                 </button>
             </h2>
             <div id="guide-articles" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Creer un article</h5>
-                    <p>Depuis <strong>Contenu &rarr; Blog &rarr; Articles</strong>, cliquez sur <em>Creer un article</em>.</p>
+                    <h5>La page Contenus</h5>
+                    <p>Tous vos contenus sont réunis dans <strong>Contenus</strong>. Les onglets filtrent par type (articles, pages, services...), la case de recherche trouve un contenu par son titre. Cliquez sur une ligne pour la modifier.</p>
 
-                    <h5>L'editeur de contenu</h5>
-                    <p>BlogWeb integre un editeur visuel complet pour rediger vos contenus. Consultez la section <strong>Editeur de contenu</strong> ci-dessous pour decouvrir toutes ses fonctionnalites.</p>
+                    <h5>Créer un article</h5>
+                    <p>Cliquez sur <strong>Créer</strong> (sur l'accueil ou dans Contenus), puis sur <em>Un article</em>.</p>
+
+                    <h5>Le formulaire</h5>
+                    <p>Il tient en deux colonnes :</p>
+                    <ul>
+                        <li><strong>À gauche, vous écrivez</strong> : le titre, le résumé (affiché dans la liste des articles), le contenu, puis le bloc <em>Dans Google</em> (voir la section Référencement).</li>
+                        <li><strong>À droite, vous publiez et classez</strong> : la publication, l'image, les catégories et les étiquettes.</li>
+                    </ul>
+                    <p>Consultez la section <strong>Éditeur de contenu</strong> ci-dessous pour toutes les possibilités de mise en forme.</p>
 
                     <h5>Publier un article</h5>
-                    <p>Par defaut, un article est en <strong>brouillon</strong> (non visible). Pour le publier :</p>
+                    <p>Un nouvel article est en <strong>brouillon</strong> : vous seul le voyez. Pour le publier :</p>
                     <ul>
-                        <li>Cochez la case <em>Publie</em> dans le formulaire</li>
-                        <li>La date de publication sera automatiquement remplie</li>
+                        <li>Cochez <em>En ligne</em>, la date de publication se remplit automatiquement</li>
+                        <li>Ou choisissez une date dans <em>Programmer une date</em> : l'article sera mis en ligne automatiquement à ce moment-là</li>
                     </ul>
+                    <p>Les abonnés à la lettre sont prévenus par e-mail au moment de la mise en ligne.</p>
 
-                    <h5>Article vedette</h5>
-                    <p>Vous pouvez mettre un article en avant avec le champ <em>Article vedette</em>. Il sera affiche en evidence sur la page Blog.</p>
+                    <h5>L'auteur</h5>
+                    <p>Le champ <em>Auteur</em> est rempli avec votre compte quand vous créez l'article. Vous pouvez choisir un autre auteur parmi les comptes qui écrivent sur le site. L'auteur est affiché sous l'article, avec ses initiales et sa présentation (la bio de son compte).</p>
 
-                    <h5>Visibilite</h5>
+                    <h5>Mettre en avant</h5>
+                    <p>Cochez <em>Mettre en avant</em> pour afficher l'article en tête de la page Blog.</p>
+
+                    {% if is_admin_expert() %}
+                    <h5>Visibilité (mode expert)</h5>
+                    <p>Si le module Pages privées est activé, le champ <em>Visible par</em> limite un contenu :</p>
                     <ul>
                         <li><strong>Public</strong> &mdash; Visible par tous les visiteurs</li>
-                        <li><strong>Membres</strong> &mdash; Uniquement les utilisateurs connectes</li>
+                        <li><strong>Membres</strong> &mdash; Uniquement les utilisateurs connectés</li>
                         <li><strong>Admin</strong> &mdash; Uniquement les administrateurs</li>
                     </ul>
+                    {% endif %}
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Ajoutez toujours une image mise en avant et un texte d'accroche. Vos articles seront plus attractifs dans les listes et sur les reseaux sociaux.
+                        <strong>Astuce :</strong> Ajoutez toujours une image et un résumé. Vos articles seront plus attractifs dans les listes et sur les réseaux sociaux.
                     </div>
                 </div>
             </div>
@@ -98,55 +123,55 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-editor">
-                    <i class="fas fa-pen-fancy me-2 text-primary"></i> Editeur de contenu
+                    <i class="fas fa-pen-fancy me-2 text-primary"></i> Éditeur de contenu
                 </button>
             </h2>
             <div id="guide-editor" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Presentation</h5>
-                    <p>L'editeur visuel vous permet de rediger vos articles, pages et fiches sans toucher au code HTML. Il est utilise partout ou vous voyez une barre d'outils de mise en forme.</p>
+                    <h5>Présentation</h5>
+                    <p>L'éditeur visuel vous permet de rédiger vos articles, pages et fiches sans toucher au code HTML. Il est utilisé partout où vous voyez une barre d'outils de mise en forme.</p>
 
                     <h5>Mise en forme du texte</h5>
                     <p>La barre d'outils propose les options suivantes :</p>
                     <ul>
-                        <li><strong>Gras</strong>, <strong>Italique</strong>, <strong>Souligne</strong>, <strong>Barre</strong> &mdash; Formatage de base</li>
-                        <li><strong>Surlignage</strong> &mdash; Met en evidence un mot ou une phrase avec un fond colore</li>
+                        <li><strong>Gras</strong>, <strong>Italique</strong>, <strong>Souligné</strong>, <strong>Barré</strong> &mdash; Formatage de base</li>
+                        <li><strong>Surlignage</strong> &mdash; Met en évidence un mot ou une phrase avec un fond coloré</li>
                         <li><strong>Titres H2, H3, H4</strong> &mdash; Structurez votre contenu avec des sous-titres. Utilisez H2 pour les sections principales, H3 pour les sous-sections</li>
                         <li><strong>Alignement</strong> &mdash; Gauche, centre ou droite</li>
-                        <li><strong>Listes</strong> &mdash; A puces ou numerotees</li>
+                        <li><strong>Listes</strong> &mdash; À puces ou numérotées</li>
                     </ul>
 
-                    <h5>Blocs speciaux</h5>
+                    <h5>Blocs spéciaux</h5>
                     <ul>
-                        <li><strong>Citation</strong> &mdash; Met en valeur une phrase importante dans un encadre</li>
+                        <li><strong>Citation</strong> &mdash; Met en valeur une phrase importante dans un encadré</li>
                         <li><strong>Code</strong> &mdash; Bloc de code avec coloration syntaxique</li>
-                        <li><strong>Separateur</strong> &mdash; Ligne horizontale entre deux sections</li>
-                        <li><strong>Encart (Callout)</strong> &mdash; Encadre colore pour attirer l'attention. 4 types : <em>Info</em> (bleu), <em>Succes</em> (vert), <em>Attention</em> (orange), <em>Danger</em> (rouge). Cliquez sur l'icone pour changer le type</li>
-                        <li><strong>Colonnes</strong> &mdash; Disposez votre contenu sur 2 colonnes cote a cote (sur mobile, les colonnes s'empilent automatiquement)</li>
-                        <li><strong>Tableaux</strong> &mdash; Inserez un tableau via la barre d'outils ou la commande rapide <code>/tableau</code></li>
+                        <li><strong>Séparateur</strong> &mdash; Ligne horizontale entre deux sections</li>
+                        <li><strong>Encart</strong> &mdash; Encadré coloré pour attirer l'attention. 4 types : <em>Info</em> (bleu), <em>Succès</em> (vert), <em>Attention</em> (orange), <em>Danger</em> (rouge). Cliquez sur l'icône pour changer le type</li>
+                        <li><strong>Colonnes</strong> &mdash; Disposez votre contenu sur 2 colonnes côte à côte (sur mobile, les colonnes s'empilent automatiquement)</li>
+                        <li><strong>Tableaux</strong> &mdash; Insérez un tableau via la barre d'outils ou la commande rapide <code>/tableau</code></li>
                     </ul>
 
-                    <h5>Medias</h5>
+                    <h5>Médias</h5>
                     <ul>
-                        <li><strong>Images</strong> &mdash; Inserez une image depuis votre bibliotheque de medias. Le bouton ouvre un panneau de selection</li>
-                        <li><strong>Documents</strong> &mdash; Inserez un fichier telechargeable (PDF, DOCX, XLSX, ZIP...). Le bouton <i class="fas fa-file-arrow-down"></i> ouvre la bibliotheque de documents avec une zone d'upload integree. Le fichier apparait sous forme de carte cliquable dans votre contenu</li>
-                        <li><strong>Videos YouTube</strong> &mdash; Collez l'URL d'une video pour l'integrer directement</li>
-                        <li><strong>Liens</strong> &mdash; Selectionnez du texte puis cliquez sur l'icone lien pour ajouter une URL</li>
+                        <li><strong>Images</strong> &mdash; Insérez une image de votre bibliothèque. Son texte alternatif (réglé dans Médias) est repris automatiquement</li>
+                        <li><strong>Documents</strong> &mdash; Insérez un fichier téléchargeable (PDF, DOCX, XLSX, ZIP...). Le bouton <i class="fas fa-file-arrow-down"></i> ouvre la bibliothèque de documents avec une zone d'envoi intégrée. Le fichier apparaît sous forme de carte cliquable dans votre contenu</li>
+                        <li><strong>Vidéos YouTube</strong> &mdash; Collez l'adresse d'une vidéo pour l'intégrer directement</li>
+                        <li><strong>Liens</strong> &mdash; Sélectionnez du texte puis cliquez sur l'icône lien pour ajouter une adresse</li>
                     </ul>
 
                     <h5>Commande rapide /</h5>
-                    <p>Tapez <strong>/</strong> dans l'editeur pour ouvrir un menu contextuel. Vous pouvez inserer rapidement un titre, une image, un document, une video, une citation, un encart ou des colonnes sans utiliser la barre d'outils.</p>
+                    <p>Tapez <strong>/</strong> dans l'éditeur pour ouvrir un menu contextuel. Vous pouvez insérer rapidement un titre, une image, un document, une vidéo, une citation, un encart ou des colonnes sans utiliser la barre d'outils.</p>
 
                     <h5>Sauvegarde automatique</h5>
-                    <p>L'editeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur. Si vous quittez la page sans sauvegarder, votre travail sera propose a la restauration a votre prochaine visite.</p>
-                    <p>Vous pouvez egalement sauvegarder manuellement a tout moment avec <strong>Ctrl+S</strong> (Windows/Linux) ou <strong>Cmd+S</strong> (Mac).</p>
+                    <p>L'éditeur <strong>sauvegarde automatiquement</strong> votre brouillon toutes les 30 secondes dans votre navigateur. Si vous quittez la page sans enregistrer, votre travail vous sera proposé à la restauration à votre prochaine visite.</p>
+                    <p>Vous pouvez aussi enregistrer à tout moment avec <strong>Ctrl+S</strong> (Windows/Linux) ou <strong>Cmd+S</strong> (Mac).</p>
 
-                    <h5>Compteur de caracteres</h5>
-                    <p>En bas de l'editeur, un compteur affiche le nombre de <strong>caracteres</strong> et de <strong>mots</strong>. Utile pour vos descriptions SEO et pour calibrer la longueur de vos textes.</p>
+                    <h5>Compteur de caractères</h5>
+                    <p>En bas de l'éditeur, un compteur affiche le nombre de <strong>caractères</strong> et de <strong>mots</strong>. Utile pour calibrer la longueur de vos textes.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Utilisez la commande <strong>/</strong> pour gagner du temps ! Tapez / puis les premieres lettres de ce que vous cherchez (ex : /image, /citation, /colonnes).
+                        <strong>Astuce :</strong> Utilisez la commande <strong>/</strong> pour gagner du temps ! Tapez / puis les premières lettres de ce que vous cherchez (ex : /image, /citation, /colonnes).
                     </div>
                 </div>
             </div>
@@ -156,85 +181,92 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-pages">
-                    <i class="fas fa-file-lines me-2 text-primary"></i> Gerer vos pages
+                    <i class="fas fa-file-lines me-2 text-primary"></i> Gérer vos pages
                 </button>
             </h2>
             <div id="guide-pages" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Pages systeme vs pages personnalisees</h5>
-                    <p>Il existe deux types de pages :</p>
+                    <h5>Créer une page</h5>
+                    <p>Cliquez sur <strong>Créer</strong> (sur l'accueil ou dans Contenus), puis sur <em>Une page</em>. Le formulaire fonctionne comme celui des articles : vous écrivez à gauche, vous publiez à droite.</p>
+
+                    <h5>Pages système et pages personnalisées</h5>
                     <ul>
-                        <li><strong>Pages systeme</strong> (mentions legales, politique de confidentialite) &mdash; Elles ne peuvent pas etre supprimees, mais leur contenu est modifiable.</li>
-                        <li><strong>Pages personnalisees</strong> &mdash; Creez autant de pages que vous le souhaitez (A propos, Nos services, etc.).</li>
+                        <li><strong>Pages système</strong> (mentions légales, politique de confidentialité) &mdash; Elles ne peuvent pas être supprimées, mais leur contenu est modifiable.</li>
+                        <li><strong>Pages personnalisées</strong> &mdash; Créez autant de pages que vous le souhaitez (À propos, Tarifs, etc.).</li>
                     </ul>
 
-                    <h5>Mise en page</h5>
-                    <p>Chaque page peut utiliser un modele de mise en page different :</p>
+                    {% if is_admin_expert() %}
+                    <h5>Mise en page (mode expert)</h5>
+                    <p>Dans les options avancées, chaque page peut choisir sa disposition :</p>
                     <ul>
-                        <li><strong>Standard</strong> &mdash; Contenu pleine largeur, ideal pour du texte</li>
-                        <li><strong>Avec barre laterale</strong> &mdash; Contenu + sidebar widgets</li>
-                        <li><strong>Landing</strong> &mdash; Page d'atterrissage sans elements de navigation superflus</li>
+                        <li><strong>Par défaut</strong> &mdash; Contenu avec une colonne à droite (widgets, catégories, archives)</li>
+                        <li><strong>Pleine largeur</strong> &mdash; Contenu sur toute la largeur, idéal pour les présentations</li>
+                        <li><strong>Colonne à gauche</strong> &mdash; Widgets à gauche, contenu à droite</li>
                     </ul>
+                    {% endif %}
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> N'oubliez pas d'ajouter vos pages personnalisees dans la navigation via <em>Reglages &rarr; Navigation</em>.
+                        <strong>Astuce :</strong> N'oubliez pas d'ajouter vos nouvelles pages au menu de votre site, dans <em>Réglages &rarr; Menu du site</em>.
                     </div>
                 </div>
             </div>
         </div>
 
-        {# ── 4. Tags & Familles ── #}
+        {# ── 4. Etiquettes et familles ── #}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-tags">
-                    <i class="fas fa-tags me-2 text-primary"></i> Tags &amp; familles
+                    <i class="fas fa-tags me-2 text-primary"></i> Catégories, étiquettes et familles
                 </button>
             </h2>
             <div id="guide-tags" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Qu'est-ce qu'un tag ?</h5>
-                    <p>Un <strong>tag</strong> est un mot-cle attache a un contenu. Il sert a la classification fine et genere une page automatique <code>/tag/{slug}</code> listant tous les contenus associes.</p>
-                    <p>Les tags sont <strong>partages entre les modules</strong> : un meme tag peut etre utilise par des articles, des fiches de l'annuaire, des produits du catalogue ou des realisations du portfolio.</p>
+                    <h5>Où les gérer ?</h5>
+                    <p>Tous les classements sont réunis dans <strong>Réglages &rarr; Catégories et étiquettes</strong> : catégories du blog, étiquettes, et catégories propres à chaque module (FAQ, réalisations, catalogue, annuaire).</p>
 
-                    <h5>Familles de tags : pour quoi faire ?</h5>
-                    <p>Une <strong>famille de tags</strong> regroupe des tags partageant un meme theme (Villes, Metiers, Niveaux, Marques...). Chaque famille genere automatiquement un <strong>filtre dedie</strong> sur les pages qui exposent les tags.</p>
+                    <h5>Qu'est-ce qu'une étiquette ?</h5>
+                    <p>Une <strong>étiquette</strong> est un mot-clé attaché à un contenu. Elle sert au classement fin et génère une page automatique <code>/tag/{nom}</code> listant tous les contenus associés.</p>
+                    <p>Les étiquettes sont <strong>partagées entre les modules</strong> : une même étiquette peut être utilisée par des articles, des fiches de l'annuaire, des produits du catalogue ou des réalisations.</p>
+
+                    <h5>Familles d'étiquettes : pour quoi faire ?</h5>
+                    <p>Une <strong>famille</strong> regroupe des étiquettes partageant un même thème (Villes, Métiers, Niveaux, Marques...). Chaque famille génère automatiquement un <strong>filtre dédié</strong> sur les pages qui affichent les étiquettes.</p>
                     <p>Exemple concret pour un annuaire :</p>
                     <ul>
-                        <li>Creez une famille <em>Villes</em> avec les tags <em>Paris</em>, <em>Lyon</em>, <em>Marseille</em></li>
-                        <li>Creez une famille <em>Metiers</em> avec les tags <em>Plombier</em>, <em>Electricien</em>, <em>Macon</em></li>
-                        <li>Tagguez vos fiches d'annuaire</li>
-                        <li>Sur la page <code>/annuaire</code>, deux bandeaux de filtres apparaissent automatiquement : « Villes » et « Metiers »</li>
-                        <li>Les filtres se cumulent : un visiteur peut chercher « Plombier a Paris »</li>
+                        <li>Créez une famille <em>Villes</em> avec les étiquettes <em>Paris</em>, <em>Lyon</em>, <em>Marseille</em></li>
+                        <li>Créez une famille <em>Métiers</em> avec les étiquettes <em>Plombier</em>, <em>Électricien</em>, <em>Maçon</em></li>
+                        <li>Étiquetez vos fiches d'annuaire</li>
+                        <li>Sur la page <code>/annuaire</code>, deux listes de filtres apparaissent automatiquement : « Villes » et « Métiers »</li>
+                        <li>Les filtres se cumulent : un visiteur peut chercher « Plombier à Paris »</li>
                     </ul>
 
-                    <h5>Comment creer une famille</h5>
+                    <h5>Créer une famille (mode expert)</h5>
                     <ol>
-                        <li>Menu <em>Contenu &rarr; Classification &rarr; Familles de tags</em></li>
-                        <li>Cliquez sur <strong>Creer</strong>, donnez un nom (ex: « Villes ») et une couleur</li>
-                        <li>L'ordre d'affichage decide de la position des filtres front (plus petit = plus haut)</li>
+                        <li>Activez le <em>Mode expert</em>, sous le menu</li>
+                        <li>Allez dans <em>Réglages &rarr; Catégories et étiquettes &rarr; Familles d'étiquettes</em></li>
+                        <li>Cliquez sur <strong>Créer</strong>, donnez un nom (ex : « Villes ») et une couleur. L'ordre d'affichage décide de la position des filtres sur le site (plus petit = plus haut)</li>
                     </ol>
 
-                    <h5>Comment rattacher les tags</h5>
+                    <h5>Rattacher les étiquettes</h5>
                     <ol>
-                        <li>Menu <em>Contenu &rarr; Classification &rarr; Tags</em></li>
-                        <li>Editez un tag existant ou creez-en un nouveau</li>
-                        <li>Selectionnez la famille dans le champ <em>Famille</em> (optionnel)</li>
+                        <li>Allez dans <em>Réglages &rarr; Catégories et étiquettes &rarr; Étiquettes</em></li>
+                        <li>Modifiez une étiquette existante ou créez-en une nouvelle</li>
+                        <li>Choisissez la famille dans le champ <em>Famille</em> (facultatif)</li>
                     </ol>
-                    <p>Le rattachement reste <strong>optionnel</strong> : un tag sans famille fonctionne comme avant (sujets blog, page tag classique).</p>
+                    <p>Le rattachement reste <strong>facultatif</strong> : une étiquette sans famille fonctionne normalement.</p>
 
-                    <h5>Cote front</h5>
+                    <h5>Sur le site</h5>
                     <ul>
-                        <li><strong>Annuaire</strong> : filtres par famille generes automatiquement, cumulables avec la recherche et la categorie.</li>
-                        <li><strong>Sidebar blog</strong> : le nuage de tags se regroupe par famille des qu'au moins un tag a une famille.</li>
-                        <li><strong>Page <code>/tag/{slug}</code></strong> : affiche par sections les contenus associes (articles + membres + produits...) selon les modules actifs.</li>
+                        <li><strong>Annuaire</strong> : filtres par famille générés automatiquement, cumulables avec la recherche et la catégorie.</li>
+                        <li><strong>Colonne du blog</strong> : le nuage d'étiquettes se regroupe par famille dès qu'au moins une étiquette en a une.</li>
+                        <li><strong>Page <code>/tag/{nom}</code></strong> : affiche par sections les contenus associés (articles, membres, produits...) selon les modules actifs.</li>
                     </ul>
 
                     <div class="bw-guide-tip">
-                        <strong>Astuce :</strong> Pour un nouveau cas d'usage (filtrer le catalogue par marque, le blog par niveau...), creez une famille et tagguez. Aucun developpement specifique n'est necessaire — les filtres apparaissent automatiquement.
+                        <strong>Astuce :</strong> Pour un nouveau besoin (filtrer le catalogue par marque, le blog par niveau...), créez une famille et étiquetez vos contenus. Aucun développement n'est nécessaire, les filtres apparaissent automatiquement.
                     </div>
                     <div class="bw-guide-tip">
-                        <strong>Bonne pratique :</strong> Limitez-vous a 2-3 familles par module pour rester lisible. Trop de filtres tuent le filtre.
+                        <strong>Bonne pratique :</strong> Limitez-vous à 2 ou 3 familles par module pour rester lisible. Trop de filtres tuent le filtre.
                     </div>
                 </div>
             </div>
@@ -244,30 +276,31 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-medias">
-                    <i class="fas fa-photo-video me-2 text-primary"></i> Medias et images
+                    <i class="fas fa-photo-video me-2 text-primary"></i> Médias et images
                 </button>
             </h2>
             <div id="guide-medias" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Formats acceptes</h5>
-                    <p>Vous pouvez telecharger des images aux formats <strong>JPG</strong>, <strong>PNG</strong>, <strong>GIF</strong> et <strong>WebP</strong>. Taille maximale : 25 Mo.</p>
+                    <h5>Formats acceptés</h5>
+                    <p>Dans <strong>Médias</strong>, vous pouvez ajouter des images aux formats <strong>JPG</strong>, <strong>PNG</strong>, <strong>GIF</strong> et <strong>WebP</strong>. Taille maximale : 25 Mo.</p>
 
                     <h5>Conversion WebP automatique</h5>
-                    <p>Chaque image uploadee est automatiquement convertie en <strong>WebP</strong>, un format moderne plus leger. Vos pages se chargent plus vite, et votre SEO s'ameliore.</p>
+                    <p>Chaque image envoyée est automatiquement convertie en <strong>WebP</strong>, un format moderne plus léger. Vos pages se chargent plus vite, et votre référencement s'améliore.</p>
 
-                    <h5>Images responsives</h5>
-                    <p>BlogWeb genere automatiquement <strong>3 tailles</strong> de chaque image (480px, 800px, 1200px) pour s'adapter a tous les ecrans (mobile, tablette, ordinateur).</p>
+                    <h5>Images adaptées à chaque écran</h5>
+                    <p>BlogWeb génère automatiquement <strong>3 tailles</strong> de chaque image (480px, 800px, 1200px) pour s'adapter à tous les écrans (mobile, tablette, ordinateur).</p>
 
-                    <h5>Texte alternatif (alt)</h5>
-                    <p>Le champ <em>Nom</em> d'un media sert aussi de <strong>texte alternatif</strong>. C'est important pour :</p>
+                    <h5>Texte alternatif</h5>
+                    <p>Le champ <em>Texte alternatif</em> d'une image décrit ce qu'elle montre, en une phrase courte. Il est important pour :</p>
                     <ul>
-                        <li>L'<strong>accessibilite</strong> (lecteurs d'ecran pour malvoyants)</li>
-                        <li>Le <strong>SEO</strong> (Google comprend le contenu de vos images)</li>
+                        <li>L'<strong>accessibilité</strong> (lecteurs d'écran pour les personnes malvoyantes)</li>
+                        <li>Le <strong>référencement</strong> (Google comprend le contenu de vos images)</li>
                     </ul>
+                    <p>Il est repris automatiquement partout où l'image est utilisée. S'il est vide, le site construit un texte à partir du <em>Nom</em> de l'image et du titre de la page. L'accueil vous signale les images qui n'en ont pas.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Donnez des noms descriptifs a vos images. Preferez "equipe-reunion-bureau" a "IMG_20240315.jpg".
+                        <strong>Astuce :</strong> Décrivez ce qu'on voit, pas le nom du fichier. Préférez « L'équipe réunie dans les bureaux de Pau » à « IMG_20240315 ».
                     </div>
                 </div>
             </div>
@@ -277,18 +310,18 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-documents">
-                    <i class="fas fa-file-arrow-down me-2 text-primary"></i> Documents et fichiers telechargeables
+                    <i class="fas fa-file-arrow-down me-2 text-primary"></i> Documents à télécharger
                 </button>
             </h2>
             <div id="guide-documents" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>A quoi servent les documents ?</h5>
-                    <p>Le module <strong>Documents</strong> vous permet d'integrer des fichiers telechargeables (PDF, Word, Excel, archives...) directement dans vos articles et pages. Ils apparaissent sous forme de <strong>carte cliquable</strong> avec icone, nom et taille &mdash; bien plus visible qu'un simple lien texte.</p>
+                    <h5>À quoi servent les documents ?</h5>
+                    <p>Les <strong>documents</strong> sont des fichiers téléchargeables (PDF, Word, Excel, archives...) que vous intégrez dans vos articles et pages. Ils apparaissent sous forme de <strong>carte cliquable</strong> avec icône, nom et taille &mdash; bien plus visible qu'un simple lien.</p>
 
-                    <h5>Formats acceptes</h5>
-                    <p>Taille maximale : <strong>25 Mo</strong>. Formats supportes :</p>
+                    <h5>Formats acceptés</h5>
+                    <p>Taille maximale : <strong>25 Mo</strong>. Formats pris en charge :</p>
                     <ul>
-                        <li><strong>PDF</strong> &mdash; Documents portables (plaquettes, CV, factures...)</li>
+                        <li><strong>PDF</strong> &mdash; Plaquettes, CV, tarifs...</li>
                         <li><strong>Word</strong> (.doc, .docx) et <strong>OpenDocument Texte</strong> (.odt)</li>
                         <li><strong>Excel</strong> (.xls, .xlsx) et <strong>OpenDocument Calc</strong> (.ods, .csv)</li>
                         <li><strong>PowerPoint</strong> (.ppt, .pptx) et <strong>OpenDocument Impress</strong> (.odp)</li>
@@ -296,132 +329,157 @@
                         <li><strong>Texte brut</strong> (.txt)</li>
                     </ul>
 
-                    <h5>Deux facons d'ajouter un document</h5>
-                    <p><strong>Methode 1 &mdash; Bibliotheque centrale</strong></p>
+                    <h5>Deux façons d'ajouter un document</h5>
+                    <p><strong>Méthode 1 &mdash; La bibliothèque</strong></p>
                     <ol>
-                        <li>Menu <em>Contenu &rarr; Documents</em></li>
-                        <li>Cliquez sur <strong>Ajouter un document</strong>, donnez-lui un nom descriptif et uploadez le fichier</li>
-                        <li>Vous pouvez ensuite l'inserer dans plusieurs articles ou pages depuis l'editeur</li>
+                        <li>Allez dans <em>Médias</em>, puis suivez le lien <em>Documents</em> sous le titre</li>
+                        <li>Cliquez sur <strong>Ajouter un document</strong>, donnez-lui un nom descriptif et choisissez le fichier</li>
+                        <li>Vous pourrez ensuite l'insérer dans plusieurs articles ou pages depuis l'éditeur</li>
                     </ol>
 
-                    <p><strong>Methode 2 &mdash; Directement depuis l'editeur</strong></p>
+                    <p><strong>Méthode 2 &mdash; Directement depuis l'éditeur</strong></p>
                     <ol>
-                        <li>Dans un article ou une page, placez le curseur la ou vous voulez inserer le document</li>
-                        <li>Cliquez sur l'icone <i class="fas fa-file-arrow-down"></i> de la barre d'outils (ou tapez <code>/document</code>)</li>
-                        <li>Dans la modale, choisissez un document existant <strong>ou</strong> uploadez un nouveau fichier directement &mdash; il sera automatiquement insere et ajoute a votre bibliotheque</li>
+                        <li>Dans un article ou une page, placez le curseur là où vous voulez insérer le document</li>
+                        <li>Cliquez sur l'icône <i class="fas fa-file-arrow-down"></i> de la barre d'outils (ou tapez <code>/document</code>)</li>
+                        <li>Choisissez un document existant <strong>ou</strong> envoyez un nouveau fichier : il sera inséré et ajouté à votre bibliothèque</li>
                     </ol>
 
-                    <h5>Le nom affiche dans la carte</h5>
-                    <p>Le champ <em>Nom</em> que vous saisissez est utilise comme :</p>
-                    <ul>
-                        <li>Le <strong>titre visible</strong> dans la carte cote front</li>
-                        <li>Le <strong>nom du fichier telecharge</strong> par vos visiteurs (attribut <code>download</code>)</li>
-                    </ul>
-                    <p>Preferez "Plaquette commerciale 2026" plutot que "doc-final-v3.pdf" : c'est ce que verront vos clients.</p>
-
-                    <h5>Cote front</h5>
-                    <p>La carte affiche automatiquement :</p>
-                    <ul>
-                        <li>Une <strong>icone selon le type</strong> de fichier (PDF, Word, Excel, ZIP...)</li>
-                        <li>Le <strong>nom</strong> que vous avez saisi</li>
-                        <li>L'<strong>extension</strong> et la <strong>taille</strong> (ex: PDF · 1,2 Mo)</li>
-                        <li>Une <strong>icone de telechargement</strong> a droite</li>
-                    </ul>
-                    <p>Le clic ouvre le fichier dans un nouvel onglet (ou propose le telechargement selon le type).</p>
+                    <h5>Le nom affiché dans la carte</h5>
+                    <p>Le <em>Nom</em> que vous saisissez sert de titre visible dans la carte et de nom du fichier téléchargé par vos visiteurs. Préférez « Plaquette commerciale 2026 » à « doc-final-v3.pdf » : c'est ce que verront vos clients.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Pour les fichiers volumineux (videos, gros datasets), preferez un hebergeur dedie (YouTube, WeTransfer, Google Drive) avec un lien externe. Le module Documents est optimise pour les fichiers jusqu'a 25 Mo.
+                        <strong>Astuce :</strong> Pour les fichiers volumineux (vidéos, gros fichiers), préférez un hébergeur dédié (YouTube, WeTransfer, Google Drive) avec un lien.
                     </div>
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Bonne pratique :</strong> Si vous mettez a jour un document (ex: nouveau tarif), modifiez-le directement dans la bibliotheque (l'URL reste la meme) plutot que de creer un nouveau document &mdash; tous les articles qui l'incluent seront automatiquement a jour.
+                        <strong>Bonne pratique :</strong> Pour mettre à jour un document (ex : nouveau tarif), remplacez le fichier dans la bibliothèque plutôt que d'en créer un nouveau : tous les articles qui l'incluent seront à jour.
                     </div>
                 </div>
             </div>
         </div>
 
-        {# ── 5. Navigation ── #}
+        {# ── 5c. Messages ── #}
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-messages">
+                    <i class="fas fa-inbox me-2 text-primary"></i> Messages
+                </button>
+            </h2>
+            <div id="guide-messages" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
+                <div class="accordion-body">
+                    <h5>Les demandes de contact</h5>
+                    <p>Chaque formulaire de contact envoyé par un visiteur arrive dans <strong>Messages</strong>, en plus de l'e-mail que vous recevez. Le chiffre rouge dans le menu, et la première ligne de l'accueil, indiquent les messages non lus.</p>
+
+                    <h5>Les commentaires</h5>
+                    <p>Les réactions laissées sous vos articles sont accessibles par le lien <em>Commentaires</em>, sous le titre de la page Messages.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── 6. Menu du site ── #}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-navigation">
-                    <i class="fas fa-bars me-2 text-primary"></i> Navigation et menus
+                    <i class="fas fa-bars me-2 text-primary"></i> Menu du site
                 </button>
             </h2>
             <div id="guide-navigation" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Le gestionnaire de menus</h5>
-                    <p>Accessible via <strong>Reglages &rarr; Navigation</strong>, il vous permet d'organiser vos menus par <strong>glisser-deposer</strong>.</p>
+                    <h5>Organiser les menus</h5>
+                    <p>Dans <strong>Réglages &rarr; Menu du site</strong>, organisez les liens de votre site par <strong>glisser-déposer</strong>.</p>
 
                     <h5>Les emplacements</h5>
-                    <p>Votre site a 3 zones de navigation :</p>
+                    <p>Votre site a 3 zones de liens :</p>
                     <ul>
-                        <li><strong>Header</strong> &mdash; Le menu principal en haut de page</li>
-                        <li><strong>Footer navigation</strong> &mdash; Liens utiles en bas de page</li>
-                        <li><strong>Footer legal</strong> &mdash; Mentions legales, CGV, politique de confidentialite</li>
+                        <li><strong>Haut de page</strong> &mdash; Le menu principal</li>
+                        <li><strong>Bas de page</strong> &mdash; Liens utiles</li>
+                        <li><strong>Bas de page légal</strong> &mdash; Mentions légales, CGV, politique de confidentialité</li>
                     </ul>
 
                     <h5>Types de liens</h5>
                     <p>Vous pouvez ajouter des liens vers :</p>
                     <ul>
                         <li>Des <strong>pages</strong> de votre site</li>
-                        <li>Des <strong>categories</strong> d'articles</li>
-                        <li>Des <strong>modules</strong> (blog, services, catalogue...)</li>
-                        <li>Des <strong>URLs externes</strong></li>
+                        <li>Des <strong>catégories</strong> d'articles</li>
+                        <li>Des <strong>rubriques</strong> du site (blog, services, catalogue...)</li>
+                        <li>Des <strong>adresses externes</strong></li>
                     </ul>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Gardez votre menu header court (5-7 liens maximum). Trop de liens perturbent la navigation.
+                        <strong>Astuce :</strong> Gardez votre menu principal court (5 à 7 liens). Trop de liens perdent vos visiteurs.
                     </div>
                 </div>
             </div>
         </div>
 
-        {# ── 6. SEO ── #}
+        {# ── 7. Referencement ── #}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-seo">
-                    <i class="fas fa-search me-2 text-primary"></i> SEO et referencement
+                    <i class="fas fa-search me-2 text-primary"></i> Référencement (Google)
                 </button>
             </h2>
             <div id="guide-seo" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Qu'est-ce que le SEO ?</h5>
-                    <p>Le SEO (Search Engine Optimization) designe l'ensemble des techniques pour que votre site apparaisse dans les <strong>premiers resultats de Google</strong>.</p>
+                    <h5>De quoi s'agit-il ?</h5>
+                    <p>Le référencement regroupe tout ce qui aide votre site à apparaître dans les <strong>premiers résultats de Google</strong>, et à donner envie de cliquer.</p>
 
-                    <h5>Les champs SEO</h5>
-                    <p>Chaque article, page et categorie dispose d'un panneau <em>SEO</em> avec :</p>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <h5>La page Référencement</h5>
+                    <p>Dans <strong>Référencement</strong>, vous dites avec vos mots ce que vous proposez, à qui, et où vous voulez être trouvé (votre ville, votre région ou toute la France). Le <strong>bilan</strong>, en haut de la page, compare ces réponses à ce que publie votre site :</p>
                     <ul>
-                        <li><strong>Titre SEO</strong> (max 70 caracteres) &mdash; Le titre affiche dans Google. S'il est vide, le titre de votre contenu est utilise.</li>
-                        <li><strong>Description SEO</strong> (max 160 caracteres) &mdash; Le texte sous le titre dans Google. C'est ce qui donne envie de cliquer !</li>
-                        <li><strong>Mots-cles</strong> &mdash; Les termes principaux de votre contenu, separes par des virgules.</li>
-                        <li><strong>No Index</strong> &mdash; Cochez si vous ne voulez pas que cette page apparaisse dans Google (brouillons, pages privees).</li>
-                        <li><strong>URL canonique</strong> &mdash; A remplir uniquement si le contenu existe aussi sur un autre site.</li>
+                        <li>les villes visées sont-elles citées dans vos titres et descriptions ?</li>
+                        <li>chacune de vos priorités a-t-elle sa page ou son service ?</li>
+                        <li>les mots de vos clients apparaissent-ils dans vos textes ?</li>
                     </ul>
+                    <p>Les points en orange sont des pistes d'amélioration, pas des erreurs. La même page règle aussi la fiche entreprise Google (type d'activité, prix, horaires), le titre, la description et l'image de partage par défaut et Google Analytics, et rappelle comment déclarer le site dans Search Console.</p>
+                    {% endif %}
+
+                    <h5>Le bloc « Dans Google » de chaque contenu</h5>
+                    <p>Sous le contenu d'un article, d'une page ou d'un service :</p>
+                    <ul>
+                        <li><strong>Titre dans Google</strong> &mdash; Le titre affiché dans les résultats. Visez 30 à 60 caractères. Vide, le titre du contenu est utilisé.</li>
+                        <li><strong>Description dans Google</strong> &mdash; Le texte sous le titre, ce qui donne envie de cliquer. Visez 120 à 160 caractères. Vide, le résumé est utilisé.</li>
+                    </ul>
+                    <p>L'<strong>aperçu</strong> au-dessus de ces champs montre le résultat tel qu'il apparaîtra dans Google, mis à jour pendant que vous tapez, avec un compteur de caractères.</p>
+
+                    <h5>Le bilan SEO d'un contenu</h5>
+                    <p>En haut du formulaire d'un contenu existant, un bilan vert, orange ou rouge vérifie le titre, la description, la longueur du texte, les sous-titres, les textes alternatifs des images, l'auteur (pour les articles) et l'adresse de la page.</p>
+
+                    {% if is_admin_expert() %}
+                    <h5>Options avancées (mode expert)</h5>
+                    <ul>
+                        <li><strong>Adresse de la page</strong> &mdash; La fin de l'adresse du contenu. La modifier casse les liens existants vers cette page.</li>
+                        <li><strong>Mots-clés</strong> &mdash; Ignorés par Google, utiles seulement à certains outils.</li>
+                        <li><strong>Masquer des moteurs de recherche</strong> &mdash; Le contenu n'apparaîtra pas dans Google.</li>
+                        <li><strong>Adresse canonique</strong> &mdash; À remplir uniquement si le texte existe aussi sur un autre site.</li>
+                    </ul>
+                    {% endif %}
 
                     <h5>Ce que BlogWeb fait automatiquement</h5>
                     <ul>
-                        <li>Generation du <strong>sitemap XML</strong> (plan du site pour Google)</li>
-                        <li>Balises <strong>Open Graph</strong> pour les reseaux sociaux</li>
-                        <li>Schema.org <strong>JSON-LD</strong> pour les extraits enrichis</li>
-                        <li><strong>robots.txt</strong> optimise</li>
-                        <li>Images <strong>WebP</strong> et <strong>lazy-loading</strong> pour la vitesse</li>
-                        <li><strong>Twitter Cards</strong> &mdash; generees automatiquement avec les memes donnees que l'Open Graph</li>
+                        <li>Le <strong>plan du site</strong> pour Google (sitemap XML) et le fichier robots.txt</li>
+                        <li>Les <strong>données structurées</strong> pour les résultats enrichis : entreprise, zone desservie, articles et leur auteur, FAQ</li>
+                        <li>Les <strong>aperçus de partage</strong> sur les réseaux sociaux (Facebook, LinkedIn, X)</li>
+                        <li>Des images légères (WebP) chargées au fil de la lecture, pour la vitesse</li>
                     </ul>
 
-                    <h5>Image Open Graph</h5>
-                    <p>Configurez une image dediee dans <strong>Reglages &rarr; Identite</strong> (format recommande : 1200x630 px). Fallback automatique : image OG &rarr; image hero &rarr; logo.</p>
+                    <h5>Image de partage</h5>
+                    <p>Quand une page n'a pas d'image, l'aperçu de partage utilise l'<strong>image de partage</strong> réglée dans <em>Référencement</em> (format conseillé : 1200 x 630 px), puis l'image principale de l'accueil, puis votre logo.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Remplissez les champs SEO de vos 10 pages les plus importantes. C'est le meilleur rapport effort/resultat pour votre referencement.
+                        <strong>Astuce :</strong> Remplissez le bloc « Dans Google » de vos 10 pages les plus importantes. C'est le meilleur rapport effort/résultat pour votre référencement.
                     </div>
                 </div>
             </div>
         </div>
 
-        {# ── 7. FAQ ── #}
+        {# ── 8. FAQ ── #}
         {% if site is defined and site and 'faq' in site.enabledModules %}
         <div class="accordion-item">
             <h2 class="accordion-header">
@@ -431,105 +489,71 @@
             </h2>
             <div id="guide-faq" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>A quoi sert le module FAQ ?</h5>
-                    <p>Le module FAQ vous permet de creer une page de <strong>questions/reponses</strong> en accordeon sur votre site. C'est ideal pour rassurer vos visiteurs et ameliorer votre referencement (Google affiche parfois les FAQ directement dans les resultats).</p>
+                    <h5>À quoi sert la FAQ ?</h5>
+                    <p>La FAQ crée une page de <strong>questions/réponses</strong> en accordéon sur votre site. Elle rassure vos visiteurs et aide votre référencement (Google affiche parfois les FAQ directement dans ses résultats).</p>
 
-                    <h5>Categories (optionnelles)</h5>
-                    <p>Vous pouvez organiser vos questions par categories. Dans <strong>Modules &rarr; FAQ &rarr; Categories</strong> :</p>
+                    <h5>Créer une question</h5>
+                    <p>Cliquez sur <strong>Créer</strong>, puis sur <em>Une question</em>. Vos questions existantes se retrouvent dans <em>Contenus</em>, onglet FAQ.</p>
                     <ul>
-                        <li>Creez des categories thematiques (ex : "Livraison", "Paiement", "Technique")</li>
-                        <li>Ordonnez-les avec le champ <em>Ordre</em> (0 = en premier)</li>
-                        <li>Activez ou desactivez-les a tout moment</li>
-                    </ul>
-                    <p>Si vous n'avez que quelques questions, <strong>pas besoin de categories</strong> : les questions s'afficheront dans un seul groupe.</p>
-
-                    <h5>Creer une question</h5>
-                    <p>Dans <strong>Modules &rarr; FAQ &rarr; Questions</strong>, cliquez sur <em>Creer</em> :</p>
-                    <ul>
-                        <li><strong>Question</strong> &mdash; Le texte affiche dans le titre de l'accordeon</li>
-                        <li><strong>Reponse</strong> &mdash; Utilisez l'editeur visuel pour mettre en forme votre reponse (texte riche, liens, listes...)</li>
-                        <li><strong>Categorie</strong> &mdash; Rattachez la question a une categorie (optionnel)</li>
-                        <li><strong>Icone</strong> &mdash; Ajoutez une icone Bootstrap Icons (optionnel)</li>
-                        <li><strong>Ordre</strong> &mdash; Position dans sa categorie (0 = en premier)</li>
-                        <li><strong>Active</strong> &mdash; Desactivez une question sans la supprimer</li>
+                        <li><strong>Question</strong> &mdash; Le texte affiché dans le titre de l'accordéon</li>
+                        <li><strong>Réponse</strong> &mdash; Mise en forme avec l'éditeur visuel (liens, listes...)</li>
+                        <li><strong>Catégorie</strong> &mdash; Pour regrouper les questions (facultatif)</li>
+                        <li><strong>Icône</strong> &mdash; Facultative</li>
+                        <li><strong>Ordre</strong> &mdash; Position dans sa catégorie (0 = en premier)</li>
+                        <li><strong>Active</strong> &mdash; Masquez une question sans la supprimer</li>
                     </ul>
 
-                    <h5>Affichage sur le site</h5>
-                    <p>La page <strong>/faq</strong> affiche toutes les questions actives en accordeon, groupees par categorie. Le schema <strong>FAQ structuree</strong> (schema.org) est genere automatiquement pour le SEO.</p>
+                    <h5>Catégories (facultatives)</h5>
+                    <p>Pour regrouper vos questions par thème (ex : « Livraison », « Paiement »), créez des catégories dans <em>Réglages &rarr; Catégories et étiquettes &rarr; Catégories de la FAQ</em>. Avec peu de questions, pas besoin de catégories : elles s'affichent dans un seul groupe.</p>
+
+                    <h5>Sur le site</h5>
+                    <p>La page <strong>/faq</strong> affiche toutes les questions actives, groupées par catégorie. Les données structurées FAQ pour Google sont générées automatiquement.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Redigez vos questions du point de vue du client ("Comment puis-je..." plutot que "Nous proposons..."). Google valorise les FAQ qui repondent aux vraies questions des internautes.
+                        <strong>Astuce :</strong> Rédigez vos questions comme vos clients les posent (« Comment puis-je... » plutôt que « Nous proposons... »).
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        {# ── 8. Portfolio ── #}
+        {# ── 9. Portfolio ── #}
         {% if site is defined and site and 'portfolio' in site.enabledModules %}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-portfolio">
-                    <i class="fas fa-images me-2 text-primary"></i> Portfolio (Realisations)
+                    <i class="fas fa-images me-2 text-primary"></i> Réalisations (portfolio)
                 </button>
             </h2>
             <div id="guide-portfolio" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>A quoi sert le module Portfolio ?</h5>
-                    <p>Le module Portfolio vous permet de presenter vos <strong>realisations</strong>, projets clients ou travaux dans une grille visuelle avec pages de detail. Ideal pour montrer votre savoir-faire a vos prospects.</p>
+                    <h5>À quoi servent les réalisations ?</h5>
+                    <p>Présentez vos <strong>réalisations</strong>, projets clients ou travaux dans une grille visuelle, chacun avec sa page. Idéal pour montrer votre savoir-faire.</p>
 
-                    <h5>Categories</h5>
-                    <p>Dans <strong>Modules &rarr; Portfolio &rarr; Categories</strong>, organisez vos realisations par type de projet :</p>
+                    <h5>Créer une réalisation</h5>
+                    <p>Cliquez sur <strong>Créer</strong>, puis sur <em>Une réalisation</em> :</p>
                     <ul>
-                        <li>Creez des categories (ex : "Sites web", "Applications", "Design graphique")</li>
-                        <li>Ajoutez une icone Bootstrap Icons pour un rendu visuel dans les filtres</li>
-                        <li>Ordonnez-les avec le champ <em>Ordre</em></li>
-                    </ul>
-                    <p>Vos visiteurs pourront <strong>filtrer par categorie</strong> sur la page /realisations.</p>
-
-                    <h5>Creer une realisation</h5>
-                    <p>Dans <strong>Modules &rarr; Portfolio &rarr; Realisations</strong>, cliquez sur <em>Creer</em> :</p>
-
-                    <p><strong>Contenu :</strong></p>
-                    <ul>
-                        <li><strong>Titre</strong> &mdash; Nom du projet, affiche dans la grille et en titre de page</li>
-                        <li><strong>Description courte</strong> &mdash; Resume de 2-3 lignes affiche dans la grille</li>
-                        <li><strong>Contenu detaille</strong> &mdash; Description complete du projet (editeur visuel)</li>
-                        <li><strong>Image principale</strong> &mdash; Image de couverture, format 4:3 recommande</li>
+                        <li><strong>Titre</strong>, <strong>description courte</strong> (affichée dans la grille) et <strong>contenu détaillé</strong></li>
+                        <li><strong>Image principale</strong> &mdash; Format 4:3 conseillé</li>
+                        <li><strong>Client</strong>, <strong>date de réalisation</strong> et <strong>lien du projet</strong> (un bouton « Voir le projet » s'affiche sur sa page)</li>
+                        <li><strong>Étiquettes</strong> &mdash; Compétences ou technologies, partagées avec le reste du site</li>
+                        <li><strong>Catégorie</strong>, <strong>Mis en avant</strong> (accueil) et <strong>Active</strong> (masquer sans supprimer)</li>
                     </ul>
 
-                    <p><strong>Projet :</strong></p>
-                    <ul>
-                        <li><strong>Client</strong> &mdash; Nom du client ou de l'entreprise</li>
-                        <li><strong>Date de realisation</strong> &mdash; Date de livraison du projet</li>
-                        <li><strong>Lien du projet</strong> &mdash; URL complete vers le projet en ligne (ex : https://www.client.fr). Un bouton "Voir le projet" sera affiche sur la page de detail</li>
-                        <li><strong>Tags</strong> &mdash; Technologies ou competences utilisees. Les tags sont partages avec le blog, l'annuaire et le catalogue (voir section <em>Tags &amp; familles</em>)</li>
-                    </ul>
-
-                    <p><strong>Parametres :</strong></p>
-                    <ul>
-                        <li><strong>Categorie</strong> &mdash; Permet aux visiteurs de filtrer par type</li>
-                        <li><strong>Mis en avant</strong> &mdash; Les realisations mises en avant peuvent etre affichees sur la page d'accueil</li>
-                        <li><strong>Active</strong> &mdash; Masquer sans supprimer</li>
-                    </ul>
-
-                    <h5>Affichage sur le site</h5>
-                    <ul>
-                        <li><strong>/realisations</strong> &mdash; Grille de toutes les realisations avec filtres par categorie</li>
-                        <li><strong>/realisation/mon-projet</strong> &mdash; Page de detail avec image, description, infos projet, tags et bouton lien</li>
-                    </ul>
+                    <h5>Catégories</h5>
+                    <p>Créez-les dans <em>Réglages &rarr; Catégories et étiquettes &rarr; Catégories des réalisations</em>. Vos visiteurs pourront filtrer par catégorie sur la page <strong>/realisations</strong>.</p>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Privilegiez des images de qualite et un format homogene (4:3). Remplissez les champs SEO pour chaque realisation importante — cela aide votre site a apparaitre quand un prospect cherche vos competences.
+                        <strong>Astuce :</strong> Privilégiez des images de qualité et un format homogène (4:3).
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        {# ── 8b. Services ── #}
+        {# ── 9b. Services ── #}
         {% if site.hasModule('services') %}
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -540,20 +564,21 @@
           <div id="guideServices" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
             <div class="accordion-body">
               <h5>Fiches de services</h5>
-              <p>Le module Services permet de presenter vos prestations sous forme de grille sur la page d'accueil et en page dediee.</p>
+              <p>Présentez vos prestations en grille sur la page d'accueil et en page dédiée. Cliquez sur <strong>Créer</strong>, puis sur <em>Un service</em> :</p>
               <ul>
-                <li><strong>Description courte</strong> — affichee dans la grille des services</li>
-                <li><strong>Contenu detaille</strong> — page de detail optionnelle (editeur visuel avec commande <code>/</code>)</li>
-                <li><strong>Icone</strong> — classe Bootstrap Icons (ex: <code>bi-rocket</code>)</li>
-                <li><strong>Lien</strong> — vers une page du site, un lien externe, ou la page de detail auto-generee</li>
-                <li><strong>Ordre</strong> — position dans la grille (0 = premier)</li>
+                <li><strong>Description courte</strong> &mdash; Affichée dans la liste des services</li>
+                <li><strong>Page détaillée</strong> &mdash; Facultative : si elle est vide, le service n'a pas de page à lui</li>
+                <li><strong>Icône</strong> et <strong>image</strong> &mdash; Choisies dans leurs sélecteurs</li>
+                <li><strong>En ligne</strong> et <strong>Ordre d'affichage</strong> (0 = en premier)</li>
+                <li><strong>Rattacher à un service</strong> &mdash; Fait d'un service une prestation d'un autre</li>
+                <li><strong>Page liée</strong> &mdash; Ouvre cette page au clic, à la place de la page détaillée</li>
               </ul>
             </div>
           </div>
         </div>
         {% endif %}
 
-        {# ── 8c. Catalogue ── #}
+        {# ── 9c. Catalogue ── #}
         {% if site.hasModule('catalogue') %}
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -564,207 +589,187 @@
           <div id="guideCatalogue" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
             <div class="accordion-body">
               <h5>Fiches produits</h5>
-              <p>Creez des fiches pour vos produits ou prestations avec tarification, variantes et galerie photos.</p>
+              <p>Cliquez sur <strong>Créer</strong>, puis sur <em>Un produit</em>, pour une fiche avec prix, variantes et galerie photos.</p>
               <ul>
-                <li><strong>Prix HT/TTC</strong> — le mode d'affichage se configure dans Reglages > Identite > Catalogue</li>
-                <li><strong>Variantes</strong> — taille, duree, formule... chaque variante peut avoir son propre prix</li>
-                <li><strong>Galerie</strong> — ajoutez plusieurs photos par produit</li>
-                <li><strong>Disponibilite</strong> — disponible, indisponible ou sur devis</li>
-                <li><strong>Reservation</strong> — lien vers Calendly, Cal.com ou tout service de prise de rendez-vous</li>
-                <li><strong>Produits lies</strong> — suggestions "Vous aimerez aussi" (auto si vide)</li>
+                <li><strong>Prix HT ou TTC</strong> &mdash; Le mode d'affichage se règle dans <em>Réglages &rarr; Identité du site</em>, bloc Catalogue</li>
+                <li><strong>Variantes</strong> &mdash; Taille, durée, formule... chacune peut avoir son propre prix</li>
+                <li><strong>Galerie</strong> &mdash; Plusieurs photos par produit</li>
+                <li><strong>Disponibilité</strong> &mdash; Disponible, indisponible ou sur devis</li>
+                <li><strong>Réservation</strong> &mdash; Lien vers Calendly, Cal.com ou un autre service de prise de rendez-vous</li>
+                <li><strong>Produits liés</strong> &mdash; Suggestions « Vous aimerez aussi » (automatiques si vide)</li>
               </ul>
-              <h5>Categories produits</h5>
-              <p>Organisez vos produits par categorie pour faciliter la navigation dans le catalogue.</p>
+              <h5>Catégories de produits</h5>
+              <p>Créez-les dans <em>Réglages &rarr; Catégories et étiquettes &rarr; Catégories du catalogue</em>.</p>
             </div>
           </div>
         </div>
         {% endif %}
 
-        {# ── 8d. Evenements ── #}
+        {# ── 9d. Evenements ── #}
         {% if site.hasModule('events') %}
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideEvents">
-              <i class="fas fa-calendar-alt me-2"></i> Evenements
+              <i class="fas fa-calendar-alt me-2"></i> Événements
             </button>
           </h2>
           <div id="guideEvents" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
             <div class="accordion-body">
-              <h5>Gerer vos evenements</h5>
-              <p>Publiez vos evenements a venir avec date, lieu et description detaillee.</p>
+              <h5>Gérer vos événements</h5>
+              <p>Cliquez sur <strong>Créer</strong>, puis sur <em>Un événement</em>, pour publier une date avec son lieu et sa description.</p>
               <ul>
-                <li><strong>Date et heure</strong> — date de debut obligatoire, date de fin optionnelle</li>
-                <li><strong>Lieu</strong> — adresse ou nom du lieu</li>
-                <li><strong>Evenement vedette</strong> — mis en avant sur la page d'accueil</li>
-                <li><strong>Produit lie</strong> — associez un produit du catalogue pour permettre l'inscription/achat direct</li>
-                <li><strong>Description</strong> — editeur visuel complet (commande <code>/</code> pour les blocs)</li>
+                <li><strong>Date et heure</strong> &mdash; Début obligatoire, fin facultative</li>
+                <li><strong>Lieu</strong> &mdash; Adresse ou nom du lieu</li>
+                <li><strong>Événement vedette</strong> &mdash; Mis en avant sur la page d'accueil</li>
+                <li><strong>Produit lié</strong> &mdash; Un produit du catalogue pour permettre l'inscription ou l'achat direct</li>
+                <li><strong>Description</strong> &mdash; Éditeur visuel complet</li>
               </ul>
-              <p>Les evenements passes sont automatiquement archives et affiches separement.</p>
+              <p>Les événements passés sont archivés et affichés à part automatiquement.</p>
             </div>
           </div>
         </div>
         {% endif %}
 
-        {# ── 8e. E-commerce ── #}
+        {# ── 9e. E-commerce ── #}
         {% if site.hasModule('ecommerce') %}
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideEcommerce">
-              <i class="fas fa-shopping-cart me-2"></i> E-commerce et commandes
+              <i class="fas fa-shopping-cart me-2"></i> Boutique et commandes
             </button>
           </h2>
           <div id="guideEcommerce" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
             <div class="accordion-body">
               <h5>Panier et commandes</h5>
-              <p>Le module e-commerce ajoute le panier, le tunnel de commande et le paiement Stripe.</p>
+              <p>La boutique ajoute le panier, la commande et le paiement par carte (Stripe).</p>
               <ul>
-                <li><strong>Panier</strong> — les visiteurs ajoutent des produits et variantes au panier</li>
-                <li><strong>Commandes</strong> — consultables dans Modules > Commandes (lecture seule)</li>
-                <li><strong>Paiement Stripe</strong> — configurez vos cles dans Reglages > Identite > Paiement Stripe</li>
-                <li><strong>Statuts</strong> — en attente, payee, annulee, remboursee</li>
+                <li><strong>Panier</strong> &mdash; Les visiteurs ajoutent des produits et variantes</li>
+                <li><strong>Commandes</strong> &mdash; Consultables dans l'entrée <em>Commandes</em> du menu (lecture seule). L'accueil affiche aussi les ventes du mois</li>
+                <li><strong>Statuts</strong> &mdash; En attente, payée, annulée, remboursée</li>
               </ul>
-              <h5>Configuration Stripe</h5>
-              <p>Trois cles a renseigner dans Reglages > Identite :</p>
+              {% if is_granted('ROLE_FREELANCE') %}
+              <h5>Configuration Stripe (webmaster)</h5>
+              <p>Trois clés à renseigner dans <em>Réglages &rarr; Identité du site</em>, bloc Paiement Stripe :</p>
               <ul>
-                <li><strong>Cle publique</strong> — commence par <code>pk_test_</code> ou <code>pk_live_</code></li>
-                <li><strong>Cle secrete</strong> — commence par <code>sk_test_</code> ou <code>sk_live_</code></li>
-                <li><strong>Secret webhook</strong> — commence par <code>whsec_</code></li>
+                <li><strong>Clé publique</strong> &mdash; Commence par <code>pk_test_</code> ou <code>pk_live_</code></li>
+                <li><strong>Clé secrète</strong> &mdash; Commence par <code>sk_test_</code> ou <code>sk_live_</code></li>
+                <li><strong>Secret webhook</strong> &mdash; Commence par <code>whsec_</code></li>
               </ul>
+              {% endif %}
             </div>
           </div>
         </div>
         {% endif %}
 
-        {# ── 8f. Landing pages (Marketing) ── #}
+        {# ── 9f. Landing pages (Marketing) ── #}
         {% if site.hasModule('marketing') %}
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideLanding">
-              <i class="fas fa-bullhorn me-2 text-primary"></i> Landing pages (Marketing)
+              <i class="fas fa-bullhorn me-2 text-primary"></i> Landing pages
             </button>
           </h2>
           <div id="guideLanding" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
             <div class="accordion-body">
               <h5>Qu'est-ce qu'une landing page ?</h5>
-              <p>Une <strong>landing page</strong> (page d'atterrissage) est une page speciale concue pour <strong>convertir</strong> : pas de menu de navigation, pas de liens de distraction, un seul objectif clair. Le visiteur arrive (depuis une pub, un email, un post LinkedIn...) et n'a qu'un choix : passer a l'action.</p>
-              <p>Ideale pour vos campagnes marketing, offres speciales, partenariats ou prospection ciblee.</p>
+              <p>Une <strong>landing page</strong> (page d'atterrissage) est conçue pour <strong>convertir</strong> : pas de menu, pas de distraction, un seul objectif. Le visiteur arrive (depuis une publicité, un e-mail, un post LinkedIn...) et n'a qu'un choix : passer à l'action.</p>
+              <p>Idéale pour vos campagnes, offres spéciales, partenariats ou prospection ciblée.</p>
 
-              <h5>Creer une landing page</h5>
-              <p>Dans <strong>Marketing &rarr; Landing pages</strong>, cliquez sur <em>Creer</em>. Le formulaire comporte plusieurs panneaux :</p>
-
-              <p><strong>Contenu :</strong></p>
+              <h5>Créer une landing page</h5>
+              <p>Cliquez sur <strong>Créer</strong>, puis sur <em>Une landing page</em>. Vos landing pages se retrouvent dans <em>Contenus</em>, onglet Landing pages.</p>
               <ul>
-                <li><strong>Titre</strong> &mdash; Affiche en gros dans le hero (section haute de la page)</li>
-                <li><strong>Contenu</strong> &mdash; Editeur visuel pour detailler votre offre : probleme, solution, benefices, temoignages, FAQ...</li>
+                <li><strong>Titre</strong> &mdash; Affiché en grand en haut de la page</li>
+                <li><strong>Contenu</strong> &mdash; Votre offre : problème, solution, bénéfices, témoignages...</li>
+                <li><strong>Texte du CTA</strong> &mdash; Le texte du bouton d'action. Ex : « Réserver un appel », « Obtenir mon devis »</li>
+                <li><strong>Lien de prise de RDV</strong> &mdash; Calendly, Cal.com... Si renseigné, le bouton y mène directement</li>
+                <li><strong>Afficher le formulaire</strong> et <strong>Titre du formulaire</strong> &mdash; Un formulaire de contact allégé, intégré à la page</li>
+                <li><strong>Image hero</strong> &mdash; L'image du haut de page, 1920 x 800 px minimum</li>
               </ul>
 
-              <p><strong>CTA &amp; Conversion :</strong></p>
+              <h5>Le bouton d'action</h5>
               <ul>
-                <li><strong>Texte du CTA</strong> &mdash; Le texte du bouton d'action (ex: "Reserver un appel", "Obtenir mon devis"). Defaut automatique selon la configuration</li>
-                <li><strong>Lien de prise de RDV</strong> &mdash; URL vers votre calendrier (Calendly, Cal.com...). Si renseigne, le bouton CTA renvoie directement vers ce lien</li>
-                <li><strong>Afficher le formulaire</strong> &mdash; Active le formulaire de contact allege integre a la page</li>
-                <li><strong>Titre du formulaire</strong> &mdash; Personnalisez le titre au-dessus du formulaire (defaut : "Laissez vos coordonnees")</li>
+                <li><strong>Lien de rendez-vous renseigné</strong> &rarr; Le bouton mène au calendrier. Le formulaire peut s'afficher en complément (« Pas encore prêt ? Laissez vos coordonnées »)</li>
+                <li><strong>Lien vide</strong> &rarr; Le bouton descend jusqu'au formulaire de contact</li>
               </ul>
 
-              <p><strong>Parametres :</strong></p>
-              <ul>
-                <li><strong>Image hero</strong> &mdash; Image de fond de la section haute. Format recommande : 1920x800 px minimum</li>
-                <li><strong>Publiee</strong> &mdash; Active/desactive la page</li>
-              </ul>
-
-              <h5>Logique du CTA</h5>
-              <p>Le bouton d'appel a l'action s'adapte automatiquement :</p>
-              <ul>
-                <li><strong>Lien RDV renseigne</strong> &rarr; Le bouton renvoie vers le calendrier. Le formulaire peut etre affiche en complement ("Pas encore pret ? Laissez vos coordonnees")</li>
-                <li><strong>Lien RDV vide</strong> &rarr; Le bouton scrolle vers le formulaire de contact, qui devient l'element central de conversion</li>
-              </ul>
-
-              <h5>Suivi UTM automatique</h5>
-              <p>Les <strong>parametres UTM</strong> de l'URL sont captures automatiquement. Si un visiteur arrive via :</p>
-              <p><code>votre-site.fr/ma-landing?utm_source=linkedin&amp;utm_campaign=offre-ete</code></p>
-              <ul>
-                <li>Les UTM sont enregistres avec le message de contact (source, medium, campagne)</li>
-                <li>Si un lien RDV est configure, les UTM sont aussi ajoutes a l'URL du calendrier</li>
-                <li>Vous retrouvez ces informations dans les <strong>messages de contact</strong> et les <strong>conversions</strong> (stats)</li>
-              </ul>
+              <h5>Suivi des campagnes (UTM)</h5>
+              <p>Les paramètres de campagne de l'adresse (<code>?utm_source=linkedin&amp;utm_campaign=offre-ete</code>) sont enregistrés avec le message de contact et ajoutés au lien de rendez-vous. Vous les retrouvez dans Messages et dans les Statistiques (conversions).</p>
 
               <h5>Ce qui est automatique</h5>
               <ul>
-                <li>La page est <strong>noindex</strong> par defaut (invisible pour Google)</li>
-                <li>Le layout est <strong>sans navigation</strong> : mini-header avec logo, footer minimal</li>
-                <li>Les <strong>couleurs et polices</strong> de votre theme sont heritees automatiquement</li>
-                <li>Le formulaire integre un <strong>anti-spam</strong> (reCAPTCHA + honeypot)</li>
-                <li>Chaque soumission cree une <strong>conversion</strong> tracee dans les statistiques</li>
+                <li>La page est <strong>masquée de Google</strong> par défaut</li>
+                <li>Elle n'a <strong>pas de menu</strong> : en-tête réduit au logo, pied de page minimal</li>
+                <li>Les <strong>couleurs et polices</strong> de votre site s'appliquent</li>
+                <li>Le formulaire est protégé contre le spam</li>
+                <li>Chaque envoi compte comme une <strong>conversion</strong> dans les statistiques</li>
               </ul>
 
               <div class="bw-guide-tip">
                 <i class="fas fa-lightbulb me-1 text-warning"></i>
-                <strong>Astuce :</strong> Un seul objectif par landing page ! Ne proposez pas a la fois un RDV, un telechargement et une inscription newsletter. Choisissez l'action la plus importante.
+                <strong>Astuce :</strong> Un seul objectif par landing page ! Ne proposez pas à la fois un rendez-vous, un téléchargement et une inscription à la lettre.
               </div>
               <div class="bw-guide-tip">
                 <i class="fas fa-lightbulb me-1 text-warning"></i>
-                <strong>Astuce :</strong> Utilisez la meta description comme sous-titre du hero. Redigez une phrase accrocheuse qui resume votre offre en une ligne.
-              </div>
-              <div class="bw-guide-tip">
-                <i class="fas fa-lightbulb me-1 text-warning"></i>
-                <strong>Astuce :</strong> Testez vos UTM en ajoutant <code>?utm_source=test</code> a l'URL de votre landing. Soumettez le formulaire et verifiez dans les messages de contact que la source est bien capturee.
+                <strong>Astuce :</strong> Testez le suivi en ajoutant <code>?utm_source=test</code> à l'adresse de votre landing, envoyez le formulaire, puis vérifiez la source dans Messages.
               </div>
             </div>
           </div>
         </div>
         {% endif %}
 
-        {# ── 9. Personnalisation ── #}
-        {% if is_granted('ROLE_FREELANCE') %}
+        {# ── 10. Apparence ── #}
+        {% if is_granted('ROLE_ADMIN') %}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-theme">
-                    <i class="fas fa-palette me-2 text-primary"></i> Personnalisation et themes
+                    <i class="fas fa-palette me-2 text-primary"></i> Apparence
                 </button>
             </h2>
             <div id="guide-theme" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Changer de theme</h5>
-                    <p>Dans <strong>Reglages &rarr; Apparence &rarr; Catalogue de themes</strong>, parcourez les themes disponibles et previsualisez-les avant de les activer.</p>
-
-                    <h5>Personnaliser les couleurs et polices</h5>
-                    <p>Dans <strong>Reglages &rarr; Apparence &rarr; Reglages du theme</strong>, modifiez :</p>
+                    <h5>Couleurs, polices et logos</h5>
+                    <p>Dans <strong>Apparence</strong>, modifiez :</p>
                     <ul>
                         <li><strong>Couleur principale</strong> &mdash; Boutons, liens, accents</li>
-                        <li><strong>Couleur secondaire</strong> &mdash; Elements d'accompagnement</li>
-                        <li><strong>Couleur d'accent</strong> &mdash; Details, badges, decorations</li>
-                        <li><strong>Polices</strong> &mdash; 22 Google Fonts disponibles</li>
+                        <li><strong>Couleur secondaire</strong> &mdash; Éléments d'accompagnement</li>
+                        <li><strong>Couleur d'accent</strong> &mdash; Détails, badges, décorations</li>
+                        <li><strong>Polices</strong> &mdash; Pour les titres et le texte</li>
                     </ul>
-                    <p>Si vous laissez un champ vide, la valeur par defaut du theme s'applique.</p>
+                    <p>Si vous laissez un champ vide, la valeur par défaut du thème s'applique.</p>
 
-                    <h5>Images du theme</h5>
-                    <p>Gerez vos images hero, equipe, et galerie dans <strong>Reglages &rarr; Apparence &rarr; Images du theme</strong>.</p>
+                    <h5>Images du thème</h5>
+                    <p>Les photos de l'accueil, de la galerie et des témoignages se gèrent dans <em>Images du thème</em>, par le lien sous le titre de la page Apparence.</p>
+
+                    {% if is_granted('ROLE_FREELANCE') %}
+                    <h5>Changer de thème (webmaster)</h5>
+                    <p>Le lien <em>catalogue des thèmes</em>, sous le titre de la page Apparence, permet de parcourir et de prévisualiser les thèmes avant d'en activer un.</p>
+                    {% endif %}
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Changez les couleurs plutot que le theme entier. Vous gardez la structure tout en personnalisant l'identite visuelle.
+                        <strong>Astuce :</strong> Changez les couleurs plutôt que le thème entier. Vous gardez la structure tout en personnalisant votre identité visuelle.
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        {# ── 8. Utilisateurs ── #}
+        {# ── 11. Utilisateurs ── #}
         {% if is_granted('ROLE_ADMIN') %}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guide-users">
-                    <i class="fas fa-users me-2 text-primary"></i> Utilisateurs et roles
+                    <i class="fas fa-users me-2 text-primary"></i> Utilisateurs et rôles
                 </button>
             </h2>
             <div id="guide-users" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Les roles</h5>
-                    <p>Chaque utilisateur a un role qui determine ce qu'il peut faire :</p>
+                    <h5>Les rôles</h5>
+                    <p>Les comptes se gèrent dans <em>Réglages &rarr; Utilisateurs</em>. Chaque compte a un rôle qui détermine ce qu'il peut faire :</p>
                     <table class="table table-sm" style="font-size: 0.85rem;">
                         <thead>
                             <tr>
-                                <th>Role</th>
+                                <th>Rôle</th>
                                 <th>Qui</th>
                                 <th>Peut faire</th>
                             </tr>
@@ -773,59 +778,59 @@
                             <tr>
                                 <td><strong>Utilisateur</strong></td>
                                 <td>Visiteur inscrit</td>
-                                <td>Lire, commenter, gerer son profil</td>
+                                <td>Lire, commenter, gérer son profil</td>
                             </tr>
                             <tr>
                                 <td><strong>Auteur</strong></td>
-                                <td>Redacteur</td>
-                                <td>Creer et editer des articles et pages</td>
+                                <td>Rédacteur</td>
+                                <td>Créer et modifier des articles et des pages, gérer les médias</td>
                             </tr>
                             <tr>
                                 <td><strong>Admin</strong></td>
                                 <td>Administrateur</td>
-                                <td>Gestion complete du site</td>
+                                <td>Gestion complète du site</td>
                             </tr>
                             <tr>
                                 <td><strong>Freelance</strong></td>
-                                <td>ROLE_FREELANCE</td>
-                                <td>Themes, couleurs, polices + tout ce que fait Admin</td>
+                                <td>Webmaster</td>
+                                <td>Thèmes, paiement, adresses des pages + tout ce que fait Admin</td>
                             </tr>
                             <tr>
                                 <td><strong>Super Admin</strong></td>
-                                <td>ROLE_SUPER_ADMIN</td>
-                                <td>Acces total : modules, infra, configuration avancee</td>
+                                <td>Webmaster</td>
+                                <td>Accès total : modules, configuration avancée</td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div class="bw-guide-tip">
                         <i class="fas fa-lightbulb me-1 text-warning"></i>
-                        <strong>Astuce :</strong> Creez un compte <em>Auteur</em> pour vos redacteurs. Ils pourront ecrire sans acceder aux reglages sensibles.
+                        <strong>Astuce :</strong> Créez un compte <em>Auteur</em> pour vos rédacteurs. Ils pourront écrire sans accéder aux réglages sensibles.
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        {# ── 10b. Abonnes ── #}
+        {# ── 12. Abonnes ── #}
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideSubscribers">
-                    <i class="fas fa-envelope me-2"></i> Abonnes et notifications
+                    <i class="fas fa-envelope me-2"></i> Abonnés et notifications
                 </button>
             </h2>
             <div id="guideSubscribers" class="accordion-collapse collapse" data-bs-parent="#guideAccordion">
                 <div class="accordion-body">
-                    <h5>Systeme d'abonnement</h5>
-                    <p>Les visiteurs peuvent s'abonner aux notifications par email <strong>sans creer de compte</strong>. Un simple formulaire avec leur email suffit.</p>
+                    <h5>L'abonnement</h5>
+                    <p>Vos visiteurs peuvent s'abonner aux nouveautés par e-mail <strong>sans créer de compte</strong>. Un simple formulaire avec leur adresse suffit.</p>
                     <ul>
-                        <li><strong>Double opt-in</strong> — l'abonne recoit un email de confirmation avant d'etre actif</li>
-                        <li><strong>Preferences</strong> — choix entre articles, evenements ou les deux</li>
-                        <li><strong>Desinscription</strong> — lien en un clic dans chaque email de notification</li>
-                        <li><strong>Gestion</strong> — l'abonne peut modifier ses preferences via un lien tokenise (sans connexion)</li>
+                        <li><strong>Double confirmation</strong> &mdash; L'abonné reçoit un e-mail de confirmation avant d'être inscrit</li>
+                        <li><strong>Préférences</strong> &mdash; Articles, événements ou les deux</li>
+                        <li><strong>Désinscription</strong> &mdash; Un lien en un clic dans chaque e-mail</li>
+                        <li><strong>Gestion</strong> &mdash; L'abonné modifie ses préférences par un lien personnel, sans se connecter</li>
                     </ul>
-                    <h5>Dans l'admin</h5>
-                    <p>Consultez et gerez vos abonnes dans <strong>Communaute &rarr; Abonnes</strong>. Vous pouvez desactiver un abonne sans le supprimer.</p>
+                    <h5>Dans l'administration</h5>
+                    <p>La liste des abonnés se trouve dans <strong>Réglages &rarr; Abonnés à la lettre</strong>, visible en <em>mode expert</em>. Vous pouvez désactiver un abonné sans le supprimer.</p>
                 </div>
             </div>
         </div>

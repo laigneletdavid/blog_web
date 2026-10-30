@@ -216,7 +216,7 @@ class DirectoryEntryCrudController extends AbstractCrudController
                     'content' => '<p>Les <strong>tags</strong> ajoutent une dimension de filtrage en plus des catégories. Ils peuvent être regroupés en <strong>familles</strong> (Villes, Métiers, Spécialités...) qui génèrent automatiquement des filtres dédiés sur la page annuaire.</p>
                     <p>Exemple : créez une famille « Villes » puis les tags <em>Paris</em>, <em>Lyon</em>, <em>Marseille</em>. Sur <code>/annuaire</code>, un filtre « Villes » apparaît automatiquement avec ces options.</p>
                     <p>Les filtres tags <strong>se cumulent</strong> avec la recherche et la catégorie (ex: ville=Paris ET métier=Plombier).</p>
-                    <p>Pour gérer les familles : <em>Classification > Familles de tags</em>.</p>',
+                    <p>Pour gérer les familles : <em>Réglages &rarr; Catégories et étiquettes &rarr; Familles d\'étiquettes</em> (mode expert).</p>',
                 ],
             ],
             'tips' => [

@@ -122,7 +122,32 @@ Le `--init` demande interactivement :
 - Teste la connexion BDD avant de continuer
 - Lance le deploy : composer + nvm/node + build assets + cache + import dump
 
-**C'est tout. Le site est en ligne.**
+**Le site est en ligne.** Reste a le declarer a Google (section 3 bis).
+
+### 3 bis. Apres la mise en ligne : Google Search Console
+
+A faire des que le domaine definitif repond, pas sur un sous-domaine de recette.
+Google ne garde que 16 mois d'historique et ne compte qu'a partir de la declaration.
+
+1. https://search.google.com/search-console → « Ajouter une propriete » → type
+   **Domaine** (`nom-client.fr`, sans `www` ni `https://`). Elle couvre www et
+   non-www, http et https.
+2. Google donne un enregistrement `google-site-verification=...`. Dans l'espace
+   client OVH : Noms de domaine → le domaine → Zone DNS → Ajouter une entree →
+   **TXT**, **sous-domaine vide**, valeur collee telle quelle. Ne pas toucher a
+   l'entree SPF (`v=spf1 ...`) existante, on ajoute a cote.
+3. Verifier que l'entree est publiee a la racine, puis « Valider » :
+   ```bash
+   nslookup -type=TXT nom-client.fr dns111.ovh.net
+   ```
+   Piege rencontre sur bw_mainguy : TXT saisi sous `www` → Google refuse.
+4. Menu Sitemaps → envoyer `https://www.nom-client.fr/sitemap.xml`. « Impossible
+   de recuperer » juste apres l'envoi est normal sur une propriete neuve tant
+   que « Derniere lecture » est vide : Google passe sous quelques jours.
+5. Inspection d'URL sur la home → « Demander l'indexation ».
+
+Plus de champ « code de verification » dans l'admin : la validation se fait par
+le DNS. L'ecran Referencement rappelle la procedure au client.
 
 ### 4. Mises a jour
 
@@ -218,6 +243,15 @@ Le script `--import` corrige automatiquement :
 - [ ] IP hebergement autorisee sur CloudDB
 - [ ] Domaine configure sur OVH (multisite)
 - [ ] Credentials OVH (SSH + BDD + Brevo) notes
+- [ ] Fiche Referencement remplie dans l'admin (activite, cible, atouts, portee,
+      villes, priorites, mots des clients) et bilan relu — elle part avec le dump
+
+## Checklist post-deploy
+
+- [ ] Domaine racine ET www repondent en HTTPS, l'un redirige vers l'autre (301)
+- [ ] Propriete **Domaine** creee dans Google Search Console, TXT a la racine, validee (section 3 bis)
+- [ ] `/sitemap.xml` envoye dans Search Console, toutes ses URL en 200
+- [ ] Indexation de la home demandee
 
 ---
 

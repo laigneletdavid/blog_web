@@ -29,6 +29,7 @@ Encore
     .addEntry('admin_walkthrough', './assets/admin/admin-walkthrough.js')
     .addEntry('stat_tracker', './assets/js/stat-tracker.js')
     .addEntry('admin_stats', './assets/admin/admin-stats.js')
+    .addEntry('admin_simple', './assets/admin/admin-simple.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')

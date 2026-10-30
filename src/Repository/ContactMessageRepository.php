@@ -24,4 +24,14 @@ class ContactMessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function countSince(\DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.createdAt >= :since')
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
