@@ -1,4 +1,4 @@
--- bw_mainguy : SEO des services et fiche Referencement (30/10/2026).
+-- Script SQL (MySQL / MariaDB) -- bw_mainguy : SEO des services et fiche Referencement (30/10/2026).
 -- Uniquement des UPDATE : aucune table creee, videe ni supprimee.
 -- Chaque service est cible par son id ET son slug : un ecart entre bases ne touche rien.
 SET NAMES utf8mb4;
