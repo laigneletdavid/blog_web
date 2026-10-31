@@ -320,8 +320,19 @@ if [[ "$PHP_VER" != "8.4" ]]; then
 fi
 
 # --- 2. Pull ---
-echo "[1/7] Pull du code..."
-git pull --ff-only
+# Si le pull modifie ce script, bash continuerait d'executer l'ancienne
+# version deja ouverte : on se relance dans la nouvelle, sans refaire le pull.
+if [ -z "${DEPLOY_DEJA_PULL:-}" ]; then
+    echo "[1/7] Pull du code..."
+    AVANT=$(git hash-object "$0")
+    git pull --ff-only
+    if [ "$(git hash-object "$0")" != "$AVANT" ]; then
+        echo "       deploy-ovh.sh a change : relance dans sa nouvelle version"
+        DEPLOY_DEJA_PULL=1 exec "$0" "$@"
+    fi
+else
+    echo "[1/7] Pull deja fait"
+fi
 
 # --- 3. Marqueurs de conflit ---
 echo "[2/7] Verification des conflits Git..."
