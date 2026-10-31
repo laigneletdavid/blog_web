@@ -126,7 +126,11 @@ update_client() {
     console doctrine:schema:validate
 
     echo "[3/6] Build des assets..."
-    docker compose run --rm -T -w /var/www/html node npm run build >/dev/null
+    if ! docker compose run --rm -T -w /var/www/html node npm run build >/tmp/client-build.log 2>&1; then
+        tail -20 /tmp/client-build.log
+        echo "ERREUR: build des assets (journal complet : /tmp/client-build.log)"
+        exit 1
+    fi
     git checkout -- package-lock.json 2>/dev/null || true
 
     echo "[4/6] Cache et tests unitaires..."
