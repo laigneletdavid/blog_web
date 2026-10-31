@@ -118,6 +118,9 @@ if [[ "${1:-}" == "--init" ]]; then
         MAILER_DSN="${MAILER_DSN:-smtp://localhost:1025}"
     fi
 
+    # Domaine public unique : les autres (www ou non, preprod) y redirigent
+    read -rp "Domaine public du site, sans https:// (ex: www.nom-client.fr) : " PRIMARY_HOST
+
     # Generer APP_SECRET
     APP_SECRET=$("$PHP_BIN" -r "echo bin2hex(random_bytes(16));")
 
@@ -127,6 +130,8 @@ if [[ "${1:-}" == "--init" ]]; then
 APP_ENV=prod
 APP_SECRET=$APP_SECRET
 ###< symfony/framework-bundle ###
+
+APP_PRIMARY_HOST=$PRIMARY_HOST
 
 ###> doctrine/doctrine-bundle ###
 DATABASE_URL="mysql://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME?serverVersion=8.0&charset=utf8mb4"
@@ -339,6 +344,17 @@ fi
 # Supprimer .env.prod si present (ecrase les valeurs de .env.local)
 [ -f .env.prod ] && rm -f .env.prod && echo "       .env.prod supprime"
 
+PRIMARY_HOST=$(grep -E '^APP_PRIMARY_HOST=' .env.local | tail -1 | cut -d= -f2- | tr -d "\"' ")
+if [ -z "$PRIMARY_HOST" ]; then
+    echo "[!] APP_PRIMARY_HOST absent de .env.local : le site repond sur tous ses"
+    echo "    domaines (www ou non, ancienne preprod), en double pour Google."
+    echo "    L'ajouter, ex. : echo 'APP_PRIMARY_HOST=www.nom-client.fr' >> .env.local"
+fi
+
+# Pour ne relever ensuite que les erreurs nees pendant ce deploy. Heure de
+# PHP, celle du journal Symfony : le shell OVH est en UTC, pas l'appli
+DEBUT_DEPLOY=$("$PHP_BIN" -r "echo date('Y-m-d\TH:i:s');")
+
 # --- 5. Composer ---
 echo "[3/7] Dependances PHP..."
 if [ ! -f composer.phar ]; then
@@ -489,5 +505,49 @@ if [ "${NB_COMPTES:-1}" = "0" ]; then
     echo "    $PHP_BIN bin/console app:create-super-admin --email=... --password=..."
 fi
 
+# --- 8. Controles : le site tourne-t-il vraiment ? ---
+# Un pull sans recompilation a deja laisse un admin en panne (bw_pro_dici,
+# octobre 2026 : entree « admin_simple » absente) sans que rien ne le dise.
+echo "[controles] Verification du site..."
+ALERTES=0
+
+# Chaque entree declaree dans webpack.config.js doit exister dans le build
+for ENTREE in $(grep -oE "addEntry\('[a-z_]+'" webpack.config.js | cut -d"'" -f2); do
+    if ! grep -q "\"$ENTREE\"" public/build/entrypoints.json 2>/dev/null; then
+        echo "[!] Entree « $ENTREE » absente de public/build : relancer ce script."
+        ALERTES=$((ALERTES + 1))
+    fi
+done
+
+if [ -n "$PRIMARY_HOST" ]; then
+    for CHEMIN in / /sitemap.xml /robots.txt /login; do
+        CODE=$(curl -s -o /dev/null -m 20 -w '%{http_code}' "https://$PRIMARY_HOST$CHEMIN" || echo 000)
+        if [ "$CODE" != "200" ]; then
+            echo "[!] https://$PRIMARY_HOST$CHEMIN repond $CODE"
+            ALERTES=$((ALERTES + 1))
+        fi
+    done
+    if ! curl -s -m 20 "https://$PRIMARY_HOST/" | grep -q 'name="bw-visit"'; then
+        echo "[!] Pas de ticket de visite sur l'accueil : les visites ne seront pas comptees."
+        ALERTES=$((ALERTES + 1))
+    fi
+else
+    echo "       (pages non testees : APP_PRIMARY_HOST absent)"
+fi
+
+# Erreurs critiques apparues depuis le debut du deploy (horodatage ISO, comparable en texte)
+if [ -f var/log/prod.log ]; then
+    NB_CRITIQUES=$(grep 'CRITICAL' var/log/prod.log | awk -v debut="[$DEBUT_DEPLOY" '$1 >= debut' | wc -l)
+    if [ "$NB_CRITIQUES" -gt 0 ]; then
+        echo "[!] $NB_CRITIQUES erreur(s) critique(s) depuis le debut du deploy :"
+        grep 'CRITICAL' var/log/prod.log | awk -v debut="[$DEBUT_DEPLOY" '$1 >= debut' | tail -3 | cut -c1-250
+        ALERTES=$((ALERTES + 1))
+    fi
+fi
+
 echo ""
-echo "=== Deploy termine ! ==="
+if [ "$ALERTES" -gt 0 ]; then
+    echo "=== Deploy termine AVEC $ALERTES ALERTE(S) : voir les lignes [!] ci-dessus ==="
+    exit 1
+fi
+echo "=== Deploy termine ! Site verifie. ==="

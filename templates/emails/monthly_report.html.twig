@@ -1,0 +1,117 @@
+{# Rapport mensuel client (RAPPORT.md, phase R1 : sans Search Console).
+   Une colonne, styles en ligne : les clients mail ignorent les feuilles de style. #}
+{% set r = report %}
+{% set bleu = '#2563EB' %}
+
+{% macro fleche(trend) %}
+    {%- if trend is null -%}
+    {%- elseif trend > 0 -%}<span style="color:#15803D;">&#9650; +{{ trend }} %</span>
+    {%- elseif trend < 0 -%}<span style="color:#B91C1C;">&#9660; {{ trend }} %</span>
+    {%- else -%}<span style="color:#6B7280;">= stable</span>
+    {%- endif -%}
+{% endmacro %}
+
+{% macro titre(texte) %}
+    <h2 style="font-size:17px; margin:28px 0 10px; color:#111827;">{{ texte }}</h2>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0; padding:0; background:#F3F4F6;">
+<div style="font-family:Arial, Helvetica, sans-serif; max-width:600px; margin:0 auto; padding:24px 20px; background:#FFFFFF; color:#374151; font-size:15px; line-height:1.5;">
+
+    {# 1. En-tete #}
+    <p style="margin:0; color:#6B7280; font-size:13px;">{{ r.site_name }} · rapport {{ r.month_label matches '/^[aeiouyéè]/' ? "d'" : 'de ' }}{{ r.month_label }}</p>
+    <h1 style="font-size:22px; margin:6px 0 18px; color:{{ bleu }};">{{ r.summary }}</h1>
+
+    <table role="presentation" width="100%" style="border-collapse:collapse;">
+        <tr>
+            <td style="width:50%; padding:14px; background:#EFF6FF; border-radius:8px;">
+                <div style="font-size:26px; font-weight:bold; color:#111827;">{{ r.visitors.current|number_format(0, ',', ' ') }}</div>
+                <div>visiteurs {{ _self.fleche(r.visitors.trend) }}</div>
+            </td>
+            <td style="width:8px;"></td>
+            <td style="width:50%; padding:14px; background:#EFF6FF; border-radius:8px;">
+                <div style="font-size:26px; font-weight:bold; color:#111827;">{{ r.contacts.total }}</div>
+                <div>prise{{ r.contacts.total > 1 ? 's' }} de contact {{ _self.fleche(r.contacts.trend) }}</div>
+            </td>
+        </tr>
+    </table>
+
+    {# 6. Visiteurs et contacts #}
+    {{ _self.titre('Vos visiteurs et vos contacts') }}
+    <p style="margin:0 0 6px;">
+        <strong>{{ r.visitors.current|number_format(0, ',', ' ') }} visiteurs</strong>{% if r.visitors.current > 0 %}, dont {{ r.google_share }} % via Google · {{ r.mobile_share }} % sur mobile{% endif %}
+    </p>
+    {% if r.sources is not empty %}
+        <p style="margin:0 0 6px; color:#6B7280; font-size:14px;">
+            {% for groupe, part in r.sources %}{{ groupe }} {{ part }} %{% if not loop.last %} · {% endif %}{% endfor %}
+        </p>
+    {% endif %}
+    {% set c = r.contacts.current %}
+    <p style="margin:0;">
+        <strong>{{ c.phone }} appel{{ c.phone > 1 ? 's' }} · {{ c.form }} formulaire{{ c.form > 1 ? 's' }} · {{ c.email }} e-mail{{ c.email > 1 ? 's' }} · {{ c.directions }} itinéraire{{ c.directions > 1 ? 's' }}</strong>
+    </p>
+
+    {# 4. Pages qui marchent #}
+    {% if r.top_pages is not empty %}
+        {{ _self.titre('Vos pages qui marchent') }}
+        <table role="presentation" width="100%" style="border-collapse:collapse;">
+            {% for page in r.top_pages %}
+                <tr>
+                    <td style="padding:7px 0; border-bottom:1px solid #E5E7EB;">
+                        {% if r.site_url %}<a href="{{ r.site_url ~ page.url }}" style="color:{{ bleu }}; text-decoration:none;">{{ page.url == '/' ? 'Accueil' : page.url }}</a>{% else %}{{ page.url == '/' ? 'Accueil' : page.url }}{% endif %}
+                    </td>
+                    <td style="padding:7px 0; border-bottom:1px solid #E5E7EB; text-align:right; white-space:nowrap;">{{ page.views|number_format(0, ',', ' ') }} vues</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% if r.article %}
+        <p style="margin:14px 0 0;">
+            Article du mois : <strong>{{ r.article.title }}</strong>, lu {{ r.article.views|number_format(0, ',', ' ') }} fois depuis sa publication.
+        </p>
+    {% endif %}
+
+    {# 7. Sante du site #}
+    {% set feux = {green: ['#15803D', 'Tout va bien'], orange: ['#C2410C', 'À surveiller'], red: ['#B91C1C', 'À corriger rapidement']} %}
+    {% set feu = feux[r.health.status] %}
+    {{ _self.titre('Santé du site') }}
+    <p style="margin:0;">
+        <span style="display:inline-block; width:12px; height:12px; border-radius:6px; background:{{ feu[0] }}; vertical-align:middle;"></span>
+        <strong style="color:{{ feu[0] }};">{{ feu[1] }}</strong>
+    </p>
+    {% if r.health.status != 'green' %}
+        <ul style="margin:8px 0 0; padding-left:20px;">
+            {% if r.health.ssl_days_left is not null and r.health.ssl_days_left < 21 %}
+                <li>Le certificat de sécurité expire dans {{ r.health.ssl_days_left }} jours.</li>
+            {% endif %}
+            {% if r.health.days_since_last_article is not null and r.health.days_since_last_article > 60 %}
+                <li>Aucun article depuis {{ r.health.days_since_last_article }} jours.</li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+    {# 8. Le mois prochain #}
+    {% if r.next_actions is not empty %}
+        {{ _self.titre('Le mois prochain') }}
+        <ul style="margin:0; padding-left:20px;">
+            {% for action in r.next_actions %}<li style="margin-bottom:4px;">{{ action }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if contact_email %}
+        <p style="margin:24px 0 0;">
+            <a href="mailto:{{ contact_email }}?subject={{ ('Rapport ' ~ r.month_label ~ ' — ' ~ r.site_name)|url_encode }}"
+               style="display:inline-block; padding:11px 20px; background:{{ bleu }}; color:#FFFFFF; text-decoration:none; border-radius:6px; font-weight:bold;">Me contacter</a>
+        </p>
+    {% endif %}
+
+    <p style="margin:28px 0 0; color:#9CA3AF; font-size:12px;">
+        Statistiques mesurées par votre site lui-même, sans outil publicitaire. Les robots ne sont pas comptés, ni vos visites quand vous êtes connecté à l'administration.
+    </p>
+</div>
+</body>
+</html>
