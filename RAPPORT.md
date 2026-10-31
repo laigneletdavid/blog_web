@@ -2,7 +2,16 @@
 
 > Cahier des charges du 31/10/2026 (David). Rien n'est code.
 
-**Statut : A FAIRE** — structure validee, points a trancher en section 4.
+**Statut : R1 livree (31/10/2026)** — `app:report:monthly` (`MonthlyReportBuilder`,
+`templates/emails/monthly_report.html.twig`), envoi aux super admins seulement.
+Clics d'itineraire comptes (`directions_click`).
+
+```bash
+php bin/console app:report:monthly --html                  # var/report-YYYY-MM.html, rien n'est envoye
+php bin/console app:report:monthly --month=2026-10 --to=moi@exemple.fr
+```
+
+`REPORT_CONTACT_EMAIL` (`.env.local`) : adresse du bouton « Me contacter ».
 
 Deux envois distincts :
 
@@ -128,16 +137,18 @@ JavaScript non execute), sessions admin (ROLE_AUTHOR).
 
 ## 4. Points a trancher
 
-1. **Acces Search Console.** Proposition : un seul compte de service Google,
-   ajoute comme utilisateur (lecture) de chaque propriete « Domaine ». Pas
-   d'OAuth par client. Ou ranger la cle JSON (hors depot, sur chaque serveur ?).
+1. **Acces Search Console.** TRANCHE (31/10) — oui, mais en phase 2, avec l'API
+   LintellO : au plus simple (un compte de service unique, ajoute en lecture a
+   chaque propriete « Domaine », pas d'OAuth par client). Search Console est
+   surtout un atout pour LintellO : il pourra proposer des modifications du site
+   pour gagner des places. Emplacement de la cle JSON a fixer en phase 2.
 2. **Copie mensuelle des donnees Search Console** dans la base : Search Console ne
    garde que 16 mois, et la courbe 6 mois glissants doit pouvoir etre recalculee.
 3. **Seuil des opportunites** : impressions minimales selon la taille du site
    (proportionnel aux impressions totales du mois ?).
 4. **Destinataires** : TRANCHE (31/10) — tous les comptes ROLE_ADMIN du site.
-5. **Boutons « Valider le sujet » / « Me contacter »** : ou menent-ils ? (e-mail
-   pre-rempli, page de l'admin, formulaire chez ComWeb ?)
+5. **Boutons « Valider le sujet » / « Me contacter »** : TRANCHE (31/10) — liens
+   mailto vers David, site et sujet pre-remplis. Rien a developper.
 6. **Itineraires** : TRANCHE (31/10) — oui, clics sur les liens de carte comptes
    comme contact (nouveau type de conversion `directions_click`).
 7. **Argument CNIL** (statistiques sans bandeau de consentement) : verifier les
@@ -172,8 +183,7 @@ planificateur OVH limite le nombre de taches).
 
 | Phase | Contenu |
 |-------|---------|
-| R1 | Rapport sans Search Console : visiteurs, sources, mobile, pages, contacts, sante (SSL). Envoi au super admin seulement, pour valider le rendu |
-| R2 | Search Console : compte de service, copie mensuelle, sections 1.2, 1.3, 1.5, chiffres Google de l'en-tete |
-| R3 | Envoi aux clients, boutons d'action, itineraires |
+| R1 | Rapport sans Search Console : visiteurs, sources, mobile, pages, contacts (itineraires compris), sante (SSL, dernier article). Envoi au super admin seulement, pour valider le rendu |
+| R2 | Avec l'API LintellO : Search Console (compte de service, copie mensuelle, sections 1.2, 1.3, 1.5, chiffres Google de l'en-tete), synthese et sujet du mois, propositions de modifications du site pour le referencement |
+| R3 | Envoi aux admins du site (cron OVH le 3 du mois), boutons mailto |
 | R4 | Alertes hebdo super admin |
-| R5 | Synthese et sujet du mois par LintellO |
