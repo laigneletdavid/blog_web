@@ -11,7 +11,8 @@ php bin/console app:report:monthly --html                  # var/report-YYYY-MM.
 php bin/console app:report:monthly --month=2026-10 --to=moi@exemple.fr
 ```
 
-`REPORT_CONTACT_EMAIL` (`.env.local`) : adresse du bouton « Me contacter ».
+Bouton « Me contacter » : e-mail du compte super admin du site ;
+`REPORT_CONTACT_EMAIL` (`.env.local`) seulement pour une autre adresse.
 
 Deux envois distincts :
 
