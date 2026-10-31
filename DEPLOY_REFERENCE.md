@@ -100,8 +100,10 @@ passe, et sur un depot public une empreinte faible tombe en quelques secondes.
 ### 3. Sur OVH (premier deploy)
 
 ```bash
-# Connexion SSH
-ssh user@ssh.clusterXXX.hosting.ovh.net
+# Connexion SSH : par ftp.clusterXXX (l'alias ssh.clusterXXX affiche par
+# l'espace client ne repond plus sur cluster100). Un seul essai de mot de
+# passe : apres 3 echecs, OVH ignore l'IP un moment.
+ssh user@ftp.clusterXXX.hosting.ovh.net
 
 # Clone
 git clone -b bw_nom_client https://github.com/laigneletdavid/blog_web.git .
@@ -180,19 +182,34 @@ source d'une page publique, vue sans etre connecte a l'admin.
 
 ### 4. Mises a jour
 
-Quand main evolue (nouvelle feature CMS) :
+Quand main evolue (nouvelle feature CMS), depuis Git Bash ou WSL :
 
 ```bash
-# En local
-git checkout bw_nom_client
-git merge main
-git push origin bw_nom_client
+# En local : merge tactique, migrations sur la base du client, build,
+# tests, controle des pages, push. S'arrete au moindre souci, sans pousser.
+./scripts/client.sh update bw_nom_client
 
-# Sur OVH
-ssh user@host
-./scripts/deploy-ovh.sh
-# → pull + composer + assets + cache + migrations
+# Sur OVH, sans se connecter a la main (DEPLOY_SSH et DEPLOY_DIR dans
+# .env.bw_nom_client.local) : pull + composer + assets + cache + migrations,
+# puis controles (entrees du build, pages en 200, erreurs critiques)
+./scripts/client.sh deploy bw_nom_client
 ```
+
+`./scripts/client.sh switch bw_nom_client` change seulement de client (branche,
+`.env.local`, cache). Le script refuse toute base qui n'est pas celle de la
+branche : jamais les migrations d'une branche sur la base d'une autre.
+
+Un conflit au merge vient presque toujours d'une surcouche du client
+(`templates/client/`, ou `public/.htaccess` sur bw_lintello) : la resoudre, committer,
+relancer `update`.
+
+### Domaine principal et https
+
+- `public/.htaccess` redirige tout le http vers le https (test `%{SERVER_PORT}`,
+  le seul fiable derriere le frontal OVH).
+- `APP_PRIMARY_HOST` dans le `.env.local` du serveur (demande par `--init`) :
+  domaine nu, www et anciennes preprod repartent en 301 vers ce domaine.
+  Sans lui, `deploy-ovh.sh` previent a chaque deploy.
 
 ---
 
@@ -277,7 +294,8 @@ Le script `--import` corrige automatiquement :
 
 ## Checklist post-deploy
 
-- [ ] Domaine racine ET www repondent en HTTPS, l'un redirige vers l'autre (301)
+- [ ] Domaine racine ET www repondent en HTTPS, l'un redirige vers l'autre (301) :
+      `APP_PRIMARY_HOST` regle, certificat SSL regenere apres ajout du multisite
 - [ ] Propriete **Domaine** creee dans Google Search Console, TXT a la racine, validee (section 3 bis)
 - [ ] `/sitemap.xml` envoye dans Search Console, toutes ses URL en 200
 - [ ] Indexation de la home demandee
