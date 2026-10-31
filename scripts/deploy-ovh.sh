@@ -538,7 +538,9 @@ if [ -n "$PRIMARY_HOST" ]; then
             ALERTES=$((ALERTES + 1))
         fi
     done
-    if ! curl -s -m 20 "https://$PRIMARY_HOST/" | grep -q 'name="bw-visit"'; then
+    # User-agent de navigateur : curl est reconnu comme robot et n'a pas de ticket
+    NAVIGATEUR='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+    if ! curl -s -m 20 -A "$NAVIGATEUR" "https://$PRIMARY_HOST/" | grep -q 'name="bw-visit"'; then
         echo "[!] Pas de ticket de visite sur l'accueil : les visites ne seront pas comptees."
         ALERTES=$((ALERTES + 1))
     fi

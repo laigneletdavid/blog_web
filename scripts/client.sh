@@ -109,6 +109,11 @@ update_client() {
     [ "$BRANCHE" != main ] || { echo "ERREUR: update concerne une branche client"; exit 1; }
     verifier_arbre_propre
 
+    # A la fin, retour sur la branche de depart (main, en general) : sinon la
+    # modif suivante atterrit sur la branche du client sans qu'on le voie
+    local depart
+    depart=$(git branch --show-current)
+
     git fetch -q origin main
     git checkout -q main && git pull -q --ff-only
     switch_client
@@ -150,6 +155,14 @@ update_client() {
     echo ""
     echo "[OK] $BRANCHE a jour et pousse ($(git log --oneline -1))."
     echo "     En prod : ./scripts/client.sh deploy $BRANCHE"
+
+    if [ -n "$depart" ] && [ "$depart" != "$BRANCHE" ]; then
+        BRANCHE="$depart"
+        ENV_CLIENT=".env.$depart.local"
+        BASE_ATTENDUE="$depart"
+        [ "$depart" = main ] && BASE_ATTENDUE="blog_web"
+        switch_client >/dev/null && echo "     Retour sur $depart."
+    fi
 }
 
 deploy_client() {
