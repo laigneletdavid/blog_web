@@ -135,12 +135,11 @@ JavaScript non execute), sessions admin (ROLE_AUTHOR).
    garde que 16 mois, et la courbe 6 mois glissants doit pouvoir etre recalculee.
 3. **Seuil des opportunites** : impressions minimales selon la taille du site
    (proportionnel aux impressions totales du mois ?).
-4. **Destinataires** : tous les ROLE_ADMIN du site, ou une adresse « rapport »
-   choisie dans l'admin ? Copie au super admin ?
+4. **Destinataires** : TRANCHE (31/10) — tous les comptes ROLE_ADMIN du site.
 5. **Boutons « Valider le sujet » / « Me contacter »** : ou menent-ils ? (e-mail
    pre-rempli, page de l'admin, formulaire chez ComWeb ?)
-6. **Itineraires** : suivre les clics sur les liens de carte (nouveau type de
-   conversion `directions_click`).
+6. **Itineraires** : TRANCHE (31/10) — oui, clics sur les liens de carte comptes
+   comme contact (nouveau type de conversion `directions_click`).
 7. **Argument CNIL** (statistiques sans bandeau de consentement) : verifier les
    conditions point par point avant de le promettre. Atouts actuels : pas de
    user-agent stocke, IP hachee avec la date, robots exclus, cookie first-party
