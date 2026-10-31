@@ -61,9 +61,11 @@ class MonthlyReportCommand extends Command
             : new \DateTimeImmutable('first day of last month');
 
         $report = $this->builder->build($month);
+        // Bouton « Me contacter » : le super admin du site, deja en base ;
+        // REPORT_CONTACT_EMAIL seulement pour une autre adresse
         $html = $this->twig->render('emails/monthly_report.html.twig', [
             'report' => $report,
-            'contact_email' => trim($this->contactEmail) ?: null,
+            'contact_email' => trim($this->contactEmail) ?: ($this->superAdminEmails()[0] ?? null),
         ]);
 
         $io->text($report['summary']);
