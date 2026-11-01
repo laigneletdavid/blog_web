@@ -4,7 +4,9 @@
 
 **Statut : R1 livree (31/10/2026)** — `app:report:monthly` (`MonthlyReportBuilder`,
 `templates/emails/monthly_report.html.twig`), envoi aux super admins seulement.
-Clics d'itineraire comptes (`directions_click`).
+Clics d'itineraire comptes (`directions_click`). Pas d'evolution affichee avant
+decembre 2026 : le mois precedent doit etre mesure par le navigateur
+(`MEASURED_SINCE`), sinon les robots faussent la comparaison.
 
 ```bash
 php bin/console app:report:monthly --html                  # var/report-YYYY-MM.html, rien n'est envoye

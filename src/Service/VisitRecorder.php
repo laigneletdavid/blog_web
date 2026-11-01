@@ -45,6 +45,7 @@ class VisitRecorder
         ?string $referer,
         array $utm,
         bool $webdriver,
+        ?string $siteHost = null,
     ): ?string {
         $ipHash = hash('sha256', $ip . date('Y-m-d'));
 
@@ -80,7 +81,7 @@ class VisitRecorder
             $utmMedium = $utm['utm_medium'] ?? null;
             $utmCampaign = $utm['utm_campaign'] ?? null;
 
-            [$source, $sourceDetail] = $this->sourceClassifier->classify($referer, $utmSource, $utmMedium);
+            [$source, $sourceDetail] = $this->sourceClassifier->classify($referer, $utmSource, $utmMedium, $siteHost);
 
             $session = new StatSession();
             $session->setSessionToken($sessionToken);

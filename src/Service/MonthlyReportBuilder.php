@@ -27,6 +27,14 @@ class MonthlyReportBuilder
     ];
     private const SOURCE_OTHER = 'Autres sites';
 
+    /**
+     * Premier mois mesure par le navigateur (visites confirmees, voir
+     * VisitRecorder). Avant, les robots gonflaient les chiffres : comparer
+     * octobre 2026 a septembre donnait -97 % sur bw_pro_dici. Pas d'evolution
+     * affichee tant que le mois precedent est anterieur.
+     */
+    private const MEASURED_SINCE = '2026-11-01';
+
     public function __construct(
         private readonly Connection $db,
         private readonly SiteContext $siteContext,
@@ -43,11 +51,12 @@ class MonthlyReportBuilder
         $start = $month->modify('first day of this month midnight');
         $end = $start->modify('+1 month');
         $previousStart = $start->modify('-1 month');
+        $comparable = $previousStart >= new \DateTimeImmutable(self::MEASURED_SINCE);
 
         $visitors = $this->visitors($start, $end);
-        $previousVisitors = $this->visitors($previousStart, $start);
+        $previousVisitors = $comparable ? $this->visitors($previousStart, $start) : 0;
         $contacts = $this->contacts($start, $end);
-        $previousContacts = $this->contacts($previousStart, $start);
+        $previousContacts = $comparable ? $this->contacts($previousStart, $start) : [];
         $sources = $this->sources($start, $end);
         $lastArticle = $this->lastArticleDate();
 
