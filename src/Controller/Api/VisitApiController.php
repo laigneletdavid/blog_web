@@ -59,6 +59,7 @@ class VisitApiController extends AbstractController
             is_string($data['referrer'] ?? null) && $data['referrer'] !== '' ? $data['referrer'] : null,
             $utm,
             ($data['webdriver'] ?? false) === true,
+            $request->getHost(),
         );
 
         if ($sessionToken !== null) {
