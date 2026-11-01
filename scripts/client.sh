@@ -93,7 +93,11 @@ controler_site() {
         echo "       $chemin $code"
         [ "$code" = 200 ] || alertes=$((alertes + 1))
     done
-    if ! curl -s -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' http://localhost:8090/ | grep -q 'name="bw-visit"'; then
+    # Page lue en entier d'abord : avec pipefail, « curl | grep -q » echoue
+    # quand grep trouve le ticket et coupe curl en cours d'ecriture
+    local accueil
+    accueil=$(curl -s -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' http://localhost:8090/ || true)
+    if ! grep -q 'name="bw-visit"' <<< "$accueil"; then
         echo "[!] Pas de ticket de visite sur l'accueil"
         alertes=$((alertes + 1))
     fi
