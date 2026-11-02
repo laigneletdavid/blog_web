@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  * - chaque semaine : alertes aux super admins (rien si tout va bien) ;
  * - une fois par mois, au premier passage du mois : purge des statistiques,
- *   puis rapport du mois ecoule aux admins du site.
+ *   rapport du mois ecoule aux admins du site, rotation du journal.
  *
  * var/cron.json garde le dernier passage (controle par deploy-ovh.sh) et le
  * dernier mois traite : un passage manque est rattrape au suivant, et le
@@ -32,6 +32,8 @@ class CronCommand extends Command
     public function __construct(
         #[Autowire('%kernel.project_dir%/var/cron.json')]
         private readonly string $stateFile,
+        #[Autowire('%kernel.logs_dir%/%kernel.environment%.log')]
+        private readonly string $logFile,
     ) {
         parent::__construct();
     }
@@ -58,6 +60,7 @@ class CronCommand extends Command
             // Mois marque traite seulement si tout a marche : sinon nouvel essai la semaine suivante
             if ($monthFailures === 0) {
                 $state['month_done'] = $lastMonth;
+                $this->rotateLog($output);
             }
             $failures += $monthFailures;
         }
@@ -91,6 +94,18 @@ class CronCommand extends Command
         }
 
         return $code === Command::SUCCESS ? 0 : 1;
+    }
+
+    /**
+     * Journal du mois precedent garde en .old, le reste efface : prod.log
+     * grossissait sans fin (204 Mo sur bw_pro_dici en novembre 2026). Les
+     * alertes viennent de lire la semaine, avant cette rotation.
+     */
+    private function rotateLog(OutputInterface $output): void
+    {
+        if (is_file($this->logFile) && rename($this->logFile, $this->logFile . '.old')) {
+            $output->writeln('--- journal archive dans ' . basename($this->logFile) . '.old');
+        }
     }
 
     /**
