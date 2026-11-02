@@ -13,6 +13,19 @@ php bin/console app:report:monthly --html                  # var/report-YYYY-MM.
 php bin/console app:report:monthly --month=2026-10 --to=moi@exemple.fr
 ```
 
+**R4 livree (02/11/2026)** — `app:report:alerts` (`SiteAlertChecker`), super admins
+seulement, aucun e-mail sans anomalie : accueil injoignable ou hors 200, SSL a
+moins de 21 jours, erreurs CRITICAL de la semaine dans le journal, vague de robots
+(semaine > 3 fois la moyenne des 4 precedentes, 1 000 pages minimum), tables de
+stats au-dela de 1 Go, aucun article depuis 30 jours (module blog).
+
+```bash
+php bin/console app:report:alerts --dry-run    # liste les alertes, rien n'est envoye
+```
+
+A venir : un seul cron OVH par site, chaque semaine, qui lance les alertes puis,
+une fois par mois, la purge et le rapport mensuel.
+
 Bouton « Me contacter » : e-mail du compte super admin du site ;
 `REPORT_CONTACT_EMAIL` (`.env.local`) seulement pour une autre adresse.
 
