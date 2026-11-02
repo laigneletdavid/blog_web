@@ -50,6 +50,11 @@ fi
 ENV_CLIENT=".env.$BRANCHE.local"
 BASE_ATTENDUE="$BRANCHE"
 [ "$BRANCHE" = main ] && BASE_ATTENDUE="blog_web"
+# Base nommee autrement que la branche (bw_cws -> bw_comwebsolutions) : la
+# declarer dans .env.bw_xxx.local, ligne CLIENT_BASE=...
+if [ -f "$ENV_CLIENT" ] && grep -q '^CLIENT_BASE=' "$ENV_CLIENT"; then
+    BASE_ATTENDUE=$(grep -E '^CLIENT_BASE=' "$ENV_CLIENT" | tail -1 | cut -d= -f2- | tr -d "\"' ")
+fi
 
 console() { docker compose exec -T php php bin/console "$@"; }
 
