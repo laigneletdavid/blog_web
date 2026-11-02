@@ -558,6 +558,19 @@ else
     echo "       (pages non testees : APP_PRIMARY_HOST absent)"
 fi
 
+# Cron hebdo (scripts/cron.sh) : il note son passage dans var/cron.json
+AGE_CRON=$("$PHP_BIN" -r '$s = json_decode((string) @file_get_contents("var/cron.json"), true);
+    echo isset($s["last_run"]) ? (int) ((time() - strtotime($s["last_run"])) / 86400) . " " . ($s["last_status"] ?? "?") : "jamais";')
+if [ "$AGE_CRON" = "jamais" ]; then
+    echo "[!] Cron jamais passe : creer la tache OVH scripts/cron.sh (DEPLOY_REFERENCE.md, section 3 ter)."
+    ALERTES=$((ALERTES + 1))
+elif [ "${AGE_CRON%% *}" -gt 8 ]; then
+    echo "[!] Cron sans passage depuis ${AGE_CRON%% *} jours : verifier la tache OVH."
+    ALERTES=$((ALERTES + 1))
+else
+    echo "       cron : dernier passage il y a ${AGE_CRON%% *} jour(s), ${AGE_CRON#* }"
+fi
+
 # Erreurs critiques apparues depuis le debut du deploy (horodatage ISO, comparable en texte)
 if [ -f var/log/prod.log ]; then
     NB_CRITIQUES=$(grep 'CRITICAL' var/log/prod.log | awk -v debut="[$DEBUT_DEPLOY" '$1 >= debut' | wc -l)

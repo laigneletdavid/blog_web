@@ -46,6 +46,7 @@ class MonthlyReportCommand extends Command
         $this
             ->addOption('month', null, InputOption::VALUE_REQUIRED, 'Month to report, YYYY-MM (default: previous month)')
             ->addOption('to', null, InputOption::VALUE_REQUIRED, 'Send to this address only (default: super admins)')
+            ->addOption('admins', null, InputOption::VALUE_NONE, 'Send to the site admins as well as the super admins (used by app:cron)')
             ->addOption('html', null, InputOption::VALUE_NONE, 'Write the e-mail to var/report-YYYY-MM.html instead of sending it');
     }
 
@@ -90,9 +91,13 @@ class MonthlyReportCommand extends Command
             return Command::SUCCESS;
         }
 
-        $recipients = $input->getOption('to') ? [$input->getOption('to')] : $this->superAdminEmails();
+        $recipients = match (true) {
+            (bool) $input->getOption('to') => [$input->getOption('to')],
+            (bool) $input->getOption('admins') => $this->adminEmails(),
+            default => $this->superAdminEmails(),
+        };
         if ($recipients === []) {
-            $io->warning('Aucun super admin : rien envoye.');
+            $io->warning('Aucun destinataire : rien envoye.');
             return Command::SUCCESS;
         }
 
@@ -114,5 +119,16 @@ class MonthlyReportCommand extends Command
     private function superAdminEmails(): array
     {
         return $this->db->fetchFirstColumn("SELECT email FROM user WHERE roles LIKE '%ROLE_SUPER_ADMIN%'");
+    }
+
+    /**
+     * Comptes admin du site et super admins (« ROLE_SUPER_ADMIN » ne contient
+     * pas « ROLE_ADMIN » : deux conditions).
+     *
+     * @return list<string>
+     */
+    private function adminEmails(): array
+    {
+        return $this->db->fetchFirstColumn("SELECT email FROM user WHERE roles LIKE '%\"ROLE_ADMIN\"%' OR roles LIKE '%ROLE_SUPER_ADMIN%'");
     }
 }

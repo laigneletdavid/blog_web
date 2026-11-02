@@ -33,11 +33,12 @@ class MonthlyReportBuilder
      * octobre 2026 a septembre donnait -97 % sur bw_pro_dici. Pas d'evolution
      * affichee tant que le mois precedent est anterieur.
      */
-    private const MEASURED_SINCE = '2026-11-01';
+    public const MEASURED_SINCE = '2026-11-01';
 
     public function __construct(
         private readonly Connection $db,
         private readonly SiteContext $siteContext,
+        private readonly CertificateChecker $certificateChecker,
         #[Autowire('%env(APP_PRIMARY_HOST)%')]
         private readonly string $primaryHost,
     ) {
@@ -204,25 +205,7 @@ class MonthlyReportBuilder
      */
     private function sslDaysLeft(): ?int
     {
-        $host = trim($this->primaryHost);
-        if ($host === '') {
-            return null;
-        }
-
-        $context = stream_context_create(['ssl' => ['capture_peer_cert' => true, 'verify_peer' => false, 'verify_peer_name' => false]]);
-        $socket = @stream_socket_client("ssl://{$host}:443", $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context);
-        if (!$socket) {
-            return null;
-        }
-
-        $certificate = openssl_x509_parse(stream_context_get_params($socket)['options']['ssl']['peer_certificate'] ?? '');
-        fclose($socket);
-
-        if (!$certificate || !isset($certificate['validTo_time_t'])) {
-            return null;
-        }
-
-        return (int) floor(($certificate['validTo_time_t'] - time()) / 86400);
+        return $this->certificateChecker->daysLeft($this->primaryHost);
     }
 
     /**
