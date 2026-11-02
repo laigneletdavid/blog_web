@@ -33,7 +33,7 @@ class MonthlyReportBuilder
      * octobre 2026 a septembre donnait -97 % sur bw_pro_dici. Pas d'evolution
      * affichee tant que le mois precedent est anterieur.
      */
-    private const MEASURED_SINCE = '2026-11-01';
+    public const MEASURED_SINCE = '2026-11-01';
 
     public function __construct(
         private readonly Connection $db,

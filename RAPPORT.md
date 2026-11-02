@@ -23,8 +23,11 @@ stats au-dela de 1 Go, aucun article depuis 30 jours (module blog).
 php bin/console app:report:alerts --dry-run    # liste les alertes, rien n'est envoye
 ```
 
-A venir : un seul cron OVH par site, chaque semaine, qui lance les alertes puis,
-une fois par mois, la purge et le rapport mensuel.
+**R3 livree (02/11/2026)** — `app:cron`, lance chaque semaine par `scripts/cron.sh`
+(une seule tache OVH par site, DEPLOY_REFERENCE.md section 3 ter) : alertes chaque
+semaine, puis au premier passage du mois purge et rapport aux admins du site
+(`app:report:monthly --admins`). Premier rapport client : novembre 2026, envoye
+le premier lundi de decembre.
 
 Bouton « Me contacter » : e-mail du compte super admin du site ;
 `REPORT_CONTACT_EMAIL` (`.env.local`) seulement pour une autre adresse.

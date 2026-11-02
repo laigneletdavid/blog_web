@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * Par paquets, avec une pause entre deux : un seul DELETE sur des millions
  * de lignes bloque la base mutualisee (cas Pros d'Ici, octobre 2026).
- * Lancee chaque semaine par scripts/cron-stat-purge.php (voir DEPLOY_REFERENCE.md).
+ * Lancee une fois par mois par app:cron (scripts/cron.sh, voir DEPLOY_REFERENCE.md).
  */
 #[AsCommand(
     name: 'app:stat:purge',

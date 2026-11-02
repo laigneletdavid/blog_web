@@ -151,24 +151,39 @@ Google ne garde que 16 mois d'historique et ne compte qu'a partir de la declarat
 Plus de champ « code de verification » dans l'admin : la validation se fait par
 le DNS. L'ecran Referencement rappelle la procedure au client.
 
-### 3 ter. Purge automatique des statistiques (cron OVH)
+### 3 ter. Cron hebdo unique (OVH)
 
-Les stats gardent 13 mois de detail. Sans purge, `page_view` et
-`stat_session` grossissent sans fin (bw_pro_dici : 11 Go en octobre 2026,
-surtout des robots). `app:stat:purge` supprime par paquets, sans bloquer la
-base.
+Une seule tache OVH par site, declaree une fois pour toutes. Elle lance
+`scripts/cron.sh`, qui lance `app:cron` :
+
+- chaque semaine : `app:report:alerts`, alertes aux super admins, aucun
+  e-mail si tout va bien ;
+- au premier passage du mois : `app:stat:purge` (13 mois de detail gardes ;
+  bw_pro_dici pesait 11 Go en octobre 2026, surtout des robots), puis
+  `app:report:monthly --admins`, rapport du mois ecoule aux admins du site
+  et aux super admins. Pas de rapport pour un mois anterieur a novembre 2026.
+
+`var/cron.json` garde le dernier passage et le dernier mois traite : un
+passage manque est rattrape, le rapport ne part jamais deux fois.
+`deploy-ovh.sh` alerte si le cron n'est jamais passe ou plus depuis 8 jours.
 
 1. Espace client OVH → Hebergement → onglet **Taches planifiees - Cron** →
    **Ajouter une planification**.
-2. Commande a executer : `scripts/cron-stat-purge.php` (chemin depuis la
-   racine du compte FTP, a adapter si le projet est dans un sous-dossier).
-3. Langage : **PHP 8.4**. Frequence : **une fois par semaine**, la nuit.
+2. Commande a executer : `<dossier du site>/scripts/cron.sh`, chemin depuis
+   la racine de l'hebergement (ex. `prodici/scripts/cron.sh`, le dossier du
+   multisite sans `/public`).
+3. Langage : **Autre** (script bash). Frequence : **une fois par semaine**,
+   le lundi a 7 h.
 4. Activer les alertes e-mail en cas d'erreur.
 
-Tester a la main avant de planifier :
+Tester a la main avant de planifier (sur le serveur, depuis le projet) :
 ```bash
-php bin/console app:stat:purge --dry-run --env=prod
+TMPDIR=~/var/tmp php bin/console app:report:alerts --dry-run --env=prod
+./scripts/cron.sh
 ```
+
+Pour ajouter une tache : la coder dans `src/Command/CronCommand.php`, rien a
+changer chez OVH.
 
 Les robots ne sont plus enregistres visite par visite : ils sont comptes par
 jour dans `stat_bot_daily` (courbe « Robots » de l'accueil de l'admin).
@@ -299,7 +314,7 @@ Le script `--import` corrige automatiquement :
 - [ ] Propriete **Domaine** creee dans Google Search Console, TXT a la racine, validee (section 3 bis)
 - [ ] `/sitemap.xml` envoye dans Search Console, toutes ses URL en 200
 - [ ] Indexation de la home demandee
-- [ ] Cron de purge des statistiques planifie, une fois par semaine (section 3 ter)
+- [ ] Tache OVH `scripts/cron.sh` planifiee le lundi, langage Autre (section 3 ter)
 
 ---
 
