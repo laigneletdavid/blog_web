@@ -15,6 +15,12 @@ cd "$SITE_DIR"
 export APP_ENV=prod
 export APP_DEBUG=0
 
+# /tmp de la passerelle SSH OVH est partage entre tous les clients et deja
+# plein (bw_pro_dici, novembre 2026) : composer, bash et PHP y echouent.
+# Fichiers temporaires dans le projet (var/ n'est pas suivi par git).
+mkdir -p "$SITE_DIR/var/tmp"
+export TMPDIR="$SITE_DIR/var/tmp"
+
 # --- 0 bis. Trouver un PHP en ligne de commande ---
 # Sur OVH mutualise, « php » est le binaire CGI : il refuse -r avec
 # « Error in argument 1, char 2: option not found r ». Le CLI existe, mais
@@ -118,6 +124,9 @@ if [[ "${1:-}" == "--init" ]]; then
         MAILER_DSN="${MAILER_DSN:-smtp://localhost:1025}"
     fi
 
+    # Domaine public unique : les autres (www ou non, preprod) y redirigent
+    read -rp "Domaine public du site, sans https:// (ex: www.nom-client.fr) : " PRIMARY_HOST
+
     # Generer APP_SECRET
     APP_SECRET=$("$PHP_BIN" -r "echo bin2hex(random_bytes(16));")
 
@@ -127,6 +136,8 @@ if [[ "${1:-}" == "--init" ]]; then
 APP_ENV=prod
 APP_SECRET=$APP_SECRET
 ###< symfony/framework-bundle ###
+
+APP_PRIMARY_HOST=$PRIMARY_HOST
 
 ###> doctrine/doctrine-bundle ###
 DATABASE_URL="mysql://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME?serverVersion=8.0&charset=utf8mb4"
@@ -315,8 +326,19 @@ if [[ "$PHP_VER" != "8.4" ]]; then
 fi
 
 # --- 2. Pull ---
-echo "[1/7] Pull du code..."
-git pull --ff-only
+# Si le pull modifie ce script, bash continuerait d'executer l'ancienne
+# version deja ouverte : on se relance dans la nouvelle, sans refaire le pull.
+if [ -z "${DEPLOY_DEJA_PULL:-}" ]; then
+    echo "[1/7] Pull du code..."
+    AVANT=$(git hash-object "$0")
+    git pull --ff-only
+    if [ "$(git hash-object "$0")" != "$AVANT" ]; then
+        echo "       deploy-ovh.sh a change : relance dans sa nouvelle version"
+        DEPLOY_DEJA_PULL=1 exec "$0" "$@"
+    fi
+else
+    echo "[1/7] Pull deja fait"
+fi
 
 # --- 3. Marqueurs de conflit ---
 echo "[2/7] Verification des conflits Git..."
@@ -338,6 +360,17 @@ fi
 
 # Supprimer .env.prod si present (ecrase les valeurs de .env.local)
 [ -f .env.prod ] && rm -f .env.prod && echo "       .env.prod supprime"
+
+PRIMARY_HOST=$(grep -E '^APP_PRIMARY_HOST=' .env.local | tail -1 | cut -d= -f2- | tr -d "\"' ")
+if [ -z "$PRIMARY_HOST" ]; then
+    echo "[!] APP_PRIMARY_HOST absent de .env.local : le site repond sur tous ses"
+    echo "    domaines (www ou non, ancienne preprod), en double pour Google."
+    echo "    L'ajouter, ex. : echo 'APP_PRIMARY_HOST=www.nom-client.fr' >> .env.local"
+fi
+
+# Pour ne relever ensuite que les erreurs nees pendant ce deploy. Heure de
+# PHP, celle du journal Symfony : le shell OVH est en UTC, pas l'appli
+DEBUT_DEPLOY=$("$PHP_BIN" -r "echo date('Y-m-d\TH:i:s');")
 
 # --- 5. Composer ---
 echo "[3/7] Dependances PHP..."
@@ -415,8 +448,17 @@ NODE_ENV=production npm run build
 
 # --- 7. Symfony ---
 echo "[6/7] Cache Symfony..."
-APP_ENV=prod "$PHP_BIN" bin/console cache:clear --env=prod --no-debug
+# Pas de cache:clear : sur le disque reseau OVH, son renommage final echoue
+# (« Cannot rename because the target var/cache/prod already exists »,
+# bw_pro_dici, novembre 2026). L'ancien cache est mis de cote sous un nom
+# unique puis supprime ; les fichiers encore ouverts par PHP-FPM (.nfs*)
+# partent au deploy suivant.
+rm -rf var/cache/pro_* var/cache/pro~* var/cache/prod.old.* 2>/dev/null || true
+if [ -d var/cache/prod ]; then
+    mv var/cache/prod "var/cache/prod.old.$(date +%s)"
+fi
 APP_ENV=prod "$PHP_BIN" bin/console cache:warmup --env=prod --no-debug
+rm -rf var/cache/prod.old.* 2>/dev/null || true
 
 if [ "$SKIP_MIGRATIONS" = true ]; then
     echo "[7/7] Skip migrations (dump prevu)..."
@@ -489,5 +531,68 @@ if [ "${NB_COMPTES:-1}" = "0" ]; then
     echo "    $PHP_BIN bin/console app:create-super-admin --email=... --password=..."
 fi
 
+# --- 8. Controles : le site tourne-t-il vraiment ? ---
+# Un pull sans recompilation a deja laisse un admin en panne (bw_pro_dici,
+# octobre 2026 : entree « admin_simple » absente) sans que rien ne le dise.
+echo "[controles] Verification du site..."
+ALERTES=0
+
+# Chaque entree declaree dans webpack.config.js doit exister dans le build
+for ENTREE in $(grep -oE "addEntry\('[a-z_]+'" webpack.config.js | cut -d"'" -f2); do
+    if ! grep -q "\"$ENTREE\"" public/build/entrypoints.json 2>/dev/null; then
+        echo "[!] Entree « $ENTREE » absente de public/build : relancer ce script."
+        ALERTES=$((ALERTES + 1))
+    fi
+done
+
+if [ -n "$PRIMARY_HOST" ]; then
+    for CHEMIN in / /sitemap.xml /robots.txt /login; do
+        CODE=$(curl -s -o /dev/null -m 20 -w '%{http_code}' "https://$PRIMARY_HOST$CHEMIN" || echo 000)
+        if [ "$CODE" != "200" ]; then
+            echo "[!] https://$PRIMARY_HOST$CHEMIN repond $CODE"
+            ALERTES=$((ALERTES + 1))
+        fi
+    done
+    # User-agent de navigateur : curl est reconnu comme robot et n'a pas de ticket
+    NAVIGATEUR='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+    # Page lue en entier d'abord : avec pipefail, « curl | grep -q » echoue
+    # quand grep trouve le ticket et coupe curl en cours d'ecriture. Test en
+    # bash pur : « <<< » passe par un fichier temporaire, absent disque plein
+    ACCUEIL=$(curl -s -m 20 -A "$NAVIGATEUR" "https://$PRIMARY_HOST/" || true)
+    if [[ "$ACCUEIL" != *'name="bw-visit"'* ]]; then
+        echo "[!] Pas de ticket de visite sur l'accueil : les visites ne seront pas comptees."
+        ALERTES=$((ALERTES + 1))
+    fi
+else
+    echo "       (pages non testees : APP_PRIMARY_HOST absent)"
+fi
+
+# Cron hebdo (scripts/cron.sh) : il note son passage dans var/cron.json
+AGE_CRON=$("$PHP_BIN" -r '$s = json_decode((string) @file_get_contents("var/cron.json"), true);
+    echo isset($s["last_run"]) ? (int) ((time() - strtotime($s["last_run"])) / 86400) . " " . ($s["last_status"] ?? "?") : "jamais";')
+if [ "$AGE_CRON" = "jamais" ]; then
+    echo "[!] Cron jamais passe : creer la tache OVH scripts/cron.sh (DEPLOY_REFERENCE.md, section 3 ter)."
+    ALERTES=$((ALERTES + 1))
+elif [ "${AGE_CRON%% *}" -gt 8 ]; then
+    echo "[!] Cron sans passage depuis ${AGE_CRON%% *} jours : verifier la tache OVH."
+    ALERTES=$((ALERTES + 1))
+else
+    echo "       cron : dernier passage il y a ${AGE_CRON%% *} jour(s), ${AGE_CRON#* }"
+fi
+
+# Erreurs critiques apparues depuis le debut du deploy (horodatage ISO, comparable en texte)
+if [ -f var/log/prod.log ]; then
+    NB_CRITIQUES=$(grep 'CRITICAL' var/log/prod.log | awk -v debut="[$DEBUT_DEPLOY" '$1 >= debut' | wc -l)
+    if [ "$NB_CRITIQUES" -gt 0 ]; then
+        echo "[!] $NB_CRITIQUES erreur(s) critique(s) depuis le debut du deploy :"
+        grep 'CRITICAL' var/log/prod.log | awk -v debut="[$DEBUT_DEPLOY" '$1 >= debut' | tail -3 | cut -c1-250
+        ALERTES=$((ALERTES + 1))
+    fi
+fi
+
 echo ""
-echo "=== Deploy termine ! ==="
+if [ "$ALERTES" -gt 0 ]; then
+    echo "=== Deploy termine AVEC $ALERTES ALERTE(S) : voir les lignes [!] ci-dessus ==="
+    exit 1
+fi
+echo "=== Deploy termine ! Site verifie. ==="

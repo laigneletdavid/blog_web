@@ -447,7 +447,13 @@ class Product implements SanitizableContentInterface
 
     public function getBlocksJson(): ?string
     {
-        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+        if ($this->blocks !== null) {
+            return json_encode($this->blocks, JSON_UNESCAPED_UNICODE);
+        }
+
+        // Sans blocs (contenu ecrit en SQL ou importe) : l'editeur part du HTML
+        // affiche sur le site, au lieu de s'ouvrir vide (comme Page)
+        return $this->getContent() ?: null;
     }
 
     public function setBlocksJson(?string $json): self

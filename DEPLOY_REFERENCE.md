@@ -100,8 +100,10 @@ passe, et sur un depot public une empreinte faible tombe en quelques secondes.
 ### 3. Sur OVH (premier deploy)
 
 ```bash
-# Connexion SSH
-ssh user@ssh.clusterXXX.hosting.ovh.net
+# Connexion SSH : par ftp.clusterXXX (l'alias ssh.clusterXXX affiche par
+# l'espace client ne repond plus sur cluster100). Un seul essai de mot de
+# passe : apres 3 echecs, OVH ignore l'IP un moment.
+ssh user@ftp.clusterXXX.hosting.ovh.net
 
 # Clone
 git clone -b bw_nom_client https://github.com/laigneletdavid/blog_web.git .
@@ -122,23 +124,107 @@ Le `--init` demande interactivement :
 - Teste la connexion BDD avant de continuer
 - Lance le deploy : composer + nvm/node + build assets + cache + import dump
 
-**C'est tout. Le site est en ligne.**
+**Le site est en ligne.** Reste a le declarer a Google (section 3 bis).
+
+### 3 bis. Apres la mise en ligne : Google Search Console
+
+A faire des que le domaine definitif repond, pas sur un sous-domaine de recette.
+Google ne garde que 16 mois d'historique et ne compte qu'a partir de la declaration.
+
+1. https://search.google.com/search-console → « Ajouter une propriete » → type
+   **Domaine** (`nom-client.fr`, sans `www` ni `https://`). Elle couvre www et
+   non-www, http et https.
+2. Google donne un enregistrement `google-site-verification=...`. Dans l'espace
+   client OVH : Noms de domaine → le domaine → Zone DNS → Ajouter une entree →
+   **TXT**, **sous-domaine vide**, valeur collee telle quelle. Ne pas toucher a
+   l'entree SPF (`v=spf1 ...`) existante, on ajoute a cote.
+3. Verifier que l'entree est publiee a la racine, puis « Valider » :
+   ```bash
+   nslookup -type=TXT nom-client.fr dns111.ovh.net
+   ```
+   Piege rencontre sur bw_mainguy : TXT saisi sous `www` → Google refuse.
+4. Menu Sitemaps → envoyer `https://www.nom-client.fr/sitemap.xml`. « Impossible
+   de recuperer » juste apres l'envoi est normal sur une propriete neuve tant
+   que « Derniere lecture » est vide : Google passe sous quelques jours.
+5. Inspection d'URL sur la home → « Demander l'indexation ».
+
+Plus de champ « code de verification » dans l'admin : la validation se fait par
+le DNS. L'ecran Referencement rappelle la procedure au client.
+
+### 3 ter. Cron hebdo unique (OVH)
+
+Une seule tache OVH par site, declaree une fois pour toutes. Elle lance
+`scripts/cron.sh`, qui lance `app:cron` :
+
+- chaque semaine : `app:report:alerts`, alertes aux super admins, aucun
+  e-mail si tout va bien ;
+- au premier passage du mois : `app:stat:purge` (13 mois de detail gardes ;
+  bw_pro_dici pesait 11 Go en octobre 2026, surtout des robots), puis
+  `app:report:monthly --admins`, rapport du mois ecoule aux admins du site
+  et aux super admins. Pas de rapport pour un mois anterieur a novembre 2026.
+
+`var/cron.json` garde le dernier passage et le dernier mois traite : un
+passage manque est rattrape, le rapport ne part jamais deux fois.
+`deploy-ovh.sh` alerte si le cron n'est jamais passe ou plus depuis 8 jours.
+
+1. Espace client OVH → Hebergement → onglet **Taches planifiees - Cron** →
+   **Ajouter une planification**.
+2. Commande a executer : `<dossier du site>/scripts/cron.sh`, chemin depuis
+   la racine de l'hebergement (ex. `prodici/scripts/cron.sh`, le dossier du
+   multisite sans `/public`).
+3. Langage : **Autre** (script bash). Frequence : **une fois par semaine**,
+   le lundi a 7 h.
+4. Activer les alertes e-mail en cas d'erreur.
+
+Tester a la main avant de planifier (sur le serveur, depuis le projet) :
+```bash
+TMPDIR=~/var/tmp php bin/console app:report:alerts --dry-run --env=prod
+./scripts/cron.sh
+```
+
+Pour ajouter une tache : la coder dans `src/Command/CronCommand.php`, rien a
+changer chez OVH.
+
+Les robots ne sont plus enregistres visite par visite : ils sont comptes par
+jour dans `stat_bot_daily` (courbe « Robots » de l'accueil de l'admin).
+
+Une visite n'est enregistree que si le navigateur la confirme : la page porte
+un ticket signe (`<meta name="bw-visit">`), `stat-tracker.js` le renvoie a
+`/api/vue`. Un robot qui n'execute pas le JavaScript ne laisse aucune ligne,
+meme avec un user-agent de navigateur et des milliers d'IP (bw_pro_dici,
+octobre 2026). Apres un deploy, verifier que la balise est dans le code
+source d'une page publique, vue sans etre connecte a l'admin.
 
 ### 4. Mises a jour
 
-Quand main evolue (nouvelle feature CMS) :
+Quand main evolue (nouvelle feature CMS), depuis Git Bash ou WSL :
 
 ```bash
-# En local
-git checkout bw_nom_client
-git merge main
-git push origin bw_nom_client
+# En local : merge tactique, migrations sur la base du client, build,
+# tests, controle des pages, push. S'arrete au moindre souci, sans pousser.
+./scripts/client.sh update bw_nom_client
 
-# Sur OVH
-ssh user@host
-./scripts/deploy-ovh.sh
-# → pull + composer + assets + cache + migrations
+# Sur OVH, sans se connecter a la main (DEPLOY_SSH et DEPLOY_DIR dans
+# .env.bw_nom_client.local) : pull + composer + assets + cache + migrations,
+# puis controles (entrees du build, pages en 200, erreurs critiques)
+./scripts/client.sh deploy bw_nom_client
 ```
+
+`./scripts/client.sh switch bw_nom_client` change seulement de client (branche,
+`.env.local`, cache). Le script refuse toute base qui n'est pas celle de la
+branche : jamais les migrations d'une branche sur la base d'une autre.
+
+Un conflit au merge vient presque toujours d'une surcouche du client
+(`templates/client/`, ou `public/.htaccess` sur bw_lintello) : la resoudre, committer,
+relancer `update`.
+
+### Domaine principal et https
+
+- `public/.htaccess` redirige tout le http vers le https (test `%{SERVER_PORT}`,
+  le seul fiable derriere le frontal OVH).
+- `APP_PRIMARY_HOST` dans le `.env.local` du serveur (demande par `--init`) :
+  domaine nu, www et anciennes preprod repartent en 301 vers ce domaine.
+  Sans lui, `deploy-ovh.sh` previent a chaque deploy.
 
 ---
 
@@ -218,6 +304,17 @@ Le script `--import` corrige automatiquement :
 - [ ] IP hebergement autorisee sur CloudDB
 - [ ] Domaine configure sur OVH (multisite)
 - [ ] Credentials OVH (SSH + BDD + Brevo) notes
+- [ ] Fiche Referencement remplie dans l'admin (activite, cible, atouts, portee,
+      villes, priorites, mots des clients) et bilan relu — elle part avec le dump
+
+## Checklist post-deploy
+
+- [ ] Domaine racine ET www repondent en HTTPS, l'un redirige vers l'autre (301) :
+      `APP_PRIMARY_HOST` regle, certificat SSL regenere apres ajout du multisite
+- [ ] Propriete **Domaine** creee dans Google Search Console, TXT a la racine, validee (section 3 bis)
+- [ ] `/sitemap.xml` envoye dans Search Console, toutes ses URL en 200
+- [ ] Indexation de la home demandee
+- [ ] Tache OVH `scripts/cron.sh` planifiee le lundi, langage Autre (section 3 ter)
 
 ---
 

@@ -21,6 +21,10 @@ class Media
     #[ORM\Column(length: 255)]
     private ?string $fileName = null;
 
+    // Texte alternatif. Si vide, l'alt est construit a partir du nom et du contexte
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $alt = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $webpFileName = null;
 
@@ -64,6 +68,18 @@ class Media
     public function setFileName(string $fileName): self
     {
         $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getAlt(): ?string
+    {
+        return $this->alt;
+    }
+
+    public function setAlt(?string $alt): self
+    {
+        $this->alt = $alt !== null && trim($alt) !== '' ? trim($alt) : null;
 
         return $this;
     }

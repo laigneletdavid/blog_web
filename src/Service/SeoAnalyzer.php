@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Media;
 use App\Entity\Trait\SeoTrait;
 use App\Enum\SeoStatus;
 use App\Model\SeoCheck;
@@ -18,6 +19,8 @@ class SeoAnalyzer
         $checks[] = $this->checkContent($entity);
         $checks[] = $this->checkHeadings($entity);
         $checks[] = $this->checkImage($entity);
+        $checks[] = $this->checkImageAlt($entity);
+        $checks[] = $this->checkAuthor($entity);
         $checks[] = $this->checkSlug($entity);
 
         return new SeoReport(array_filter($checks));
@@ -140,15 +143,71 @@ class SeoAnalyzer
         return new SeoCheck('headings', 'Sous-titres', SeoStatus::GREEN, "{$h2Count} sous-titre(s) H2 détecté(s)");
     }
 
-    private function checkImage(object $entity): SeoCheck
+    /**
+     * Une page sans image n'est pas penalisee : certaines n'en ont pas besoin.
+     * Le check n'apparait que si une image est presente.
+     */
+    private function checkImage(object $entity): ?SeoCheck
     {
-        $image = $this->getImage($entity);
-
-        if ($image === null) {
-            return new SeoCheck('image', 'Image mise en avant', SeoStatus::RED, 'Aucune image mise en avant. Ajoutez-en une pour les réseaux sociaux et les résultats Google.', true);
+        if ($this->getImage($entity) === null) {
+            return null;
         }
 
         return new SeoCheck('image', 'Image mise en avant', SeoStatus::GREEN, 'Présente');
+    }
+
+    /**
+     * Texte alternatif de l'image mise en avant (Media::alt) et des images du contenu.
+     * Absent si la page n'a aucune image.
+     */
+    private function checkImageAlt(object $entity): ?SeoCheck
+    {
+        $featured = $this->getImage($entity);
+        $featuredMissing = $featured instanceof Media && ($featured->getAlt() === null || $featured->getAlt() === '');
+
+        $content = $this->getContent($entity) ?? '';
+        $contentImages = preg_match_all('/<img\b[^>]*>/i', $content, $matches);
+        $contentMissing = 0;
+        foreach ($matches[0] as $tag) {
+            // alt non vide, entre guillemets doubles ou simples (une apostrophe dans "..." est permise)
+            if (!preg_match('/\balt\s*=\s*(?:"\s*[^"\s][^"]*"|\'\s*[^\'\s][^\']*\')/i', $tag)) {
+                ++$contentMissing;
+            }
+        }
+
+        if ($featured === null && $contentImages === 0) {
+            return null;
+        }
+
+        $problems = [];
+        if ($featuredMissing) {
+            $problems[] = 'l\'image mise en avant n\'a pas de texte alternatif (à renseigner dans Médias)';
+        }
+        if ($contentMissing > 0) {
+            $problems[] = $contentMissing . ' image(s) du contenu sans texte alternatif';
+        }
+
+        if ($problems !== []) {
+            return new SeoCheck('image_alt', 'Textes alternatifs', SeoStatus::ORANGE, ucfirst(implode(', ', $problems)) . '. Ils aident Google et les lecteurs d\'écran à comprendre vos images.');
+        }
+
+        return new SeoCheck('image_alt', 'Textes alternatifs', SeoStatus::GREEN, 'Toutes les images ont un texte alternatif');
+    }
+
+    /**
+     * Auteur identifie (articles uniquement) : Google valorise un auteur reel.
+     */
+    private function checkAuthor(object $entity): ?SeoCheck
+    {
+        if (!method_exists($entity, 'getAuthor')) {
+            return null;
+        }
+
+        if ($entity->getAuthor() === null) {
+            return new SeoCheck('author', 'Auteur', SeoStatus::ORANGE, 'Aucun auteur. Choisissez-en un dans les paramètres : Google valorise les contenus signés.');
+        }
+
+        return new SeoCheck('author', 'Auteur', SeoStatus::GREEN, 'Renseigné');
     }
 
     private function checkSlug(object $entity): ?SeoCheck

@@ -958,9 +958,10 @@ class TiptapEditor {
                     <span class="tiptap-media-name">${this.escapeHtml(media.name)}</span>
                 `;
                 item.addEventListener('click', () => {
+                    // Alt saisi sur le media en priorite, nom du media en repli
                     this.editor.chain().focus().setImage({
                         src: src,
-                        alt: media.name,
+                        alt: media.alt || media.name,
                     }).run();
                     this.closeMediaModal();
                 });

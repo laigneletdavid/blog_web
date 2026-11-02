@@ -72,6 +72,7 @@ class ResponsiveImageExtension extends AbstractExtension
 
     /**
      * Retourne un tag <img> avec srcset, sizes, loading, width/height et alt contextuel.
+     * Ordre de l'alt : media.alt > $alt du gabarit > nom du media + titre de $seoContext.
      * $seoContext = entite parente (Article, Service...) pour enrichir le alt avec son titre SEO.
      */
     public function responsiveImg(
@@ -118,6 +119,13 @@ class ResponsiveImageExtension extends AbstractExtension
 
     private function buildAlt(Media $media, ?string $explicitAlt, ?object $seoContext): string
     {
+        // Alt saisi sur le media : prioritaire. L'alt passe par le gabarit
+        // et l'alt construit (nom + contexte) ne servent qu'en repli
+        $mediaAlt = $media->getAlt();
+        if ($mediaAlt !== null && $mediaAlt !== '') {
+            return $mediaAlt;
+        }
+
         if ($explicitAlt !== null && $explicitAlt !== '') {
             return $explicitAlt;
         }

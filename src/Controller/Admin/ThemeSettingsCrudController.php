@@ -50,11 +50,21 @@ class ThemeSettingsCrudController extends AbstractCrudController
         $theme = $this->themeService->getTheme($themeSlug);
         $themeName = $theme['name'] ?? ucfirst($themeSlug);
 
+        // Apparence = cette page + les images du theme ; le catalogue reste au webmaster
+        $urls = $this->container->get(AdminUrlGenerator::class);
+        $help = 'Couleurs, polices et logos du thème « ' . $themeName . ' ». Les photos de l\'accueil et de la galerie sont dans <a href="'
+            . $urls->unsetAll()->setController(ThemeImagesCrudController::class)->setAction(Action::INDEX)->generateUrl()
+            . '">Images du thème</a>.';
+        if ($this->isGranted('ROLE_FREELANCE')) {
+            $help .= ' Pour changer de thème : <a href="' . $this->generateUrl('admin_theme_browser') . '">catalogue des thèmes</a>.';
+        }
+
         return $crud
-            ->setEntityLabelInSingular('Réglages du thème')
-            ->setEntityLabelInPlural('Réglages du thème')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Personnaliser le theme « ' . $themeName . ' »')
-            ->setPageTitle(Crud::PAGE_DETAIL, 'Personnaliser le theme « ' . $themeName . ' »');
+            ->setEntityLabelInSingular('Apparence')
+            ->setEntityLabelInPlural('Apparence')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Apparence')
+            ->setPageTitle(Crud::PAGE_DETAIL, 'Apparence')
+            ->setHelp(Crud::PAGE_EDIT, $help);
     }
 
     /**

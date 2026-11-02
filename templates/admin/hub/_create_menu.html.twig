@@ -1,0 +1,15 @@
+{# Bouton "Creer" : choix du type de contenu. Attend `types` (ContentHubService::getTypes()). #}
+<details class="bw-create">
+    <summary class="bw-btn bw-btn--primary"><i class="fas fa-plus" aria-hidden="true"></i> Créer</summary>
+    <div class="bw-create__panel">
+        <p class="bw-create__title">Que voulez-vous créer ?</p>
+        <div class="bw-create__grid">
+            {% for type in types %}
+                <a class="bw-create__choice" href="{{ type.newUrl }}">
+                    <strong>{{ type.create }}</strong>
+                    <span>{{ type.hint }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</details>
