@@ -448,8 +448,17 @@ NODE_ENV=production npm run build
 
 # --- 7. Symfony ---
 echo "[6/7] Cache Symfony..."
-APP_ENV=prod "$PHP_BIN" bin/console cache:clear --env=prod --no-debug
+# Pas de cache:clear : sur le disque reseau OVH, son renommage final echoue
+# (« Cannot rename because the target var/cache/prod already exists »,
+# bw_pro_dici, novembre 2026). L'ancien cache est mis de cote sous un nom
+# unique puis supprime ; les fichiers encore ouverts par PHP-FPM (.nfs*)
+# partent au deploy suivant.
+rm -rf var/cache/pro_* var/cache/pro~* var/cache/prod.old.* 2>/dev/null || true
+if [ -d var/cache/prod ]; then
+    mv var/cache/prod "var/cache/prod.old.$(date +%s)"
+fi
 APP_ENV=prod "$PHP_BIN" bin/console cache:warmup --env=prod --no-debug
+rm -rf var/cache/prod.old.* 2>/dev/null || true
 
 if [ "$SKIP_MIGRATIONS" = true ]; then
     echo "[7/7] Skip migrations (dump prevu)..."
