@@ -6,7 +6,7 @@
  *   enregistre la page : un robot qui n'execute pas ce script ne compte pas)
  * - Heartbeat 15s → POST /api/stat/ping (duration_seconds)
  * - Scroll tracking → POST /api/stat/scroll (scroll_max_pct) au beforeunload
- * - Click tracking → POST /api/stat/conversion (tel: / mailto:)
+ * - Click tracking → POST /api/stat/conversion (tel: / mailto: / liens de carte)
  *
  * Le ticket de visite est lu dans <meta name="bw-visit">, signe par le serveur
  * (PageViewSubscriber). Le session token est lu ensuite depuis le cookie
@@ -98,13 +98,20 @@
         });
 
         // =============================================
-        // 3. CONVERSION TRACKING — clics tel: / mailto:
+        // 3. CONVERSION TRACKING — clics tel: / mailto: / itineraire
         // =============================================
+        var mapLink = /(google\.[a-z.]+\/maps|maps\.google\.|maps\.app\.goo\.gl|goo\.gl\/maps|openstreetmap\.org|waze\.com|maps\.apple\.com)/i;
+
         document.addEventListener('click', function (e) {
-            var link = e.target.closest('a[href^="tel:"], a[href^="mailto:"]');
+            var link = e.target.closest('a[href]');
             if (!link) return;
 
-            var type = link.href.startsWith('tel:') ? 'phone_click' : 'email_click';
+            var type = null;
+            if (link.href.startsWith('tel:')) type = 'phone_click';
+            else if (link.href.startsWith('mailto:')) type = 'email_click';
+            else if (mapLink.test(link.href)) type = 'directions_click';
+            if (!type) return;
+
             navigator.sendBeacon('/api/stat/conversion', JSON.stringify({
                 token: token,
                 type: type,
