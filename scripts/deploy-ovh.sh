@@ -541,9 +541,10 @@ if [ -n "$PRIMARY_HOST" ]; then
     # User-agent de navigateur : curl est reconnu comme robot et n'a pas de ticket
     NAVIGATEUR='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
     # Page lue en entier d'abord : avec pipefail, « curl | grep -q » echoue
-    # quand grep trouve le ticket et coupe curl en cours d'ecriture
+    # quand grep trouve le ticket et coupe curl en cours d'ecriture. Test en
+    # bash pur : « <<< » passe par un fichier temporaire, absent disque plein
     ACCUEIL=$(curl -s -m 20 -A "$NAVIGATEUR" "https://$PRIMARY_HOST/" || true)
-    if ! grep -q 'name="bw-visit"' <<< "$ACCUEIL"; then
+    if [[ "$ACCUEIL" != *'name="bw-visit"'* ]]; then
         echo "[!] Pas de ticket de visite sur l'accueil : les visites ne seront pas comptees."
         ALERTES=$((ALERTES + 1))
     fi
