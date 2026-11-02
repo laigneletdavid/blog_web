@@ -12,6 +12,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 use Twig\Environment;
 
 /**
@@ -26,6 +28,8 @@ use Twig\Environment;
 )]
 class MonthlyReportCommand extends Command
 {
+    private const LOGO = 'public/images/logo-blogweb.png';
+
     public function __construct(
         private readonly MonthlyReportBuilder $builder,
         private readonly Environment $twig,
@@ -61,16 +65,22 @@ class MonthlyReportCommand extends Command
             : new \DateTimeImmutable('first day of last month');
 
         $report = $this->builder->build($month);
-        // Bouton « Me contacter » : le super admin du site, deja en base ;
-        // REPORT_CONTACT_EMAIL seulement pour une autre adresse
+        $toFile = (bool) $input->getOption('html');
+        $logoPath = $this->projectDir . '/' . self::LOGO;
+
+        // Logo joint au mail (cid:) : une image distante est bloquee par les
+        // webmails ; dans le fichier --html, il est integre en base64
         $html = $this->twig->render('emails/monthly_report.html.twig', [
             'report' => $report,
+            // Bouton « Me contacter » : le super admin du site, deja en base ;
+            // REPORT_CONTACT_EMAIL seulement pour une autre adresse
             'contact_email' => trim($this->contactEmail) ?: ($this->superAdminEmails()[0] ?? null),
+            'logo_src' => $toFile ? 'data:image/png;base64,' . base64_encode((string) file_get_contents($logoPath)) : 'cid:logo-blogweb',
         ]);
 
         $io->text($report['summary']);
 
-        if ($input->getOption('html')) {
+        if ($toFile) {
             $path = $this->projectDir . '/var/report-' . $report['month']->format('Y-m') . '.html';
             file_put_contents($path, $html);
             $io->success("Rapport ecrit dans {$path}");
@@ -84,7 +94,8 @@ class MonthlyReportCommand extends Command
         }
 
         $email = $this->mailer->createEmail(sprintf('%s — votre site en %s', $this->mailer->getSiteName(), $report['month_label']))
-            ->html($html);
+            ->html($html)
+            ->addPart((new DataPart(new File($logoPath), 'logo-blogweb', 'image/png'))->asInline());
         foreach ($recipients as $recipient) {
             $email->addTo($recipient);
         }

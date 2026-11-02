@@ -76,7 +76,7 @@ class MonthlyReportBuilder
             'google_share' => $this->share($sources['Google'] ?? 0, $visitors),
             'mobile_share' => $this->share($this->mobileVisitors($start, $end), $visitors),
             // Groupes sous 1 % retires : « Autres sites 0 % » n'apprend rien au client
-            'sources' => array_filter(array_map(fn (int $n) => $this->share($n, $visitors), $sources)),
+            'sources' => array_filter(array_map(fn (int $n) => $this->share($n, $visitors), $sources), fn (float $part) => $part >= 1),
             'top_pages' => $this->topPages($start, $end),
             'article' => $this->articleOfTheMonth($start, $end),
             'contacts' => [
@@ -259,7 +259,7 @@ class MonthlyReportBuilder
 
         $sentence = sprintf('%s : %s visiteur%s sur votre site', $opening, number_format($visitors, 0, ',', ' '), $visitors > 1 ? 's' : '');
         if ($trend !== null) {
-            $sentence .= sprintf(' (%s%d %%)', $trend > 0 ? '+' : '', $trend);
+            $sentence .= sprintf(' (%s%s %%)', $trend > 0 ? '+' : '', number_format($trend, 2, ',', ' '));
         }
         if ($contacts > 0) {
             $sentence .= sprintf(', et %d prise%s de contact', $contacts, $contacts > 1 ? 's' : '');
@@ -292,20 +292,20 @@ class MonthlyReportBuilder
     }
 
     /**
-     * Evolution en %, arrondie ; null s'il n'y a rien a comparer.
+     * Evolution en %, a deux decimales ; null s'il n'y a rien a comparer.
      */
-    private function trend(int $current, int $previous): ?int
+    private function trend(int $current, int $previous): ?float
     {
         if ($previous === 0) {
             return null;
         }
 
-        return (int) round(($current - $previous) / $previous * 100);
+        return round(($current - $previous) / $previous * 100, 2);
     }
 
-    private function share(int $part, int $total): int
+    private function share(int $part, int $total): float
     {
-        return $total > 0 ? (int) round($part / $total * 100) : 0;
+        return $total > 0 ? round($part / $total * 100, 2) : 0.0;
     }
 
     /**

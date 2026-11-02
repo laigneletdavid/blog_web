@@ -39,6 +39,12 @@ usage() {
 }
 
 [ -n "$COMMANDE" ] && [ -n "$BRANCHE" ] || usage
+
+# Sans Docker, cache:clear echoue en silence (sortie masquee) au milieu du switch
+if [ "$COMMANDE" != deploy ] && ! docker compose ps >/dev/null 2>&1; then
+    echo "ERREUR: Docker ne repond pas. Lancer Docker Desktop, puis relancer."
+    exit 1
+fi
 [[ "$BRANCHE" == bw_* || "$BRANCHE" == main ]] || { echo "ERREUR: branche bw_xxx ou main attendue"; exit 1; }
 
 ENV_CLIENT=".env.$BRANCHE.local"
