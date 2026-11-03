@@ -363,6 +363,57 @@
 </section>
 {% endif %}
 
+{# ====== 4.5 DONNEES STRUCTUREES DE LA HOME ======
+   Organization / LocalBusiness : base.html.twig (type et adresse reglés dans l'admin).
+   Ici : FAQPage (les questions affichées, 6 au plus comme l'accordéon) et une offre par formule. #}
+{% if faqs|default([])|length > 0 %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% for faq in faqs|slice(0, 6) %}
+        {
+            "@type": "Question",
+            "name": {{ faq.question|json_encode|raw }},
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ faq.content|striptags|trim|json_encode|raw }}
+            }
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
+{% endif %}
+<script type="application/ld+json">
+[
+    {% for o in offres %}
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": {{ ('Site ' ~ o.nom ~ ' — ' ~ site.name|default('BlogWeb'))|json_encode|raw }},
+        "description": {{ (o.accroche ~ '. Installation ' ~ o.install_ht ~ ' € HT, puis abonnement mensuel.')|json_encode|raw }},
+        "brand": { "@type": "Brand", "name": {{ site.name|default('BlogWeb')|json_encode|raw }} },
+        "offers": {
+            "@type": "Offer",
+            "url": "{{ absolute_url('/page/offres') }}",
+            "price": "{{ o.mois_ht }}",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "priceSpecification": {
+                "@type": "UnitPriceSpecification",
+                "price": "{{ o.mois_ht }}",
+                "priceCurrency": "EUR",
+                "unitCode": "MON",
+                "valueAddedTaxIncluded": false
+            }
+        }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
 {# ====== 3.13 CTA FINAL ====== #}
 <section class="home-cta">
     <div class="container text-center" data-controller="reveal">
