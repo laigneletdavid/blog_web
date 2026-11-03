@@ -1,5 +1,6 @@
 /* stimulusFetch: 'lazy' */
 import { Controller } from '@hotwired/stimulus';
+import { awaitsEntry, onEntry } from '../js/motion';
 
 /**
  * Trace un soulignement SVG de gauche a droite quand il entre a l'ecran.
@@ -12,17 +13,9 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     connect() {
-        if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const box = this.element.getBoundingClientRect();
-        if (box.top < window.innerHeight && box.bottom > 0) return;
-
+        if (!awaitsEntry(this.element)) return;
         this.element.classList.add('is-wave-pending');
-        this.observer = new IntersectionObserver((entries) => {
-            if (!entries[0].isIntersecting) return;
-            this.element.classList.add('is-wave-drawn');
-            this.observer.disconnect();
-        }, { rootMargin: '0px 0px -15% 0px' });
-        this.observer.observe(this.element);
+        this.observer = onEntry(this.element, () => this.element.classList.add('is-wave-drawn'), '-15%');
     }
 
     disconnect() {

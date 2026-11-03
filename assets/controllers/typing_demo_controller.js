@@ -3,16 +3,16 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * Mini-demo d'editeur : les champs se tapent lettre par lettre et l'apercu
- * suit. Boucle lente, pause au survol, au focus et sur le bouton pause ; arret
- * hors de l'ecran.
+ * suit, en boucle lente. Pause au survol et sur le bouton pause.
  *
- *   <figure data-controller="typing-demo" data-typing-demo-examples-value='[{"titre":"…","texte":"…"}]'>
+ *   <figure data-controller="typing-demo" data-typing-demo-examples-value='[{"titre":"…","texte":"…"}]'
+ *           data-action="mouseenter->typing-demo#hold mouseleave->typing-demo#release">
  *     <div data-typing-demo-target="field" data-key="titre">…</div>
  *     <span data-typing-demo-target="preview" data-key="titre">…</span>
  *     <button data-typing-demo-target="toggle" data-action="typing-demo#toggle" hidden>Pause</button>
  *
- * Le HTML porte deja un exemple complet : sans JavaScript ou en mouvement
- * reduit, la maquette reste figee sur celui-ci.
+ * Le HTML porte deja le premier exemple : sans JavaScript ou en mouvement
+ * reduit, la maquette reste figee dessus.
  */
 export default class extends Controller {
     static targets = ['field', 'preview', 'toggle'];
@@ -25,73 +25,51 @@ export default class extends Controller {
     connect() {
         if (this.examplesValue.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         this.index = 0;
-        this.userPaused = false;
-        this.hover = false;
-        this.visible = true;
+        this.steps = [];
         if (this.hasToggleTarget) this.toggleTarget.hidden = false;
-
-        this.onEnter = () => { this.hover = true; };
-        this.onLeave = () => { this.hover = false; };
-        this.element.addEventListener('mouseenter', this.onEnter);
-        this.element.addEventListener('mouseleave', this.onLeave);
-        this.element.addEventListener('focusin', this.onEnter);
-        this.element.addEventListener('focusout', this.onLeave);
-        this.observer = new IntersectionObserver((e) => { this.visible = e[0].isIntersecting; });
-        this.observer.observe(this.element);
-
-        this.alive = true;
-        this.wait(this.holdValue).then(() => this.loop());
+        this.later(this.holdValue);
     }
 
-    async loop() {
-        while (this.alive) {
-            this.index = (this.index + 1) % this.examplesValue.length;
-            const example = this.examplesValue[this.index];
-            for (const field of this.fieldTargets) this.write(field.dataset.key, '');
-            for (const field of this.fieldTargets) {
-                const text = example[field.dataset.key] || '';
-                for (let i = 1; i <= text.length && this.alive; i++) {
-                    await this.wait(this.speedValue);
-                    this.write(field.dataset.key, text.slice(0, i));
-                }
-            }
-            await this.wait(this.holdValue);
-        }
-    }
-
-    write(key, text) {
-        [...this.fieldTargets, ...this.previewTargets]
-            .filter((el) => el.dataset.key === key)
-            .forEach((el) => { el.textContent = text; });
-    }
-
-    // Attend « ms » de temps actif : le compteur s'arrete pendant les pauses
-    wait(ms) {
-        return new Promise((resolve) => {
-            let left = ms;
-            let last = performance.now();
-            const tick = (now) => {
-                if (!this.alive) return resolve();
-                if (!this.userPaused && !this.hover && this.visible && !document.hidden) left -= now - last;
-                last = now;
-                if (left <= 0) resolve(); else requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
+    // Prepare l'exemple suivant : on vide les champs, puis une etape par lettre
+    next() {
+        this.index = (this.index + 1) % this.examplesValue.length;
+        const example = this.examplesValue[this.index];
+        const keys = this.fieldTargets.map((f) => f.dataset.key);
+        this.steps = keys.map((k) => [k, '']);
+        keys.forEach((k) => {
+            const text = example[k] || '';
+            for (let i = 1; i <= text.length; i++) this.steps.push([k, text.slice(0, i)]);
         });
     }
 
+    tick() {
+        if (this.paused || this.hovered) return this.later(200);
+        if (!this.steps.length) {
+            this.next();
+            return this.later(this.speedValue);
+        }
+        const [key, text] = this.steps.shift();
+        [...this.fieldTargets, ...this.previewTargets].forEach((el) => {
+            if (el.dataset.key === key) el.textContent = text;
+        });
+        this.later(this.steps.length ? this.speedValue : this.holdValue);
+    }
+
+    later(ms) {
+        this.timer = setTimeout(() => this.tick(), ms);
+    }
+
+    hold() { this.hovered = true; }
+
+    release() { this.hovered = false; }
+
     toggle() {
-        this.userPaused = !this.userPaused;
-        this.toggleTarget.setAttribute('aria-pressed', String(this.userPaused));
-        this.toggleTarget.textContent = this.userPaused ? 'Lecture' : 'Pause';
+        this.paused = !this.paused;
+        this.toggleTarget.setAttribute('aria-pressed', String(this.paused));
+        this.toggleTarget.textContent = this.paused ? 'Lecture' : 'Pause';
     }
 
     disconnect() {
-        this.alive = false;
-        this.observer?.disconnect();
-        this.element.removeEventListener('mouseenter', this.onEnter);
-        this.element.removeEventListener('mouseleave', this.onLeave);
-        this.element.removeEventListener('focusin', this.onEnter);
-        this.element.removeEventListener('focusout', this.onLeave);
+        clearTimeout(this.timer);
     }
 }
