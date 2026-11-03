@@ -149,7 +149,7 @@
 {# Textes repris des cartes de service (table service) ; les pages /service/* restent en ligne. #}
 {% set etapes = [
     { titre: 'Vous remplissez le questionnaire', texte: 'Un questionnaire guidé : vous nous dites ce que vous voulez, on s’occupe de la technique.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
-    { titre: 'On installe en ½ journée', texte: 'On installe, on personnalise, on met en ligne : nom de domaine, hébergement, sécurité compris.', lien: null },
+    { titre: 'On installe en ½ journée', texte: 'On installe, on personnalise, on met en ligne : nom de domaine, hébergement, sécurité compris.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
     { titre: 'Vous écrivez, simplement', texte: 'Vous racontez votre métier, vos services, avec un éditeur simple comme Word. Pas besoin de coder.', lien: '/service/vous-gerez-votre-contenu-en-toute-autonomie' },
     { titre: 'En ligne, et on reste là', texte: 'Formation de 30 min, guide écrit et support continu : un seul interlocuteur pour vos questions.', lien: '/service/on-ne-vous-laisse-pas-seul-apres-la-livraison' },
 ] %}
@@ -178,9 +178,9 @@
 {# Prix valides par le brief du 2/11/2026. Puces reprises du tableau de /page/offres. #}
 {% set offres = [
     { nom: 'Vitrine', accroche: 'Vos clients vous trouvent enfin sur Google', mois_ht: 30, mois_ttc: 36, install_ht: 450, install_ttc: 540, vedette: false,
-      inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Hébergement + maintenance'] },
+      inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
     { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 35, mois_ttc: 42, install_ht: 550, install_ttc: 660, vedette: true,
-      inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
+      inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags'] },
     { nom: 'Complet', accroche: 'Vendez en ligne sans aucune limite technique', mois_ht: 50, mois_ttc: 60, install_ht: 1250, install_ttc: 1500, vedette: false,
       inclus: ['Toute l’offre Blog', 'Module Catalogue', 'E-commerce Stripe — paiement sécurisé', 'Module Marketing'] },
 ] %}
@@ -222,10 +222,30 @@
 </section>
 
 {# ====== 3.8 TEMOIGNAGES ====== #}
-{# TODO CONTENU : 2-3 témoignages, à saisir dans l'admin (galerie du site, emplacement « testimonial ») :
-   texte = citation, titre = « Prénom, métier, ville ». La section reste masquée tant qu'il n'y en a pas. #}
+{# TODO CONTENU : témoignage (citation, prénom, métier, ville), à saisir dans l'admin
+   (galerie du site, emplacement « testimonial ») : texte = citation, titre = « Prénom, métier, ville ».
+   0 avis : section masquée. 1 avis : citation mise en avant. 2 ou 3 : grille de cartes. #}
 {% set testimonials = site.getGalleryBySlot('testimonial') %}
-{% if testimonials|length > 0 %}
+{% if testimonials|length == 1 %}
+{% set avis = testimonials|first %}
+<section class="home-testimonials home-testimonials--single">
+    <div class="container">
+        <h2 class="visually-hidden">Ce que disent nos clients</h2>
+        <figure class="home-quote" data-controller="reveal">
+            <svg class="home-quote__vague" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg>
+            <blockquote class="home-quote__text">
+                <p>{{ avis.content }}</p>
+            </blockquote>
+            <figcaption class="home-quote__author">
+                {% if avis.media %}
+                <img src="{{ asset('documents/medias/' ~ (avis.media.webpFileName ?? avis.media.fileName)) }}" alt="" class="home-quote__avatar" width="56" height="56" loading="lazy">
+                {% endif %}
+                <span>{{ avis.title }}</span>
+            </figcaption>
+        </figure>
+    </div>
+</section>
+{% elseif testimonials|length > 1 %}
 <section class="home-testimonials">
     <div class="container">
         <div data-controller="reveal">
@@ -310,7 +330,7 @@
             <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
         </div>
         <div class="blog-grid blog-grid--3col" data-controller="reveal" data-reveal-stagger-value="70">
-            {% include 'article/article_liste.html.twig' with { articles: articles|slice(0, 3) } %}
+            {% include 'article/article_liste.html.twig' with { articles: articles|slice(0, 3), cardTitleTag: 'h3' } %}
         </div>
     </div>
 </section>
@@ -335,9 +355,8 @@
             <div class="col-12 col-lg-9 home-about__content d-flex flex-column justify-content-evenly align-items-center">
                 <span class="home-about__overtitle">À propos</span>
                 <h2 class="home-about__title">{{ site.title|default(site.name|default('')) }}</h2>
-                {% if site.defaultSeoDescription %}
-                <p class="home-about__text">{{ site.defaultSeoDescription }}</p>
-                {% endif %}
+                {# Phrase provisoire fournie par David (brief passe 2), en attendant le texte À propos #}
+                <p class="home-about__text">{{ nomProduit }} est conçu et maintenu par David Laignelet, développeur web et commercial depuis 15 ans, dans le Comminges.</p>
                 <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">En savoir plus</a>
             </div>
         </div>

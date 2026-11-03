@@ -554,6 +554,47 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: var(--shadow-card);
 }
 
+/* --- Temoignage unique : citation mise en avant --- */
+.home-quote {
+  max-width: 46rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.home-quote__vague {
+  display: block;
+  width: 96px;
+  height: 14px;
+  margin: 0 auto 1.75rem;
+  color: var(--accent);
+  overflow: visible;
+}
+.home-quote__text {
+  margin: 0 0 1.5rem;
+}
+.home-quote__text p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.4vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text);
+}
+.home-quote__text p::before { content: "« "; }
+.home-quote__text p::after { content: " »"; }
+.home-quote__author {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+.home-quote__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* --- Chiffres cles : fond uni, chiffres en orange, plus de degrade --- */
 .home-metrics {
   background: var(--secondary);
@@ -611,10 +652,13 @@ h1, h2, h3, h4, h5, h6,
   display: inline-block;
   white-space: nowrap;
 }
+/* Fenetre et trace ont la meme largeur : leurs decalages opposes (A2) s'annulent
+   exactement. Marge verticale seulement pour l'epaisseur du trait ; en largeur,
+   le trace commence et finit a 1,5 % du bord, les arrondis y tiennent. */
 .vague__clip {
   position: absolute;
-  left: -4px;
-  right: -4px;
+  left: 0;
+  right: 0;
   bottom: calc(-0.3em - 4px);
   height: calc(0.45em + 8px);
   overflow: hidden;
@@ -622,9 +666,9 @@ h1, h2, h3, h4, h5, h6,
 }
 .vague__trait {
   position: absolute;
-  left: 4px;
+  left: 0;
   top: 4px;
-  width: calc(100% - 8px);
+  width: 100%;
   height: 0.45em;
   color: var(--accent);
   overflow: visible;
@@ -683,12 +727,18 @@ h1, h2, h3, h4, h5, h6,
   position: absolute;
   right: 0.75rem;
   bottom: 0.75rem;
-  padding: 0.125rem 0.625rem;
+  padding: 0.3rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: #FFFFFF;
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
+}
+/* Zone tactile portee a 44 px sans grossir le bouton */
+.hero-demo__pause::after {
+  content: "";
+  position: absolute;
+  inset: -8px -6px;
 }
 .hero-demo__pause:hover,
 .hero-demo__pause:focus-visible {
