@@ -1,4 +1,8 @@
 {# Card article standard — utilisée dans la grille blog #}
+{# Niveau du titre : h2 sous le h1 d'une liste d'articles ; un gabarit qui place les
+   cartes sous son propre h2 (section « Actualités » d'une home) pose
+   {% set cardTitleTag = 'h3' %} avant l'include. #}
+{% set _cardTitleTag = cardTitleTag|default('h2') %}
 <article class="blog-card">
     <a href="{{ path('app_article_show', { 'slug': article.slug }) }}" class="blog-card__link">
         <div class="blog-card__img">
@@ -15,7 +19,7 @@
             {% endif %}
         </div>
         <div class="blog-card__body">
-            <h2 class="blog-card__title">{{ article.title }}</h2>
+            <{{ _cardTitleTag }} class="blog-card__title">{{ article.title }}</{{ _cardTitleTag }}>
             <p class="blog-card__excerpt">{{ article.featuredText ?: article.content|plaintext|slice(0, 150) ~ '...' }}</p>
             <div class="blog-card__meta">
                 <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|format_date('long', locale='fr') }}</time>

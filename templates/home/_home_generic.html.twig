@@ -175,7 +175,7 @@
             <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
         </div>
         <div class="blog-grid blog-grid--3col">
-            {% include 'article/article_liste.html.twig' with { articles } %}
+            {% include 'article/article_liste.html.twig' with { articles, cardTitleTag: 'h3' } %}
         </div>
     </div>
 </section>
