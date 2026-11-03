@@ -603,35 +603,50 @@ h1, h2, h3, h4, h5, h6,
   color: var(--text);
 }
 
-/* --- Motif « vague » (symbole #bw-vague dans home.html.twig) --- */
+/* --- Motif « vague » (symbole #bw-vague dans home.html.twig) ---
+   Positionnee uniquement en CSS, relativement aux mots soulignes : elle suit
+   le titre partout, y compris pendant son animation d'apparition. */
 .vague {
   position: relative;
   display: inline-block;
   white-space: nowrap;
 }
+.vague__clip {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: calc(-0.3em - 4px);
+  height: calc(0.45em + 8px);
+  overflow: hidden;
+  pointer-events: none;
+}
 .vague__trait {
   position: absolute;
-  left: 0;
-  bottom: -0.3em;
-  width: 100%;
+  left: 4px;
+  top: 4px;
+  width: calc(100% - 8px);
   height: 0.45em;
   color: var(--accent);
   overflow: visible;
-  pointer-events: none;
 }
 
 /* ===========================================================================
    Animations (Lot 3 bis) — controleurs Stimulus de main, base dans motion.scss
    =========================================================================== */
 
-/* A2 — la vague se dessine (le trace porte pathLength="100") */
-.is-wave-pending .vague__trait {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
+/* A2 — la vague se devoile de gauche a droite. La fenetre (.vague__clip) part a
+   gauche, le trace est decale d'autant dans l'autre sens : il reste immobile a sa
+   place pendant que la fenetre avance. Transform seulement, aucun pointille. */
+.is-wave-pending .vague__clip {
+  transform: translateX(-101%);
 }
+.is-wave-pending .vague__trait {
+  transform: translateX(101%);
+}
+.is-wave-pending.is-wave-drawn .vague__clip,
 .is-wave-pending.is-wave-drawn .vague__trait {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 600ms var(--motion-ease) 150ms;
+  transform: none;
+  transition: transform 650ms var(--motion-ease) 150ms;
 }
 
 /* A1 — demo du hero : champs et apercu a hauteur fixe, rien ne bouge autour */
@@ -736,7 +751,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .is-wave-pending .vague__trait { stroke-dashoffset: 0; }
+  .is-wave-pending .vague__clip, .is-wave-pending .vague__trait { transform: none; }
   .home-pricing__grid.is-revealed .home-pricing__badge { animation: none; }
   .home-pricing__card, .home-steps__item, .home-testimonial, .home-proof__card, .blog-card,
   .cw-arrow, .header--vitrine, .header--vitrine .header-logo img { transition: none; }
