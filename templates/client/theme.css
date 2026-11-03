@@ -13,7 +13,7 @@
    --------------------------------------------------------------------------- */
 .home-wordpress-compare {
   padding: 5rem 0;
-  background: #1e1e2a;
+  background: var(--secondary);
   color: var(--white);
 }
 .home-wordpress-compare__inner {
@@ -38,145 +38,13 @@
 }
 .home-wordpress-compare .btn-outline-light:hover {
   background: var(--white);
-  color: #1e1e2a;
+  color: var(--secondary);
   border-color: var(--white);
   transform: translateY(-2px);
 }
 @media (max-width: 991.98px) {
   .home-wordpress-compare {
     padding: 3.5rem 0;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Comment ca se passe : lignes "Vous" / "Nous" des cartes de service
-   --------------------------------------------------------------------------- */
-.home-services .service-card__text span {
-  display: block;
-}
-.home-services .service-card__text span + span {
-  margin-top: 0.375rem;
-}
-
-/* ---------------------------------------------------------------------------
-   Pricing (bloc "Nos offres")
-   --------------------------------------------------------------------------- */
-.home-pricing {
-  padding: 5rem 0;
-  background: var(--surface);
-}
-.home-pricing__subtitle {
-  font-size: 1.0625rem;
-  color: var(--text-muted);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-.home-pricing__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  align-items: stretch;
-}
-.home-pricing__card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-.home-pricing__card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-.home-pricing__card--popular {
-  border-color: var(--primary);
-  border-width: 2px;
-  box-shadow: var(--shadow-md);
-}
-.home-pricing__badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: var(--primary);
-  color: var(--white);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 0.375rem 1rem;
-  border-radius: 0 0 0 var(--radius-md);
-}
-.home-pricing__card-header {
-  padding: 2rem 1.5rem 1rem;
-  text-align: center;
-}
-.home-pricing__card-title {
-  font-family: var(--font-display);
-  font-size: 1.375rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 0.5rem;
-}
-.home-pricing__card-audience {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-bottom: 0;
-  line-height: 1.4;
-}
-.home-pricing__card-body {
-  padding: 1rem 1.5rem 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.home-pricing__price {
-  text-align: center;
-  padding: 0.75rem;
-  background: var(--surface);
-  border-radius: var(--radius-md);
-}
-.home-pricing__price-main {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text);
-  line-height: 1.2;
-}
-.home-pricing__price-main small {
-  font-size: 0.75rem;
-  font-weight: 600;
-  opacity: 0.7;
-}
-.home-pricing__price-ht {
-  display: block;
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-}
-.home-pricing__price-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-top: 0.25rem;
-}
-.home-pricing__card-footer {
-  padding: 0 1.5rem 1.5rem;
-}
-@media (max-width: 991.98px) {
-  .home-pricing {
-    padding: 3.5rem 0;
-  }
-  .home-pricing__grid {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-    margin: 0 auto;
   }
 }
 
@@ -230,10 +98,13 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* --- Rythme des sections : blanc / gris clair en alternance --- */
+.home-proof,
 .home-wordpress-compare,
 .home-features,
-.home-services,
+.home-steps,
 .home-pricing,
+.home-testimonials,
+.home-events,
 .home-portfolio,
 .home-faq,
 .home-metrics,
@@ -245,15 +116,453 @@ h1, h2, h3, h4, h5, h6,
 }
 .home-features,
 .home-pricing,
+.home-events,
 .home-portfolio,
 .home-articles,
 .theme-vitrine .home-cta {
   background: #FFFFFF;
 }
-.home-services,
+.home-proof,
+.home-steps,
+.home-testimonials,
 .home-faq,
 .home-about {
   background: var(--surface) !important;
+}
+
+/* --- Header : « Demander un devis » est plus long que « Contact » --- */
+.header--vitrine .header-nav .nav-link,
+.header--vitrine .header-actions .btn {
+  white-space: nowrap;
+}
+@media (max-width: 1199.98px) {
+  .header--vitrine .header-search { display: none; }
+}
+
+/* --- Hero --- */
+.theme-vitrine .home-hero {
+  padding: 5rem 0 var(--section-space);
+}
+.home-hero__overtitle {
+  color: #B35F00;          /* orange de l'accent, assombri pour 4,8:1 sur blanc */
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.75rem;
+}
+.home-hero__actions .btn {
+  justify-content: center;
+  text-align: center;
+}
+.home-hero__title {
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+/* --- Cadre navigateur (maquettes et futures captures) --- */
+.cw-browser {
+  margin: 0;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(28, 34, 38, 0.10);
+  overflow: hidden;
+}
+.cw-browser__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.cw-browser__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+.cw-browser__dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D5DAE1;
+}
+.cw-browser__url {
+  flex: 1;
+  max-width: 260px;
+  padding: 0.125rem 0.75rem;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.cw-browser__maquette {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 3rem 2rem;
+  color: var(--primary);
+}
+.cw-browser__maquette svg {
+  margin-bottom: 0.75rem;
+}
+.cw-browser__maquette span {
+  display: block;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--surface);
+  width: 70%;
+}
+.cw-browser__maquette span:nth-of-type(2) { width: 55%; }
+.cw-browser__maquette span:nth-of-type(3) { width: 40%; }
+
+/* --- Hero : maquette de l'editeur (base de la demo animee) --- */
+.hero-demo__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 300px;
+}
+.hero-demo__editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1.25rem;
+  border-right: 1px solid var(--border);
+}
+.hero-demo__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.hero-demo__field {
+  min-height: 2.25rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+.hero-demo__field--title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+.hero-demo__publish {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.hero-demo__preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.25rem;
+  background: var(--surface);
+}
+.hero-demo__preview-bar {
+  height: 8px;
+  width: 40%;
+  border-radius: 4px;
+  background: var(--border);
+  margin-bottom: 0.75rem;
+}
+.hero-demo__preview-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--text);
+}
+.hero-demo__preview-text {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.hero-demo__preview-btn {
+  width: 96px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--primary);
+  margin-top: 0.5rem;
+}
+@media (max-width: 575.98px) {
+  .hero-demo__body { grid-template-columns: 1fr; }
+  .hero-demo__editor { border-right: 0; border-bottom: 1px solid var(--border); }
+}
+
+/* --- Preuve rapide (sites clients) --- */
+.home-proof__title {
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+.home-proof__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.home-proof__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  text-decoration: none;
+}
+.home-proof__card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+}
+.home-proof__name { font-weight: 700; }
+.home-proof__job { font-size: 0.875rem; color: var(--text-muted); }
+@media (max-width: 767.98px) {
+  .home-proof__grid { grid-template-columns: 1fr; }
+}
+
+/* --- Fonctionnalites : rangees alternees texte / capture --- */
+.home-feature-row {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  gap: 4rem;
+  margin-top: 4.5rem;
+}
+.home-feature-row--inverse .home-feature-row__text {
+  order: 2;
+}
+.home-feature-row__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--primary) 10%, #FFFFFF);
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+.home-feature-row__title {
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  margin-bottom: 0.75rem;
+}
+.home-feature-row__desc {
+  color: var(--text-muted);
+  max-width: 46ch;
+  margin-bottom: 0;
+}
+.home-features__more {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 5rem 0 0;
+  padding: 2rem 0 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+.home-features__more strong {
+  color: var(--text);
+}
+@media (max-width: 991.98px) {
+  .home-feature-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .home-feature-row--inverse .home-feature-row__text { order: 0; }
+  .home-features__more { grid-template-columns: 1fr; margin-top: 3rem; }
+}
+
+/* --- Comment ca marche : 4 etapes numerotees --- */
+.home-steps__list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin: 3rem 0 0;
+  padding: 0;
+}
+.home-steps__item {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.home-steps__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 1.25rem;
+}
+.home-steps__title {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  margin-bottom: 0.625rem;
+}
+.home-steps__text {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  margin-bottom: 1rem;
+}
+.home-steps__link {
+  margin-top: auto;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+@media (max-width: 991.98px) {
+  .home-steps__list { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575.98px) {
+  .home-steps__list { grid-template-columns: 1fr; }
+}
+
+/* --- Tarifs --- */
+.home-pricing__subtitle {
+  color: var(--text-muted);
+}
+.home-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+.home-pricing__card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.home-pricing__card-header {
+  padding: 2rem 1.75rem 0.5rem;
+}
+.home-pricing__card-title {
+  font-size: 1.375rem;
+  margin-bottom: 0.375rem;
+}
+.home-pricing__card-audience {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+  line-height: 1.45;
+}
+.home-pricing__card-body {
+  flex: 1;
+  padding: 1rem 1.75rem 1.5rem;
+}
+.home-pricing__amount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.375rem;
+  margin-bottom: 0.25rem;
+}
+.home-pricing__amount-value {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text);
+}
+.home-pricing__amount-unit {
+  font-weight: 600;
+  color: var(--text);
+}
+.home-pricing__amount-ttc {
+  flex-basis: 100%;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.home-pricing__setup {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.home-pricing__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9375rem;
+}
+.home-pricing__list li {
+  position: relative;
+  padding-left: 1.625rem;
+  margin-bottom: 0.5rem;
+}
+.home-pricing__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.75rem;
+  height: 0.4rem;
+  border-left: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  transform: rotate(-45deg);
+}
+.home-pricing__card-footer {
+  padding: 0 1.75rem 1.75rem;
+}
+.home-pricing__badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.home-pricing__compare {
+  font-weight: 600;
+}
+@media (max-width: 991.98px) {
+  .home-pricing__grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+}
+
+/* --- Temoignages : cartes de la charte --- */
+.home-testimonial {
+  height: 100%;
+  padding: 1.75rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 /* --- Chiffres cles : fond uni, chiffres en orange, plus de degrade --- */

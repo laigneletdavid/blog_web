@@ -1,0 +1,7 @@
+{# ====== HEADER CLIENT — bw_front ====== #}
+{# Header du theme vitrine, seul le libelle du bouton change (brief 3.1).
+   Inclus plutot que copie : il continue de recevoir les correctifs de main.
+   Si le libelle « Contact » change dans le theme, le remplacement ne fait rien. #}
+{{ include('themes/vitrine/_header.html.twig')|replace({
+    'class="btn btn-primary">Contact</a>': 'class="btn btn-primary">Demander un devis</a>'
+})|raw }}
