@@ -43,6 +43,7 @@
                 ] %}
                 <figure class="cw-browser hero-demo"
                         data-controller="typing-demo"
+                        data-action="mouseenter->typing-demo#hold mouseleave->typing-demo#release"
                         data-typing-demo-examples-value="{{ exemplesDemo|json_encode|e('html_attr') }}">
                     <figcaption class="visually-hidden">L'éditeur du site : vous tapez votre titre et votre texte, l'aperçu de votre site se met à jour à côté.</figcaption>
                     <div class="cw-browser__bar" aria-hidden="true">
