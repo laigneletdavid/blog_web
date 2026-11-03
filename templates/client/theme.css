@@ -143,18 +143,6 @@ h1, h2, h3, h4, h5, h6,
 .theme-vitrine .home-hero {
   padding: 5rem 0 var(--section-space);
 }
-.home-hero__brand {
-  display: inline-block;
-  margin-bottom: 1rem;
-  padding: 0.3rem 0.875rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--primary) 9%, #FFFFFF);
-  color: var(--primary);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.875rem;
-  letter-spacing: 0.01em;
-}
 .home-hero__overtitle {
   color: #B35F00;          /* orange de l'accent, assombri pour 4,8:1 sur blanc */
   font-weight: 600;
