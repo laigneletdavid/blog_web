@@ -630,3 +630,125 @@ h1, h2, h3, h4, h5, h6,
   overflow: visible;
   pointer-events: none;
 }
+
+/* ===========================================================================
+   Animations (Lot 3 bis) — controleurs Stimulus de main, base dans motion.scss
+   =========================================================================== */
+
+/* A2 — la vague se dessine (le trace porte pathLength="100") */
+.is-wave-pending .vague__trait {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.is-wave-pending.is-wave-drawn .vague__trait {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 600ms var(--motion-ease) 150ms;
+}
+
+/* A1 — demo du hero : champs et apercu a hauteur fixe, rien ne bouge autour */
+.hero-demo {
+  position: relative;
+}
+.hero-demo__field {
+  overflow: hidden;
+}
+.hero-demo__field--title {
+  height: 2.25rem;
+  white-space: nowrap;
+}
+.hero-demo__field:not(.hero-demo__field--title) {
+  height: 5.25rem;
+}
+.hero-demo__field:not(:empty)::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: var(--primary);
+  opacity: 0.6;
+}
+.hero-demo__preview-title {
+  min-height: 3rem;
+}
+.hero-demo__preview-text {
+  min-height: 3.6rem;
+}
+.hero-demo__pause {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.hero-demo__pause:hover,
+.hero-demo__pause:focus-visible {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+/* A6 — cartes : legere elevation au survol (pas sur ecran tactile) */
+.home-pricing__card,
+.home-steps__item,
+.home-testimonial,
+.home-proof__card,
+.blog-card {
+  transition: transform 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease);
+}
+@media (hover: hover) {
+  .home-pricing__card:hover,
+  .home-steps__item:hover,
+  .home-testimonial:hover,
+  .home-proof__card:hover,
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+/* A7 — le badge « Le plus choisi » fait un petit pop a son apparition */
+@keyframes cw-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.home-pricing__grid.is-revealed .home-pricing__badge {
+  animation: cw-pop 400ms var(--motion-ease) 300ms both;
+}
+
+/* A9 — fleche des boutons principaux */
+.cw-arrow {
+  display: inline-block;
+  margin-left: 0.375rem;
+  transition: transform 200ms var(--motion-ease);
+}
+.btn:hover .cw-arrow,
+.btn:focus-visible .cw-arrow {
+  transform: translateX(4px);
+}
+
+/* A10 — header compact au defilement (logo reduit + ombre, hauteur inchangee : pas de decalage) */
+.header--vitrine {
+  transition: box-shadow 250ms var(--motion-ease);
+}
+.header--vitrine .header-logo img {
+  transition: transform 250ms var(--motion-ease);
+  transform-origin: left center;
+}
+.header--vitrine.is-scrolled {
+  box-shadow: 0 2px 12px rgba(28, 34, 38, 0.08);
+}
+.header--vitrine.is-scrolled .header-logo img {
+  transform: scale(0.88);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-wave-pending .vague__trait { stroke-dashoffset: 0; }
+  .home-pricing__grid.is-revealed .home-pricing__badge { animation: none; }
+  .home-pricing__card, .home-steps__item, .home-testimonial, .home-proof__card, .blog-card,
+  .cw-arrow, .header--vitrine, .header--vitrine .header-logo img { transition: none; }
+}

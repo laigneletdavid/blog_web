@@ -7,13 +7,13 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="bw-vague" viewBox="0 0 200 20">
         {# Trace du logo couche a plat : descente, creux et rebond du W, double bosse du M, longue traine #}
-        <path d="M3 8 C 30 10, 50 19, 61 19 C 67 19, 68 12, 72 12 C 77 12, 79 17, 85 17 C 93 17, 97 11, 101 8 C 105 4, 109 3, 114 3 C 121 3, 123 8, 129 8 C 135 8, 135 1, 140 1 C 155 1, 176 8, 197 11"
+        <path pathLength="100" d="M3 8 C 30 10, 50 19, 61 19 C 67 19, 68 12, 72 12 C 77 12, 79 17, 85 17 C 93 17, 97 11, 101 8 C 105 4, 109 3, 114 3 C 121 3, 123 8, 129 8 C 135 8, 135 1, 140 1 C 155 1, 176 8, 197 11"
               fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
               vector-effect="non-scaling-stroke"/>
     </symbol>
 </svg>
 
-{% macro vague(mots) %}<span class="vague">{{ mots }}<svg class="vague__trait" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span>{% endmacro %}
+{% macro vague(mots) %}<span class="vague" data-controller="wave-draw">{{ mots }}<svg class="vague__trait" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span>{% endmacro %}
 
 {# ====== 3.2 HERO ====== #}
 <section class="home-hero">
@@ -24,7 +24,7 @@
                 <h1 class="home-hero__title">Site internet professionnel {{ _self.vague('clé en main') }} pour TPE et artisans</h1>
                 <p class="home-hero__desc">Un site professionnel livré en une demi-journée, prêt à être trouvé sur Google. Vous racontez votre métier, on s'occupe du reste.</p>
                 <div class="home-hero__actions">
-                    <a href="/page/offres" class="btn btn-primary btn-lg">Voir les offres</a>
+                    <a href="/page/offres" class="btn btn-primary btn-lg">Voir les offres<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
                     <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">Demander un devis</a>
                 </div>
                 <div class="home-hero__badges">
@@ -36,8 +36,15 @@
             <div class="col-lg-6">
                 {# TODO CONTENU : capture de l'éditeur (servie en WebP via responsive_img, width/height,
                    alt descriptif). En attendant, maquette HTML de l'éditeur, base de la démo animée. #}
-                <figure class="cw-browser hero-demo" role="img"
-                        aria-label="L'éditeur du site : vous tapez votre titre et votre texte, l'aperçu de votre site se met à jour à côté.">
+                {% set exemplesDemo = [
+                    { titre: 'Atelier de menuiserie', texte: 'Fabrication sur mesure, pose et conseil près de chez vous.' },
+                    { titre: 'Salon de coiffure', texte: 'Coupe, couleur et conseils, avec ou sans rendez-vous.' },
+                    { titre: 'Plombier chauffagiste', texte: 'Dépannage, installation et entretien de vos équipements.' },
+                ] %}
+                <figure class="cw-browser hero-demo"
+                        data-controller="typing-demo"
+                        data-typing-demo-examples-value="{{ exemplesDemo|json_encode|e('html_attr') }}">
+                    <figcaption class="visually-hidden">L'éditeur du site : vous tapez votre titre et votre texte, l'aperçu de votre site se met à jour à côté.</figcaption>
                     <div class="cw-browser__bar" aria-hidden="true">
                         <span class="cw-browser__dots"><i></i><i></i><i></i></span>
                         <span class="cw-browser__url">votre-site.fr/admin</span>
@@ -45,18 +52,21 @@
                     <div class="hero-demo__body" aria-hidden="true">
                         <div class="hero-demo__editor">
                             <span class="hero-demo__label">Titre</span>
-                            <div class="hero-demo__field hero-demo__field--title" data-demo-texte="titre">Atelier de menuiserie</div>
+                            <div class="hero-demo__field hero-demo__field--title" data-typing-demo-target="field" data-key="titre">{{ exemplesDemo[0].titre }}</div>
                             <span class="hero-demo__label">Texte</span>
-                            <div class="hero-demo__field" data-demo-texte="texte">Fabrication sur mesure, pose et conseil près de chez vous.</div>
+                            <div class="hero-demo__field" data-typing-demo-target="field" data-key="texte">{{ exemplesDemo[0].texte }}</div>
                             <span class="hero-demo__publish">Publier</span>
                         </div>
                         <div class="hero-demo__preview">
                             <span class="hero-demo__preview-bar"></span>
-                            <strong class="hero-demo__preview-title" data-demo-apercu="titre">Atelier de menuiserie</strong>
-                            <span class="hero-demo__preview-text" data-demo-apercu="texte">Fabrication sur mesure, pose et conseil près de chez vous.</span>
+                            <strong class="hero-demo__preview-title" data-typing-demo-target="preview" data-key="titre">{{ exemplesDemo[0].titre }}</strong>
+                            <span class="hero-demo__preview-text" data-typing-demo-target="preview" data-key="texte">{{ exemplesDemo[0].texte }}</span>
                             <span class="hero-demo__preview-btn"></span>
                         </div>
                     </div>
+                    <button type="button" class="hero-demo__pause" hidden
+                            data-typing-demo-target="toggle" data-action="typing-demo#toggle"
+                            aria-pressed="false">Pause</button>
                 </figure>
             </div>
         </div>
@@ -88,7 +98,7 @@
 {# ====== 3.4 POURQUOI PAS WORDPRESS ====== #}
 <section class="home-wordpress-compare">
     <div class="container">
-        <div class="home-wordpress-compare__inner">
+        <div class="home-wordpress-compare__inner" data-controller="reveal">
             <h2 class="home-section-title">Pourquoi pas un WordPress comme tout le monde ?</h2>
             <p class="home-wordpress-compare__text">WordPress, c'est l'illusion de la simplicité. En réalité : des plugins à empiler, des mises à jour qui cassent tout, des failles de sécurité tous les mois, et un site qui ralentit avec le temps. BlogWeb fait l'inverse : tout est intégré, sécurisé, optimisé dès le premier jour. Rien à installer, rien à maintenir, rien à craindre.</p>
             <a href="/page/site-sur-mesure-vs-cms-classique" class="btn btn-outline-light btn-lg">Voir la comparaison complète</a>
@@ -104,15 +114,15 @@
 ] %}
 <section class="home-features">
     <div class="container">
-        <h2 class="home-section-title text-center">Une plateforme pensée pour vous faire gagner du temps</h2>
+        <h2 class="home-section-title text-center" data-controller="reveal">Une plateforme pensée pour vous faire gagner du temps</h2>
         {% for r in rangees %}
         <div class="home-feature-row{{ loop.index is even ? ' home-feature-row--inverse' }}">
-            <div class="home-feature-row__text">
+            <div class="home-feature-row__text" data-controller="reveal">
                 <span class="home-feature-row__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">{{ r.icone|raw }}</svg></span>
                 <h3 class="home-feature-row__title">{{ r.titre }}</h3>
                 <p class="home-feature-row__desc">{{ r.texte }}</p>
             </div>
-            <div class="home-feature-row__visual">
+            <div class="home-feature-row__visual" data-controller="reveal" data-reveal-from-value="{{ loop.index is even ? 'left' : 'right' }}">
                 {# TODO CONTENU : capture admin « {{ r.titre }} » (WebP, width/height, alt descriptif) #}
                 <div class="cw-browser cw-browser--maquette" aria-hidden="true">
                     <div class="cw-browser__bar"><span class="cw-browser__dots"><i></i><i></i><i></i></span></div>
@@ -124,7 +134,7 @@
             </div>
         </div>
         {% endfor %}
-        <ul class="home-features__more">
+        <ul class="home-features__more" data-controller="reveal" data-reveal-stagger-value="70">
             <li><strong>Pages & Layouts</strong> — créez des pages vitrine avec différents layouts pour présenter vos services et votre activité.</li>
             <li><strong>Navigation flexible</strong> — organisez votre menu par glisser-déposer, avec sous-menus et liens personnalisés.</li>
             <li><strong>Contact & Notifications</strong> — formulaire de contact, commentaires et notifications email pour rester connectés à vos visiteurs.</li>
@@ -142,11 +152,11 @@
 ] %}
 <section class="home-steps">
     <div class="container">
-        <div class="text-center">
+        <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Comment ça se passe concrètement</h2>
             <p class="home-section-subtitle">De votre premier message à votre site en ligne, voici ce que vous allez vivre.</p>
         </div>
-        <ol class="home-steps__list">
+        <ol class="home-steps__list" data-controller="reveal" data-reveal-stagger-value="70">
             {% for e in etapes %}
             <li class="home-steps__item">
                 <span class="home-steps__num" aria-hidden="true">{{ loop.index }}</span>
@@ -173,11 +183,11 @@
 ] %}
 <section class="home-pricing">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5" data-controller="reveal">
             <h2 class="home-section-title">Trois offres, trois prix, {{ _self.vague('zéro mauvaise surprise') }}</h2>
             <p class="home-pricing__subtitle">Pas de devis opaque, pas de coûts cachés. Vous savez exactement ce que vous payez et ce que vous obtenez.</p>
         </div>
-        <div class="home-pricing__grid">
+        <div class="home-pricing__grid" data-controller="reveal" data-reveal-stagger-value="70">
             {% for o in offres %}
             <div class="home-pricing__card{{ o.vedette ? ' home-pricing__card--popular' }}">
                 {% if o.vedette %}<span class="home-pricing__badge">Le plus choisi</span>{% endif %}
@@ -197,7 +207,7 @@
                     </ul>
                 </div>
                 <div class="home-pricing__card-footer">
-                    <a href="/page/offres" class="btn {{ o.vedette ? 'btn-primary' : 'btn-outline-primary' }} w-100">Voir le détail<span class="visually-hidden"> de l'offre {{ o.nom }}</span></a>
+                    <a href="/page/offres" class="btn {{ o.vedette ? 'btn-primary' : 'btn-outline-primary' }} w-100">Voir le détail<span class="visually-hidden"> de l'offre {{ o.nom }}</span>{% if o.vedette %}<span class="cw-arrow" aria-hidden="true">&rarr;</span>{% endif %}</a>
                 </div>
             </div>
             {% endfor %}
@@ -215,8 +225,10 @@
 {% if testimonials|length > 0 %}
 <section class="home-testimonials">
     <div class="container">
-        <h2 class="home-section-title text-center">Ce que disent nos clients</h2>
-        {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+        <div data-controller="reveal">
+            <h2 class="home-section-title text-center">Ce que disent nos clients</h2>
+            {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+        </div>
     </div>
 </section>
 {% endif %}
@@ -253,21 +265,21 @@
 {# ====== 3.9 CHIFFRES CLES ====== #}
 <section class="home-metrics">
     <div class="container">
-        <div class="row">
+        <div class="row" data-controller="reveal count-up" data-reveal-stagger-value="70">
             <div class="col-6 col-md-3 home-metrics__item">
                 <div class="home-metrics__value">&frac12; j</div>
                 <div class="home-metrics__label">pour être en ligne</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value">6</div>
+                <div class="home-metrics__value" data-count-up-target="value">6</div>
                 <div class="home-metrics__label">thèmes inclus</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value">0</div>
+                <div class="home-metrics__value" data-count-up-target="value">0</div>
                 <div class="home-metrics__label">plugin à installer</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value">1</div>
+                <div class="home-metrics__value" data-count-up-target="value">1</div>
                 <div class="home-metrics__label">interlocuteur unique</div>
             </div>
         </div>
@@ -278,8 +290,10 @@
 {% if faqs|default([])|length > 0 %}
 <section class="home-faq">
     <div class="container">
-        <h2 class="home-section-title text-center">Questions fréquentes</h2>
-        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+        <div data-controller="reveal">
+            <h2 class="home-section-title text-center">Questions fréquentes</h2>
+            {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+        </div>
     </div>
 </section>
 {% endif %}
@@ -292,7 +306,7 @@
             <h2 class="home-section-title mb-0">Actualités</h2>
             <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
         </div>
-        <div class="blog-grid blog-grid--3col">
+        <div class="blog-grid blog-grid--3col" data-controller="reveal" data-reveal-stagger-value="70">
             {% include 'article/article_liste.html.twig' with { articles: articles|slice(0, 3) } %}
         </div>
     </div>
@@ -304,7 +318,7 @@
    « 15 ans à vendre, 10 ans à coder »). En attendant, texte actuel (description SEO du site). #}
 <section class="home-about" id="home-about">
     <div class="container">
-        <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
+        <div class="d-flex flex-column flex-lg-row align-items-center gap-4" data-controller="reveal">
             <div class="col-12 col-lg-3 home-about__img-wrapper d-flex justify-content-center">
                 {% if site.aboutImage %}
                 {{ responsive_img(site.aboutImage, '(max-width: 768px) 100vw, 25vw', 'home-about__img rounded-circle') }}
@@ -350,9 +364,9 @@
 
 {# ====== 3.13 CTA FINAL ====== #}
 <section class="home-cta">
-    <div class="container text-center">
+    <div class="container text-center" data-controller="reveal">
         <h2 class="home-cta__title">Prêt à lancer {{ _self.vague('votre site') }} ?</h2>
         <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en une demi-journée, après validation de votre contenu.</p>
-        <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter</a>
+        <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
 </section>
