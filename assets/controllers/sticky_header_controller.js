@@ -8,20 +8,11 @@ import { Controller } from '@hotwired/stimulus';
  *   <header data-controller="sticky-header">
  */
 export default class extends Controller {
-    static values = { offset: { type: Number, default: 8 } };
-
     connect() {
-        this.update = this.update.bind(this);
+        // scrollY ne force aucun calcul de mise en page : pas besoin de temporiser
+        this.update = () => this.element.classList.toggle('is-scrolled', window.scrollY > 8);
         window.addEventListener('scroll', this.update, { passive: true });
         this.update();
-    }
-
-    update() {
-        if (this.frame) return;
-        this.frame = requestAnimationFrame(() => {
-            this.frame = null;
-            this.element.classList.toggle('is-scrolled', window.scrollY > this.offsetValue);
-        });
     }
 
     disconnect() {
