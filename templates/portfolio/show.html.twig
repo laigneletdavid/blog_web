@@ -58,7 +58,7 @@
                 {% endif %}
                 {% if item.projectDate %}
                 <span class="portfolio-detail__meta-item">
-                    {{ bi('calendar3', 'me-1') }}{{ item.projectDate|date('F Y') }}
+                    {{ bi('calendar3', 'me-1') }}{{ item.projectDate|format_date(pattern='MMMM y', locale='fr') }}
                 </span>
                 {% endif %}
             </div>

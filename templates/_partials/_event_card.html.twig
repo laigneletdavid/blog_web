@@ -14,9 +14,9 @@
     <div class="event-card__body">
         <div class="event-card__date">
             <span class="event-card__date-day">{{ event.dateStart|date('d') }}</span>
-            <span class="event-card__date-month">{{ event.dateStart|date('M') }}</span>
+            <span class="event-card__date-month">{{ event.dateStart|format_date(pattern='MMM', locale='fr') }}</span>
             {% if event.multiDay %}
-            <span class="event-card__date-range">→ {{ event.dateEnd|date('d M') }}</span>
+            <span class="event-card__date-range">→ {{ event.dateEnd|format_date(pattern='d MMM', locale='fr') }}</span>
             {% endif %}
         </div>
 
