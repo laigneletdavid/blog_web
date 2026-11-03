@@ -13,6 +13,10 @@
     </symbol>
 </svg>
 
+{# Nom du produit affiché sur la home. Le nom du site (admin), le logo et le domaine
+   basculent avec la migration (brief séparé). #}
+{% set nomProduit = 'ComWeb Studio' %}
+
 {% macro vague(mots) %}<span class="vague" data-controller="wave-draw">{{ mots }}<svg class="vague__trait" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span>{% endmacro %}
 
 {# ====== 3.2 HERO ====== #}
@@ -20,6 +24,7 @@
     <div class="container position-relative">
         <div class="row align-items-center home-hero__row g-4 g-lg-5">
             <div class="col-lg-6 home-hero__content">
+                <span class="home-hero__brand">{{ nomProduit }}</span>
                 <p class="home-hero__overtitle">Le code c'est nous, le contenu c'est vous.</p>
                 <h1 class="home-hero__title">Site internet professionnel {{ _self.vague('clé en main') }} pour TPE et artisans</h1>
                 <p class="home-hero__desc">Un site professionnel livré en une demi-journée, prêt à être trouvé sur Google. Vous racontez votre métier, on s'occupe du reste.</p>
@@ -101,7 +106,7 @@
     <div class="container">
         <div class="home-wordpress-compare__inner" data-controller="reveal">
             <h2 class="home-section-title">Pourquoi pas un WordPress comme tout le monde ?</h2>
-            <p class="home-wordpress-compare__text">WordPress, c'est l'illusion de la simplicité. En réalité : des plugins à empiler, des mises à jour qui cassent tout, des failles de sécurité tous les mois, et un site qui ralentit avec le temps. BlogWeb fait l'inverse : tout est intégré, sécurisé, optimisé dès le premier jour. Rien à installer, rien à maintenir, rien à craindre.</p>
+            <p class="home-wordpress-compare__text">WordPress, c'est l'illusion de la simplicité. En réalité : des plugins à empiler, des mises à jour qui cassent tout, des failles de sécurité tous les mois, et un site qui ralentit avec le temps. {{ nomProduit }} fait l'inverse : tout est intégré, sécurisé, optimisé dès le premier jour. Rien à installer, rien à maintenir, rien à craindre.</p>
             <a href="/page/site-sur-mesure-vs-cms-classique" class="btn btn-outline-light btn-lg">Voir la comparaison complète</a>
         </div>
     </div>
@@ -115,7 +120,7 @@
 ] %}
 <section class="home-features">
     <div class="container">
-        <h2 class="home-section-title text-center" data-controller="reveal">Une plateforme pensée pour vous faire gagner du temps</h2>
+        <h2 class="home-section-title text-center" data-controller="reveal">{{ nomProduit }}, une plateforme pensée pour vous faire gagner du temps</h2>
         {% for r in rangees %}
         <div class="home-feature-row{{ loop.index is even ? ' home-feature-row--inverse' }}">
             <div class="home-feature-row__text" data-controller="reveal">
@@ -391,9 +396,9 @@
     {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": {{ ('Site ' ~ o.nom ~ ' — ' ~ site.name|default('BlogWeb'))|json_encode|raw }},
+        "name": {{ ('Site ' ~ o.nom ~ ' — ' ~ nomProduit)|json_encode|raw }},
         "description": {{ (o.accroche ~ '. Installation ' ~ o.install_ht ~ ' € HT, puis abonnement mensuel.')|json_encode|raw }},
-        "brand": { "@type": "Brand", "name": {{ site.name|default('BlogWeb')|json_encode|raw }} },
+        "brand": { "@type": "Brand", "name": {{ nomProduit|json_encode|raw }} },
         "offers": {
             "@type": "Offer",
             "url": "{{ absolute_url('/page/offres') }}",
