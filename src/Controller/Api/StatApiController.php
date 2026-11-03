@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/stat')]
 class StatApiController extends AbstractController
 {
-    private const ALLOWED_CONVERSION_TYPES = ['phone_click', 'email_click'];
+    private const ALLOWED_CONVERSION_TYPES = ['phone_click', 'email_click', 'directions_click'];
 
     public function __construct(
         private readonly EntityManagerInterface $em,

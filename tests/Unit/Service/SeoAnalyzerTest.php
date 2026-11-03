@@ -7,6 +7,7 @@ use App\Entity\Categorie;
 use App\Entity\Media;
 use App\Entity\Service;
 use App\Entity\Tag;
+use App\Entity\User;
 use App\Enum\SeoStatus;
 use App\Model\SeoReport;
 use App\Service\SeoAnalyzer;
@@ -140,12 +141,14 @@ class SeoAnalyzerTest extends TestCase
 
     // ========== Image ==========
 
-    public function testPasImageDonneRouge(): void
+    public function testPasImageNePenalisePas(): void
     {
         $article = $this->createArticle(hasImage: false);
         $report = $this->analyzer->analyze($article);
 
-        $this->assertCheckStatus($report, 'image', SeoStatus::RED);
+        $this->assertCheckAbsent($report, 'image');
+        $this->assertCheckAbsent($report, 'image_alt');
+        $this->assertSame(SeoStatus::GREEN, $report->status);
     }
 
     public function testAvecImageDonneVert(): void
@@ -154,6 +157,65 @@ class SeoAnalyzerTest extends TestCase
         $report = $this->analyzer->analyze($article);
 
         $this->assertCheckStatus($report, 'image', SeoStatus::GREEN);
+    }
+
+    // ========== Textes alternatifs ==========
+
+    public function testImageMiseEnAvantSansAltDonneOrange(): void
+    {
+        $article = $this->createArticle();
+        $article->getFeaturedMedia()->setAlt(null);
+        $report = $this->analyzer->analyze($article);
+
+        $this->assertCheckStatus($report, 'image_alt', SeoStatus::ORANGE);
+    }
+
+    public function testImageDuContenuSansAltDonneOrange(): void
+    {
+        $content = '<h2>S</h2><p>' . implode(' ', array_fill(0, 400, 'mot')) . '</p><img src="/a.webp" alt="">';
+        $article = $this->createArticle(content: $content, hasImage: false);
+        $report = $this->analyzer->analyze($article);
+
+        $this->assertCheckStatus($report, 'image_alt', SeoStatus::ORANGE);
+    }
+
+    public function testAltAvecApostropheEstReconnu(): void
+    {
+        $content = '<h2>S</h2><p>' . implode(' ', array_fill(0, 400, 'mot')) . "</p><img src=\"/a.webp\" alt=\"L'équipe au bureau\">";
+        $article = $this->createArticle(content: $content);
+        $report = $this->analyzer->analyze($article);
+
+        $this->assertCheckStatus($report, 'image_alt', SeoStatus::GREEN);
+    }
+
+    // ========== Auteur ==========
+
+    public function testArticleSansAuteurDonneOrange(): void
+    {
+        $article = $this->createArticle(hasAuthor: false);
+        $report = $this->analyzer->analyze($article);
+
+        $this->assertCheckStatus($report, 'author', SeoStatus::ORANGE);
+    }
+
+    public function testArticleAvecAuteurDonneVert(): void
+    {
+        $article = $this->createArticle();
+        $report = $this->analyzer->analyze($article);
+
+        $this->assertCheckStatus($report, 'author', SeoStatus::GREEN);
+    }
+
+    public function testServiceSansCheckAuteur(): void
+    {
+        $service = new Service();
+        $service->setTitle('Mon service');
+        $service->setSlug('mon-service');
+        $service->setContent('dummy');
+
+        $report = $this->analyzer->analyze($service);
+
+        $this->assertCheckAbsent($report, 'author');
     }
 
     // ========== Slug ==========
@@ -252,6 +314,7 @@ class SeoAnalyzerTest extends TestCase
         ?string $content = null,
         bool $hasImage = true,
         string $slug = 'mon-article-test',
+        bool $hasAuthor = true,
     ): Article {
         if ($seoTitle === 'DEFAULTS') {
             $seoTitle = 'Un titre SEO optimise pour Google';
@@ -275,6 +338,12 @@ class SeoAnalyzerTest extends TestCase
             $article->setFeaturedMedia($this->createMedia());
         }
 
+        if ($hasAuthor) {
+            $author = new User();
+            $author->setEmail('auteur@example.test');
+            $article->setAuthor($author);
+        }
+
         return $article;
     }
 
@@ -283,6 +352,7 @@ class SeoAnalyzerTest extends TestCase
         $media = new Media();
         $media->setName('test');
         $media->setFileName('test.jpg');
+        $media->setAlt('Une image de test');
 
         return $media;
     }

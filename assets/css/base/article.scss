@@ -279,6 +279,27 @@
     color: var(--text-muted);
   }
 
+  // Pastille d'initiales (pas d'avatar dans le systeme)
+  &__initials {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: 0.02em;
+  }
+
+  &__job {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0.125rem 0 0;
+  }
+
   &__info {
     display: flex;
     flex-direction: column;

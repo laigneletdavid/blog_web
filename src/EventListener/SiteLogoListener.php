@@ -36,14 +36,18 @@ class SiteLogoListener
     private function generateFavicons(Site $site): void
     {
         $logo = $site->getLogo();
+        $source = $site->getFavicon() ?? $logo;
+        if ($source !== null) {
+            // L'icone du site si elle est reglee, sinon le logo, avant que
+            // celui-ci ne soit reduit pour l'affichage
+            $this->faviconGenerator->generate($source);
+            $this->faviconGenerator->generateWebManifest($site);
+            $this->faviconGenerator->generateBrowserConfig($site);
+        }
+
         if ($logo === null) {
             return;
         }
-
-        // Generate favicons from the original (high-res) logo first
-        $this->faviconGenerator->generateFromLogo($logo);
-        $this->faviconGenerator->generateWebManifest($site);
-        $this->faviconGenerator->generateBrowserConfig($site);
 
         // Then downscale the logo for web display
         $this->downscaleLogo($logo->getFileName());

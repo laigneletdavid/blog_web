@@ -12,6 +12,8 @@
 {% set _theme_config = theme_service.getConfig(_theme) %}
 {% set _theme_vars = theme_service.getThemeVars(_theme) %}
 {% set _appearance = _is_preview ? theme_service.resolveAppearanceForTheme(_theme) : theme_service.resolveAppearance() %}
+{# Image de partage quand la page ne fournit pas la sienne : ogImage > hero > logo du site #}
+{% set _og_fallback = site ? (site.ogImage ?? site.heroImage ?? site.logo) : null %}
 
 
 <!DOCTYPE html>
@@ -54,6 +56,12 @@
         {% if seo.imageAlt|default('') is not empty %}
         <meta property="og:image:alt" content="{{ seo.imageAlt }}">
         {% endif %}
+        {% elseif _og_fallback %}
+        <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ _og_fallback.fileName)) }}">
+        {% if _og_fallback.width|default(0) > 0 %}
+        <meta property="og:image:width" content="{{ _og_fallback.width }}">
+        <meta property="og:image:height" content="{{ _og_fallback.height }}">
+        {% endif %}
         {% else %}
         <meta property="og:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
         {% endif %}
@@ -67,6 +75,8 @@
         {% endif %}
         {% if seo.image|default('') is not empty %}
         <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% elseif _og_fallback %}
+        <meta name="twitter:image" content="{{ absolute_url(asset('documents/medias/' ~ _og_fallback.fileName)) }}">
         {% else %}
         <meta name="twitter:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
         {% endif %}
@@ -122,6 +132,12 @@
             {%- if site.openingHoursArray|default([])|length > 0 %},
             "openingHours": {{ site.openingHoursArray|json_encode|raw }}
             {%- endif %}
+            {#- Zone desservie, depuis la fiche Referencement #}
+            {%- if site.seoReach|default(null) == 'national' %},
+            "areaServed": "France"
+            {%- elseif site.seoReach|default(null) in ['local', 'regional'] and site.seoAreaList|default([])|length > 0 %},
+            "areaServed": {{ site.seoAreaList|json_encode|raw }}
+            {%- endif %}
         }
         </script>
         {% endblock %}
@@ -152,17 +168,25 @@
             {% endfor %}
         }</style>
 
-        {# ====== Google Fonts (non-blocking + display=swap) ====== #}
+        {% if site.googleAnalyticsId|default('') is not empty %}
+        <link rel="dns-prefetch" href="//www.googletagmanager.com">
+        {% endif %}
+
+        {# ====== Polices ======
+           Un client peut heberger ses polices (client/_fonts.html.twig) :
+           aucun appel a Google Fonts n'est alors fait. Sinon, Google Fonts
+           (non bloquant + display=swap). #}
+        {% if theme_service.hasClientTemplate('_fonts.html.twig') %}
+        {% include 'client/_fonts.html.twig' %}
+        {% else %}
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="dns-prefetch" href="//fonts.googleapis.com">
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        {% if site.googleAnalyticsId|default('') is not empty %}
-        <link rel="dns-prefetch" href="//www.googletagmanager.com">
-        {% endif %}
         {% set _google_fonts_url = font_service.buildGoogleFontsUrl([_appearance.fontFamily, _appearance.fontFamilySecondary]) %}
         <link rel="preload" href="{{ _google_fonts_url }}&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link href="{{ _google_fonts_url }}&display=swap" rel="stylesheet"></noscript>
+        {% endif %}
 
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
