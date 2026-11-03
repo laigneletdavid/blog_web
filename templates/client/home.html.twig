@@ -104,7 +104,49 @@
             <h2 class="home-section-title">Comment ça se passe concrètement</h2>
             <p class="home-section-subtitle">De votre premier message à votre site en ligne, voici ce que vous allez vivre.</p>
         </div>
-        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        {# Copie de _partials/_services_grid : la description tient sur deux lignes
+           "Vous : ..." / "Nous : ...", que le partial du coeur colle en un paragraphe. #}
+        <div class="services-grid">
+            <div class="row g-4">
+                {% for service in services %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card h-100">
+                        {% if service.icon %}
+                        <div class="service-card__icon">
+                            {{ bi(service.icon) }}
+                        </div>
+                        {% elseif service.image %}
+                        <div class="service-card__image">
+                            <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}" alt="{{ service.title }}" loading="lazy">
+                        </div>
+                        {% endif %}
+                        <h3 class="service-card__title">{{ service.title }}</h3>
+                        {% if service.shortDescription %}
+                        <p class="service-card__text">
+                            {% for ligne in service.shortDescription|replace({"\r": ''})|split("\n")|filter(l => l|trim) %}
+                            {% set parts = ligne|split(':', 2) %}
+                            <span>{% if parts|length == 2 %}<strong>{{ parts[0]|trim }}</strong> : {{ parts[1]|trim }}{% else %}{{ ligne|trim }}{% endif %}</span>
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                        {% if service.blocks is not empty %}
+                        <a href="{{ path('app_service_show', {slug: service.slug}) }}" class="service-card__link">
+                            En savoir plus &rarr;
+                        </a>
+                        {% elseif service.linkedPage %}
+                        <a href="{{ path('app_page_show', {slug: service.linkedPage.slug}) }}" class="service-card__link">
+                            En savoir plus &rarr;
+                        </a>
+                        {% elseif service.link %}
+                        <a href="{{ service.link }}" class="service-card__link" target="_blank" rel="noopener">
+                            En savoir plus &rarr;
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </section>
 {% endif %}
@@ -125,7 +167,7 @@
                 </div>
                 <div class="home-pricing__card-body">
                     <div class="home-pricing__price">
-                        <span class="home-pricing__price-main">520 € <small>TTC</small></span>
+                        <span class="home-pricing__price-main">540 € <small>TTC</small></span>
                         <span class="home-pricing__price-ht">450 € HT</span>
                         <span class="home-pricing__price-label">Installation</span>
                     </div>
@@ -266,7 +308,7 @@
             <h2 class="home-section-title mb-0">Actualités</h2>
             <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Tout voir &rarr;</a>
         </div>
-        <div class="row">
+        <div class="blog-grid blog-grid--3col">
             {% include 'article/article_liste.html.twig' with { articles } %}
         </div>
     </div>

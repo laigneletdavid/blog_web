@@ -3,3 +3,179 @@
 /* Use it on client branches (bw_*) to override theme styles             */
 /* without modifying CMS theme files.                                     */
 /* On main, this file stays empty.                                        */
+
+/* Blocs propres a la home bw_front. Ils vivaient dans assets/css/base/home.scss
+   (commit 6d05b2f), un fichier du coeur : le merge c24febf du 9 juillet 2026 les
+   a ecrases. Ici, aucun merge de main ne peut plus les atteindre. */
+
+/* ---------------------------------------------------------------------------
+   WordPress Compare (bloc "Pourquoi pas un WordPress ?")
+   --------------------------------------------------------------------------- */
+.home-wordpress-compare {
+  padding: 5rem 0;
+  background: #1e1e2a;
+  color: var(--white);
+}
+.home-wordpress-compare__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+.home-wordpress-compare .home-section-title {
+  color: var(--white);
+}
+.home-wordpress-compare__text {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+.home-wordpress-compare .btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+.home-wordpress-compare .btn-outline-light:hover {
+  background: var(--white);
+  color: #1e1e2a;
+  border-color: var(--white);
+  transform: translateY(-2px);
+}
+@media (max-width: 991.98px) {
+  .home-wordpress-compare {
+    padding: 3.5rem 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Comment ca se passe : lignes "Vous" / "Nous" des cartes de service
+   --------------------------------------------------------------------------- */
+.home-services .service-card__text span {
+  display: block;
+}
+.home-services .service-card__text span + span {
+  margin-top: 0.375rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Pricing (bloc "Nos offres")
+   --------------------------------------------------------------------------- */
+.home-pricing {
+  padding: 5rem 0;
+  background: var(--surface);
+}
+.home-pricing__subtitle {
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.home-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+.home-pricing__card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.home-pricing__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.home-pricing__card--popular {
+  border-color: var(--primary);
+  border-width: 2px;
+  box-shadow: var(--shadow-md);
+}
+.home-pricing__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.375rem 1rem;
+  border-radius: 0 0 0 var(--radius-md);
+}
+.home-pricing__card-header {
+  padding: 2rem 1.5rem 1rem;
+  text-align: center;
+}
+.home-pricing__card-title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.home-pricing__card-audience {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+.home-pricing__card-body {
+  padding: 1rem 1.5rem 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.home-pricing__price {
+  text-align: center;
+  padding: 0.75rem;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+}
+.home-pricing__price-main {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.home-pricing__price-main small {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+.home-pricing__price-ht {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.home-pricing__price-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+.home-pricing__card-footer {
+  padding: 0 1.5rem 1.5rem;
+}
+@media (max-width: 991.98px) {
+  .home-pricing {
+    padding: 3.5rem 0;
+  }
+  .home-pricing__grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
