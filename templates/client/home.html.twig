@@ -1,6 +1,17 @@
 {# ====== HOME CLIENT — Override bw_front (BlogWeb) ====== #}
 {# Surcharge de home/_home_generic.html.twig #}
 
+{# Motif « vague » de la charte : un seul trace, couleur portee par currentColor.
+   Usage : <span class="vague">mots<svg class="vague__trait" aria-hidden="true"
+   viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span> #}
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="bw-vague" viewBox="0 0 200 20">
+        <path d="M3 13 C 28 3, 48 3, 70 11 S 112 19, 134 10 S 176 2, 197 9"
+              fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
+              vector-effect="non-scaling-stroke"/>
+    </symbol>
+</svg>
+
 {# ====== HERO ====== #}
 <section class="home-hero"
     {% if site.heroImage %}
@@ -155,7 +166,7 @@
 <section class="home-pricing">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="home-section-title">Trois offres, trois prix, zéro mauvaise surprise</h2>
+            <h2 class="home-section-title">Trois offres, trois prix, <span class="vague">zéro mauvaise surprise<svg class="vague__trait" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></h2>
             <p class="home-pricing__subtitle">Pas de devis opaque, pas de coûts cachés. Vous savez exactement ce que vous payez et ce que vous obtenez.</p>
         </div>
         <div class="home-pricing__grid">
@@ -377,8 +388,8 @@
 {# ====== CTA FINAL ====== #}
 <section class="home-cta">
     <div class="container text-center">
-        <h2 class="home-cta__title">Prêt à lancer votre site ?</h2>
+        <h2 class="home-cta__title">Prêt à lancer <span class="vague">votre site<svg class="vague__trait" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span> ?</h2>
         <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en une demi-journée, après validation de votre contenu.</p>
-        <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Nous contacter</a>
+        <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter</a>
     </div>
 </section>

@@ -179,3 +179,145 @@
     margin: 0 auto;
   }
 }
+
+/* ===========================================================================
+   Charte ComWeb Studio (Lot 2)
+   Primaire, secondaire, accent et polices sont reglees dans l'admin
+   (Apparence). Ici, seulement ce que l'admin ne couvre pas.
+   =========================================================================== */
+
+/* --- Couleurs de texte et de fond (variables du theme vitrine) --- */
+:root {
+  --text: #1C2226;
+  --text-muted: #4A5560;   /* 7,6:1 sur blanc, 7,0:1 sur #F6F7F9 */
+  --surface: #F6F7F9;
+  --border: #E6E9EE;
+  --radius: 15px;
+  --radius-md: 11px;
+  --radius-lg: 15px;
+  --shadow-card: 0 1px 2px rgba(28, 34, 38, 0.04), 0 2px 8px rgba(28, 34, 38, 0.04);
+  --shadow-card-hover: 0 4px 16px rgba(28, 34, 38, 0.08);
+  --section-space: 6.5rem;
+}
+@media (max-width: 767.98px) {
+  :root { --section-space: 4rem; }
+}
+
+/* --- Typographie --- */
+body {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+/* Bootstrap fige h1-h6 en 'Inter' : les titres suivent la police de titre de l'admin */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-display);
+}
+.home-hero__desc,
+.home-section-subtitle,
+.home-pricing__subtitle,
+.home-wordpress-compare__text,
+.home-cta__desc,
+.home-about__text {
+  max-width: 70ch;
+}
+.home-section-subtitle,
+.home-pricing__subtitle,
+.home-wordpress-compare__text,
+.home-cta__desc {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- Rythme des sections : blanc / gris clair en alternance --- */
+.home-wordpress-compare,
+.home-features,
+.home-services,
+.home-pricing,
+.home-portfolio,
+.home-faq,
+.home-metrics,
+.home-articles,
+.home-about,
+.home-cta {
+  padding-top: var(--section-space) !important;
+  padding-bottom: var(--section-space) !important;
+}
+.home-features,
+.home-pricing,
+.home-portfolio,
+.home-articles,
+.theme-vitrine .home-cta {
+  background: #FFFFFF;
+}
+.home-services,
+.home-faq,
+.home-about {
+  background: var(--surface) !important;
+}
+
+/* --- Chiffres cles : fond uni, chiffres en orange, plus de degrade --- */
+.home-metrics {
+  background: var(--secondary);
+}
+.home-metrics__value {
+  color: var(--accent);
+}
+.home-metrics__label {
+  color: #FFFFFF;
+  opacity: 0.85;
+}
+
+/* --- Footer : le bleu primaire est illisible sur le fond sombre --- */
+.footer-credit a {
+  color: var(--accent);
+}
+
+/* --- Boutons --- */
+.btn {
+  border-radius: var(--radius-md);
+}
+.btn-lg {
+  border-radius: 12px;
+}
+.btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* --- Cartes --- */
+.home-pricing__card,
+.home-features__card,
+.service-card,
+.blog-card,
+.accordion-item {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.home-pricing__card--popular {
+  border: 2px solid var(--primary);
+}
+.home-pricing__badge {
+  background: var(--accent);
+  color: var(--text);
+}
+
+/* --- Motif « vague » (symbole #bw-vague dans home.html.twig) --- */
+.vague {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.vague__trait {
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 100%;
+  height: 0.35em;
+  color: var(--accent);
+  overflow: visible;
+  pointer-events: none;
+}
