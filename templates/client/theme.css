@@ -314,9 +314,9 @@ h1, h2, h3, h4, h5, h6,
 .vague__trait {
   position: absolute;
   left: 0;
-  bottom: -0.2em;
+  bottom: -0.3em;
   width: 100%;
-  height: 0.35em;
+  height: 0.45em;
   color: var(--accent);
   overflow: visible;
   pointer-events: none;
