@@ -21,13 +21,14 @@
     { icone: 'realisations', titre: 'Réalisations', texte: 'Photos de chantiers, projets livrés, avant/après : vos réalisations parlent mieux qu’un long discours.', ideal: ['artisans du bâtiment', 'photographes', 'designers', 'architectes', 'paysagistes'] },
 ] %}
 
-{# Les fonctionnalites en vedette : rangees texte / capture.
-   TODO CONTENU : une capture de l'admin pour chaque rangee (WebP, width/height, alt). #}
+{# Les fonctionnalites en vedette : rangees texte / capture. « capture » = id du media
+   (captures de l'admin du 04/11/2026, logo BlogWeb masque) ; sans capture, maquette.
+   TODO CONTENU : capture d'une landing page pour la rangee Marketing. #}
 {% set vedettes = [
-    { icone: 'editeur', surtitre: 'Inclus dans toutes les formules', titre: 'Un éditeur que vous savez déjà utiliser',
+    { icone: 'editeur', capture: 31, surtitre: 'Inclus dans toutes les formules', titre: 'Un éditeur que vous savez déjà utiliser',
       texte: 'Vous écrivez, vous mettez en forme, vous ajoutez vos photos, vous publiez. C’est aussi simple qu’un traitement de texte, et ce que vous voyez est ce que vos visiteurs verront.',
       points: ['Titres, listes, liens, images, vidéos', 'Images redimensionnées et converties automatiquement', 'Brouillon, aperçu, puis publication'] },
-    { icone: 'seo', surtitre: 'Inclus dans toutes les formules', titre: 'Le référencement, avec un coach intégré',
+    { icone: 'seo', capture: 32, surtitre: 'Inclus dans toutes les formules', titre: 'Le référencement, avec un coach intégré',
       texte: 'Tout ce que Google attend est en place dès la mise en ligne. Et votre administration vous dit, page par page, ce qui peut encore être amélioré.',
       points: [
         'Automatique : plan du site, balises, données structurées, aperçus pour les réseaux sociaux, images légères',
@@ -35,7 +36,7 @@
         'Un bilan de votre fiche Référencement : votre activité, vos villes, vos priorités et les mots de vos clients, comparés à ce que dit votre site',
         'Une adresse qui change redirige toute seule vers la nouvelle : pas de page perdue',
       ] },
-    { icone: 'stats', surtitre: 'Inclus dans toutes les formules', titre: 'Vos chiffres, et un rapport chaque mois',
+    { icone: 'stats', capture: 34, surtitre: 'Inclus dans toutes les formules', titre: 'Vos chiffres, et un rapport chaque mois',
       texte: 'Pas besoin de Google Analytics pour savoir si votre site travaille pour vous : tout est dans votre administration. Et chaque mois, un rapport arrive dans votre boîte mail.',
       points: [
         'Vos visiteurs, comparés au mois précédent, et d’où ils viennent : Google, accès direct, réseaux sociaux',
@@ -123,6 +124,13 @@
                 </ul>
             </div>
             <div class="home-feature-row__visual" data-controller="reveal" data-reveal-from-value="{{ loop.index is even ? 'left' : 'right' }}">
+                {%- set capture = v.capture is defined ? media_by_id(v.capture) : null %}
+                {% if capture %}
+                <div class="cw-browser cw-browser--capture">
+                    <div class="cw-browser__bar"><span class="cw-browser__dots"><i></i><i></i><i></i></span></div>
+                    {{ responsive_img(capture, '(max-width: 991px) 92vw, 640px', 'cw-browser__img') }}
+                </div>
+                {% else %}
                 <div class="cw-browser cw-browser--maquette" aria-hidden="true">
                     <div class="cw-browser__bar"><span class="cw-browser__dots"><i></i><i></i><i></i></span></div>
                     <div class="cw-browser__maquette">
@@ -130,6 +138,7 @@
                         <span></span><span></span><span></span>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

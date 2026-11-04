@@ -2094,3 +2094,10 @@ h1, h2, h3, h4, h5, h6,
   .cw-frise { grid-template-columns: repeat(3, 1fr); row-gap: 2rem; }
   .cw-frise::before { display: none; }
 }
+
+/* --- Captures de l'admin dans un cadre navigateur (home, Fonctionnalites) --- */
+.cw-browser__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

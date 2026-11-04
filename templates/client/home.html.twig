@@ -28,8 +28,7 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                {# TODO CONTENU : capture de l'éditeur (servie en WebP via responsive_img, width/height,
-                   alt descriptif). En attendant, maquette HTML de l'éditeur, base de la démo animée. #}
+                {# Maquette HTML animée de l'éditeur, gardée à la place d'une capture (choix du 04/11/2026). #}
                 {% set exemplesDemo = [
                     { titre: 'Atelier de menuiserie', texte: 'Fabrication sur mesure, pose et conseil près de chez vous.' },
                     { titre: 'Salon de coiffure', texte: 'Coupe, couleur et conseils, avec ou sans rendez-vous.' },
@@ -103,9 +102,9 @@
 
 {# ====== 3.5 FONCTIONNALITES : 3 rangees texte / capture ====== #}
 {% set rangees = [
-    { titre: 'Éditeur visuel', texte: 'Rédigez vos articles avec un éditeur moderne. Texte, images, vidéos, code — tout en un.', icone: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>' },
-    { titre: 'SEO intégré', texte: 'Meta tags, sitemap XML, Open Graph — votre site est optimisé pour les moteurs de recherche.', icone: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' },
-    { titre: 'Personnalisation sans code', texte: 'Couleurs, polices et logo — personnalisez votre site sans toucher au code.', icone: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>' },
+    { titre: 'Éditeur visuel', capture: 31, texte: 'Rédigez vos articles avec un éditeur moderne. Texte, images, vidéos, code — tout en un.', icone: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>' },
+    { titre: 'SEO intégré', capture: 32, texte: 'Meta tags, sitemap XML, Open Graph — votre site est optimisé pour les moteurs de recherche.', icone: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' },
+    { titre: 'Personnalisation sans code', capture: 33, texte: 'Couleurs, polices et logo — personnalisez votre site sans toucher au code.', icone: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>' },
 ] %}
 <section class="home-features">
     <div class="container">
@@ -117,7 +116,13 @@
                 <p class="home-feature-row__desc">{{ r.texte }}</p>
             </div>
             <div class="home-feature-row__visual" data-controller="reveal" data-reveal-from-value="{{ loop.index is even ? 'left' : 'right' }}">
-                {# TODO CONTENU : capture admin « {{ r.titre }} » (WebP, width/height, alt descriptif) #}
+                {%- set capture = r.capture is defined ? media_by_id(r.capture) : null %}
+                {% if capture %}
+                <div class="cw-browser cw-browser--capture">
+                    <div class="cw-browser__bar"><span class="cw-browser__dots"><i></i><i></i><i></i></span></div>
+                    {{ responsive_img(capture, '(max-width: 991px) 92vw, 640px', 'cw-browser__img') }}
+                </div>
+                {% else %}
                 <div class="cw-browser cw-browser--maquette" aria-hidden="true">
                     <div class="cw-browser__bar"><span class="cw-browser__dots"><i></i><i></i><i></i></span></div>
                     <div class="cw-browser__maquette">
@@ -125,6 +130,7 @@
                         <span></span><span></span><span></span>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
