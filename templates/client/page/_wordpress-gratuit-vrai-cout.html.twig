@@ -1,0 +1,173 @@
+{# ======================================================================
+   PAGE COMPARATIF — ComWeb Studio vs WordPress (bw_front)
+   Brief « WordPress gratuit » du 4/11/2026, verbatim de David. Publicite
+   comparative : factuel, jamais de prestataire nomme, chiffres et sources dans
+   client/_wordpress.html.twig (source unique avec la page Tarifs).
+   Titre et description SEO dans l'admin (page « wordpress-gratuit-vrai-cout »,
+   ancienne adresse site-sur-mesure-vs-cms-classique redirigee en 301).
+   Les sections numerotees se renumerotent seules : une section masquee (07,
+   en attente de contenu) ne laisse pas de trou.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{% set total_vitrine = include('client/_offres.html.twig', { vue: 'vitrine_3ans' })|trim %}
+{% set heures = include('client/_wordpress.html.twig', { vue: 'heures' })|trim %}
+{% set sections = [
+    { id: 'prix', etiquette: 'Le prix', titre: 'Ce que coûte vraiment un site WordPress sur 3 ans',
+      texte: "Un site, ce n'est pas qu'une création. C'est un hébergement, un nom de domaine, un thème, des extensions, des mises à jour. Additionnez tout sur 3 ans, et comparez.",
+      tableau: true,
+      encadre: total_vitrine ~ ' HT sur 3 ans pour la formule Vitrine. Tout compris, sans mauvaise surprise.',
+      lien: { href: path('app_page_show', { slug: 'offres' }), libelle: 'Voir les tarifs' } },
+    { id: 'temps', etiquette: 'Le temps', titre: 'Le temps que personne ne compte',
+      texte: "Avec un WordPress « gratuit », c'est vous qui faites tout. Et rien n'est expliqué.",
+      liste: [
+        "Choisir un hébergeur parmi des dizaines d'offres incompréhensibles",
+        'Relier votre nom de domaine à votre site, puis à votre messagerie pro',
+        'Trouver un thème, puis apprendre à le modifier avec un constructeur de pages',
+        'Installer une extension pour le formulaire, une pour la sécurité, une pour les sauvegardes, une pour Google…',
+        "Déclarer votre site à Google, et comprendre pourquoi il n'apparaît pas",
+        'Faire les mises à jour, et réparer quand une extension casse tout',
+        'Chercher la réponse sur des forums, à 23 h, la veille d’un salon',
+      ],
+      chiffre: { valeur: heures, texte: "d'apprentissage la première année" },
+      encadre: "Tout ça, c'est notre travail. Le vôtre, c'est votre métier.", encadre_grand: true },
+    { id: 'securite', etiquette: 'La sécurité', titre: "Qui s'en occupe quand ça arrive ?",
+      texte: "Failles, extensions obsolètes, sites piratés : ce n'est pas un scénario catastrophe, c'est le quotidien de millions de sites WordPress. La vraie question n'est pas « est-ce que ça peut arriver », mais « qui s'en occupe quand ça arrive ? ».",
+      encadre: "Pas d'extensions à empiler, donc pas de failles qui viennent avec. Anti-spam, protection des données et mises à jour gérées pour vous. Votre site est surveillé chaque semaine : on est prévenus avant vous." },
+    { id: 'maintenance', etiquette: 'La maintenance', titre: "Un site, ça s'entretient",
+      texte: "Mises à jour du système, des extensions, compatibilités à vérifier, sauvegardes à faire. Avec WordPress, soit vous le faites, soit vous payez un contrat de maintenance — souvent 60 à 150 € HT par mois, hébergement en plus.",
+      encadre: 'Hébergement en France, mises à jour, sauvegardes et rapport mensuel inclus dans votre abonnement. On gère, vous travaillez.' },
+    { id: 'referencement', etiquette: 'Le référencement', titre: 'Être trouvé sur Google sans extension',
+      texte: "Un beau site que personne ne trouve, c'est une boutique sans vitrine. Avec WordPress, le référencement passe par des extensions à installer, configurer, et espérer qu'elles s'entendent entre elles.",
+      encadre: 'Plan du site, balises, données structurées, images optimisées : tout est en place dès la mise en ligne.' },
+    { id: 'simplicite', etiquette: 'La simplicité', titre: 'Modifier un texte sans appeler personne',
+      texte: 'Votre site est en ligne, vous voulez changer un horaire ou ajouter une photo. Pouvez-vous le faire seul, maintenant ? Avec un constructeur de pages, chaque modification peut tout décaler.',
+      encadre: 'Un éditeur simple, comme un traitement de texte. Vous écrivez, vous publiez. Et une formation de 30 minutes à la livraison.' },
+    { id: 'propriete', etiquette: 'Votre site vous appartient', titre: 'Et si vous voulez partir ?',
+      texte: 'Votre contenu vous appartient-il vraiment ? Si demain vous changez d’avis, pouvez-vous partir avec vos textes, vos images, votre nom de domaine ?',
+      encadre: null },
+    { id: 'humain', etiquette: "L'humain", titre: 'Quelqu’un au bout du fil',
+      texte: 'Un forum, un ticket, un chatbot… ou une personne qui connaît votre site et votre métier.',
+      encadre: 'Un seul interlocuteur, dans le Comminges. Au téléphone, en visio ou autour d’un café.' },
+] %}
+{# TODO CONTENU : section « Votre site vous appartient » — réponse de David (propriété du
+   nom de domaine, export du contenu, conditions de résiliation). Masquée tant que son
+   encadré est vide (null). #}
+{% set sections = sections|filter(s => s.encadre is not null) %}
+
+{% set faq = [
+    { q: 'WordPress est-il vraiment gratuit ?', r: 'Le logiciel, oui. Mais il faut payer un hébergement, un nom de domaine, souvent un thème et des extensions premium, puis la maintenance — ou y passer votre temps. Sur 3 ans, la facture réelle se compte en centaines, voire en milliers d’euros.' },
+    { q: 'Combien coûte la maintenance d’un site WordPress ?', r: 'Chez un prestataire, comptez généralement 60 à 150 € HT par mois, souvent sans l’hébergement. Avec ComWeb Studio, maintenance et hébergement sont compris dans l’abonnement, dès 30 € HT par mois.' },
+    { q: 'J’ai déjà un site WordPress, je peux passer chez vous ?', r: null },
+    { q: 'Mon site sera-t-il aussi bien référencé ?', r: 'Oui : plan du site, balises, données structurées et images optimisées sont intégrés d’office, sans extension à configurer. Le reste dépend de vos contenus, et on vous montre comment bien les écrire.' },
+    { q: 'Est-ce que je pourrai modifier mon site moi-même ?', r: 'Oui, avec un éditeur aussi simple qu’un traitement de texte, et une formation de 30 minutes à la livraison.' },
+] %}
+{# TODO CONTENU : « J'ai déjà un site WordPress, je peux passer chez vous ? » — conditions
+   de reprise / migration d'un site existant (David). Masquée tant que r est vide (null). #}
+{% set faq = faq|filter(f => f.r is not null) %}
+
+{# ====== EN-TETE ====== #}
+<section class="cw-page-head cw-vs-head">
+    <div class="container">
+        <p class="cw-vs-head__surtitre">ComWeb Studio vs WordPress</p>
+        <h1 class="cw-page-head__title">WordPress gratuit : {{ m.vague('le vrai coût') }} de votre site</h1>
+        <p class="cw-page-head__lead">Le logiciel est gratuit. L'hébergement, les extensions, la maintenance et vos soirées, non. Voici la comparaison honnête, ligne par ligne.</p>
+        <nav class="cw-sommaire" aria-label="Sommaire">
+            <ol>
+                {% for s in sections %}
+                <li><a href="#{{ s.id }}"><span>{{ '%02d'|format(loop.index) }}</span> {{ s.etiquette }}</a></li>
+                {% endfor %}
+            </ol>
+        </nav>
+    </div>
+</section>
+
+{# ====== SECTIONS NUMEROTEES ====== #}
+{% for s in sections %}
+<section class="cw-section cw-vs{{ loop.index is odd ? ' cw-section--alt' }}" id="{{ s.id }}">
+    <div class="container">
+        <div class="cw-vs__inner" data-controller="reveal">
+            <p class="cw-vs__num">{{ '%02d'|format(loop.index) }} · {{ s.etiquette }}</p>
+            <h2 class="cw-vs__titre">{{ s.titre }}</h2>
+            <p class="cw-vs__texte">{{ s.texte }}</p>
+            {% if s.liste is defined %}
+            <ul class="cw-vs__liste">
+                {% for item in s.liste %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+            {% if s.chiffre is defined %}
+            <p class="cw-vs__chiffre"><strong>{{ s.chiffre.valeur }}</strong> {{ s.chiffre.texte }}</p>
+            {% endif %}
+        </div>
+        {% if s.tableau is defined %}
+            {% include 'client/_wordpress.html.twig' with { vue: 'tableau' } %}
+        {% endif %}
+        <div class="cw-vs__avec{{ s.encadre_grand is defined ? ' cw-vs__avec--grand' }}" data-controller="reveal">
+            <p class="cw-vs__avec-titre">Avec ComWeb Studio</p>
+            <p class="cw-vs__avec-texte">{{ s.encadre }}</p>
+            {% if s.lien is defined %}<a href="{{ s.lien.href }}" class="cw-vs__avec-lien">{{ s.lien.libelle }}<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>{% endif %}
+        </div>
+    </div>
+</section>
+{% endfor %}
+
+{# ====== QUAND WORDPRESS RESTE UN BON CHOIX ====== #}
+{% set fond_impair = sections|length is even %}
+<section class="cw-section{{ fond_impair ? ' cw-section--alt' }}">
+    <div class="container">
+        <div class="cw-vs__inner cw-vs-honnete" data-controller="reveal">
+            <h2 class="cw-vs__titre">Quand WordPress reste un bon choix</h2>
+            <p class="cw-vs__texte">Soyons honnêtes : WordPress est un excellent outil dans certains cas. Si vous avez un développeur en interne, un très grand site avec des besoins très spécifiques, ou l'envie d'apprendre la technique et le temps pour ça, il peut vous convenir. ComWeb Studio est fait pour les professionnels qui veulent un site qui marche, sans y passer leurs soirées.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== FAQ ====== #}
+<section class="cw-section{{ not fond_impair ? ' cw-section--alt' }}" id="faq">
+    <div class="container">
+        <div data-controller="reveal">
+            <h2 class="home-section-title text-center">Questions fréquentes</h2>
+            <div class="faq-home-section">
+                <div class="accordion faq-accordion" id="faq-vs">
+                    {% for f in faq %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq-vs-{{ loop.index }}" aria-expanded="false" aria-controls="faq-vs-{{ loop.index }}">
+                                {{ f.q }}
+                            </button>
+                        </h3>
+                        <div id="faq-vs-{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#faq-vs">
+                            <div class="accordion-body content-body"><p>{{ f.r }}</p></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== APPEL FINAL ====== #}
+<section class="home-cta{{ fond_impair ? ' cw-cta--alt' }}">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">Comparez par vous-même, {{ m.vague('autour d’un café') }}</h2>
+        <p class="home-cta__desc">30 minutes pour regarder votre situation : vous avez déjà un site WordPress, ou vous partez de zéro. Gratuit et sans engagement.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second"><a href="{{ path('app_page_show', { slug: 'offres' }) }}">Voir les tarifs</a></p>
+    </div>
+</section>
+
+{# ====== DONNEES STRUCTUREES : FAQPage (WebPage et BreadcrumbList viennent de page/show.html.twig) ====== #}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% for f in faq %}
+        { "@type": "Question", "name": {{ f.q|json_encode|raw }}, "acceptedAnswer": { "@type": "Answer", "text": {{ f.r|json_encode|raw }} } }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
