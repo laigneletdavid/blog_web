@@ -11,6 +11,7 @@
      cout      le cout sur 3 ans de chaque formule
      jsonld    les donnees structurees Product + Offer
      vitrine_install / vitrine_3ans   montants de la formule Vitrine (« 450 € », « 1 530 € »)
+     prix_option  prix HT d'une option, en nombre : with { vue: 'prix_option', option: 'module' | 'marketing' | 'design' }
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set offres = [
@@ -40,6 +41,8 @@
     { libelle: 'Module Annuaire', v: ['option', 'option', 'option'] },
 ] %}
 {% set ttc = 1.2 %}
+{# Options a la carte, prix HT (page Tarifs, page Fonctionnalites) #}
+{% set options_prix = { module: 100, marketing: 250, design: 250 } %}
 
 {% if vue == 'cartes' %}
 <div class="home-pricing__grid" data-controller="reveal" data-reveal-stagger-value="70">
@@ -116,6 +119,8 @@
 
 {% elseif vue == 'a_partir' %}
 {% set d = offres|first %}{{ m.vague('À partir de ' ~ m.euros(d.install_ht) ~ ' HT') }} <span class="cw-nowrap">+ {{ d.mois_ht }} € HT / mois</span>
+
+{% elseif vue == 'prix_option' %}{{ options_prix[option] }}
 
 {% elseif vue == 'vitrine_install' %}{{ m.euros((offres|first).install_ht) }}
 

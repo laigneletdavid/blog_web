@@ -1,0 +1,247 @@
+{# ======================================================================
+   PAGE FONCTIONNALITES — bw_front (ComWeb Studio)
+   Brief du 4/11/2026. La page Tarifs fait foi pour ce qui est inclus ou en
+   option ; prix des options dans client/_offres.html.twig. Textes repris de la
+   page d'origine (dont tous les « Idéal pour »). Référencement et rapport
+   mensuel décrits d'après le code : SeoAnalyzer (score par contenu),
+   SeoIntentChecker (bilan de la fiche Référencement), MonthlyReportBuilder.
+   Titre et description SEO dans l'admin (page « fonctionnalites »).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{# TODO CONTENU : pages privées incluses dans toutes les formules ou en option ? (David)
+   'socle' : carte dans le socle ; 'option' : carte dans les options ; null : masquée. #}
+{% set pages_privees = null %}
+
+{% set prix_module = include('client/_offres.html.twig', { vue: 'prix_option', option: 'module' })|trim %}
+{% set prix_marketing = include('client/_offres.html.twig', { vue: 'prix_option', option: 'marketing' })|trim %}
+
+{% set carte_privee = { icone: 'prive', titre: 'Pages privées', texte: 'Des pages accessibles uniquement à certaines personnes : documents réservés à vos clients, informations internes, contenus exclusifs. Vous décidez qui voit quoi.', ideal: ['consultants qui partagent des livrables', 'formateurs', 'associations avec un espace membres'] } %}
+
+{% set socle = [
+    { icone: 'editeur', titre: 'Pages et éditeur visuel', texte: 'Vous écrivez comme dans un traitement de texte, vous ajoutez une photo, vous publiez. Pas de constructeur de pages qui décale tout.', ideal: ['tout le monde'] },
+    { icone: 'seo', titre: 'Référencement intégré', texte: 'Plan du site, balises, données structurées et images optimisées dès la mise en ligne, plus un score et des conseils pour chaque page.', ideal: ['tous ceux qui veulent être trouvés sur Google'] },
+    { icone: 'contact', titre: 'Formulaire de contact', texte: 'Vos clients vous écrivent depuis votre site, vous recevez le message par email. Sécurisé et protégé contre le spam.', ideal: ['tout le monde', 'la base d’un site professionnel'] },
+    { icone: 'services', titre: 'Services', texte: 'Chaque prestation a sa fiche : titre, description, image et page détaillée. Vos visiteurs comprennent en un coup d’œil ce que vous proposez.', ideal: ['artisans', 'consultants', 'prestataires de services', 'coachs', 'thérapeutes'] },
+    { icone: 'faq', titre: 'FAQ', texte: 'Répondez aux questions que vos clients posent tout le temps, avant même qu’ils appellent. Bonus : Google aime les FAQ bien structurées.', ideal: ['tous ceux qui reçoivent les mêmes questions par téléphone ou par email'] },
+    { icone: 'realisations', titre: 'Réalisations', texte: 'Photos de chantiers, projets livrés, avant/après : vos réalisations parlent mieux qu’un long discours.', ideal: ['artisans du bâtiment', 'photographes', 'designers', 'architectes', 'paysagistes'] },
+    { icone: 'stats', titre: 'Statistiques et rapport mensuel', texte: 'Combien de visiteurs, d’où ils viennent, quelles pages ils lisent. Directement dans votre administration, sans Google Analytics.', ideal: ['tous ceux qui veulent savoir si leur site travaille pour eux'] },
+] %}
+{% if pages_privees == 'socle' %}{% set socle = socle|merge([carte_privee]) %}{% endif %}
+
+{# Les fonctionnalites en vedette : rangees texte / capture.
+   TODO CONTENU : une capture de l'admin pour chaque rangee (WebP, width/height, alt). #}
+{% set vedettes = [
+    { icone: 'editeur', surtitre: 'Inclus dans toutes les formules', titre: 'Un éditeur que vous savez déjà utiliser',
+      texte: 'Vous écrivez, vous mettez en forme, vous ajoutez vos photos, vous publiez. C’est aussi simple qu’un traitement de texte, et ce que vous voyez est ce que vos visiteurs verront.',
+      points: ['Titres, listes, liens, images, vidéos', 'Images redimensionnées et converties automatiquement', 'Brouillon, aperçu, puis publication'] },
+    { icone: 'seo', surtitre: 'Inclus dans toutes les formules', titre: 'Le référencement, avec un coach intégré',
+      texte: 'Tout ce que Google attend est en place dès la mise en ligne. Et votre administration vous dit, page par page, ce qui peut encore être amélioré.',
+      points: [
+        'Automatique : plan du site, balises, données structurées, aperçus pour les réseaux sociaux, images légères',
+        'Un score pour chaque page et chaque article : titre, description, intertitres, images',
+        'Un bilan de votre fiche Référencement : votre activité, vos villes, vos priorités et les mots de vos clients, comparés à ce que dit votre site',
+        'Une adresse qui change redirige toute seule vers la nouvelle : pas de page perdue',
+      ] },
+    { icone: 'stats', surtitre: 'Inclus dans toutes les formules', titre: 'Vos chiffres, et un rapport chaque mois',
+      texte: 'Pas besoin de Google Analytics pour savoir si votre site travaille pour vous : tout est dans votre administration. Et chaque mois, un rapport arrive dans votre boîte mail.',
+      points: [
+        'Vos visiteurs, comparés au mois précédent, et d’où ils viennent : Google, accès direct, réseaux sociaux',
+        'Vos pages qui marchent et l’article du mois',
+        'Les contacts reçus par votre site',
+        'La santé de votre site, et un conseil pour le mois prochain',
+      ] },
+    { icone: 'marketing', surtitre: 'Inclus dans Click & Collect, en option sur les autres formules', titre: 'Des landing pages qui mesurent vos campagnes',
+      texte: 'Une pub Google ou Facebook, un flyer avec QR code, un emailing : le visiteur arrive sur une page épurée, sans menu ni distraction. Un message, une promesse, un bouton. Et vous savez combien sont venus et combien ont répondu, campagne par campagne.',
+      points: ['Pages de destination illimitées', 'Statistiques avancées par campagne', 'Prise de rendez-vous ou formulaire de contact'] },
+] %}
+
+{% set options = [
+    { icone: 'evenements', nom: 'Événements', prix: prix_module, texte: 'Portes ouvertes, ateliers, marchés, formations : date, lieu, description et inscription. Vos abonnés sont prévenus à chaque nouvel événement.', ideal: ['formateurs', 'associations', 'commerces avec des animations', 'thérapeutes qui organisent des ateliers'] },
+    { icone: 'annuaire', nom: 'Annuaire', prix: prix_module, texte: 'Contacts, partenaires, membres ou points de vente, chacun avec sa fiche, consultables en quelques clics.', ideal: ['associations', 'réseaux professionnels', 'franchises', 'groupements d’artisans'] },
+    { icone: 'catalogue', nom: 'Catalogue', prix: prix_module, texte: 'Vos produits avec fiche, photo, description et prix : une vitrine organisée, sans vente en ligne. Inclus dans Click & Collect.', ideal: ['commerçants', 'artisans créateurs', 'producteurs', 'traiteurs'] },
+    { icone: 'marketing', nom: 'Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes. Inclus dans Click & Collect.', ideal: ['ceux qui font de la publicité en ligne', 'lancent une nouvelle offre', 'remplissent une session de formation'] },
+] %}
+{% if pages_privees == 'option' %}{% set options = options|merge([carte_privee|merge({ nom: carte_privee.titre, prix: prix_module })]) %}{% endif %}
+
+{% macro icone(svg, taille = 24) %}<svg xmlns="http://www.w3.org/2000/svg" width="{{ taille }}" height="{{ taille }}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">{{ svg|raw }}</svg>{% endmacro %}
+{% set icones = {
+    'editeur': '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+    'seo': '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    'contact': '<path d="M4 4h16v16H4z" opacity="0"/><path d="M4 6l8 6 8-6"/><rect x="3" y="5" width="18" height="14" rx="2"/>',
+    'services': '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    'faq': '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-2.5 2-2.5 4"/><line x1="12" y1="17" x2="12" y2="17.01"/>',
+    'realisations': '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5L5 20"/>',
+    'stats': '<line x1="6" y1="20" x2="6" y2="12"/><line x1="12" y1="20" x2="12" y2="6"/><line x1="18" y1="20" x2="18" y2="10"/>',
+    'prive': '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    'blog': '<path d="M4 5h16M4 10h16M4 15h10M4 20h7"/>',
+    'catalogue': '<path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/>',
+    'commande': '<path d="M5 7h14l-1 13H6L5 7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
+    'paiement': '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+    'marketing': '<path d="M3 11l15-6v14L3 13z"/><path d="M7 12.5V18a2 2 0 0 0 4 0v-3.5"/>',
+    'evenements': '<rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/>',
+    'annuaire': '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><line x1="17" y1="8" x2="22" y2="8"/><line x1="17" y1="12" x2="22" y2="12"/>'
+} %}
+
+{% macro ideal(liste) %}<p class="cw-ideal"><span class="cw-ideal__label">Idéal pour</span>{% for x in liste %}<span class="cw-ideal__tag">{{ x }}</span>{% endfor %}</p>{% endmacro %}
+
+{# ====== 1. EN-TETE ====== #}
+<section class="cw-page-head">
+    <div class="container">
+        <h1 class="cw-page-head__title">Tout ce dont votre site a besoin, {{ m.vague('déjà intégré') }}</h1>
+        <p class="cw-page-head__lead">Pas d'extension à installer, pas de mise à jour qui casse tout. On active, vous utilisez.</p>
+        <ul class="cw-badges">
+            <li>0 extension</li>
+            <li>Activé pour vous</li>
+            <li>Mis à jour pour vous</li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 2. LE SOCLE ====== #}
+<section class="cw-section cw-section--alt" id="socle">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Le socle, inclus dans toutes les formules</h2>
+            <p class="home-section-subtitle">Vitrine, Blog ou Click & Collect : tout ceci est dans votre site dès la mise en ligne.</p>
+        </div>
+        <ul class="cw-fonc-grille" data-controller="reveal" data-reveal-stagger-value="60">
+            {% for c in socle %}
+            <li class="cw-fonc-carte">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones[c.icone]) }}</span>
+                <h3 class="cw-fonc-carte__titre">{{ c.titre }}</h3>
+                <p class="cw-fonc-carte__texte">{{ c.texte }}</p>
+                {{ _self.ideal(c.ideal) }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{# ====== 3. EN VEDETTE ====== #}
+<section class="cw-section home-features" id="vedette">
+    <div class="container">
+        <h2 class="home-section-title text-center" data-controller="reveal">Ce qui fait la différence au quotidien</h2>
+        {% for v in vedettes %}
+        <div class="home-feature-row{{ loop.index is even ? ' home-feature-row--inverse' }}">
+            <div class="home-feature-row__text" data-controller="reveal">
+                <p class="cw-fonc-surtitre">{{ v.surtitre }}</p>
+                <h3 class="home-feature-row__title">{{ v.titre }}</h3>
+                <p class="home-feature-row__desc">{{ v.texte }}</p>
+                <ul class="home-pricing__list cw-fonc-points">
+                    {% for p in v.points %}<li>{{ p }}</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="home-feature-row__visual" data-controller="reveal" data-reveal-from-value="{{ loop.index is even ? 'left' : 'right' }}">
+                <div class="cw-browser cw-browser--maquette" aria-hidden="true">
+                    <div class="cw-browser__bar"><span class="cw-browser__dots"><i></i><i></i><i></i></span></div>
+                    <div class="cw-browser__maquette">
+                        {{ _self.icone(icones[v.icone], 56) }}
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{# ====== 4. AVEC L'OFFRE BLOG ====== #}
+<section class="cw-section cw-section--alt" id="blog">
+    <div class="container">
+        <div class="cw-fonc-formule" data-controller="reveal">
+            <div class="cw-fonc-formule__tete">
+                <p class="cw-fonc-surtitre">Avec l'offre Blog</p>
+                <h2 class="home-section-title">Le blog qui vous amène des clients</h2>
+            </div>
+            <div class="cw-fonc-carte cw-fonc-carte--large">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['blog']) }}</span>
+                <h3 class="cw-fonc-carte__titre">Blog — articles, catégories, tags</h3>
+                <p class="cw-fonc-carte__texte">Publiez des articles sur votre métier, vos actualités, vos conseils. Ils sont classés par catégories et par tags, et chaque article publié est une porte d'entrée de plus sur Google.</p>
+                <p class="cw-fonc-carte__plus">Vos abonnés sont prévenus par email à chaque nouvel article, automatiquement.</p>
+                {{ _self.ideal(['tous ceux qui veulent être trouvés sur Google', 'montrer leur expertise']) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 5. AVEC CLICK & COLLECT ====== #}
+<section class="cw-section" id="click-collect">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <p class="cw-fonc-surtitre">Avec Click & Collect</p>
+            <h2 class="home-section-title">Vos clients commandent en ligne, et passent chercher</h2>
+            <p class="home-section-subtitle"><strong>Aucune commission sur vos ventes</strong> : vous ne payez que les frais Stripe standards.</p>
+        </div>
+        <ul class="cw-fonc-grille cw-fonc-grille--4" data-controller="reveal" data-reveal-stagger-value="60">
+            <li class="cw-fonc-carte">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['catalogue']) }}</span>
+                <h3 class="cw-fonc-carte__titre">Catalogue</h3>
+                <p class="cw-fonc-carte__texte">Vos produits avec fiche, photo, description, prix et catégorie. Vos clients parcourent votre offre comme dans une boutique.</p>
+            </li>
+            <li class="cw-fonc-carte">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['commande']) }}</span>
+                <h3 class="cw-fonc-carte__titre">Commande en ligne</h3>
+                <p class="cw-fonc-carte__texte">Vos clients commandent et paient en ligne, vous êtes prévenu, ils viennent récupérer leur commande sur place.</p>
+            </li>
+            <li class="cw-fonc-carte">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['paiement']) }}</span>
+                <h3 class="cw-fonc-carte__titre">Paiement Stripe</h3>
+                <p class="cw-fonc-carte__texte">Paiement sécurisé par carte bancaire. Aucune commission ComWeb Studio, seulement les frais Stripe standards.</p>
+            </li>
+            <li class="cw-fonc-carte">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['marketing']) }}</span>
+                <h3 class="cw-fonc-carte__titre">Marketing</h3>
+                <p class="cw-fonc-carte__texte">Landing pages et statistiques avancées pour mesurer vos campagnes.</p>
+            </li>
+        </ul>
+        <p class="cw-fonc-ideal-centre">{{ _self.ideal(['artisans créateurs', 'producteurs locaux', 'petits commerces qui vendent en complément de leur boutique']) }}</p>
+    </div>
+</section>
+
+{# ====== 6. LES MODULES EN OPTION ====== #}
+<section class="cw-section cw-section--alt" id="options">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Les modules en option</h2>
+            <p class="home-section-subtitle">Ajoutés à votre formule en une seule fois, sans surcoût mensuel. On l'active, vous l'utilisez.</p>
+        </div>
+        <ul class="cw-options cw-options--fonc" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for o in options %}
+            <li class="cw-options__item">
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones[o.icone]) }}</span>
+                <h3 class="cw-options__nom">{{ o.nom }}</h3>
+                <p class="cw-options__prix"><strong>+{{ m.euros(o.prix) }} HT</strong> <span>({{ m.euros(o.prix * 1.2) }} TTC)</span></p>
+                <p class="cw-options__texte">{{ o.texte }}</p>
+                {{ _self.ideal(o.ideal) }}
+            </li>
+            {% endfor %}
+        </ul>
+        <p class="cw-sources">Le module supplémentaire s'ajoute aux formules Vitrine et Blog, hors Blog et Marketing.</p>
+    </div>
+</section>
+
+{# ====== 7. COMMENT CA MARCHE ====== #}
+<section class="cw-section">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Comment ça marche</h2>
+        </div>
+        <ol class="cw-installation cw-installation--3" data-controller="reveal" data-reveal-stagger-value="70">
+            <li>Vous choisissez votre formule et vos modules</li>
+            <li>On les active : ils sont déjà dans votre site</li>
+            <li>Vous n'avez rien à mettre à jour, jamais</li>
+        </ol>
+    </div>
+</section>
+
+{# ====== 8. APPEL FINAL ====== #}
+<section class="home-cta cw-cta--alt">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">Une question sur {{ m.vague('une fonctionnalité') }} ?</h2>
+        <p class="home-cta__desc">30 minutes pour regarder ce dont votre activité a besoin, et la formule qui va avec. Gratuit et sans engagement.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second"><a href="{{ path('app_page_show', { slug: 'offres' }) }}#comparatif">Comparer les formules</a></p>
+    </div>
+</section>
