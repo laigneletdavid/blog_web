@@ -83,7 +83,8 @@ mkdir -p var
 SORTIE="var/contenu_${BASE}_$(date +%Y%m%d_%H%M).sql"
 
 {
-    echo "-- Contenu de la base $BASE, exporte le $(date '+%d/%m/%Y %H:%M') par scripts/export-contenu.sh"
+    # « MySQL » en tete : deploy-ovh.sh --import cherche sql/mysql/insert dans les 5 premieres lignes
+    echo "-- MySQL / MariaDB : contenu de la base $BASE, exporte le $(date '+%d/%m/%Y %H:%M') par scripts/export-contenu.sh"
     echo "-- Tables remplacees : ${CONTENU[*]}"
     echo "-- Tables jamais touchees : ${TABLES_PROD[*]//\"/}"
     echo "SET NAMES utf8mb4;"
