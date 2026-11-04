@@ -85,7 +85,7 @@ class SeoService
         $imageMedia = $site?->getOgImage() ?? $site?->getHeroImage() ?? $site?->getLogo();
 
         return [
-            'title' => $pageTitle . ' - ' . $siteName,
+            'title' => $pageTitle . ' — ' . $siteName,
             'description' => $description !== null ? sprintf($description, $siteName) : ($site?->getDefaultSeoDescription() ?? ''),
             'keywords' => '',
             'noIndex' => false,
@@ -93,7 +93,7 @@ class SeoService
             'image' => $imageMedia?->getFileName(),
             'imageWidth' => $imageMedia?->getWidth(),
             'imageHeight' => $imageMedia?->getHeight(),
-            'imageAlt' => $imageMedia?->getAlt() ?? $pageTitle . ' - ' . $siteName,
+            'imageAlt' => $imageMedia?->getAlt() ?? $pageTitle . ' — ' . $siteName,
             'type' => 'website',
             'publishedAt' => null,
             'createdAt' => null,
@@ -118,7 +118,7 @@ class SeoService
 
         if ($entityTitle) {
             $siteName = $site?->getName() ?? 'Blog&Web';
-            return $entityTitle . ' - ' . $siteName;
+            return $entityTitle . ' — ' . $siteName;
         }
 
         // 3. Titre SEO par defaut du site
