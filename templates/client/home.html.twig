@@ -175,14 +175,16 @@
 </section>
 
 {# ====== 3.7 TARIFS ====== #}
-{# Prix valides par le brief du 2/11/2026. Puces reprises du tableau de /page/offres. #}
+{# Prix donnés par David (4/11/2026) : l'installation est le prix mis en avant, l'abonnement
+   est de 30 € HT / mois, 50 € HT pour l'offre avec commande en ligne. Puces : tableau de
+   /page/offres ; la commande en ligne est un click & collect, sans expédition. #}
 {% set offres = [
     { nom: 'Vitrine', accroche: 'Vos clients vous trouvent enfin sur Google', mois_ht: 30, mois_ttc: 36, install_ht: 450, install_ttc: 540, vedette: false,
       inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
-    { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 35, mois_ttc: 42, install_ht: 550, install_ttc: 660, vedette: true,
+    { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 30, mois_ttc: 36, install_ht: 550, install_ttc: 660, vedette: true,
       inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags'] },
-    { nom: 'Complet', accroche: 'Vendez en ligne sans aucune limite technique', mois_ht: 50, mois_ttc: 60, install_ht: 1250, install_ttc: 1500, vedette: false,
-      inclus: ['Toute l’offre Blog', 'Module Catalogue', 'E-commerce Stripe — paiement sécurisé', 'Module Marketing'] },
+    { nom: 'Complet', accroche: 'Commande en ligne et retrait chez vous', mois_ht: 50, mois_ttc: 60, install_ht: 1250, install_ttc: 1500, vedette: false,
+      inclus: ['Toute l’offre Blog', 'Module Catalogue', 'Commande en ligne et retrait sur place (click & collect)', 'Paiement sécurisé par Stripe', 'Module Marketing'] },
 ] %}
 <section class="home-pricing">
     <div class="container">
@@ -199,12 +201,13 @@
                     <p class="home-pricing__card-audience">{{ o.accroche }}</p>
                 </div>
                 <div class="home-pricing__card-body">
+                    <p class="home-pricing__label">Création et mise en ligne</p>
                     <p class="home-pricing__amount">
-                        <span class="home-pricing__amount-value">{{ o.mois_ht }} €</span>
-                        <span class="home-pricing__amount-unit">HT / mois</span>
-                        <span class="home-pricing__amount-ttc">soit {{ o.mois_ttc }} € TTC / mois</span>
+                        <span class="home-pricing__amount-value">{{ o.install_ht|number_format(0, ',', ' ') }} €</span>
+                        <span class="home-pricing__amount-unit">HT</span>
+                        <span class="home-pricing__amount-ttc">soit {{ o.install_ttc|number_format(0, ',', ' ') }} € TTC, une seule fois</span>
                     </p>
-                    <p class="home-pricing__setup">Installation : {{ o.install_ht }} € HT <span>({{ o.install_ttc }} € TTC)</span></p>
+                    <p class="home-pricing__setup">Puis <strong>{{ o.mois_ht }} € HT / mois</strong> ({{ o.mois_ttc }} € TTC)</p>
                     <ul class="home-pricing__list">
                         {% for i in o.inclus %}<li>{{ i }}</li>{% endfor %}
                     </ul>
@@ -414,21 +417,31 @@
         "@context": "https://schema.org",
         "@type": "Product",
         "name": {{ ('Site ' ~ o.nom ~ ' — ' ~ nomProduit)|json_encode|raw }},
-        "description": {{ (o.accroche ~ '. Installation ' ~ o.install_ht ~ ' € HT, puis abonnement mensuel.')|json_encode|raw }},
+        "description": {{ (o.accroche ~ '. Création et mise en ligne ' ~ o.install_ht ~ ' € HT, puis ' ~ o.mois_ht ~ ' € HT par mois.')|json_encode|raw }},
         "brand": { "@type": "Brand", "name": {{ nomProduit|json_encode|raw }} },
         "offers": {
             "@type": "Offer",
             "url": "{{ absolute_url('/page/offres') }}",
-            "price": "{{ o.mois_ht }}",
+            "price": "{{ o.install_ht }}",
             "priceCurrency": "EUR",
             "availability": "https://schema.org/InStock",
-            "priceSpecification": {
-                "@type": "UnitPriceSpecification",
-                "price": "{{ o.mois_ht }}",
-                "priceCurrency": "EUR",
-                "unitCode": "MON",
-                "valueAddedTaxIncluded": false
-            }
+            "priceSpecification": [
+                {
+                    "@type": "UnitPriceSpecification",
+                    "name": "Création et mise en ligne",
+                    "price": "{{ o.install_ht }}",
+                    "priceCurrency": "EUR",
+                    "valueAddedTaxIncluded": false
+                },
+                {
+                    "@type": "UnitPriceSpecification",
+                    "name": "Abonnement",
+                    "price": "{{ o.mois_ht }}",
+                    "priceCurrency": "EUR",
+                    "unitCode": "MON",
+                    "valueAddedTaxIncluded": false
+                }
+            ]
         }
     }{% if not loop.last %},{% endif %}
     {% endfor %}

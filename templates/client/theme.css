@@ -469,6 +469,18 @@ h1, h2, h3, h4, h5, h6,
   flex: 1;
   padding: 1rem 1.75rem 1.5rem;
 }
+.home-pricing__label {
+  margin-bottom: 0.125rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.home-pricing__setup strong {
+  color: var(--text);
+  font-weight: 600;
+}
 .home-pricing__amount {
   display: flex;
   flex-wrap: wrap;
