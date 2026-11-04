@@ -1372,3 +1372,14 @@ h1, h2, h3, h4, h5, h6,
 .cw-vs-honnete .cw-vs__texte {
   text-align: center;
 }
+
+/* Le total ComWeb Studio est le chiffre a retenir : plus grand que les autres totaux */
+.cw-compare__total .is-vedette strong {
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+}
+/* « 40 à 80 heures » en orange, comme les chiffres du bandeau de la home. Sur fond
+   clair, l'orange de l'accent (2,3:1) est illisible : orange fonce, 4,8:1 */
+.cw-vs__chiffre strong {
+  color: #B35F00;
+}
