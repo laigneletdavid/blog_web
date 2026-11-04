@@ -1,0 +1,151 @@
+{# ======================================================================
+   OFFRES — source unique des formules et des prix (home + page Offres)
+   Prix donnes par David (4/11/2026) : l'installation est le prix mis en
+   avant ; abonnement 30 € HT / mois, 50 € HT pour Click & Collect (commande
+   en ligne, retrait sur place, sans expedition).
+
+   Usage : {% include 'client/_offres.html.twig' with { vue: '…' } %}
+     cartes    les 3 cartes (grille)
+     tableau   le tableau comparatif detaille
+     a_partir  « À partir de 450 € HT + 30 € HT / mois »
+     cout      le cout sur 3 ans de chaque formule
+     jsonld    les donnees structurees Product + Offer
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set offres = [
+    { nom: 'Vitrine', accroche: 'Vos clients vous trouvent enfin sur Google', mois_ht: 30, install_ht: 450, vedette: false,
+      inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
+    { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 30, install_ht: 550, vedette: true,
+      inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags'] },
+    { nom: 'Click & Collect', accroche: 'Commande en ligne et retrait chez vous', mois_ht: 50, install_ht: 850, vedette: false,
+      inclus: ['Toute l’offre Blog', 'Module Catalogue', 'Commande en ligne, retrait sur place', 'Paiement sécurisé par Stripe', 'Module Marketing'] },
+] %}
+{# Tableau comparatif : true = inclus, false = non, 'option' = en option (voir les options a la carte) #}
+{% set comparatif = [
+    { libelle: 'Pages personnalisées', v: [true, true, true] },
+    { libelle: 'SEO intégré', v: [true, true, true] },
+    { libelle: 'Formulaire de contact sécurisé', v: [true, true, true] },
+    { libelle: '6 thèmes + personnalisation', v: [true, true, true] },
+    { libelle: 'Hébergement en France + maintenance', v: [true, true, true] },
+    { libelle: 'Module Services', v: [true, true, true] },
+    { libelle: 'Module FAQ', v: [true, true, true] },
+    { libelle: 'Module Réalisations', v: [true, true, true] },
+    { libelle: 'Module Blog — articles, catégories, tags', v: [false, true, true] },
+    { libelle: 'Module Catalogue', v: ['option', 'option', true] },
+    { libelle: 'Commande en ligne, retrait sur place', v: [false, false, true] },
+    { libelle: 'Paiement sécurisé par Stripe', v: [false, false, true] },
+    { libelle: 'Module Marketing', v: ['option', 'option', true] },
+    { libelle: 'Module Événements', v: ['option', 'option', 'option'] },
+    { libelle: 'Module Annuaire', v: ['option', 'option', 'option'] },
+] %}
+{% set ttc = 1.2 %}
+
+{% if vue == 'cartes' %}
+<div class="home-pricing__grid" data-controller="reveal" data-reveal-stagger-value="70">
+    {% for o in offres %}
+    <div class="home-pricing__card{{ o.vedette ? ' home-pricing__card--popular' }}">
+        {% if o.vedette %}<span class="home-pricing__badge">Le plus choisi</span>{% endif %}
+        <div class="home-pricing__card-header">
+            <h3 class="home-pricing__card-title">{{ o.nom }}</h3>
+            <p class="home-pricing__card-audience">{{ o.accroche }}</p>
+        </div>
+        <div class="home-pricing__card-body">
+            <p class="home-pricing__label">Création et mise en ligne</p>
+            <p class="home-pricing__amount">
+                <span class="home-pricing__amount-value">{{ m.euros(o.install_ht) }}</span>
+                <span class="home-pricing__amount-unit">HT</span>
+                <span class="home-pricing__amount-ttc">soit {{ m.euros(o.install_ht * ttc) }} TTC, une seule fois</span>
+            </p>
+            <p class="home-pricing__setup">Puis <strong>{{ o.mois_ht }} € HT / mois</strong> ({{ o.mois_ht * ttc }} € TTC)</p>
+            <ul class="home-pricing__list">
+                {% for i in o.inclus %}<li>{{ i }}</li>{% endfor %}
+            </ul>
+        </div>
+        <div class="home-pricing__card-footer">
+            <a href="/page/offres#comparatif" class="btn {{ o.vedette ? 'btn-primary' : 'btn-outline-primary' }} w-100">Voir le détail<span class="visually-hidden"> de l'offre {{ o.nom }}</span>{% if o.vedette %}<span class="cw-arrow" aria-hidden="true">&rarr;</span>{% endif %}</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% elseif vue == 'tableau' %}
+<div class="cw-compare" role="region" aria-label="Tableau comparatif des formules" tabindex="0">
+    <table class="cw-compare__table">
+        <caption class="visually-hidden">Ce que comprend chaque formule</caption>
+        <thead>
+            <tr>
+                <th scope="col"><span class="visually-hidden">Fonctionnalité</span></th>
+                {% for o in offres %}
+                <th scope="col" class="{{ o.vedette ? 'is-vedette' }}">{{ o.nom }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="cw-compare__prix">
+                <th scope="row">Création et mise en ligne</th>
+                {% for o in offres %}
+                <td class="{{ o.vedette ? 'is-vedette' }}"><strong>{{ m.euros(o.install_ht) }} HT</strong><span>{{ m.euros(o.install_ht * ttc) }} TTC</span></td>
+                {% endfor %}
+            </tr>
+            <tr class="cw-compare__prix">
+                <th scope="row">Abonnement mensuel</th>
+                {% for o in offres %}
+                <td class="{{ o.vedette ? 'is-vedette' }}"><strong>{{ o.mois_ht }} € HT</strong><span>{{ o.mois_ht * ttc }} € TTC</span></td>
+                {% endfor %}
+            </tr>
+            {% for ligne in comparatif %}
+            <tr>
+                <th scope="row">{{ ligne.libelle }}</th>
+                {% for v in ligne.v %}
+                <td class="{{ offres[loop.index0].vedette ? 'is-vedette' }}">
+                    {% if v is same as(true) %}<span class="cw-compare__oui" aria-hidden="true"></span><span class="visually-hidden">Inclus</span>
+                    {% elseif v == 'option' %}<span class="cw-compare__option">En option</span>
+                    {% else %}<span class="cw-compare__non" aria-hidden="true">—</span><span class="visually-hidden">Non inclus</span>{% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% elseif vue == 'a_partir' %}
+{% set d = offres|first %}{{ m.vague('À partir de ' ~ m.euros(d.install_ht) ~ ' HT') }} <span class="cw-nowrap">+ {{ d.mois_ht }} € HT / mois</span>
+
+{% elseif vue == 'cout' %}
+<div class="cw-cost" data-controller="reveal" data-reveal-stagger-value="70">
+    {% for o in offres %}
+    <div class="cw-cost__item">
+        <span class="cw-cost__nom">{{ o.nom }}</span>
+        <span class="cw-cost__total">{{ m.euros(o.install_ht + 36 * o.mois_ht) }} HT</span>
+        <span class="cw-cost__detail">{{ m.euros(o.install_ht) }} d'installation + 36 mois à {{ o.mois_ht }} €</span>
+    </div>
+    {% endfor %}
+</div>
+
+{% elseif vue == 'jsonld' %}
+<script type="application/ld+json">
+[
+    {% for o in offres %}
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": {{ ('Site ' ~ o.nom ~ ' — ComWeb Studio')|json_encode|raw }},
+        "description": {{ (o.accroche ~ '. Création et mise en ligne ' ~ o.install_ht ~ ' € HT, puis ' ~ o.mois_ht ~ ' € HT par mois.')|json_encode|raw }},
+        "brand": { "@type": "Brand", "name": "ComWeb Studio" },
+        "offers": {
+            "@type": "Offer",
+            "url": "{{ absolute_url('/page/offres') }}",
+            "price": "{{ o.install_ht }}",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "priceSpecification": [
+                { "@type": "UnitPriceSpecification", "name": "Création et mise en ligne", "price": "{{ o.install_ht }}", "priceCurrency": "EUR", "valueAddedTaxIncluded": false },
+                { "@type": "UnitPriceSpecification", "name": "Abonnement", "price": "{{ o.mois_ht }}", "priceCurrency": "EUR", "unitCode": "MON", "valueAddedTaxIncluded": false }
+            ]
+        }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+{% endif %}

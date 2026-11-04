@@ -1,22 +1,13 @@
 {# ====== HOME CLIENT — Override bw_front (BlogWeb) ====== #}
 {# Surcharge de home/_home_generic.html.twig #}
 
-{# Motif « vague » de la charte : un seul trace, couleur portee par currentColor.
-   Usage : {{ _self.vague('mots soulignés') }} (macro plus bas). #}
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="bw-vague" viewBox="0 0 200 20">
-        {# Trace du logo couche a plat : descente, creux et rebond du W, double bosse du M, longue traine #}
-        <path d="M3 8 C 30 10, 50 19, 61 19 C 67 19, 68 12, 72 12 C 77 12, 79 17, 85 17 C 93 17, 97 11, 101 8 C 105 4, 109 3, 114 3 C 121 3, 123 8, 129 8 C 135 8, 135 1, 140 1 C 155 1, 176 8, 197 11"
-              fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
-              vector-effect="non-scaling-stroke"/>
-    </symbol>
-</svg>
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
 
 {# Nom du produit affiché sur la home. Le nom du site (admin), le logo et le domaine
    basculent avec la migration (brief séparé). #}
 {% set nomProduit = 'ComWeb Studio' %}
 
-{% macro vague(mots) %}<span class="vague" data-controller="wave-draw">{{ mots }}<span class="vague__clip" aria-hidden="true"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></span>{% endmacro %}
 
 {# ====== 3.2 HERO ====== #}
 <section class="home-hero">
@@ -24,7 +15,7 @@
         <div class="row align-items-center home-hero__row g-4 g-lg-5">
             <div class="col-lg-6 home-hero__content">
                 <p class="home-hero__overtitle">Le code c'est nous, le contenu c'est vous.</p>
-                <h1 class="home-hero__title">Site internet professionnel {{ _self.vague('clé en main') }} pour TPE et artisans</h1>
+                <h1 class="home-hero__title">Site internet professionnel {{ m.vague('clé en main') }} pour TPE et artisans</h1>
                 <p class="home-hero__desc">Un site professionnel livré en une demi-journée, prêt à être trouvé sur Google. Vous racontez votre métier, on s'occupe du reste.</p>
                 <div class="home-hero__actions">
                     <a href="/page/offres" class="btn btn-primary btn-lg">Voir les offres<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
@@ -149,7 +140,7 @@
 {# Parcours valide par David le 4/11/2026 : une vraie discussion d'abord (prise de rendez-vous
    Google Agenda, nouvel onglet), le questionnaire ensuite. Etapes 3 et 4 reprises des cartes
    de service ; les pages /service/* restent en ligne. #}
-{% set lienRendezVous = 'https://calendar.app.google/HjoNfP83BWDB3rkW6' %}
+{% set lienRendezVous = m.lien_rdv() %}
 {% set etapes = [
     { titre: 'On parle de votre projet', texte: 'Autour d’un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.', lien: lienRendezVous, libelle: 'Réserver un créneau', externe: true },
     { titre: 'On installe en ½ journée', texte: 'Vous remplissez un questionnaire guidé, on s’occupe du reste : nom de domaine, hébergement, sécurité.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
@@ -182,51 +173,16 @@
 </section>
 
 {# ====== 3.7 TARIFS ====== #}
-{# Prix donnés par David (4/11/2026) : l'installation est le prix mis en avant, l'abonnement
-   est de 30 € HT / mois, 50 € HT pour l'offre avec commande en ligne. Puces : tableau de
-   /page/offres ; la commande en ligne est un click & collect, sans expédition. #}
-{% set offres = [
-    { nom: 'Vitrine', accroche: 'Vos clients vous trouvent enfin sur Google', mois_ht: 30, mois_ttc: 36, install_ht: 450, install_ttc: 540, vedette: false,
-      inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
-    { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 30, mois_ttc: 36, install_ht: 550, install_ttc: 660, vedette: true,
-      inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags'] },
-    { nom: 'Click & Collect', accroche: 'Commande en ligne et retrait chez vous', mois_ht: 50, mois_ttc: 60, install_ht: 850, install_ttc: 1020, vedette: false,
-      inclus: ['Toute l’offre Blog', 'Module Catalogue', 'Commande en ligne, retrait sur place', 'Paiement sécurisé par Stripe', 'Module Marketing'] },
-] %}
+{# Formules et prix : client/_offres.html.twig, source unique (home + page Offres) #}
 <section class="home-pricing">
     <div class="container">
         <div class="text-center mb-5" data-controller="reveal">
-            <h2 class="home-section-title">Trois offres, trois prix, {{ _self.vague('zéro mauvaise surprise') }}</h2>
+            <h2 class="home-section-title">Trois offres, trois prix, {{ m.vague('zéro mauvaise surprise') }}</h2>
             <p class="home-pricing__subtitle">Pas de devis opaque, pas de coûts cachés. Vous savez exactement ce que vous payez et ce que vous obtenez.</p>
         </div>
-        <div class="home-pricing__grid" data-controller="reveal" data-reveal-stagger-value="70">
-            {% for o in offres %}
-            <div class="home-pricing__card{{ o.vedette ? ' home-pricing__card--popular' }}">
-                {% if o.vedette %}<span class="home-pricing__badge">Le plus choisi</span>{% endif %}
-                <div class="home-pricing__card-header">
-                    <h3 class="home-pricing__card-title">{{ o.nom }}</h3>
-                    <p class="home-pricing__card-audience">{{ o.accroche }}</p>
-                </div>
-                <div class="home-pricing__card-body">
-                    <p class="home-pricing__label">Création et mise en ligne</p>
-                    <p class="home-pricing__amount">
-                        <span class="home-pricing__amount-value">{{ o.install_ht|number_format(0, ',', ' ') }} €</span>
-                        <span class="home-pricing__amount-unit">HT</span>
-                        <span class="home-pricing__amount-ttc">soit {{ o.install_ttc|number_format(0, ',', ' ') }} € TTC, une seule fois</span>
-                    </p>
-                    <p class="home-pricing__setup">Puis <strong>{{ o.mois_ht }} € HT / mois</strong> ({{ o.mois_ttc }} € TTC)</p>
-                    <ul class="home-pricing__list">
-                        {% for i in o.inclus %}<li>{{ i }}</li>{% endfor %}
-                    </ul>
-                </div>
-                <div class="home-pricing__card-footer">
-                    <a href="/page/offres" class="btn {{ o.vedette ? 'btn-primary' : 'btn-outline-primary' }} w-100">Voir le détail<span class="visually-hidden"> de l'offre {{ o.nom }}</span>{% if o.vedette %}<span class="cw-arrow" aria-hidden="true">&rarr;</span>{% endif %}</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+        {% include 'client/_offres.html.twig' with { vue: 'cartes' } %}
         <div class="text-center mt-4">
-            <a href="/page/offres" class="home-pricing__compare">Comparer toutes les offres &rarr;</a>
+            <a href="/page/offres#comparatif" class="home-pricing__compare">Comparer toutes les offres &rarr;</a>
         </div>
     </div>
 </section>
@@ -417,48 +373,12 @@
 }
 </script>
 {% endif %}
-<script type="application/ld+json">
-[
-    {% for o in offres %}
-    {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "name": {{ ('Site ' ~ o.nom ~ ' — ' ~ nomProduit)|json_encode|raw }},
-        "description": {{ (o.accroche ~ '. Création et mise en ligne ' ~ o.install_ht ~ ' € HT, puis ' ~ o.mois_ht ~ ' € HT par mois.')|json_encode|raw }},
-        "brand": { "@type": "Brand", "name": {{ nomProduit|json_encode|raw }} },
-        "offers": {
-            "@type": "Offer",
-            "url": "{{ absolute_url('/page/offres') }}",
-            "price": "{{ o.install_ht }}",
-            "priceCurrency": "EUR",
-            "availability": "https://schema.org/InStock",
-            "priceSpecification": [
-                {
-                    "@type": "UnitPriceSpecification",
-                    "name": "Création et mise en ligne",
-                    "price": "{{ o.install_ht }}",
-                    "priceCurrency": "EUR",
-                    "valueAddedTaxIncluded": false
-                },
-                {
-                    "@type": "UnitPriceSpecification",
-                    "name": "Abonnement",
-                    "price": "{{ o.mois_ht }}",
-                    "priceCurrency": "EUR",
-                    "unitCode": "MON",
-                    "valueAddedTaxIncluded": false
-                }
-            ]
-        }
-    }{% if not loop.last %},{% endif %}
-    {% endfor %}
-]
-</script>
+{% include 'client/_offres.html.twig' with { vue: 'jsonld' } %}
 
 {# ====== 3.13 CTA FINAL ====== #}
 <section class="home-cta">
     <div class="container text-center" data-controller="reveal">
-        <h2 class="home-cta__title">Prêt à lancer {{ _self.vague('votre site') }} ?</h2>
+        <h2 class="home-cta__title">Prêt à lancer {{ m.vague('votre site') }} ?</h2>
         <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en une demi-journée, après validation de votre contenu.</p>
         <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
     </div>

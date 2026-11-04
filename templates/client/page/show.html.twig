@@ -1,0 +1,9 @@
+{# ======================================================================
+   PAGES — bw_front (ComWeb Studio), meme principe que bw_lintello
+   Une page dessinee a son gabarit client/page/_<slug>.html.twig ; les
+   autres gardent le rendu commun.
+   ====================================================================== #}
+{% include [
+    'client/page/_' ~ page.slug ~ '.html.twig',
+    'page/_show_generic.html.twig'
+] %}

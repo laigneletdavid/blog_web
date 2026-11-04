@@ -1,0 +1,133 @@
+{# ======================================================================
+   PAGE OFFRES & TARIFS — bw_front (ComWeb Studio)
+   Gabarit dessine, meme principe que les pages de bw_lintello : la
+   structure vit ici, le titre et la description SEO dans l'admin (page
+   « offres »). Formules et prix : client/_offres.html.twig (source unique,
+   partagee avec la home). Recap valide par David le 4/11/2026.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{# Options a la carte (prix HT ; TTC = HT x 1,2) #}
+{% set options = [
+    { nom: 'Module supplémentaire', prix_ht: 100, texte: 'Événements, Annuaire, Catalogue… : ajoutez le module dont vous avez besoin, hors Blog et Marketing.' },
+    { nom: 'Module Marketing', prix_ht: 250, texte: 'Landing pages et statistiques avancées. Déjà inclus dans Click & Collect.' },
+    { nom: 'Design sur mesure', prix_ht: 250, texte: 'Nous intégrons le design spécifique de votre choix à la place des thèmes proposés.' },
+    { nom: 'Rédaction des contenus', prix_ht: null, texte: 'Pas le temps d’écrire ? Nous rédigeons les textes de votre site.' },
+    { nom: 'Fonctionnalité spécifique', prix_ht: null, texte: 'Un besoin qui sort des modules existants ? On en parle, puis on le chiffre.' },
+] %}
+
+{# ====== 1. EN-TETE ====== #}
+<section class="cw-page-head">
+    <div class="container">
+        <h1 class="cw-page-head__title">Prix d'un site internet professionnel clé en main</h1>
+        <p class="cw-page-head__lead">Pas de devis surprise, pas de coûts cachés.</p>
+        <p class="cw-page-head__prix">{% include 'client/_offres.html.twig' with { vue: 'a_partir' } %}</p>
+    </div>
+</section>
+
+{# ====== 2. LES 3 FORMULES ====== #}
+<section class="home-pricing cw-offres-cartes">
+    <div class="container">
+        <h2 class="visually-hidden">Nos trois formules</h2>
+        {% include 'client/_offres.html.twig' with { vue: 'cartes' } %}
+    </div>
+</section>
+
+{# ====== 3. TABLEAU COMPARATIF ====== #}
+<section class="cw-section cw-section--alt" id="comparatif">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Comparez les formules en détail</h2>
+            <p class="home-section-subtitle">Tout ce que comprend chaque formule, ligne par ligne. « En option » : voir les options à la carte juste en dessous.</p>
+        </div>
+        {% include 'client/_offres.html.twig' with { vue: 'tableau' } %}
+    </div>
+</section>
+
+{# ====== 4. OPTIONS A LA CARTE ====== #}
+<section class="cw-section" id="options">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Les options à la carte</h2>
+            <p class="home-section-subtitle">Votre formule couvre l'essentiel. Pour aller plus loin, vous ajoutez seulement ce qui vous sert.</p>
+        </div>
+        <ul class="cw-options" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for o in options %}
+            <li class="cw-options__item">
+                <h3 class="cw-options__nom">{{ o.nom }}</h3>
+                <p class="cw-options__prix">
+                    {% if o.prix_ht %}<strong>+{{ m.euros(o.prix_ht) }} HT</strong> <span>({{ m.euros(o.prix_ht * 1.2) }} TTC)</span>
+                    {% else %}<strong>Sur devis</strong>{% endif %}
+                </p>
+                <p class="cw-options__texte">{{ o.texte }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{# ====== 5. CE QUI EST INCLUS ====== #}
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Ce qui est {{ m.vague('inclus') }}</h2>
+        </div>
+        <div class="cw-inclus" data-controller="reveal" data-reveal-stagger-value="70">
+            <div class="cw-inclus__col">
+                <h3 class="cw-inclus__titre">À l'installation</h3>
+                <ul class="home-pricing__list">
+                    <li>Un rendez-vous découverte</li>
+                    <li>Un questionnaire guidé</li>
+                    <li>Votre nom de domaine</li>
+                    <li>La mise en ligne en ½ journée</li>
+                    <li>Une formation de 30 minutes</li>
+                </ul>
+            </div>
+            <div class="cw-inclus__col">
+                <h3 class="cw-inclus__titre">Dans l'abonnement</h3>
+                <ul class="home-pricing__list">
+                    <li>L'hébergement en France</li>
+                    <li>Les sauvegardes</li>
+                    <li>Les mises à jour de sécurité</li>
+                    <li>Le support, par un interlocuteur unique</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 6. FAQ DES TARIFS ======
+   TODO CONTENU : questions à rédiger après les réponses de David (engagement et
+   préavis de résiliation ; ce que garde le client s'il arrête : nom de domaine,
+   export du contenu ; mode de paiement, mensuel ou annuel ; changement de formule
+   en cours de route et son coût). Section non affichée tant qu'elle est vide ;
+   prévoir alors les données structurées FAQPage. #}
+
+{# ====== 7. LE COUT SUR 3 ANS ====== #}
+<section class="cw-section">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Ce que vous payez vraiment sur 3 ans</h2>
+            <p class="home-section-subtitle">Installation et abonnement compris, hors options. Le seul calcul qui compte pour comparer deux devis.</p>
+        </div>
+        {% include 'client/_offres.html.twig' with { vue: 'cout' } %}
+        {# TODO CONTENU : comparaison avec une agence et avec un WordPress « gratuit »
+           (chiffres à fournir par David). #}
+        <p class="cw-cost__lien">
+            <a href="{{ path('app_article_show', { slug: 'combien-coute-vraiment-un-site-internet-professionnel-en-2026' }) }}">Combien coûte vraiment un site internet professionnel ? Notre article détaillé &rarr;</a>
+        </p>
+    </div>
+</section>
+
+{# ====== 8. APPEL FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">Parlons de {{ m.vague('votre projet') }}</h2>
+        <p class="home-cta__desc">Autour d'un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second">Pas encore prêt ? <a href="{{ path('app_contact') }}">Demandez le questionnaire</a></p>
+    </div>
+</section>
+
+{% include 'client/_offres.html.twig' with { vue: 'jsonld' } %}

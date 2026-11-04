@@ -1,0 +1,23 @@
+{# ====== MACROS — bw_front (ComWeb Studio) ====== #}
+
+{# Symbole SVG de la vague, a poser une fois par page avant tout usage de vague().
+   Trace du logo couche a plat : descente, creux et rebond du W, double bosse du M,
+   longue traine. Couleur portee par currentColor. #}
+{% macro symbole_vague() %}
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="bw-vague" viewBox="0 0 200 20">
+        <path d="M3 8 C 30 10, 50 19, 61 19 C 67 19, 68 12, 72 12 C 77 12, 79 17, 85 17 C 93 17, 97 11, 101 8 C 105 4, 109 3, 114 3 C 121 3, 123 8, 129 8 C 135 8, 135 1, 140 1 C 155 1, 176 8, 197 11"
+              fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
+              vector-effect="non-scaling-stroke"/>
+    </symbol>
+</svg>
+{% endmacro %}
+
+{# Mots soulignes par la vague, devoilee a l'apparition (controleur wave-draw) #}
+{% macro vague(mots) %}<span class="vague" data-controller="wave-draw">{{ mots }}<span class="vague__clip" aria-hidden="true"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></span>{% endmacro %}
+
+{# Montant a la francaise : 1 250 € (espace fine insecable) #}
+{% macro euros(n) %}{{ n|number_format(0, ',', ' ') }} €{% endmacro %}
+
+{# Agenda de reservation Google (prise de rendez-vous, s'ouvre dans un nouvel onglet) #}
+{% macro lien_rdv() %}https://calendar.app.google/HjoNfP83BWDB3rkW6{% endmacro %}

@@ -4,8 +4,8 @@
    compact au defilement (3 bis A10). Inclus plutot que copie : il continue de
    recevoir les correctifs de main. Si le theme change ces chaines, le remplacement
    ne fait rien et le bouton « Contact » d'origine reste. #}
-{# Meme lien que l'etape 1 de la home (templates/client/home.html.twig, lienRendezVous) #}
-{% set lienRendezVous = 'https://calendar.app.google/HjoNfP83BWDB3rkW6' %}
+{% import 'client/_macros.html.twig' as m %}
+{% set lienRendezVous = m.lien_rdv() %}
 {% set boutonContact = '<a href="' ~ path('app_contact') ~ '" class="btn btn-primary">Contact</a>' %}
 {% set blocRendezVous %}
 <span class="header-rdv">

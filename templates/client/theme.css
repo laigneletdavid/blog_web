@@ -856,3 +856,249 @@ h1, h2, h3, h4, h5, h6,
   .home-pricing__card, .home-steps__item, .home-testimonial, .home-proof__card, .blog-card,
   .cw-arrow, .header--vitrine, .header--vitrine .header-logo img { transition: none; }
 }
+
+/* ===========================================================================
+   Page Offres & Tarifs (client/page/_offres.html.twig)
+   =========================================================================== */
+.cw-section {
+  padding: var(--section-space) 0;
+  background: #FFFFFF;
+}
+.cw-section--alt {
+  background: var(--surface);
+}
+
+/* --- En-tete court, sans photo --- */
+.cw-page-head {
+  padding: 4.5rem 0 1rem;
+  text-align: center;
+  background: #FFFFFF;
+}
+.cw-page-head__title {
+  max-width: 22ch;
+  margin: 0 auto 1rem;
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.cw-page-head__lead {
+  margin: 0 auto 1.75rem;
+  font-size: 1.1875rem;
+  color: var(--text-muted);
+}
+.cw-page-head__prix {
+  display: inline-block;
+  margin: 0;
+  padding: 0.75rem 1.5rem 1.125rem;
+  border-radius: 999px;
+  background: var(--surface);
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 600;
+  color: var(--text);
+}
+.cw-offres-cartes {
+  padding-top: 3.5rem !important;
+}
+
+/* --- Tableau comparatif : pleine largeur ; en mobile, la colonne des libelles
+       reste fixe et le tableau defile seul, jamais la page --- */
+.cw-compare {
+  margin-top: 3rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-card);
+}
+.cw-compare:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.cw-compare__table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.cw-compare__table th,
+.cw-compare__table td {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+.cw-compare__table tbody tr:last-child th,
+.cw-compare__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.cw-compare__table thead th {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  color: var(--text);
+}
+.cw-compare__table tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #FFFFFF;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text);
+}
+.cw-compare__table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #FFFFFF;
+}
+.cw-compare__table .is-vedette {
+  background: color-mix(in srgb, var(--primary) 5%, #FFFFFF);
+}
+.cw-compare__table thead .is-vedette {
+  color: var(--primary);
+}
+.cw-compare__prix strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  color: var(--text);
+}
+.cw-compare__prix span {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.cw-compare__oui {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.5rem;
+  border-left: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  transform: rotate(-45deg) translateY(-2px);
+}
+.cw-compare__non {
+  color: #A0A8B1;
+}
+.cw-compare__option {
+  display: inline-block;
+  padding: 0.125rem 0.625rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, #FFFFFF);
+  color: #8A4A00;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* --- Options a la carte --- */
+.cw-options {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin: 3rem 0 0;
+  padding: 0;
+}
+.cw-options__item {
+  padding: 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.cw-options__nom {
+  font-size: 1.125rem;
+  margin-bottom: 0.375rem;
+}
+.cw-options__prix {
+  margin-bottom: 0.625rem;
+}
+.cw-options__prix strong {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+.cw-options__prix span {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.cw-options__texte {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+
+/* --- Ce qui est inclus --- */
+.cw-inclus {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 3rem auto 0;
+}
+.cw-inclus__col {
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.cw-inclus__titre {
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 767.98px) {
+  .cw-inclus { grid-template-columns: 1fr; }
+}
+
+/* --- Cout sur 3 ans --- */
+.cw-cost {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+.cw-cost__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+}
+.cw-cost__nom {
+  font-weight: 600;
+  color: var(--text);
+}
+.cw-cost__total {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.cw-cost__detail {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.cw-cost__lien {
+  margin: 2rem 0 0;
+  text-align: center;
+  font-weight: 600;
+}
+@media (max-width: 767.98px) {
+  .cw-cost { grid-template-columns: 1fr; }
+}
+
+/* --- Appel final : lien secondaire --- */
+.cw-cta__second {
+  margin: 1.25rem 0 0;
+  color: var(--text-muted);
+}
+.cw-cta__second a {
+  font-weight: 600;
+}
+.cw-nowrap {
+  white-space: nowrap;
+}
