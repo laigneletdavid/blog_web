@@ -3,8 +3,9 @@
    Brief du 4/11/2026 : le rendez-vous d'abord, le formulaire a cote. Le champ
    « Sujet » du coeur (texte libre) est affiche en liste « Votre demande » : il
    recoit l'une des valeurs ci-dessous, l'objet du mail dit de quoi il s'agit.
-   TODO CONTENU : delai de reponse chiffre (David) ; champ telephone (demande
-   un changement du formulaire du coeur et une migration).
+   Delai de reponse : 48 h ouvrees (David, 04/11/2026).
+   TODO : champ telephone (demande un changement du formulaire du coeur et une
+   migration).
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {{ m.symbole_vague() }}
@@ -47,6 +48,7 @@
             {# ====== FORMULAIRE ====== #}
             <div class="cw-contact__form">
                 <h2 class="cw-contact__titre">Ou écrivez-moi</h2>
+                <p class="cw-contact__delai">Je réponds personnellement sous 48 h ouvrées.</p>
                 {{ form_start(contactForm) }}
                     <div class="row g-3">
                         <div class="col-sm-6">{{ form_row(contactForm.firstname) }}</div>

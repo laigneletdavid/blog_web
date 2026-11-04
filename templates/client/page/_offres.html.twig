@@ -56,6 +56,11 @@
     <div class="container">
         <h2 class="visually-hidden">Nos trois formules</h2>
         {% include 'client/_offres.html.twig' with { vue: 'cartes', surPageOffres: true } %}
+        <p class="cw-offres-mentions">
+            <span>Sans engagement</span>
+            <span>Abonnement mensuel, résiliable chaque mois</span>
+            <span>Votre nom de domaine et votre contenu vous appartiennent</span>
+        </p>
     </div>
 </section>
 
@@ -140,11 +145,49 @@
 </section>
 
 {# ====== 7. FAQ DES TARIFS ======
-   TODO CONTENU : questions à rédiger après les réponses de David (engagement et
-   préavis de résiliation ; ce que garde le client s'il arrête : nom de domaine,
-   export du contenu ; mode de paiement, mensuel ou annuel ; changement de formule
-   en cours de route et son coût). Section non affichée tant qu'elle est vide ;
-   prévoir alors les données structurées FAQPage. #}
+   Reponses de David du 04/11/2026. Changement de formule en cours de route :
+   question a ajouter quand David aura donne la regle. #}
+{% set faq_tarifs = [
+    { q: 'Est-ce que je m’engage sur une durée ?', r: 'Non. L’abonnement est mensuel et se renouvelle chaque mois. Vous arrêtez quand vous voulez : l’arrêt prend effet à la fin du mois en cours.' },
+    { q: 'Comment se passe le paiement ?', r: 'L’installation : 30 % d’acompte à l’acceptation du devis, le solde à la mise en ligne. L’abonnement : un prélèvement automatique chaque mois.' },
+    { q: 'Et si j’arrête, qu’est-ce que je garde ?', r: 'Votre nom de domaine, vos textes et vos photos. Ils vous appartiennent : si vous partez, on vous les transfère gratuitement, sur simple demande.' },
+    { q: 'J’ai déjà un site WordPress, je peux passer chez vous ?', r: 'Oui. On reprend vos pages, vos articles et vos images, et on garde vos adresses (ou on les redirige) pour ne pas perdre votre référencement Google. Tarif sur devis, selon la taille du site.' },
+] %}
+<section class="cw-section" id="faq">
+    <div class="container">
+        <div data-controller="reveal">
+            <h2 class="home-section-title text-center">Questions fréquentes</h2>
+            <div class="faq-home-section">
+                <div class="accordion faq-accordion" id="faq-tarifs">
+                    {% for f in faq_tarifs %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq-tarifs-{{ loop.index }}" aria-expanded="false" aria-controls="faq-tarifs-{{ loop.index }}">
+                                {{ f.q }}
+                            </button>
+                        </h3>
+                        <div id="faq-tarifs-{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#faq-tarifs">
+                            <div class="accordion-body content-body"><p>{{ f.r }}</p></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% for f in faq_tarifs %}
+        { "@type": "Question", "name": {{ f.q|json_encode|raw }}, "acceptedAnswer": { "@type": "Answer", "text": {{ f.r|json_encode|raw }} } }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
 
 {# ====== 8. APPEL FINAL ====== #}
 <section class="home-cta">

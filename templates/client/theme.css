@@ -1561,7 +1561,7 @@ h1, h2, h3, h4, h5, h6,
 .cw-frise {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.25rem;
   margin: 3rem 0 0;
   padding: 0;
@@ -2068,4 +2068,29 @@ h1, h2, h3, h4, h5, h6,
 }
 @media (max-width: 767.98px) {
   .cw-reals--trois { grid-template-columns: 1fr; }
+}
+
+/* --- Tarifs : mentions sous les cartes ; Contact : delai de reponse --- */
+.cw-offres-mentions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.75rem;
+  margin: 2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+.cw-offres-mentions span::before {
+  content: "\2713";
+  margin-right: 0.4rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+.cw-contact__delai {
+  margin: -0.5rem 0 1.25rem;
+  color: var(--text-muted);
+}
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .cw-frise { grid-template-columns: repeat(3, 1fr); row-gap: 2rem; }
+  .cw-frise::before { display: none; }
 }

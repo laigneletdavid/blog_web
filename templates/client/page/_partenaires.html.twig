@@ -6,18 +6,17 @@
    Titre et description SEO dans l'admin (page « partenaires », ancienne
    adresse /page/freelances redirigee en 301).
    TODO CONTENU (David) :
-     - commission des prescripteurs : pourcentage, sur l'installation seule ou
-       aussi sur l'abonnement (commission_prescripteur ci-dessous) ;
      - conditions revendeurs : remise affichable ou « sur devis » (tarif_revendeur) ;
-     - questions de FAQ pour les prescripteurs (apres la commission) ;
-     - « ½ journée » ou « 48 h » : formulation commune ; en attendant, la mise en
+     - « ½ journée » ou « 48 h » : formulation commune ; en attendant, la mise en
        route ne cite aucun delai.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {{ m.symbole_vague() }}
 
-{# null = non affiche. Ex. : '10 % de l’installation' ; 'Remise de 20 % sur l’installation' #}
-{% set commission_prescripteur = null %}
+{# null = non affiche. Ex. : '10 % de l’installation' ; 'Remise de 20 % sur l’installation' #}
+{# Commission (David, 04/11/2026) : 10 % de l'installation, hors abonnement, versee au solde de la facture du client. #}
+{% set montant_commission = include('client/_offres.html.twig', { vue: 'commission' })|trim %}
+{% set commission_prescripteur = '10 % de l’installation, soit ' ~ montant_commission ~ ' HT selon la formule' %}
 {% set tarif_revendeur = null %}
 
 {% set prix_design = include('client/_offres.html.twig', { vue: 'prix_option', option: 'design' })|trim %}
@@ -25,6 +24,7 @@
 {% set prescripteurs = ['Experts-comptables', 'Graphistes', 'Photographes', 'Imprimeurs', 'Réseaux d’entrepreneurs'] %}
 
 {% set faq = [
+    { q: 'Combien je touche, et quand ?', r: '10 % du montant de l’installation, soit ' ~ montant_commission ~ ' HT selon la formule choisie par votre client. La commission porte sur l’installation, pas sur l’abonnement. Elle vous est versée dès que votre client a réglé le solde de sa facture.' },
     { q: 'Est-ce que mon client sait que je travaille avec ComWeb Studio ?', r: 'Oui, transparence totale. Vous apparaissez comme son interlocuteur principal, ComWeb Studio comme l’outil technique sur lequel son site est construit. Chacun son rôle, chacun sa compétence.' },
     { q: 'Qui gère les problèmes techniques ?', r: 'Nous. Si le serveur a un souci, si une mise à jour doit être déployée, si un correctif de sécurité doit être appliqué : c’est notre responsabilité. Vous n’êtes jamais sollicité pour des questions d’infrastructure. Nous réalisons aussi les mises à jour de la page d’accueil, 4 modifications par an.' },
     { q: 'Y a-t-il un engagement ou un minimum de sites ?', r: 'Aucun. Vous nous confiez un site, dix sites ou cent : le modèle est le même. Pas de frais d’entrée, pas de volume minimum, pas d’engagement de durée.' },

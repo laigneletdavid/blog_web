@@ -11,6 +11,7 @@
      cout      le cout sur 3 ans de chaque formule
      jsonld    les donnees structurees Product + Offer
      vitrine_install / vitrine_3ans   montants de la formule Vitrine (« 450 € », « 1 530 € »)
+     commission   commission des prescripteurs, 10 % de l'installation (« de 45 € à 85 € »)
      prix_option  prix HT d'une option, en nombre : with { vue: 'prix_option', option: 'module' | 'marketing' | 'design' }
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
@@ -123,6 +124,8 @@
 {% elseif vue == 'prix_option' %}{{ options_prix[option] }}
 
 {% elseif vue == 'vitrine_install' %}{{ m.euros((offres|first).install_ht) }}
+
+{% elseif vue == 'commission' %}{% set installs = offres|map(o => o.install_ht) %}de {{ m.euros(min(installs) * 0.1) }} à {{ m.euros(max(installs) * 0.1) }}
 
 {% elseif vue == 'vitrine_3ans' %}{% set d = offres|first %}{{ m.euros(d.install_ht + 36 * d.mois_ht) }}
 

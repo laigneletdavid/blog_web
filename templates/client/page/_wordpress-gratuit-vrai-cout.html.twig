@@ -5,8 +5,8 @@
    client/_wordpress.html.twig (source unique avec la page Tarifs).
    Titre et description SEO dans l'admin (page « wordpress-gratuit-vrai-cout »,
    ancienne adresse site-sur-mesure-vs-cms-classique redirigee en 301).
-   Les sections numerotees se renumerotent seules : une section masquee (07,
-   en attente de contenu) ne laisse pas de trou.
+   Les sections numerotees se renumerotent seules : une section masquee ne
+   laisse pas de trou.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {{ m.symbole_vague() }}
@@ -46,25 +46,23 @@
       encadre: 'Un éditeur simple, comme un traitement de texte. Vous écrivez, vous publiez. Et une formation de 30 minutes à la livraison.' },
     { id: 'propriete', etiquette: 'Votre site vous appartient', titre: 'Et si vous voulez partir ?',
       texte: 'Votre contenu vous appartient-il vraiment ? Si demain vous changez d’avis, pouvez-vous partir avec vos textes, vos images, votre nom de domaine ?',
-      encadre: null },
+      encadre: 'Oui. Votre nom de domaine, vos textes et vos photos vous appartiennent : si vous partez, on vous les transfère gratuitement, sur simple demande. Et l’abonnement est sans engagement, vous arrêtez quand vous voulez.' },
     { id: 'humain', etiquette: "L'humain", titre: 'Quelqu’un au bout du fil',
       texte: 'Un forum, un ticket, un chatbot… ou une personne qui connaît votre site et votre métier.',
       encadre: 'Un seul interlocuteur, dans le Comminges. Au téléphone, en visio ou autour d’un café.' },
 ] %}
-{# TODO CONTENU : section « Votre site vous appartient » — réponse de David (propriété du
-   nom de domaine, export du contenu, conditions de résiliation). Masquée tant que son
-   encadré est vide (null). #}
+{# Une section dont l'encadre est vide (null) est masquee. #}
 {% set sections = sections|filter(s => s.encadre is not null) %}
 
 {% set faq = [
     { q: 'WordPress est-il vraiment gratuit ?', r: 'Le logiciel, oui. Mais il faut payer un hébergement, un nom de domaine, souvent un thème et des extensions premium, puis la maintenance — ou y passer votre temps. Sur 3 ans, la facture réelle se compte en centaines, voire en milliers d’euros.' },
     { q: 'Combien coûte la maintenance d’un site WordPress ?', r: 'Chez un prestataire, comptez généralement 60 à 150 € HT par mois, souvent sans l’hébergement. Avec ComWeb Studio, maintenance et hébergement sont compris dans l’abonnement, dès 30 € HT par mois.' },
-    { q: 'J’ai déjà un site WordPress, je peux passer chez vous ?', r: null },
+    { q: 'J’ai déjà un site WordPress, je peux passer chez vous ?', r: 'Oui. On reprend vos pages, vos articles et vos images, et on garde vos adresses (ou on les redirige) pour ne pas perdre votre référencement Google. Tarif sur devis, selon la taille du site.' },
+    { q: 'Et si je veux partir ?', r: 'Votre nom de domaine, vos textes et vos photos. Ils vous appartiennent : si vous partez, on vous les transfère gratuitement, sur simple demande. L’abonnement est sans engagement.' },
     { q: 'Mon site sera-t-il aussi bien référencé ?', r: 'Oui : plan du site, balises, données structurées et images optimisées sont intégrés d’office, sans extension à configurer. Le reste dépend de vos contenus, et on vous montre comment bien les écrire.' },
     { q: 'Est-ce que je pourrai modifier mon site moi-même ?', r: 'Oui, avec un éditeur aussi simple qu’un traitement de texte, et une formation de 30 minutes à la livraison.' },
 ] %}
-{# TODO CONTENU : « J'ai déjà un site WordPress, je peux passer chez vous ? » — conditions
-   de reprise / migration d'un site existant (David). Masquée tant que r est vide (null). #}
+{# Une question sans reponse (null) est masquee. #}
 {% set faq = faq|filter(f => f.r is not null) %}
 
 {# ====== EN-TETE ====== #}

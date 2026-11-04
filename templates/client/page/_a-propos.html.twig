@@ -4,18 +4,20 @@
    « Je réponds personnellement à chaque message ») et de David (« 15 ans à
    vendre, 10 ans à coder », Comminges, Comminges / Commerce / Communication).
    Titre et description SEO dans l'admin (page « a-propos »).
-   TODO CONTENU (David) : dates du parcours, commune exacte, nombre de sites ou
-   de clients a afficher, une touche personnelle. Rien n'est affiche avant.
+   Dates du parcours, commune (Montsaunes) et delai de reponse : reponses de
+   David du 04/11/2026.
+   TODO CONTENU (David) : nombre de sites ou de clients a afficher, une touche
+   personnelle. Rien n'est affiche avant.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {{ m.symbole_vague() }}
 
-{# Frise : ajouter « date: '…' » a chaque etape quand David les donne #}
 {% set parcours = [
-    { titre: '15 ans de vente', texte: 'Le commerce et la relation client : écouter, comprendre ce qu’un client attend vraiment avant d’acheter.' },
-    { titre: '10 ans de code', texte: 'Le web, appris pour de vrai : sites, outils, et tout ce qui coince quand on n’est pas du métier.' },
-    { titre: 'ComWeb Solutions', texte: 'L’agence web.' },
-    { titre: 'ComWeb Studio', texte: 'L’outil : un site professionnel clé en main, simple à gérer seul.' },
+    { date: '2000', titre: 'La vente', texte: 'Le commerce et la relation client : écouter, comprendre ce qu’un client attend vraiment avant d’acheter.' },
+    { date: '2016', titre: 'Le code', texte: 'Le web, appris pour de vrai : sites, outils, et tout ce qui coince quand on n’est pas du métier.' },
+    { date: '2023', titre: 'ComWeb Solutions', texte: 'L’agence : web et consulting commercial.' },
+    { date: '2026', titre: 'ComWeb Studio', texte: 'L’outil : un site professionnel clé en main, simple à gérer seul.' },
+    { date: '2026', titre: 'LintellO', texte: 'L’assistant IA français, pour rédiger, répondre et chercher.' },
 ] %}
 
 {% set com = [
@@ -29,7 +31,7 @@
     { titre: 'Des prix affichés', texte: 'Tous mes tarifs sont en ligne. Pas de devis opaque, pas de coût caché.' },
     { titre: 'Hébergé en France', texte: 'Votre site et vos données restent en France.' },
     { titre: 'Aucun jargon', texte: 'Je vous parle de votre métier, pas de serveurs ni d’extensions.' },
-    { titre: 'Une réponse rapide', texte: 'Je réponds personnellement à chaque message.' },
+    { titre: 'Une réponse sous 48 h', texte: 'Je réponds personnellement à chaque message, sous 48 h ouvrées.' },
 ] %}
 
 {# ====== 1. EN-TETE ====== #}
@@ -39,7 +41,7 @@
             <div>
                 <p class="cw-fonc-surtitre">À propos</p>
                 <h1 class="cw-page-head__title cw-apropos-head__titre">Un développeur qui a d'abord été {{ m.vague('commercial') }}</h1>
-                <p class="cw-page-head__lead">Je m'appelle David Laignelet. 15 ans à vendre, 10 ans à coder, dans le Comminges.</p>
+                <p class="cw-page-head__lead">Je m'appelle David Laignelet. 15 ans à vendre, 10 ans à coder, à Montsaunès, dans le Comminges.</p>
                 <p class="cw-apropos-head__texte">J'ai construit ComWeb Studio pour les artisans, les commerçants et les indépendants : un site professionnel, sécurisé, trouvé sur Google, et surtout simple. Le code, c'est mon métier. Le contenu, c'est le vôtre.</p>
             </div>
             {% if page.featuredMedia %}
@@ -136,7 +138,7 @@
         <h2 class="home-cta__title">On en parle {{ m.vague('autour d’un café') }} ?</h2>
         <p class="home-cta__desc">Au téléphone, en visio ou en vrai : 30 minutes pour parler de votre métier et de votre site. Gratuit et sans engagement.</p>
         <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
-        <p class="cw-cta__second">Ou <a href="{{ path('app_contact') }}">écrivez-moi</a> : je réponds personnellement à chaque message.</p>
+        <p class="cw-cta__second">Ou <a href="{{ path('app_contact') }}">écrivez-moi</a> : je réponds personnellement sous 48 h ouvrées.</p>
     </div>
 </section>
 
@@ -152,6 +154,6 @@
     "image": "{{ absolute_url(asset('documents/medias/' ~ page.featuredMedia.fileName)) }}",
     {%- endif %}
     "worksFor": { "@type": "Organization", "name": {{ site.name|default('ComWeb Studio')|json_encode|raw }}, "url": "{{ absolute_url('/') }}" },
-    "address": { "@type": "PostalAddress", "addressRegion": "Comminges", "addressCountry": "FR" }
+    "address": { "@type": "PostalAddress", "addressLocality": "Montsaunès", "addressRegion": "Comminges", "addressCountry": "FR" }
 }
 </script>
