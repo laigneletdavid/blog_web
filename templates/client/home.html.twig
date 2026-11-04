@@ -146,10 +146,13 @@
 </section>
 
 {# ====== 3.6 COMMENT CA MARCHE : 4 etapes ====== #}
-{# Textes repris des cartes de service (table service) ; les pages /service/* restent en ligne. #}
+{# Parcours valide par David le 4/11/2026 : une vraie discussion d'abord (prise de rendez-vous
+   Google Agenda, nouvel onglet), le questionnaire ensuite. Etapes 3 et 4 reprises des cartes
+   de service ; les pages /service/* restent en ligne. #}
+{% set lienRendezVous = 'https://calendar.app.google/HjoNfP83BWDB3rkW6' %}
 {% set etapes = [
-    { titre: 'Vous remplissez le questionnaire', texte: 'Un questionnaire guidé : vous nous dites ce que vous voulez, on s’occupe de la technique.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
-    { titre: 'On installe en ½ journée', texte: 'On installe, on personnalise, on met en ligne : nom de domaine, hébergement, sécurité compris.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
+    { titre: 'On parle de votre projet', texte: 'Autour d’un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.', lien: lienRendezVous, libelle: 'Réserver un créneau', externe: true },
+    { titre: 'On installe en ½ journée', texte: 'Vous remplissez un questionnaire guidé, on s’occupe du reste : nom de domaine, hébergement, sécurité.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
     { titre: 'Vous écrivez, simplement', texte: 'Vous racontez votre métier, vos services, avec un éditeur simple comme Word. Pas besoin de coder.', lien: '/service/vous-gerez-votre-contenu-en-toute-autonomie' },
     { titre: 'En ligne, et on reste là', texte: 'Formation de 30 min, guide écrit et support continu : un seul interlocuteur pour vos questions.', lien: '/service/on-ne-vous-laisse-pas-seul-apres-la-livraison' },
 ] %}
@@ -157,7 +160,7 @@
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Comment ça se passe concrètement</h2>
-            <p class="home-section-subtitle">De votre premier message à votre site en ligne, voici ce que vous allez vivre.</p>
+            <p class="home-section-subtitle">De notre premier échange à votre site en ligne, voici ce que vous allez vivre.</p>
         </div>
         <ol class="home-steps__list" data-controller="reveal" data-reveal-stagger-value="70">
             {% for e in etapes %}
@@ -166,7 +169,11 @@
                 <h3 class="home-steps__title">{{ e.titre }}</h3>
                 <p class="home-steps__text">{{ e.texte }}</p>
                 {% if e.lien %}
+                {% if e.externe|default(false) %}
+                <a href="{{ e.lien }}" class="home-steps__link" target="_blank" rel="noopener">{{ e.libelle }}<span class="visually-hidden"> (nouvel onglet)</span> &rarr;</a>
+                {% else %}
                 <a href="{{ e.lien }}" class="home-steps__link">En savoir plus<span class="visually-hidden"> : {{ e.titre|lower }}</span> &rarr;</a>
+                {% endif %}
                 {% endif %}
             </li>
             {% endfor %}
