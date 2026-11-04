@@ -130,10 +130,34 @@ h1, h2, h3, h4, h5, h6,
   background: var(--surface) !important;
 }
 
-/* --- Header : « Demander un devis » est plus long que « Contact » --- */
+/* --- Header : « Prendre rendez-vous » est plus long que « Contact » --- */
 .header--vitrine .header-nav .nav-link,
 .header--vitrine .header-actions .btn {
   white-space: nowrap;
+}
+/* Bouton de rendez-vous et, dessous, « ou écrivez-nous » ; bouton un peu moins
+   haut pour que l'ensemble tienne dans la hauteur du header */
+.header-rdv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
+}
+.header-rdv .btn {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+.header-rdv__ecrire {
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.header-rdv__ecrire:hover,
+.header-rdv__ecrire:focus-visible {
+  color: var(--primary);
+  text-decoration: underline;
 }
 @media (max-width: 1199.98px) {
   .header--vitrine .header-search { display: none; }

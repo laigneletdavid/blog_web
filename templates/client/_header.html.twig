@@ -1,8 +1,19 @@
 {# ====== HEADER CLIENT — bw_front ====== #}
-{# Header du theme vitrine : libelle du bouton (brief 3.1) et header compact au
-   defilement (3 bis A10). Inclus plutot que copie : il continue de recevoir les
-   correctifs de main. Si le theme change ces chaines, le remplacement ne fait rien. #}
+{# Header du theme vitrine : bouton de prise de rendez-vous avec, dessous, un lien
+   vers le contact pour qui prefere ecrire (decision David, 4/11/2026), et header
+   compact au defilement (3 bis A10). Inclus plutot que copie : il continue de
+   recevoir les correctifs de main. Si le theme change ces chaines, le remplacement
+   ne fait rien et le bouton « Contact » d'origine reste. #}
+{# Meme lien que l'etape 1 de la home (templates/client/home.html.twig, lienRendezVous) #}
+{% set lienRendezVous = 'https://calendar.app.google/HjoNfP83BWDB3rkW6' %}
+{% set boutonContact = '<a href="' ~ path('app_contact') ~ '" class="btn btn-primary">Contact</a>' %}
+{% set blocRendezVous %}
+<span class="header-rdv">
+    <a href="{{ lienRendezVous }}" class="btn btn-primary" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span></a>
+    <a href="{{ path('app_contact') }}" class="header-rdv__ecrire">ou écrivez-nous</a>
+</span>
+{% endset %}
 {{ include('themes/vitrine/_header.html.twig')|replace({
     '<header class="header header--vitrine">': '<header class="header header--vitrine" data-controller="sticky-header">',
-    'class="btn btn-primary">Contact</a>': 'class="btn btn-primary">Demander un devis</a>'
+    (boutonContact): blocRendezVous|trim
 })|raw }}
