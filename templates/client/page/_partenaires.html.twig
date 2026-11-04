@@ -6,9 +6,9 @@
    Titre et description SEO dans l'admin (page « partenaires », ancienne
    adresse /page/freelances redirigee en 301).
    TODO CONTENU (David) :
-     - conditions revendeurs : remise affichable ou « sur devis » (tarif_revendeur) ;
-     - « ½ journée » ou « 48 h » : formulation commune ; en attendant, la mise en
-       route ne cite aucun delai.
+     - conditions revendeurs : definies au fur et a mesure (David, 04/11/2026),
+       rien d affiche (tarif_revendeur) ;
+     - delai de mise en route : 48 h (David, 04/11/2026).
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {{ m.symbole_vague() }}
@@ -29,7 +29,7 @@
     { q: 'Qui gère les problèmes techniques ?', r: 'Nous. Si le serveur a un souci, si une mise à jour doit être déployée, si un correctif de sécurité doit être appliqué : c’est notre responsabilité. Vous n’êtes jamais sollicité pour des questions d’infrastructure. Nous réalisons aussi les mises à jour de la page d’accueil, 4 modifications par an.' },
     { q: 'Y a-t-il un engagement ou un minimum de sites ?', r: 'Aucun. Vous nous confiez un site, dix sites ou cent : le modèle est le même. Pas de frais d’entrée, pas de volume minimum, pas d’engagement de durée.' },
     { q: 'Je peux personnaliser le site au-delà des thèmes proposés ?', r: 'Oui. Chaque site peut recevoir un design sur mesure, intégré pour ' ~ m.euros(prix_design) ~ ' HT de plus. Vous restez maître du design, on code.' },
-    { q: 'Comment se passe la mise en route ?', r: 'Vous nous transmettez la fiche de référence client remplie (modèle fourni). On monte le site, puis vous recevez les accès admin et vous prenez la main pour la personnalisation finale, le contenu et la formation de votre client.' },
+    { q: 'Comment se passe la mise en route ?', r: 'Vous nous transmettez la fiche de référence client remplie (modèle fourni). On monte le site sous 48 h, puis vous recevez les accès admin et vous prenez la main pour la personnalisation finale, le contenu et la formation de votre client.' },
 ] %}
 
 {# ====== 1. EN-TETE ====== #}

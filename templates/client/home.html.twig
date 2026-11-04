@@ -16,13 +16,13 @@
             <div class="col-lg-6 home-hero__content">
                 <p class="home-hero__overtitle">Le code c'est nous, le contenu c'est vous.</p>
                 <h1 class="home-hero__title">Site internet professionnel {{ m.vague('clé en main') }} pour TPE et artisans</h1>
-                <p class="home-hero__desc">Un site professionnel livré en une demi-journée, prêt à être trouvé sur Google. Vous racontez votre métier, on s'occupe du reste.</p>
+                <p class="home-hero__desc">Un site professionnel livré en 48 h, prêt à être trouvé sur Google. Vous racontez votre métier, on s'occupe du reste.</p>
                 <div class="home-hero__actions">
                     <a href="/page/offres" class="btn btn-primary btn-lg">Voir les offres<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
                     <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">Demander un devis</a>
                 </div>
                 <div class="home-hero__badges">
-                    <span class="home-hero__trust-badge">&#9989; Site en ligne en &#189; journée</span>
+                    <span class="home-hero__trust-badge">&#9989; Site en ligne en 48 h</span>
                     <span class="home-hero__trust-badge">&#128274; Sécurisé & RGPD</span>
                     <span class="home-hero__trust-badge">&#127467;&#127479; Hébergé en France</span>
                 </div>
@@ -143,7 +143,7 @@
 {% set lienRendezVous = m.lien_rdv() %}
 {% set etapes = [
     { titre: 'On parle de votre projet', texte: 'Autour d’un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.', lien: lienRendezVous, libelle: 'Réserver un créneau', externe: true },
-    { titre: 'On installe en ½ journée', texte: 'Vous remplissez un questionnaire guidé, on s’occupe du reste : nom de domaine, hébergement, sécurité.', lien: '/service/votre-site-est-pret-en-une-demi-journee' },
+    { titre: 'On installe en 48 h', texte: 'Vous remplissez un questionnaire guidé, on s’occupe du reste : nom de domaine, hébergement, sécurité.', lien: '/service/votre-site-est-pret-en-48-h' },
     { titre: 'Vous écrivez, simplement', texte: 'Vous racontez votre métier, vos services, avec un éditeur simple comme Word. Pas besoin de coder.', lien: '/service/vous-gerez-votre-contenu-en-toute-autonomie' },
     { titre: 'En ligne, et on reste là', texte: 'Formation de 30 min, guide écrit et support continu : un seul interlocuteur pour vos questions.', lien: '/service/on-ne-vous-laisse-pas-seul-apres-la-livraison' },
 ] %}
@@ -257,7 +257,7 @@
                 <div class="home-metrics__label">de technique pour vous</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value">&frac12; journée</div>
+                <div class="home-metrics__value">48 h</div>
                 <div class="home-metrics__label">pour être en ligne</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
@@ -375,7 +375,7 @@
 <section class="home-cta">
     <div class="container text-center" data-controller="reveal">
         <h2 class="home-cta__title">Prêt à lancer {{ m.vague('votre site') }} ?</h2>
-        <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en une demi-journée, après validation de votre contenu.</p>
+        <p class="home-cta__desc">Contactez-nous pour discuter de votre projet. Installation, personnalisation et mise en ligne en 48 h, après validation de votre contenu.</p>
         <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Nous contacter<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
 </section>
