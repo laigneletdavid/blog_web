@@ -73,8 +73,12 @@ class SeoService
 
     /**
      * SEO generique pour les pages sans entite (contact, etc.).
+     *
+     * $description : la meta description propre a la page, « %s » remplace par le
+     * nom du site. Sans elle, la description par defaut du site, celle de la home :
+     * a eviter, Google y voit du contenu duplique.
      */
-    public function resolveForPage(string $pageTitle): array
+    public function resolveForPage(string $pageTitle, ?string $description = null): array
     {
         $site = $this->siteContext->getCurrentSite();
         $siteName = $site?->getName() ?? 'Blog&Web';
@@ -82,7 +86,7 @@ class SeoService
 
         return [
             'title' => $pageTitle . ' - ' . $siteName,
-            'description' => $site?->getDefaultSeoDescription() ?? '',
+            'description' => $description !== null ? sprintf($description, $siteName) : ($site?->getDefaultSeoDescription() ?? ''),
             'keywords' => '',
             'noIndex' => false,
             'canonicalUrl' => null,
