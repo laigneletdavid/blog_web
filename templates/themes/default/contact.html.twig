@@ -33,6 +33,7 @@
                 {{ form_start(contactForm) }}
                     {{ form_widget(contactForm) }}
                     <button class="btn-font btn btn-primary mt-3" type="submit">Envoyer</button>
+                    {% include '_partials/_contact_rgpd.html.twig' %}
                 {{ form_end(contactForm) }}
             </div>
             <div class="col-lg-4 contact_widgets">
