@@ -1,7 +1,8 @@
 {# ======================================================================
    REALISATIONS — bw_front (ComWeb Studio)
-   Les fiches viennent du module Portfolio (admin) : capture, texte court,
-   lien du site. Seules les categories qui ont au moins une realisation
+   Les fiches viennent du module Portfolio (admin). Deux groupes : les sites
+   clients d'abord, puis nos propres sites, reperes par le tag « Nos sites »
+   (slug nos-sites). Seules les categories qui ont au moins une realisation
    apparaissent dans les filtres.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
@@ -15,6 +16,31 @@
         {% set categories_utilisees = categories_utilisees|merge([cat]) %}
     {% endif %}
 {% endfor %}
+
+{% set sites_maison = items|filter(i => i.tags|filter(t => t.slug == 'nos-sites')|length > 0) %}
+{% set sites_clients = items|filter(i => i.tags|filter(t => t.slug == 'nos-sites')|length == 0) %}
+
+{% macro carte(item) %}
+<article class="cw-real" data-controller="reveal">
+    <a class="cw-real__capture" href="{{ path('app_portfolio_show', {slug: item.slug}) }}" tabindex="-1" aria-hidden="true">
+        <span class="cw-real__barre"><span></span><span></span><span></span></span>
+        {{ responsive_img(item.image, '(max-width: 767px) 92vw, 560px', 'cw-real__img', item.image ? item.image.alt : item.title) }}
+    </a>
+    <div class="cw-real__corps">
+        {% if item.category %}<p class="cw-real__type">{{ item.category.name }}</p>{% endif %}
+        <h3 class="cw-real__titre"><a href="{{ path('app_portfolio_show', {slug: item.slug}) }}">{{ item.title }}</a></h3>
+        {% if item.shortDescription %}<p class="cw-real__texte">{{ item.shortDescription }}</p>{% endif %}
+        <p class="cw-real__liens">
+            <a href="{{ path('app_portfolio_show', {slug: item.slug}) }}">Voir la fiche<span class="visually-hidden"> {{ item.title }}</span></a>
+            {% if item.projectUrl %}
+            <a href="{{ item.projectUrl }}" target="_blank" rel="noopener">Visiter le site<span class="visually-hidden"> {{ item.title }} (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+            {% else %}
+            <span class="cw-real__ici">Vous y êtes</span>
+            {% endif %}
+        </p>
+    </div>
+</article>
+{% endmacro %}
 
 <section class="cw-page-head">
     <div class="container">
@@ -33,42 +59,39 @@
     </div>
 </section>
 
+{% if items|length == 0 %}
+<section class="cw-section cw-section--alt">
+    <div class="container"><p class="text-muted text-center py-5">Aucune réalisation pour le moment.</p></div>
+</section>
+{% endif %}
+
+{% if sites_clients|length > 0 %}
 <section class="cw-section cw-section--alt">
     <div class="container">
-        {% if items|length > 0 %}
+        <h2 class="cw-reals__titre">Ils nous ont fait confiance</h2>
         <div class="cw-reals">
-            {% for item in items %}
-            <article class="cw-real" data-controller="reveal">
-                <a class="cw-real__capture" href="{{ path('app_portfolio_show', {slug: item.slug}) }}" tabindex="-1" aria-hidden="true">
-                    <span class="cw-real__barre"><span></span><span></span><span></span></span>
-                    {{ responsive_img(item.image, '(max-width: 767px) 92vw, 45vw', 'cw-real__img', item.image ? item.image.alt : item.title) }}
-                </a>
-                <div class="cw-real__corps">
-                    {% if item.category %}<p class="cw-real__type">{{ item.category.name }}</p>{% endif %}
-                    <h2 class="cw-real__titre"><a href="{{ path('app_portfolio_show', {slug: item.slug}) }}">{{ item.title }}</a></h2>
-                    {% if item.shortDescription %}<p class="cw-real__texte">{{ item.shortDescription }}</p>{% endif %}
-                    <p class="cw-real__liens">
-                        <a href="{{ path('app_portfolio_show', {slug: item.slug}) }}">Voir la fiche<span class="visually-hidden"> {{ item.title }}</span></a>
-                        {% if item.projectUrl %}
-                        <a href="{{ item.projectUrl }}" target="_blank" rel="noopener">Visiter le site<span class="visually-hidden"> {{ item.title }} (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
-                        {% else %}
-                        <span class="cw-real__ici">Vous y êtes</span>
-                        {% endif %}
-                    </p>
-                </div>
-            </article>
-            {% endfor %}
+            {% for item in sites_clients %}{{ _self.carte(item) }}{% endfor %}
         </div>
-        {% else %}
-        <p class="text-muted text-center py-5">Aucune réalisation pour le moment.</p>
-        {% endif %}
     </div>
 </section>
+{% endif %}
+
+{% if sites_maison|length > 0 %}
+<section class="cw-section">
+    <div class="container">
+        <h2 class="cw-reals__titre">Nos sites, sur notre outil</h2>
+        <p class="cw-reals__intro">Nos propres sites tournent aussi sur ComWeb Studio : le même outil, les mêmes mises à jour que ceux de nos clients.</p>
+        <div class="cw-reals cw-reals--trois">
+            {% for item in sites_maison %}{{ _self.carte(item) }}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
 <section class="home-cta">
     <div class="container text-center" data-controller="reveal">
-        <h2 class="home-cta__title">Le prochain site, c'est le vôtre ?</h2>
-        <p class="home-cta__desc">On en parle autour d'un café, au téléphone ou en visio : 30 minutes, gratuit et sans engagement.</p>
+        <h2 class="home-cta__title">Votre site, c'est le prochain ?</h2>
+        <p class="home-cta__desc">Prenons un café, ou un appel en visio : 30 minutes, gratuit et sans engagement.</p>
         <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
         <p class="cw-cta__second">Ou <a href="{{ path('app_page_show', {slug: 'offres'}) }}">voir les tarifs</a>.</p>
     </div>

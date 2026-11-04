@@ -1,14 +1,32 @@
 {# ======================================================================
-   REALISATION (fiche) — bw_front (ComWeb Studio)
-   Titre, type, client, capture, texte de l'admin et lien vers le site.
+   REALISATION (fiche, en etude de cas) — bw_front (ComWeb Studio)
+   - En-tete : type, titre, resume (description courte), client, date, lien.
+   - Captures : l'accueil (image principale) puis la galerie, champ JSON
+     gallery = [{ media: id, legende: '...', format: 'ecran'|'mobile' }]
+     (pas encore editable dans l'admin : se remplit en base).
+   - Etude de cas : le contenu detaille de l'admin, avec des H2 « Le client »,
+     « Son besoin », « Ce qu'on a fait » et le temoignage en citation.
+     TODO CONTENU : textes des etudes de cas (etude notariale, Les Pros d'Ici).
+   - Les sites maison (tag « Nos sites ») ont une mention a la place.
    Les donnees structurees restent produites par portfolio/show.html.twig.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 
+{% set site_maison = item.tags|filter(t => t.slug == 'nos-sites')|length > 0 %}
+{% set galerie = [] %}
+{% for g in item.gallery|default([]) %}
+    {% set media_g = media_by_id(g.media|default(null)) %}
+    {% if media_g %}
+        {% set galerie = galerie|merge([{ media: media_g, legende: g.legende|default(''), format: g.format|default('ecran') }]) %}
+    {% endif %}
+{% endfor %}
+{% set ecrans = galerie|filter(g => g.format != 'mobile') %}
+{% set mobiles = galerie|filter(g => g.format == 'mobile') %}
+
 <section class="cw-page-head cw-real-head">
     <div class="container">
         <p class="cw-real-head__retour"><a href="{{ path('app_portfolio_index') }}"><span aria-hidden="true">&larr;</span> Toutes les réalisations</a></p>
-        {% if item.category %}<p class="cw-real__type">{{ item.category.name }}</p>{% endif %}
+        <p class="cw-real__type">{{ site_maison ? 'Un de nos sites' : 'Étude de cas' }}{% if item.category %} · {{ item.category.name }}{% endif %}</p>
         <h1 class="cw-page-head__title">{{ item.title }}</h1>
         {% if item.shortDescription %}<p class="cw-page-head__lead">{{ item.shortDescription }}</p>{% endif %}
         <p class="cw-real-head__meta">
@@ -23,6 +41,7 @@
     </div>
 </section>
 
+{# ====== CAPTURES ====== #}
 <section class="cw-section cw-section--alt">
     <div class="container">
         {% if item.image %}
@@ -32,24 +51,52 @@
         </figure>
         {% endif %}
 
+        {% if galerie|length > 0 %}
+        <div class="cw-galerie{{ mobiles|length > 0 and ecrans|length > 0 ? ' cw-galerie--mixte' }}">
+            {% for g in ecrans %}
+            <figure class="cw-galerie__item" data-controller="reveal">
+                <div class="cw-real__capture cw-galerie__ecran">
+                    <span class="cw-real__barre"><span></span><span></span><span></span></span>
+                    {{ responsive_img(g.media, '(max-width: 767px) 92vw, 700px', 'cw-real__img') }}
+                </div>
+                {% if g.legende %}<figcaption>{{ g.legende }}</figcaption>{% endif %}
+            </figure>
+            {% endfor %}
+            {% for g in mobiles %}
+            <figure class="cw-galerie__item cw-galerie__item--mobile" data-controller="reveal">
+                <div class="cw-galerie__tel">
+                    {{ responsive_img(g.media, '(max-width: 767px) 60vw, 260px', 'cw-galerie__tel-img') }}
+                </div>
+                {% if g.legende %}<figcaption>{{ g.legende }}</figcaption>{% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{# ====== ETUDE DE CAS ====== #}
+{% if item.content|striptags|trim or site_maison %}
+<section class="cw-section">
+    <div class="container">
         {% if item.content|striptags|trim %}
         <div class="cw-real__contenu content-body">
             {{ item.content|raw }}
         </div>
         {% endif %}
-
-        {% if item.tags|length > 0 %}
-        <ul class="cw-real__tags">
-            {% for tag in item.tags %}<li>{{ tag.name }}</li>{% endfor %}
-        </ul>
+        {% if site_maison %}
+        <div class="cw-real__maison">
+            <p><strong>Un de nos propres sites.</strong> Il tourne sur ComWeb Studio, avec le même outil et les mêmes mises à jour que les sites de nos clients.</p>
+        </div>
         {% endif %}
     </div>
 </section>
+{% endif %}
 
 <section class="home-cta">
     <div class="container text-center" data-controller="reveal">
-        <h2 class="home-cta__title">Le prochain site, c'est le vôtre ?</h2>
-        <p class="home-cta__desc">On en parle autour d'un café, au téléphone ou en visio : 30 minutes, gratuit et sans engagement.</p>
+        <h2 class="home-cta__title">Votre site, c'est le prochain ?</h2>
+        <p class="home-cta__desc">Prenons un café, ou un appel en visio : 30 minutes, gratuit et sans engagement.</p>
         <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
         <p class="cw-cta__second">Ou <a href="{{ path('app_portfolio_index') }}">voir les autres réalisations</a>.</p>
     </div>
