@@ -1,0 +1,77 @@
+{# ======================================================================
+   CONTACT — bw_front (ComWeb Studio)
+   Brief du 4/11/2026 : le rendez-vous d'abord, le formulaire a cote. Le champ
+   « Sujet » du coeur (texte libre) est affiche en liste « Votre demande » : il
+   recoit l'une des valeurs ci-dessous, l'objet du mail dit de quoi il s'agit.
+   TODO CONTENU : delai de reponse chiffre (David) ; champ telephone (demande
+   un changement du formulaire du coeur et une migration).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{% set demandes = ['Créer mon site', 'Remplacer mon site WordPress', 'Devenir partenaire', 'Autre question'] %}
+{% set demande_choisie = contactForm.subject.vars.value|default(app.request.query.get('demande', '')) %}
+
+{# ====== EN-TETE ====== #}
+<section class="cw-page-head">
+    <div class="container">
+        <h1 class="cw-page-head__title">Parlons de {{ m.vague('votre projet') }}</h1>
+        <p class="cw-page-head__lead">Autour d'un café, au téléphone, en visio ou par écrit : comme vous préférez.</p>
+    </div>
+</section>
+
+<section class="cw-section cw-section--alt cw-contact">
+    <div class="container">
+        <div class="cw-contact__grille">
+            {# ====== RENDEZ-VOUS ET COORDONNEES ====== #}
+            <div class="cw-contact__cote">
+                <div class="cw-contact__rdv">
+                    <p class="cw-fonc-surtitre">Le plus simple</p>
+                    <h2 class="cw-contact__titre">Prendre rendez-vous</h2>
+                    <p>30 minutes pour parler de votre métier et de votre site. Gratuit et sans engagement.</p>
+                    <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg w-100" target="_blank" rel="noopener">Choisir un créneau<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+                </div>
+                <ul class="cw-contact__coord">
+                    {% if site.phone %}
+                    <li><span class="cw-contact__label">Téléphone</span><a href="tel:{{ site.phone }}">{{ site.phone|phone }}</a></li>
+                    {% endif %}
+                    {% if site.email %}
+                    <li><span class="cw-contact__label">E-mail</span><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+                    {% endif %}
+                    {% if site.address1 %}
+                    <li><span class="cw-contact__label">Adresse</span>{{ site.address1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {# ====== FORMULAIRE ====== #}
+            <div class="cw-contact__form">
+                <h2 class="cw-contact__titre">Ou écrivez-moi</h2>
+                {{ form_start(contactForm) }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">{{ form_row(contactForm.firstname) }}</div>
+                        <div class="col-sm-6">{{ form_row(contactForm.name) }}</div>
+                    </div>
+                    {{ form_row(contactForm.email) }}
+                    <div class="mb-3">
+                        <label class="form-label required" for="{{ contactForm.subject.vars.id }}">Votre demande</label>
+                        <select class="form-select{{ contactForm.subject.vars.valid ? '' : ' is-invalid' }}" id="{{ contactForm.subject.vars.id }}" name="{{ field_name(contactForm.subject) }}" required>
+                            <option value="" disabled{{ demande_choisie == '' ? ' selected' }}>Choisissez…</option>
+                            {% for d in demandes %}
+                            <option value="{{ d }}"{{ demande_choisie == d ? ' selected' }}>{{ d }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ form_errors(contactForm.subject) }}
+                    </div>
+                    {% do contactForm.subject.setRendered %}
+                    {{ form_row(contactForm.message) }}
+                    {{ form_rest(contactForm) }}
+                    <button class="btn btn-primary btn-lg w-100 mt-2" type="submit">Envoyer le message</button>
+                    {% include '_partials/_contact_rgpd.html.twig' %}
+                {{ form_end(contactForm) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include '_partials/_contact_map.html.twig' with { wrapperClass: 'container my-5', height: 300 } %}
