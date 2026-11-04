@@ -69,23 +69,23 @@
 </section>
 
 {# ====== 3.3 PREUVE RAPIDE ====== #}
-{# TODO CONTENU : 3 captures de sites clients (capture WebP + nom + métier, avec l'accord des clients).
-   Remplir la liste : { image: 'fichier.webp', nom: '...', metier: '...', url: 'https://...' }.
-   La section reste masquée tant que la liste est vide. #}
-{% set sitesClients = [] %}
+{# Preuve sociale : les realisations mises en avant (module Portfolio, admin),
+   les trois premieres par position. #}
+{% set sitesClients = featuredPortfolio|default([])|slice(0, 3) %}
 {% if sitesClients|length > 0 %}
 <section class="home-proof">
     <div class="container">
-        <p class="home-proof__title">Ils ont leur site avec nous</p>
+        <p class="home-proof__title">Ces sites tournent déjà avec {{ nomProduit }}</p>
         <div class="home-proof__grid">
-            {% for client in sitesClients %}
-            <a class="home-proof__card" href="{{ client.url }}" target="_blank" rel="noopener">
-                <img src="{{ asset('documents/medias/' ~ client.image) }}" alt="Site de {{ client.nom }}, {{ client.metier }}" loading="lazy" width="480" height="300">
-                <span class="home-proof__name">{{ client.nom }}</span>
-                <span class="home-proof__job">{{ client.metier }}</span>
+            {% for item in sitesClients %}
+            <a class="home-proof__card" href="{{ path('app_portfolio_show', {slug: item.slug}) }}">
+                {{ responsive_img(item.image, '(max-width: 767px) 92vw, 30vw', '', item.image ? item.image.alt : item.title) }}
+                <span class="home-proof__name">{{ item.title }}</span>
+                {% if item.category %}<span class="home-proof__job">{{ item.category.name }}</span>{% endif %}
             </a>
             {% endfor %}
         </div>
+        <p class="home-proof__plus"><a href="{{ path('app_portfolio_index') }}">Voir toutes les réalisations<span class="cw-arrow" aria-hidden="true">&rarr;</span></a></p>
     </div>
 </section>
 {% endif %}
@@ -238,15 +238,6 @@
             </div>
             {% endfor %}
         </div>
-    </div>
-</section>
-{% endif %}
-
-{% if featuredPortfolio|default([])|length > 0 %}
-<section class="home-portfolio">
-    <div class="container">
-        <h2 class="home-section-title text-center">Nos réalisations</h2>
-        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
     </div>
 </section>
 {% endif %}

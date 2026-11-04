@@ -1,0 +1,75 @@
+{# ======================================================================
+   REALISATIONS — bw_front (ComWeb Studio)
+   Les fiches viennent du module Portfolio (admin) : capture, texte court,
+   lien du site. Seules les categories qui ont au moins une realisation
+   apparaissent dans les filtres.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{% set categories_utilisees = [] %}
+{% for cat in portfolioCategories %}
+    {% if activeCategory and activeCategory.id == cat.id %}
+        {% set categories_utilisees = categories_utilisees|merge([cat]) %}
+    {% elseif not activeCategory and items|filter(i => i.category and i.category.id == cat.id)|length > 0 %}
+        {% set categories_utilisees = categories_utilisees|merge([cat]) %}
+    {% endif %}
+{% endfor %}
+
+<section class="cw-page-head">
+    <div class="container">
+        <h1 class="cw-page-head__title">Nos {{ m.vague('réalisations') }}</h1>
+        <p class="cw-page-head__lead">Des sites en ligne, construits et gérés avec ComWeb Studio.</p>
+        {% if categories_utilisees|length > 1 or activeCategory %}
+        <nav class="cw-sommaire" aria-label="Filtrer les réalisations">
+            <ol>
+                <li><a href="{{ path('app_portfolio_index') }}"{% if not activeCategory %} aria-current="page"{% endif %}>Toutes</a></li>
+                {% for cat in categories_utilisees %}
+                <li><a href="{{ path('app_portfolio_index', {categorie: cat.slug}) }}"{% if activeCategory and activeCategory.id == cat.id %} aria-current="page"{% endif %}>{{ cat.name }}</a></li>
+                {% endfor %}
+            </ol>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        {% if items|length > 0 %}
+        <div class="cw-reals">
+            {% for item in items %}
+            <article class="cw-real" data-controller="reveal">
+                <a class="cw-real__capture" href="{{ path('app_portfolio_show', {slug: item.slug}) }}" tabindex="-1" aria-hidden="true">
+                    <span class="cw-real__barre"><span></span><span></span><span></span></span>
+                    {{ responsive_img(item.image, '(max-width: 767px) 92vw, 45vw', 'cw-real__img', item.image ? item.image.alt : item.title) }}
+                </a>
+                <div class="cw-real__corps">
+                    {% if item.category %}<p class="cw-real__type">{{ item.category.name }}</p>{% endif %}
+                    <h2 class="cw-real__titre"><a href="{{ path('app_portfolio_show', {slug: item.slug}) }}">{{ item.title }}</a></h2>
+                    {% if item.shortDescription %}<p class="cw-real__texte">{{ item.shortDescription }}</p>{% endif %}
+                    <p class="cw-real__liens">
+                        <a href="{{ path('app_portfolio_show', {slug: item.slug}) }}">Voir la fiche<span class="visually-hidden"> {{ item.title }}</span></a>
+                        {% if item.projectUrl %}
+                        <a href="{{ item.projectUrl }}" target="_blank" rel="noopener">Visiter le site<span class="visually-hidden"> {{ item.title }} (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+                        {% else %}
+                        <span class="cw-real__ici">Vous y êtes</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-5">Aucune réalisation pour le moment.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="home-cta">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">Le prochain site, c'est le vôtre ?</h2>
+        <p class="home-cta__desc">On en parle autour d'un café, au téléphone ou en visio : 30 minutes, gratuit et sans engagement.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second">Ou <a href="{{ path('app_page_show', {slug: 'offres'}) }}">voir les tarifs</a>.</p>
+    </div>
+</section>

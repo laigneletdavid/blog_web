@@ -1,0 +1,56 @@
+{# ======================================================================
+   REALISATION (fiche) — bw_front (ComWeb Studio)
+   Titre, type, client, capture, texte de l'admin et lien vers le site.
+   Les donnees structurees restent produites par portfolio/show.html.twig.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+
+<section class="cw-page-head cw-real-head">
+    <div class="container">
+        <p class="cw-real-head__retour"><a href="{{ path('app_portfolio_index') }}"><span aria-hidden="true">&larr;</span> Toutes les réalisations</a></p>
+        {% if item.category %}<p class="cw-real__type">{{ item.category.name }}</p>{% endif %}
+        <h1 class="cw-page-head__title">{{ item.title }}</h1>
+        {% if item.shortDescription %}<p class="cw-page-head__lead">{{ item.shortDescription }}</p>{% endif %}
+        <p class="cw-real-head__meta">
+            {% if item.client %}<span>{{ item.client }}</span>{% endif %}
+            {% if item.projectDate %}<span>En ligne depuis {{ item.projectDate|format_date(pattern='MMMM y', locale='fr') }}</span>{% endif %}
+        </p>
+        {% if item.projectUrl %}
+        <a href="{{ item.projectUrl }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Visiter le site<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        {% else %}
+        <p class="cw-real__ici">Vous y êtes</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        {% if item.image %}
+        <figure class="cw-real__capture cw-real__capture--grande">
+            <span class="cw-real__barre"><span></span><span></span><span></span></span>
+            {{ responsive_img(item.image, '(max-width: 1199px) 92vw, 1100px', 'cw-real__img', item.image.alt, true) }}
+        </figure>
+        {% endif %}
+
+        {% if item.content|striptags|trim %}
+        <div class="cw-real__contenu content-body">
+            {{ item.content|raw }}
+        </div>
+        {% endif %}
+
+        {% if item.tags|length > 0 %}
+        <ul class="cw-real__tags">
+            {% for tag in item.tags %}<li>{{ tag.name }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</section>
+
+<section class="home-cta">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">Le prochain site, c'est le vôtre ?</h2>
+        <p class="home-cta__desc">On en parle autour d'un café, au téléphone ou en visio : 30 minutes, gratuit et sans engagement.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second">Ou <a href="{{ path('app_portfolio_index') }}">voir les autres réalisations</a>.</p>
+    </div>
+</section>
