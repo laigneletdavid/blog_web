@@ -73,16 +73,28 @@
                 {% for ligne in abonnement %}<li>{{ ligne }}</li>{% endfor %}
             </ul>
         </div>
-        {# TODO CONTENU : comparaison avec une agence et avec un WordPress « gratuit »
-           (chiffres à fournir par David). #}
-        <p class="cw-cost__lien">
-            <a href="{{ path('app_article_show', { slug: 'combien-coute-vraiment-un-site-internet-professionnel-en-2026' }) }}">Combien coûte vraiment un site internet professionnel ? Notre article détaillé &rarr;</a>
+    </div>
+</section>
+
+{# ====== 3 bis. WORDPRESS GRATUIT : LE COMPARATIF COURT ======
+   Chiffres : client/_wordpress.html.twig (source unique avec la page comparatif). #}
+<section class="cw-section" id="wordpress">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">WordPress est gratuit. Votre temps, non.</h2>
+            <p class="home-section-subtitle">On vous a dit qu'un site WordPress ne coûtait rien. C'est vrai pour le logiciel. Pour tout le reste, voici la vraie facture sur 3 ans.</p>
+        </div>
+        {% include 'client/_wordpress.html.twig' with { vue: 'tableau' } %}
+        <p class="cw-wp__temps">Sans compter le temps : {% include 'client/_wordpress.html.twig' with { vue: 'heures' } %} pour apprendre à faire son site WordPress soi-même la première année.</p>
+        <p class="cw-wp__liens">
+            <a href="{{ path('app_page_show', { slug: 'wordpress-gratuit-vrai-cout' }) }}" class="btn btn-outline-primary">Voir le comparatif complet<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+            <a href="{{ path('app_article_show', { slug: 'combien-coute-vraiment-un-site-internet-professionnel-en-2026' }) }}">Notre article : combien coûte vraiment un site internet professionnel ?</a>
         </p>
     </div>
 </section>
 
 {# ====== 4. TABLEAU COMPARATIF ====== #}
-<section class="cw-section" id="comparatif">
+<section class="cw-section cw-section--alt" id="comparatif">
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Comparez les formules en détail</h2>
@@ -93,7 +105,7 @@
 </section>
 
 {# ====== 5. OPTIONS A LA CARTE ====== #}
-<section class="cw-section cw-section--alt" id="options">
+<section class="cw-section" id="options">
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Les options à la carte</h2>
@@ -115,7 +127,7 @@
 </section>
 
 {# ====== 6. L'INSTALLATION ====== #}
-<section class="cw-section">
+<section class="cw-section cw-section--alt">
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">L'installation : ce qu'on fait pour vous</h2>
@@ -135,7 +147,7 @@
    prévoir alors les données structurées FAQPage. #}
 
 {# ====== 8. APPEL FINAL ====== #}
-<section class="home-cta cw-cta--alt">
+<section class="home-cta">
     <div class="container text-center" data-controller="reveal">
         <h2 class="home-cta__title">Parlons de {{ m.vague('votre projet') }}</h2>
         <p class="home-cta__desc">Autour d'un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.</p>

@@ -1165,3 +1165,77 @@ h1, h2, h3, h4, h5, h6,
 .btn:focus-visible .cw-arrow--bas {
   transform: translateY(3px);
 }
+
+/* ===========================================================================
+   Argument « WordPress gratuit » (brief du 4/11/2026)
+   =========================================================================== */
+
+/* --- Home : bandeau de chiffres --- */
+.home-metrics__value {
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  white-space: nowrap;
+}
+.home-metrics__unite {
+  font-size: 0.55em;
+  font-weight: 600;
+}
+.home-metrics__label {
+  text-transform: none;
+}
+.home-metrics__lien {
+  margin: 2rem 0 0;
+  text-align: center;
+}
+.home-metrics__lien a {
+  color: #FFFFFF;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+.home-metrics__lien a:hover .cw-arrow,
+.home-metrics__lien a:focus-visible .cw-arrow {
+  transform: translateX(4px);
+}
+
+/* --- Tableau WordPress : en-tetes sur deux lignes, ligne du total marquee --- */
+.cw-compare--wp thead th small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.cw-compare__total th,
+.cw-compare__total td {
+  background: var(--surface);
+  font-size: 1rem;
+}
+.cw-compare__total .is-vedette {
+  background: color-mix(in srgb, var(--primary) 10%, #FFFFFF);
+  color: var(--primary);
+}
+.cw-sources {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.cw-wp__temps {
+  max-width: 70ch;
+  margin: 2rem auto 0;
+  text-align: center;
+  font-weight: 500;
+  color: var(--text);
+}
+.cw-wp__liens {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 1.75rem;
+  margin: 1.75rem 0 0;
+}
+.cw-wp__liens a:not(.btn) {
+  font-weight: 600;
+}

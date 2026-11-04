@@ -1,0 +1,50 @@
+{# ======================================================================
+   COMPARATIF WORDPRESS — source unique des chiffres (page Tarifs + page
+   comparatif). Brief du 4/11/2026 : publicite comparative factuelle, jamais
+   de prestataire nomme, fourchettes et sources affichees.
+   La colonne ComWeb Studio lit la formule Vitrine dans client/_offres.html.twig.
+
+   Usage : {% include 'client/_wordpress.html.twig' with { vue: '…' } %}
+     tableau   le tableau sur 3 ans + la ligne de sources
+     heures    « 40 à 80 heures »
+   ====================================================================== #}
+{% set heures = '40 à 80 heures' %}
+
+{% if vue == 'tableau' %}
+{% set install = include('client/_offres.html.twig', { vue: 'vitrine_install' })|trim %}
+{% set total = include('client/_offres.html.twig', { vue: 'vitrine_3ans' })|trim %}
+{% set lignes = [
+    { libelle: 'Création', v: [install ~ ' HT', '0 €', '1 500 à 5 000 €'] },
+    { libelle: 'Hébergement, domaine, thème, extensions', v: ['Inclus', '300 à 1 500 €', 'Souvent en plus'] },
+    { libelle: 'Maintenance et mises à jour', v: ['Incluses', 'À faire vous-même', '60 à 150 € HT / mois'] },
+    { libelle: 'Total sur 3 ans', v: [total ~ ' HT', '300 à 1 500 € + vos heures', '3 700 à 10 000 €'], total: true },
+    { libelle: 'Sécurité', v: ['Surveillée chaque semaine', 'À votre charge', 'Selon le contrat'] },
+    { libelle: 'Quelqu’un au téléphone', v: ['Toujours le même', 'Personne', 'Parfois'] },
+] %}
+<div class="cw-compare cw-compare--wp" role="region" aria-label="Coût d'un site sur 3 ans : ComWeb Studio et WordPress" tabindex="0">
+    <table class="cw-compare__table">
+        <caption class="visually-hidden">Ce que coûte un site sur 3 ans, selon la solution</caption>
+        <thead>
+            <tr>
+                <th scope="col"><span class="visually-hidden">Sur 3 ans</span></th>
+                <th scope="col" class="is-vedette">ComWeb Studio <small>Vitrine</small></th>
+                <th scope="col">WordPress « gratuit » <small>fait vous-même</small></th>
+                <th scope="col">WordPress <small>chez un prestataire</small></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in lignes %}
+            <tr class="{{ l.total|default(false) ? 'cw-compare__total' }}">
+                <th scope="row">{{ l.libelle }}</th>
+                {% for v in l.v %}
+                <td class="{{ loop.first ? 'is-vedette' }}">{% if loop.first or l.total|default(false) %}<strong>{{ v }}</strong>{% else %}{{ v }}{% endif %}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<p class="cw-sources">Estimations de marché 2026 — sources : La Fabrique du Net, Learnthings, tarifs publics de prestataires de maintenance WordPress.</p>
+
+{% elseif vue == 'heures' %}{{ heures }}
+{% endif %}

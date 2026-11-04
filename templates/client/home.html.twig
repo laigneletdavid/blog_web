@@ -251,27 +251,32 @@
 </section>
 {% endif %}
 
-{# ====== 3.9 CHIFFRES CLES ====== #}
+{# ====== 3.9 CHIFFRES CLES ======
+   Brief « WordPress gratuit » (4/11/2026) : le cout sur 3 ans de la formule Vitrine
+   (lu dans client/_offres.html.twig), puis un lien vers le comparatif. #}
 <section class="home-metrics">
     <div class="container">
         <div class="row" data-controller="reveal count-up" data-reveal-stagger-value="70">
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value">&frac12; j</div>
+                <div class="home-metrics__value"><span data-count-up-target="value">{{ include('client/_offres.html.twig', { vue: 'vitrine_3ans' })|trim|replace({' €': ''}) }}</span> <span class="home-metrics__unite">€ HT</span></div>
+                <div class="home-metrics__label">votre site Vitrine pendant 3 ans, tout compris</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">0 heure</div>
+                <div class="home-metrics__label">de technique pour vous</div>
+            </div>
+            <div class="col-6 col-md-3 home-metrics__item">
+                <div class="home-metrics__value">&frac12; journée</div>
                 <div class="home-metrics__label">pour être en ligne</div>
             </div>
             <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value" data-count-up-target="value">6</div>
-                <div class="home-metrics__label">thèmes inclus</div>
-            </div>
-            <div class="col-6 col-md-3 home-metrics__item">
-                <div class="home-metrics__value" data-count-up-target="value">0</div>
-                <div class="home-metrics__label">plugin à installer</div>
-            </div>
-            <div class="col-6 col-md-3 home-metrics__item">
                 <div class="home-metrics__value" data-count-up-target="value">1</div>
-                <div class="home-metrics__label">interlocuteur unique</div>
+                <div class="home-metrics__label">interlocuteur, toujours le même</div>
             </div>
         </div>
+        <p class="home-metrics__lien">
+            <a href="{{ path('app_page_show', { slug: 'wordpress-gratuit-vrai-cout' }) }}">Comparer avec un site WordPress<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        </p>
     </div>
 </section>
 

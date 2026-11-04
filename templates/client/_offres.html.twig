@@ -10,6 +10,7 @@
      a_partir  « À partir de 450 € HT + 30 € HT / mois »
      cout      le cout sur 3 ans de chaque formule
      jsonld    les donnees structurees Product + Offer
+     vitrine_install / vitrine_3ans   montants de la formule Vitrine (« 450 € », « 1 530 € »)
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set offres = [
@@ -115,6 +116,10 @@
 
 {% elseif vue == 'a_partir' %}
 {% set d = offres|first %}{{ m.vague('À partir de ' ~ m.euros(d.install_ht) ~ ' HT') }} <span class="cw-nowrap">+ {{ d.mois_ht }} € HT / mois</span>
+
+{% elseif vue == 'vitrine_install' %}{{ m.euros((offres|first).install_ht) }}
+
+{% elseif vue == 'vitrine_3ans' %}{% set d = offres|first %}{{ m.euros(d.install_ht + 36 * d.mois_ht) }}
 
 {% elseif vue == 'cout' %}
 <div class="cw-cost" data-controller="reveal" data-reveal-stagger-value="70">
