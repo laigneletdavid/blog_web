@@ -1,0 +1,189 @@
+{# ======================================================================
+   PAGE DEVENIR PARTENAIRE — bw_front (ComWeb Studio)
+   Brief du 4/11/2026 : deux portes, les prescripteurs (recommandation,
+   commission) et les revendeurs (freelances, agences). Textes revendeurs
+   repris de l'ancienne page « Agences & Freelances », nettoyes.
+   Titre et description SEO dans l'admin (page « partenaires », ancienne
+   adresse /page/freelances redirigee en 301).
+   TODO CONTENU (David) :
+     - commission des prescripteurs : pourcentage, sur l'installation seule ou
+       aussi sur l'abonnement (commission_prescripteur ci-dessous) ;
+     - conditions revendeurs : remise affichable ou « sur devis » (tarif_revendeur) ;
+     - questions de FAQ pour les prescripteurs (apres la commission) ;
+     - « ½ journée » ou « 48 h » : formulation commune ; en attendant, la mise en
+       route ne cite aucun delai.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{# null = non affiche. Ex. : '10 % de l’installation' ; 'Remise de 20 % sur l’installation' #}
+{% set commission_prescripteur = null %}
+{% set tarif_revendeur = null %}
+
+{% set prix_design = include('client/_offres.html.twig', { vue: 'prix_option', option: 'design' })|trim %}
+
+{% set prescripteurs = ['Experts-comptables', 'Graphistes', 'Photographes', 'Imprimeurs', 'Réseaux d’entrepreneurs'] %}
+
+{% set faq = [
+    { q: 'Est-ce que mon client sait que je travaille avec ComWeb Studio ?', r: 'Oui, transparence totale. Vous apparaissez comme son interlocuteur principal, ComWeb Studio comme l’outil technique sur lequel son site est construit. Chacun son rôle, chacun sa compétence.' },
+    { q: 'Qui gère les problèmes techniques ?', r: 'Nous. Si le serveur a un souci, si une mise à jour doit être déployée, si un correctif de sécurité doit être appliqué : c’est notre responsabilité. Vous n’êtes jamais sollicité pour des questions d’infrastructure. Nous réalisons aussi les mises à jour de la page d’accueil, 4 modifications par an.' },
+    { q: 'Y a-t-il un engagement ou un minimum de sites ?', r: 'Aucun. Vous nous confiez un site, dix sites ou cent : le modèle est le même. Pas de frais d’entrée, pas de volume minimum, pas d’engagement de durée.' },
+    { q: 'Je peux personnaliser le site au-delà des thèmes proposés ?', r: 'Oui. Chaque site peut recevoir un design sur mesure, intégré pour ' ~ m.euros(prix_design) ~ ' HT de plus. Vous restez maître du design, on code.' },
+    { q: 'Comment se passe la mise en route ?', r: 'Vous nous transmettez la fiche de référence client remplie (modèle fourni). On monte le site, puis vous recevez les accès admin et vous prenez la main pour la personnalisation finale, le contenu et la formation de votre client.' },
+] %}
+
+{# ====== 1. EN-TETE ====== #}
+<section class="cw-page-head">
+    <div class="container">
+        <p class="cw-vs-head__surtitre">Devenir partenaire</p>
+        <h1 class="cw-page-head__title">Vous apportez le client, {{ m.vague('on s’occupe du site') }}</h1>
+        <p class="cw-page-head__lead">Vous recommandez, ou vous revendez : dans les deux cas, la technique, l'hébergement et la maintenance, c'est nous.</p>
+        <p class="cw-partenaires-portes">
+            <a href="#recommander" class="btn btn-primary btn-lg">Je recommande<span class="cw-arrow cw-arrow--bas" aria-hidden="true">&darr;</span></a>
+            <a href="#revendre" class="btn btn-outline-primary btn-lg">Je revends<span class="cw-arrow cw-arrow--bas" aria-hidden="true">&darr;</span></a>
+        </p>
+    </div>
+</section>
+
+{# ====== 2. PORTE 1 : RECOMMANDEZ-NOUS ====== #}
+<section class="cw-section cw-section--alt cw-vs" id="recommander">
+    <div class="container">
+        <div class="cw-vs__inner" data-controller="reveal">
+            <p class="cw-vs__num">Porte 1 · Recommandez-nous</p>
+            <h2 class="cw-vs__titre">Vous connaissez des entrepreneurs qui ont besoin d'un site</h2>
+            <p class="cw-vs__texte">Vous les conseillez déjà au quotidien. Présentez-leur ComWeb Studio : on s'occupe de tout le reste, sans aucune technique de votre côté.</p>
+            <p class="cw-ideal cw-partenaires-qui">
+                <span class="cw-ideal__label">Pour</span>
+                {% for p in prescripteurs %}<span class="cw-ideal__tag">{{ p }}</span>{% endfor %}
+            </p>
+        </div>
+        <ol class="cw-installation cw-installation--3" data-controller="reveal" data-reveal-stagger-value="70">
+            <li>Vous présentez ComWeb Studio à votre client</li>
+            <li>On s'occupe de tout : rendez-vous, site, mise en ligne</li>
+            <li>Vous touchez une commission{% if commission_prescripteur %} : {{ commission_prescripteur }}{% endif %}</li>
+        </ol>
+    </div>
+</section>
+
+{# ====== 3. PORTE 2 : REVENDEZ COMWEB STUDIO ====== #}
+<section class="cw-section cw-vs" id="revendre">
+    <div class="container">
+        <div class="cw-vs__inner" data-controller="reveal">
+            <p class="cw-vs__num">Porte 2 · Revendez ComWeb Studio</p>
+            <h2 class="cw-vs__titre">Proposez des sites pros à vos clients, sans toucher au code</h2>
+            <p class="cw-vs__texte">Vous gérez la relation client, le contenu et le design. On gère l'installation, l'hébergement et la maintenance technique. Chacun son métier, chacun sa facture, chacun sa valeur.</p>
+        </div>
+        <ul class="cw-fonc-grille cw-fonc-grille--3" data-controller="reveal" data-reveal-stagger-value="60">
+            <li class="cw-fonc-carte">
+                <h3 class="cw-fonc-carte__titre">Concentrez-vous sur votre valeur ajoutée</h3>
+                <p class="cw-fonc-carte__texte">Brief, direction artistique, rédaction, formation client, accompagnement : ce que vous faites le mieux. Le code, les mises à jour de sécurité, la sauvegarde quotidienne, c'est notre affaire.</p>
+            </li>
+            <li class="cw-fonc-carte">
+                <h3 class="cw-fonc-carte__titre">Gardez vos clients dans la durée</h3>
+                <p class="cw-fonc-carte__texte">Un site stable que vous n'avez pas à maintenir, c'est un client que vous gardez. Vous facturez votre suivi éditorial, vos évolutions, votre accompagnement, à votre rythme et à vos tarifs.</p>
+            </li>
+            <li class="cw-fonc-carte">
+                <h3 class="cw-fonc-carte__titre">Offrez mieux que les solutions classiques</h3>
+                <p class="cw-fonc-carte__texte">Sécurité intégrée, référencement natif, pas d'extension à maintenir, hébergement en France. Vos clients sont tranquilles, vous aussi.</p>
+            </li>
+        </ul>
+        <div class="cw-vs__avec" data-controller="reveal">
+            <p class="cw-vs__avec-titre">Comment ça marche</p>
+            <p class="cw-vs__avec-texte"><strong>Vous êtes notre client, vos clients sont les vôtres.</strong> Vous vendez votre prestation complète : conseil, stratégie, contenu, design, formation. Pour la technique, vous nous confiez le montage, l'hébergement et la maintenance. Vous facturez votre client au prix que vous fixez : la marge et la rémunération de votre prestation vous reviennent.</p>
+            {% if tarif_revendeur %}<p class="cw-vs__avec-texte cw-partenaires-tarif">{{ tarif_revendeur }}</p>{% endif %}
+        </div>
+        <div class="cw-repartition" data-controller="reveal" data-reveal-stagger-value="70">
+            <div class="cw-repartition__col">
+                <h3 class="cw-repartition__titre">Ce qu'on fait pour vous</h3>
+                <ul class="home-pricing__list">
+                    <li>Hébergement sécurisé en France</li>
+                    <li>Sauvegardes quotidiennes automatiques</li>
+                    <li>Mises à jour du système et correctifs de sécurité</li>
+                    <li>Continuité du service : aucune infrastructure à gérer</li>
+                </ul>
+            </div>
+            <div class="cw-repartition__col">
+                <h3 class="cw-repartition__titre">Ce qui reste de votre côté</h3>
+                <ul class="home-pricing__list">
+                    <li>La formation de votre client à l'administration</li>
+                    <li>Les questions sur la publication</li>
+                    <li>L'accompagnement éditorial et les choix visuels</li>
+                    <li>Les évolutions du contenu : c'est votre métier, et votre valeur</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 4. POURQUOI CA MARCHE POUR VOS CLIENTS ====== #}
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        <div class="cw-vs__inner text-center" data-controller="reveal">
+            <h2 class="cw-vs__titre">Pourquoi ça marche pour vos clients</h2>
+            <p class="cw-vs__texte">Le vrai concurrent, c'est le WordPress « gratuit ». Sur 3 ans, la facture n'a rien de gratuit, et c'est votre meilleur argument face à un client qui hésite.</p>
+            <a href="{{ path('app_page_show', { slug: 'wordpress-gratuit-vrai-cout' }) }}" class="btn btn-outline-primary">Voir le comparatif avec WordPress<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+    </div>
+</section>
+
+{# ====== 5. L'ACCES DEMO ====== #}
+<section class="cw-section">
+    <div class="container">
+        <div class="cw-demo" data-controller="reveal">
+            <div>
+                <h2 class="cw-vs__titre">Envie de voir l'envers du décor ?</h2>
+                <p class="cw-vs__texte">On vous ouvre un accès admin sur une copie de ce site. Testez tout : thèmes, éditeur, modules, référencement, personnalisation. Remis à zéro chaque nuit : amusez-vous.</p>
+            </div>
+            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Demander mon accès démo<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+    </div>
+</section>
+
+{# ====== 6. FAQ ====== #}
+<section class="cw-section cw-section--alt" id="faq">
+    <div class="container">
+        <div data-controller="reveal">
+            <h2 class="home-section-title text-center">Questions fréquentes</h2>
+            <div class="faq-home-section">
+                <div class="accordion faq-accordion" id="faq-partenaires">
+                    {% for f in faq %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq-p-{{ loop.index }}" aria-expanded="false" aria-controls="faq-p-{{ loop.index }}">
+                                {{ f.q }}
+                            </button>
+                        </h3>
+                        <div id="faq-p-{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#faq-partenaires">
+                            <div class="accordion-body content-body"><p>{{ f.r }}</p></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 7. APPEL FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">Parlons {{ m.vague('partenariat') }}</h2>
+        <p class="home-cta__desc">Vous cherchez un outil sur lequel bâtir une activité durable, avec un back-end fiable. Nous cherchons des partenaires sérieux qui portent notre produit avec exigence. Si ça vous parle, on en discute.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second">Ou <a href="{{ path('app_contact') }}">écrivez-nous</a>.</p>
+    </div>
+</section>
+
+{# ====== DONNEES STRUCTUREES : FAQPage ====== #}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% for f in faq %}
+        { "@type": "Question", "name": {{ f.q|json_encode|raw }}, "acceptedAnswer": { "@type": "Answer", "text": {{ f.r|json_encode|raw }} } }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>

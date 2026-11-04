@@ -1,0 +1,157 @@
+{# ======================================================================
+   PAGE A PROPOS — bw_front (ComWeb Studio)
+   Brief du 4/11/2026. Textes repris de la page d'origine (constat, histoire,
+   « Je réponds personnellement à chaque message ») et de David (« 15 ans à
+   vendre, 10 ans à coder », Comminges, Comminges / Commerce / Communication).
+   Titre et description SEO dans l'admin (page « a-propos »).
+   TODO CONTENU (David) : dates du parcours, commune exacte, nombre de sites ou
+   de clients a afficher, une touche personnelle. Rien n'est affiche avant.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{# Frise : ajouter « date: '…' » a chaque etape quand David les donne #}
+{% set parcours = [
+    { titre: '15 ans de vente', texte: 'Le commerce et la relation client : écouter, comprendre ce qu’un client attend vraiment avant d’acheter.' },
+    { titre: '10 ans de code', texte: 'Le web, appris pour de vrai : sites, outils, et tout ce qui coince quand on n’est pas du métier.' },
+    { titre: 'ComWeb Solutions', texte: 'L’agence web.' },
+    { titre: 'ComWeb Studio', texte: 'L’outil : un site professionnel clé en main, simple à gérer seul.' },
+] %}
+
+{% set com = [
+    { mot: 'Comminges', texte: 'Là où ComWeb est né, et où l’on se rencontre autour d’un café.' },
+    { mot: 'Commerce', texte: 'Quinze ans à vendre : je sais ce qu’un client attend avant de vous appeler.' },
+    { mot: 'Communication', texte: 'Un site, c’est d’abord un message clair. Le code est là pour le servir.' },
+] %}
+
+{% set engagements = [
+    { titre: 'Un seul interlocuteur', texte: 'Moi. Du premier café à la mise en ligne, et après.' },
+    { titre: 'Des prix affichés', texte: 'Tous nos tarifs sont en ligne. Pas de devis opaque, pas de coût caché.' },
+    { titre: 'Hébergé en France', texte: 'Votre site et vos données restent en France.' },
+    { titre: 'Aucun jargon', texte: 'On parle de votre métier, pas de serveurs ni d’extensions.' },
+    { titre: 'Une réponse rapide', texte: 'Je réponds personnellement à chaque message.' },
+] %}
+
+{# ====== 1. EN-TETE ====== #}
+<section class="cw-section cw-apropos-head">
+    <div class="container">
+        <div class="cw-apropos-head__grille">
+            <div>
+                <p class="cw-fonc-surtitre">À propos</p>
+                <h1 class="cw-page-head__title cw-apropos-head__titre">Un développeur qui a d'abord été {{ m.vague('commercial') }}</h1>
+                <p class="cw-page-head__lead">Je m'appelle David Laignelet. 15 ans à vendre, 10 ans à coder, dans le Comminges.</p>
+                <p class="cw-apropos-head__texte">J'ai construit ComWeb Studio pour les artisans, les commerçants et les indépendants : un site professionnel, sécurisé, trouvé sur Google, et surtout simple. Le code, c'est mon métier. Le contenu, c'est le vôtre.</p>
+            </div>
+            {% if page.featuredMedia %}
+            <div class="cw-apropos-head__photo">
+                {{ responsive_img(page.featuredMedia, '(max-width: 991px) 90vw, 40vw', 'cw-apropos-head__img', 'David Laignelet, créateur de ComWeb Studio', true) }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ====== 2. MON PARCOURS ====== #}
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Mon parcours</h2>
+        </div>
+        <ol class="cw-frise" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for etape in parcours %}
+            <li class="cw-frise__etape">
+                {% if etape.date is defined %}<span class="cw-frise__date">{{ etape.date }}</span>{% endif %}
+                <h3 class="cw-frise__titre">{{ etape.titre }}</h3>
+                <p class="cw-frise__texte">{{ etape.texte }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 3. POURQUOI « COMWEB » ====== #}
+<section class="cw-section">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Pourquoi « ComWeb »</h2>
+            <p class="home-section-subtitle">Trois « Com », et le web pour les relier.</p>
+        </div>
+        <ul class="cw-com" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for c in com %}
+            <li class="cw-com__carte">
+                <p class="cw-com__mot"><span>Com</span>{{ c.mot|slice(3) }}</p>
+                <p class="cw-com__texte">{{ c.texte }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{# ====== 4. LE CONSTAT ====== #}
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        <div class="cw-vs__inner" data-controller="reveal">
+            <h2 class="cw-vs__titre">Le constat</h2>
+            <p class="cw-vs__texte">Des artisans, des commerçants, des consultants : des gens passionnés par leur métier, qui savent qu'un site est indispensable. Mais entre les devis opaques, les solutions trop complexes et la peur de ne pas savoir gérer, beaucoup repoussent. Et ceux qui franchissent le pas se retrouvent souvent avec un site qu'ils ne peuvent pas modifier seuls.</p>
+            <p class="cw-apropos-chute">Ce n'est pas normal.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 5. MES ENGAGEMENTS ====== #}
+<section class="cw-section">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Mes engagements</h2>
+            <p class="home-section-subtitle">Pas des valeurs sur une affiche : des promesses que vous pouvez vérifier.</p>
+        </div>
+        <ul class="cw-fonc-grille cw-engagements" data-controller="reveal" data-reveal-stagger-value="60">
+            {% for e in engagements %}
+            <li class="cw-fonc-carte">
+                <h3 class="cw-fonc-carte__titre">{{ e.titre }}</h3>
+                <p class="cw-fonc-carte__texte">{{ e.texte }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{# ====== 6. LA FAMILLE COMWEB ====== #}
+<section class="cw-section cw-section--alt">
+    <div class="container">
+        <div class="cw-famille" data-controller="reveal">
+            <p class="cw-famille__titre">La famille ComWeb</p>
+            <ul class="cw-famille__liste">
+                <li><strong>ComWeb Solutions</strong> l'agence</li>
+                <li><strong>ComWeb Studio</strong> l'outil : votre site clé en main</li>
+                <li><a href="https://lintello.fr" target="_blank" rel="noopener"><strong>LintellO</strong></a> l'intelligence artificielle</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+{# ====== 7. APPEL FINAL ====== #}
+<section class="home-cta">
+    <div class="container text-center" data-controller="reveal">
+        <h2 class="home-cta__title">On en parle {{ m.vague('autour d’un café') }} ?</h2>
+        <p class="home-cta__desc">Au téléphone, en visio ou en vrai : 30 minutes pour parler de votre métier et de votre site. Gratuit et sans engagement.</p>
+        <a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="cw-cta__second">Ou <a href="{{ path('app_contact') }}">écrivez-moi</a> : je réponds personnellement à chaque message.</p>
+    </div>
+</section>
+
+{# ====== DONNEES STRUCTUREES : Person ====== #}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "David Laignelet",
+    "jobTitle": "Créateur de ComWeb Studio",
+    "url": "{{ app.request.uri }}",
+    {%- if page.featuredMedia %}
+    "image": "{{ absolute_url(asset('documents/medias/' ~ page.featuredMedia.fileName)) }}",
+    {%- endif %}
+    "worksFor": { "@type": "Organization", "name": {{ site.name|default('ComWeb Studio')|json_encode|raw }}, "url": "{{ absolute_url('/') }}" },
+    "address": { "@type": "PostalAddress", "addressRegion": "Comminges", "addressCountry": "FR" }
+}
+</script>
