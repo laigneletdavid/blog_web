@@ -5,7 +5,7 @@
    en ligne, retrait sur place, sans expedition).
 
    Usage : {% include 'client/_offres.html.twig' with { vue: '…' } %}
-     cartes    les 3 cartes (grille)
+     cartes    les 3 cartes (grille) ; surPageOffres: true -> boutons vers #comparatif
      tableau   le tableau comparatif detaille
      a_partir  « À partir de 450 € HT + 30 € HT / mois »
      cout      le cout sur 3 ans de chaque formule
@@ -62,7 +62,11 @@
             </ul>
         </div>
         <div class="home-pricing__card-footer">
+            {% if surPageOffres|default(false) %}
+            <a href="#comparatif" class="btn {{ o.vedette ? 'btn-primary' : 'btn-outline-primary' }} w-100">Comparer en détail<span class="visually-hidden"> l'offre {{ o.nom }}</span><span class="cw-arrow cw-arrow--bas" aria-hidden="true">&darr;</span></a>
+            {% else %}
             <a href="/page/offres#comparatif" class="btn {{ o.vedette ? 'btn-primary' : 'btn-outline-primary' }} w-100">Voir le détail<span class="visually-hidden"> de l'offre {{ o.nom }}</span>{% if o.vedette %}<span class="cw-arrow" aria-hidden="true">&rarr;</span>{% endif %}</a>
+            {% endif %}
         </div>
     </div>
     {% endfor %}

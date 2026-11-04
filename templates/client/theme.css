@@ -903,9 +903,13 @@ h1, h2, h3, h4, h5, h6,
 
 /* --- Tableau comparatif : pleine largeur ; en mobile, la colonne des libelles
        reste fixe et le tableau defile seul, jamais la page --- */
+/* Jamais de defilement vertical dans le cadre : overflow-x seul met aussi
+   overflow-y en auto, et un pixel de trop faisait apparaitre une barre. Le
+   tableau defile en largeur seulement quand il ne tient pas (mobile). */
 .cw-compare {
   margin-top: 3rem;
   overflow-x: auto;
+  overflow-y: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: #FFFFFF;
@@ -1155,4 +1159,9 @@ h1, h2, h3, h4, h5, h6,
 }
 .cw-nowrap {
   white-space: nowrap;
+}
+/* Fleche vers le bas (lien vers une ancre de la meme page) : glisse vers le bas */
+.btn:hover .cw-arrow--bas,
+.btn:focus-visible .cw-arrow--bas {
+  transform: translateY(3px);
 }

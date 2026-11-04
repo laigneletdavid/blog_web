@@ -16,8 +16,9 @@
 {# Mots soulignes par la vague, devoilee a l'apparition (controleur wave-draw) #}
 {% macro vague(mots) %}<span class="vague" data-controller="wave-draw">{{ mots }}<span class="vague__clip" aria-hidden="true"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></span>{% endmacro %}
 
-{# Montant a la francaise : 1 250 € (espace fine insecable) #}
-{% macro euros(n) %}{{ n|number_format(0, ',', ' ') }} €{% endmacro %}
+{# Montant a la francaise : 1 250 € (espace insecable ; l'espace fine ne faisait que
+   2 px a la taille du texte et « 1 530 » se lisait « 1530 ») #}
+{% macro euros(n) %}{{ n|number_format(0, ',', ' ') }} €{% endmacro %}
 
 {# Agenda de reservation Google (prise de rendez-vous, s'ouvre dans un nouvel onglet) #}
 {% macro lien_rdv() %}https://calendar.app.google/HjoNfP83BWDB3rkW6{% endmacro %}
