@@ -126,21 +126,8 @@
     </div>
 </section>
 
-{# ====== 5. L'ACCES DEMO ====== #}
-<section class="cw-section">
-    <div class="container">
-        <div class="cw-demo" data-controller="reveal">
-            <div>
-                <h2 class="cw-vs__titre">Envie de voir l'envers du décor ?</h2>
-                <p class="cw-vs__texte">On vous ouvre un accès admin sur une copie de ce site. Testez tout : thèmes, éditeur, modules, référencement, personnalisation. Remis à zéro chaque nuit : amusez-vous.</p>
-            </div>
-            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">Demander mon accès démo<span class="cw-arrow" aria-hidden="true">&rarr;</span></a>
-        </div>
-    </div>
-</section>
-
 {# ====== 6. FAQ ====== #}
-<section class="cw-section cw-section--alt" id="faq">
+<section class="cw-section" id="faq">
     <div class="container">
         <div data-controller="reveal">
             <h2 class="home-section-title text-center">Questions fréquentes</h2>
@@ -166,7 +153,7 @@
 </section>
 
 {# ====== 7. APPEL FINAL ====== #}
-<section class="home-cta">
+<section class="home-cta cw-cta--alt">
     <div class="container text-center" data-controller="reveal">
         <h2 class="home-cta__title">Parlons {{ m.vague('partenariat') }}</h2>
         <p class="home-cta__desc">Vous cherchez un outil sur lequel bâtir une activité durable, avec un back-end fiable. Nous cherchons des partenaires sérieux qui portent notre produit avec exigence. Si ça vous parle, on en discute.</p>
