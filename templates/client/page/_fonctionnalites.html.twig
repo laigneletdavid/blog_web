@@ -13,14 +13,12 @@
 {% set prix_module = include('client/_offres.html.twig', { vue: 'prix_option', option: 'module' })|trim %}
 {% set prix_marketing = include('client/_offres.html.twig', { vue: 'prix_option', option: 'marketing' })|trim %}
 
+{# L'editeur, le referencement et les statistiques sont detailles en vedette, pas repetes ici #}
 {% set socle = [
-    { icone: 'editeur', titre: 'Pages et éditeur visuel', texte: 'Vous écrivez comme dans un traitement de texte, vous ajoutez une photo, vous publiez. Pas de constructeur de pages qui décale tout.', ideal: ['tout le monde'] },
-    { icone: 'seo', titre: 'Référencement intégré', texte: 'Plan du site, balises, données structurées et images optimisées dès la mise en ligne, plus un score et des conseils pour chaque page.', ideal: ['tous ceux qui veulent être trouvés sur Google'] },
     { icone: 'contact', titre: 'Formulaire de contact', texte: 'Vos clients vous écrivent depuis votre site, vous recevez le message par email. Sécurisé et protégé contre le spam.', ideal: ['tout le monde', 'la base d’un site professionnel'] },
     { icone: 'services', titre: 'Services', texte: 'Chaque prestation a sa fiche : titre, description, image et page détaillée. Vos visiteurs comprennent en un coup d’œil ce que vous proposez.', ideal: ['artisans', 'consultants', 'prestataires de services', 'coachs', 'thérapeutes'] },
     { icone: 'faq', titre: 'FAQ', texte: 'Répondez aux questions que vos clients posent tout le temps, avant même qu’ils appellent. Bonus : Google aime les FAQ bien structurées.', ideal: ['tous ceux qui reçoivent les mêmes questions par téléphone ou par email'] },
     { icone: 'realisations', titre: 'Réalisations', texte: 'Photos de chantiers, projets livrés, avant/après : vos réalisations parlent mieux qu’un long discours.', ideal: ['artisans du bâtiment', 'photographes', 'designers', 'architectes', 'paysagistes'] },
-    { icone: 'stats', titre: 'Statistiques et rapport mensuel', texte: 'Combien de visiteurs, d’où ils viennent, quelles pages ils lisent. Directement dans votre administration, sans Google Analytics.', ideal: ['tous ceux qui veulent savoir si leur site travaille pour eux'] },
 ] %}
 
 {# Les fonctionnalites en vedette : rangees texte / capture.
@@ -95,7 +93,7 @@
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Le socle, inclus dans toutes les formules</h2>
-            <p class="home-section-subtitle">Vitrine, Blog ou Click & Collect : tout ceci est dans votre site dès la mise en ligne.</p>
+            <p class="home-section-subtitle">Vitrine, Blog ou Click & Collect : tout ceci est dans votre site dès la mise en ligne… et trois outils qui changent tout, détaillés juste en dessous.</p>
         </div>
         <ul class="cw-fonc-grille" data-controller="reveal" data-reveal-stagger-value="60">
             {% for c in socle %}
@@ -209,7 +207,7 @@
             </li>
             {% endfor %}
         </ul>
-        <p class="cw-sources">Le module supplémentaire s'ajoute aux formules Vitrine et Blog, hors Blog et Marketing.</p>
+        <p class="cw-sources">Événements, Annuaire et Catalogue : {{ m.euros(prix_module) }} HT chacun, une seule fois. Marketing : {{ m.euros(prix_marketing) }} HT. Le blog est inclus dans l'offre Blog.</p>
     </div>
 </section>
 
