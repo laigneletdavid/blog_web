@@ -1028,27 +1028,79 @@ h1, h2, h3, h4, h5, h6,
   color: var(--text-muted);
 }
 
-/* --- Ce qui est inclus --- */
-.cw-inclus {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  max-width: 900px;
-  margin: 3rem auto 0;
-}
-.cw-inclus__col {
-  padding: 2rem;
+/* --- Ce que couvre l'abonnement (sous le cout sur 3 ans) --- */
+.cw-couvre {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 2rem 2.25rem;
   background: #FFFFFF;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
 }
-.cw-inclus__titre {
+.cw-couvre__titre {
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
 }
+.cw-couvre__liste {
+  columns: 2;
+  column-gap: 2.5rem;
+}
+.cw-couvre__liste li {
+  break-inside: avoid;
+}
 @media (max-width: 767.98px) {
-  .cw-inclus { grid-template-columns: 1fr; }
+  .cw-couvre { padding: 1.5rem; }
+  .cw-couvre__liste { columns: 1; }
+}
+
+/* --- L'installation : 5 temps numerotes --- */
+.cw-installation {
+  list-style: none;
+  counter-reset: installation;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  margin: 3rem 0 0;
+  padding: 0;
+}
+.cw-installation li {
+  counter-increment: installation;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+}
+.cw-installation li::before {
+  content: counter(installation);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+@media (max-width: 991.98px) {
+  .cw-installation { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575.98px) {
+  .cw-installation { grid-template-columns: 1fr; }
+  .cw-installation li { flex-direction: row; text-align: left; padding: 1rem 1.25rem; }
+}
+
+/* Appel final de la page Offres sur fond gris : il suit une section blanche */
+.theme-vitrine .home-cta.cw-cta--alt {
+  background: var(--surface);
 }
 
 /* --- Cout sur 3 ans --- */
@@ -1065,8 +1117,10 @@ h1, h2, h3, h4, h5, h6,
   gap: 0.25rem;
   padding: 1.75rem 1.25rem;
   text-align: center;
-  background: var(--surface);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 .cw-cost__nom {
   font-weight: 600;

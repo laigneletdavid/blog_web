@@ -3,10 +3,35 @@
    Gabarit dessine, meme principe que les pages de bw_lintello : la
    structure vit ici, le titre et la description SEO dans l'admin (page
    « offres »). Formules et prix : client/_offres.html.twig (source unique,
-   partagee avec la home). Recap valide par David le 4/11/2026.
+   partagee avec la home). Recap valide par David le 4/11/2026, puis le cout
+   sur 3 ans remonte juste apres les prix avec tout ce que couvre l'abonnement.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {{ m.symbole_vague() }}
+
+{# Ce que couvre l'abonnement (liste de David, 4/11/2026). « Un rapport chaque
+   mois » : app:report:monthly aux admins du site ; « une surveillance chaque
+   semaine » : app:site:alerts, aux super admins, seulement en cas de probleme. #}
+{% set abonnement = [
+    'Hébergement en France, sans limite de taille',
+    'Renouvellement de votre nom de domaine',
+    'Mises à jour de sécurité du système',
+    'Sauvegardes régulières',
+    'Toutes les évolutions de ComWeb Studio, sans supplément',
+    'Accès illimité à votre administration',
+    'Un rapport chaque mois : visites, contacts reçus et santé de votre site',
+    'Une surveillance chaque semaine : site en ligne, certificat de sécurité, erreurs. On est prévenus avant vous.',
+    'Assistance et formation par téléphone ou visio',
+] %}
+
+{# Ce qui est fait a l'installation #}
+{% set installation = [
+    'Un rendez-vous découverte',
+    'Un questionnaire guidé',
+    'Votre nom de domaine',
+    'La mise en ligne en ½ journée',
+    'Une formation de 30 minutes',
+] %}
 
 {# Options a la carte (prix HT ; TTC = HT x 1,2) #}
 {% set options = [
@@ -34,8 +59,30 @@
     </div>
 </section>
 
-{# ====== 3. TABLEAU COMPARATIF ====== #}
-<section class="cw-section cw-section--alt" id="comparatif">
+{# ====== 3. LE COUT SUR 3 ANS ET CE QUE COUVRE L'ABONNEMENT ====== #}
+<section class="cw-section cw-section--alt" id="trois-ans">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Ce que vous payez {{ m.vague('vraiment') }} sur 3 ans</h2>
+            <p class="home-section-subtitle">Installation et abonnement compris, hors options. Le seul calcul qui compte pour comparer deux devis.</p>
+        </div>
+        {% include 'client/_offres.html.twig' with { vue: 'cout' } %}
+        <div class="cw-couvre" data-controller="reveal">
+            <h3 class="cw-couvre__titre">Ce que couvre votre abonnement, chaque mois</h3>
+            <ul class="home-pricing__list cw-couvre__liste">
+                {% for ligne in abonnement %}<li>{{ ligne }}</li>{% endfor %}
+            </ul>
+        </div>
+        {# TODO CONTENU : comparaison avec une agence et avec un WordPress « gratuit »
+           (chiffres à fournir par David). #}
+        <p class="cw-cost__lien">
+            <a href="{{ path('app_article_show', { slug: 'combien-coute-vraiment-un-site-internet-professionnel-en-2026' }) }}">Combien coûte vraiment un site internet professionnel ? Notre article détaillé &rarr;</a>
+        </p>
+    </div>
+</section>
+
+{# ====== 4. TABLEAU COMPARATIF ====== #}
+<section class="cw-section" id="comparatif">
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Comparez les formules en détail</h2>
@@ -45,8 +92,8 @@
     </div>
 </section>
 
-{# ====== 4. OPTIONS A LA CARTE ====== #}
-<section class="cw-section" id="options">
+{# ====== 5. OPTIONS A LA CARTE ====== #}
+<section class="cw-section cw-section--alt" id="options">
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Les options à la carte</h2>
@@ -67,61 +114,28 @@
     </div>
 </section>
 
-{# ====== 5. CE QUI EST INCLUS ====== #}
-<section class="cw-section cw-section--alt">
+{# ====== 6. L'INSTALLATION ====== #}
+<section class="cw-section">
     <div class="container">
         <div class="text-center" data-controller="reveal">
-            <h2 class="home-section-title">Ce qui est {{ m.vague('inclus') }}</h2>
+            <h2 class="home-section-title">L'installation : ce qu'on fait pour vous</h2>
+            <p class="home-section-subtitle">Payée une seule fois, au démarrage. Vous n'avez rien de technique à gérer.</p>
         </div>
-        <div class="cw-inclus" data-controller="reveal" data-reveal-stagger-value="70">
-            <div class="cw-inclus__col">
-                <h3 class="cw-inclus__titre">À l'installation</h3>
-                <ul class="home-pricing__list">
-                    <li>Un rendez-vous découverte</li>
-                    <li>Un questionnaire guidé</li>
-                    <li>Votre nom de domaine</li>
-                    <li>La mise en ligne en ½ journée</li>
-                    <li>Une formation de 30 minutes</li>
-                </ul>
-            </div>
-            <div class="cw-inclus__col">
-                <h3 class="cw-inclus__titre">Dans l'abonnement</h3>
-                <ul class="home-pricing__list">
-                    <li>L'hébergement en France</li>
-                    <li>Les sauvegardes</li>
-                    <li>Les mises à jour de sécurité</li>
-                    <li>Le support, par un interlocuteur unique</li>
-                </ul>
-            </div>
-        </div>
+        <ol class="cw-installation" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for etape in installation %}<li>{{ etape }}</li>{% endfor %}
+        </ol>
     </div>
 </section>
 
-{# ====== 6. FAQ DES TARIFS ======
+{# ====== 7. FAQ DES TARIFS ======
    TODO CONTENU : questions à rédiger après les réponses de David (engagement et
    préavis de résiliation ; ce que garde le client s'il arrête : nom de domaine,
    export du contenu ; mode de paiement, mensuel ou annuel ; changement de formule
    en cours de route et son coût). Section non affichée tant qu'elle est vide ;
    prévoir alors les données structurées FAQPage. #}
 
-{# ====== 7. LE COUT SUR 3 ANS ====== #}
-<section class="cw-section">
-    <div class="container">
-        <div class="text-center" data-controller="reveal">
-            <h2 class="home-section-title">Ce que vous payez vraiment sur 3 ans</h2>
-            <p class="home-section-subtitle">Installation et abonnement compris, hors options. Le seul calcul qui compte pour comparer deux devis.</p>
-        </div>
-        {% include 'client/_offres.html.twig' with { vue: 'cout' } %}
-        {# TODO CONTENU : comparaison avec une agence et avec un WordPress « gratuit »
-           (chiffres à fournir par David). #}
-        <p class="cw-cost__lien">
-            <a href="{{ path('app_article_show', { slug: 'combien-coute-vraiment-un-site-internet-professionnel-en-2026' }) }}">Combien coûte vraiment un site internet professionnel ? Notre article détaillé &rarr;</a>
-        </p>
-    </div>
-</section>
-
 {# ====== 8. APPEL FINAL ====== #}
-<section class="home-cta">
+<section class="home-cta cw-cta--alt">
     <div class="container text-center" data-controller="reveal">
         <h2 class="home-cta__title">Parlons de {{ m.vague('votre projet') }}</h2>
         <p class="home-cta__desc">Autour d'un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.</p>
