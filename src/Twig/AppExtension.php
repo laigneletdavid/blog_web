@@ -30,6 +30,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('plaintext', [$this, 'plaintext']),
             new TwigFilter('phone', [$this, 'phone']),
             new TwigFilter('insecables', [$this, 'insecables']),
+            new TwigFilter('menuExterne', [$this, 'menuExterne']),
         ];
     }
 
@@ -229,6 +230,17 @@ class AppExtension extends AbstractExtension
             '<mark>$1</mark>',
             $escaped
         );
+    }
+
+    /**
+     * Lien de menu vers un autre site (URL absolue http ou https) : le header
+     * l'ouvre dans un nouvel onglet, avec une fleche. Les liens internes du
+     * menu sont relatifs, generes depuis les routes.
+     */
+    public function menuExterne(Menu $menu): bool
+    {
+        return $menu->getTarget() === 'url'
+            && preg_match('#^https?://#i', (string) $menu->getUrl()) === 1;
     }
 
     public function menuLink(Menu $menu): string
