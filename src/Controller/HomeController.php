@@ -145,7 +145,7 @@ class HomeController extends AbstractController
             'text_page' => 'Envoyez-moi un message',
             'contactForm' => $form,
             'faqs' => $siteContext->hasModule('faq') ? $faqRepository->findAllActive() : [],
-            'seo' => $this->seoService->resolveForPage('Contact', 'Une question, un projet ? Contactez %s par le formulaire, par téléphone ou par e-mail.'),
+            'seo' => $this->seoService->resolveForPage('Contact', 'Une question, un projet ? Contactez %s par le formulaire, par téléphone ou par e-mail.', 'contact'),
             'recaptcha_site_key' => $recaptchaValidator->isEnabled() ? $recaptchaValidator->getSiteKey() : null,
         ]);
     }

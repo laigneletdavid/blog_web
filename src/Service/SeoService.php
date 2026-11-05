@@ -3,11 +3,13 @@
 namespace App\Service;
 
 use App\Entity\Site;
+use App\Repository\OptionRepository;
 
 class SeoService
 {
     public function __construct(
         private readonly SiteContext $siteContext,
+        private readonly ?OptionRepository $optionRepository = null,
     ) {
     }
 
@@ -78,15 +80,21 @@ class SeoService
      * nom du site. Sans elle, la description par defaut du site, celle de la home :
      * a eviter, Google y voit du contenu duplique.
      */
-    public function resolveForPage(string $pageTitle, ?string $description = null): array
+    public function resolveForPage(string $pageTitle, ?string $description = null, ?string $cle = null): array
     {
         $site = $this->siteContext->getCurrentSite();
         $siteName = $site?->getName() ?? 'Blog&Web';
         $imageMedia = $site?->getOgImage() ?? $site?->getHeroImage() ?? $site?->getLogo();
 
+        // Titre et description propres au site pour cette page systeme (FAQ,
+        // Contact, Blog...) : options seo.<cle>.title et seo.<cle>.description.
+        // Le titre est pris tel quel ; sans option, rendu par defaut ci-dessous.
+        $titreSite = $cle !== null ? $this->option('seo.' . $cle . '.title') : null;
+        $descriptionSite = $cle !== null ? $this->option('seo.' . $cle . '.description') : null;
+
         return [
-            'title' => $pageTitle . ' — ' . $siteName,
-            'description' => $description !== null ? sprintf($description, $siteName) : ($site?->getDefaultSeoDescription() ?? ''),
+            'title' => $titreSite ?? $pageTitle . ' — ' . $siteName,
+            'description' => $descriptionSite ?? ($description !== null ? sprintf($description, $siteName) : ($site?->getDefaultSeoDescription() ?? '')),
             'keywords' => '',
             'noIndex' => false,
             'canonicalUrl' => null,
@@ -99,6 +107,13 @@ class SeoService
             'createdAt' => null,
             'updatedAt' => null,
         ];
+    }
+
+    private function option(string $name): ?string
+    {
+        $valeur = $this->optionRepository?->findOneBy(['name' => $name])?->getValue();
+
+        return ($valeur !== null && trim($valeur) !== '') ? trim($valeur) : null;
     }
 
     private function resolveTitle(object $entity, ?Site $site): string
