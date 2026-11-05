@@ -1,0 +1,9 @@
+{# Mention RGPD sous le bouton d'envoi d'un formulaire de contact (obligatoire des
+   qu'on collecte des donnees). La politique de confidentialite est retrouvee par
+   la cle systeme de son lien du footer, comme dans _cookie_consent : son slug
+   change d'un site a l'autre. #}
+{% set privacy_page = footer_legal_menus|default([])|filter(m => m.systemKey == 'politique-confidentialite')|first %}
+<p class="contact-rgpd small text-muted mt-3 mb-0">
+    Vos données servent uniquement à répondre à votre message.
+    {% if privacy_page %}<a href="{{ privacy_page|menuLink }}">Politique de confidentialité</a>{% endif %}
+</p>

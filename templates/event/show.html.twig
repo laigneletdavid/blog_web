@@ -55,7 +55,7 @@
                 <div class="event-detail__header">
                     <div class="event-detail__date-badge">
                         <span class="event-detail__date-day">{{ event.dateStart|date('d') }}</span>
-                        <span class="event-detail__date-month">{{ event.dateStart|date('M') }}</span>
+                        <span class="event-detail__date-month">{{ event.dateStart|format_date(pattern='MMM', locale='fr') }}</span>
                     </div>
                     <div class="event-detail__info">
                         <h1 class="event-detail__title">{{ event.title }}</h1>

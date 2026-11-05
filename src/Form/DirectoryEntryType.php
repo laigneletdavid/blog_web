@@ -50,7 +50,7 @@ class DirectoryEntryType extends AbstractType
                 ],
             ])
             ->add('email', TextType::class, ['label' => 'Email de contact', 'required' => false])
-            ->add('phone', TextType::class, ['label' => 'Telephone', 'required' => false])
+            ->add('phone', TextType::class, ['label' => 'Téléphone', 'required' => false])
             ->add('city', TextType::class, ['label' => 'Ville', 'required' => false])
             ->add('website', UrlType::class, ['label' => 'Site web', 'required' => false])
             ->add('linkedin', UrlType::class, ['label' => 'LinkedIn', 'required' => false])
