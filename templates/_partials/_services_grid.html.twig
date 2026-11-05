@@ -15,7 +15,7 @@
                     <img src="{{ asset('documents/medias/' ~ service.image.fileName) }}" alt="{{ service.title }}" loading="lazy">
                 </div>
                 {% endif %}
-                <h3 class="service-card__title">{{ service.title }}</h3>
+                <h3 class="service-card__title">{{ service.title|insecables }}</h3>
                 {% if service.shortDescription %}
                 <p class="service-card__text">{{ service.shortDescription }}</p>
                 {% endif %}

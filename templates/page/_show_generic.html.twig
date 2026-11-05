@@ -17,7 +17,7 @@
         {{ responsive_img(page.featuredMedia, '(max-width: 768px) 100vw, 900px', 'page-hero__img', null, false, page) }}
         <div class="page-hero__overlay">
             {{ fil_ariane|raw }}
-            <h1 class="page-hero__title">{{ page.title }}</h1>
+            <h1 class="page-hero__title">{{ page.title|insecables }}</h1>
         </div>
     </div>
 </div>
@@ -32,7 +32,7 @@
             <div class="col-lg-10">
                 <div class="page-detail">
                     {% if not page.featuredMedia %}
-                        <h1 class="page-detail__title">{{ page.title }}</h1>
+                        <h1 class="page-detail__title">{{ page.title|insecables }}</h1>
                     {% endif %}
 
                     <div class="page-detail__content article-detail__content">
@@ -56,7 +56,7 @@
             <div class="col-lg-8">
                 <div class="page-detail">
                     {% if not page.featuredMedia %}
-                        <h1 class="page-detail__title">{{ page.title }}</h1>
+                        <h1 class="page-detail__title">{{ page.title|insecables }}</h1>
                     {% endif %}
 
                     <div class="page-detail__content article-detail__content">
@@ -72,7 +72,7 @@
             <div class="col-lg-8">
                 <div class="page-detail">
                     {% if not page.featuredMedia %}
-                        <h1 class="page-detail__title">{{ page.title }}</h1>
+                        <h1 class="page-detail__title">{{ page.title|insecables }}</h1>
                     {% endif %}
 
                     <div class="page-detail__content article-detail__content">
