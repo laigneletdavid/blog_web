@@ -48,7 +48,7 @@ h1, h2, h3, h4, h5, h6,
 h1, .h1, h2, .h2, .home-hero__title, .home-section-title, .home-cta__title { font-weight: 700; }
 h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .home-hero__title {
-  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);   /* H1 long : 3 lignes sur ordinateur */
   line-height: 1.12;
   letter-spacing: -0.02em;
   margin-bottom: 1.25rem;
