@@ -777,6 +777,117 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-footer-coord a:hover { color: var(--accent); }
 
 /* ===========================================================================
+   Page IA en entreprise (brief IA, Lot B) — memes composants que la home
+   =========================================================================== */
+.theme-vitrine .cws-hero--page {
+  padding: 3rem 0 var(--section-space);
+}
+.cws-hero--page .home-hero__desc { max-width: 52rem; }
+.cws-breadcrumb {
+  margin-bottom: 1.5rem;
+  font-size: 0.9375rem;
+}
+
+/* Badge « Début 2027 » (variable ia_api_disponible) */
+.cws-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--dark);
+  font-family: var(--font-body, inherit);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* Puces des lignes d'offre */
+.cws-puces {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--text-muted);
+}
+.cws-puces li + li { margin-top: 0.35rem; }
+.cws-puces li::marker { color: var(--accent); }
+
+/* Cartes : numero au-dessus du titre ; grille de 4 */
+.cws-carte .cws-num { margin-bottom: 0.75rem; }
+@media (min-width: 768px) {
+  .cws-cartes--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1200px) {
+  .cws-cartes--4 { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .cws-cartes--3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Section foncee : atouts en grille, titres orange */
+.cws-atouts {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem 2.5rem;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 991.98px) { .cws-atouts { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 575.98px) { .cws-atouts { grid-template-columns: 1fr; } }
+.cws-section--dark .cws-atouts h3 {
+  color: var(--accent);
+  font-size: 1.125rem;
+  margin-bottom: 0.4rem;
+}
+.cws-atouts p { margin: 0; }
+
+/* Etapes (meme composant que Studio) : 4 en ligne, empilees en mobile */
+.cws-etapes {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 991.98px) { .cws-etapes { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 575.98px) { .cws-etapes { grid-template-columns: 1fr; } }
+.cws-etape {
+  padding: 1.75rem 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.cws-etape__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 1.25rem;
+}
+.cws-etape__titre {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+.cws-etape p {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */

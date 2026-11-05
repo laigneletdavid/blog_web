@@ -1,0 +1,228 @@
+{# ======================================================================
+   PAGE SERVICE « IA en entreprise » — bw_cws (brief du 05/11/2026, Lot B)
+   LintellO devient un service de l'agence : deployer l'IA, former l'equipe,
+   puis (debut 2027) la connecter aux outils du client via l'API LintellO.
+   Le produit reste presente sur lintello.fr (macro lien_lintello).
+
+   ia_api_disponible : passer a true quand l'API est en production. Les badges
+   « Début 2027 » disparaissent ; ne jamais ecrire « disponible » avant.
+   Section 4 validee par David le 05/11/2026 : donnees chiffrees (pas les
+   echanges), API 100 % francaise, recherche web souveraine sans partage de
+   l'adresse IP, modes accessibles en API. Pas de prix (« sur devis »).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set ia_api_disponible = false %}
+{% set badgeApi %}{% if not ia_api_disponible %}<span class="cws-badge">Début 2027</span>{% endif %}{% endset %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item">Le Web</li>
+                <li class="breadcrumb-item active" aria-current="page">Intelligence artificielle</li>
+            </ol>
+        </nav>
+        <p class="home-hero__overtitle">Intelligence artificielle</p>
+        <h1 class="home-hero__title">L'IA au service de votre {{ m.vague('entreprise') }}, sans exposer vos données</h1>
+        <p class="home-hero__desc">Vos équipes utilisent peut-être déjà ChatGPT pour leurs mails, leurs devis ou leurs synthèses. Avec quelles données&nbsp;? Je vous aide à adopter l'IA proprement&nbsp;: un outil français, hébergé en France, une équipe formée, et des usages qui font vraiment gagner du temps.</p>
+        <div class="home-hero__actions">
+            <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Parlons de votre projet<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="{{ m.lien_lintello() }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg">Découvrir LintellO <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>
+        </div>
+    </div>
+</section>
+
+{# ====== 2. LE PROBLEME ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">L'IA fait gagner du temps. Encore faut-il savoir ce qu'elle fait de vos données.</h2>
+        </div>
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">01</span>
+                <h3>Des données qui partent aux États-Unis</h3>
+                <p>Contrats, fichiers clients, devis&nbsp;: copiés-collés dans un outil gratuit, ils peuvent servir à entraîner des modèles que vous ne contrôlez pas.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">02</span>
+                <h3>Chacun bricole dans son coin</h3>
+                <p>Pas de règles, pas de bonnes pratiques, des résultats inégaux. L'IA devient un gadget au lieu d'un outil de travail.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">03</span>
+                <h3>Des réponses à vérifier</h3>
+                <p>Une IA qui invente une source ou un chiffre, c'est du temps perdu et un risque pour votre crédibilité.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. CE QUE JE FAIS POUR VOUS (meme composant que les offres commerce) ====== #}
+<section class="cws-section cws-offres">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Mon accompagnement</span>
+            <h2 class="home-section-title">De la mise en place à l'intégration dans vos outils</h2>
+        </div>
+        <div class="cws-offres__liste">
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">01</span>
+                    <h3 class="cws-offre__titre">Déployer une IA confidentielle</h3>
+                </div>
+                <div class="cws-offre__corps">
+                    <p>Je mets en place LintellO pour votre équipe&nbsp;: comptes, réglages, et les modes adaptés à votre métier.</p>
+                    <ul class="cws-puces">
+                        <li>IA française, hébergée en France, conforme RGPD</li>
+                        <li>Vos échanges ne servent jamais à entraîner les modèles</li>
+                        <li>Opérationnel en quelques jours</li>
+                    </ul>
+                </div>
+            </article>
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">02</span>
+                    <h3 class="cws-offre__titre">Former votre équipe</h3>
+                </div>
+                <div class="cws-offre__corps">
+                    <p>Une formation concrète, sur vos cas réels&nbsp;: vos mails, vos devis, vos documents. Pas un cours théorique sur «&nbsp;l'IA de demain&nbsp;».</p>
+                    <ul class="cws-puces">
+                        <li>Bien formuler une demande et vérifier une réponse</li>
+                        <li>Les usages qui font gagner du temps dans votre métier</li>
+                        <li>Les règles à poser&nbsp;: ce qu'on confie à l'IA, et ce qu'on ne lui confie pas</li>
+                    </ul>
+                </div>
+            </article>
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">03</span>
+                    <h3 class="cws-offre__titre">Connecter l'IA à vos outils {{ badgeApi }}</h3>
+                </div>
+                <div class="cws-offre__corps">
+                    <p>Grâce à l'API LintellO, l'IA travaille directement dans vos outils&nbsp;: votre CRM, votre site ComWeb Studio, vos documents.</p>
+                    <ul class="cws-puces">
+                        <li>Rédaction de réponses et de contenus à partir de vos propres données</li>
+                        <li>Synthèse et tri automatiques de documents</li>
+                        <li>Développé sur mesure, comme mes <a href="/service/applications-sur-mesure">applications métier</a></li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+{# ====== 4. POURQUOI LINTELLO (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Conçu ici</span>
+            <h2 class="home-section-title">Un outil que je développe, et que j'utilise moi&#8209;même</h2>
+            <p>LintellO est l'IA que je développe depuis le Comminges. Je ne revends pas un outil américain&nbsp;: je vous installe un outil que je connais de l'intérieur, et que je fais évoluer.</p>
+        </div>
+        <ul class="cws-atouts" data-controller="reveal" data-reveal-stagger-value="70">
+            <li><h3>Hébergée en France</h3><p>Vos données restent en France, chiffrées sur les serveurs de LintellO.</p></li>
+            <li><h3>Confidentielle</h3><p>Vos échanges ne servent jamais à entraîner les modèles.</p></li>
+            <li><h3>Recherche web souveraine incluse</h3><p>L'IA cherche sur le web pour vous, sans jamais transmettre votre adresse IP.</p></li>
+            <li><h3>Conforme RGPD</h3><p>Un argument que vous pouvez opposer à vos clients et à vos partenaires.</p></li>
+            <li><h3>API 100&nbsp;% française {{ badgeApi }}</h3><p>Le système LintellO, branché directement sur vos outils.</p></li>
+            <li><h3>Modes accessibles en API {{ badgeApi }}</h3><p>Les modes adaptés à votre métier, utilisables depuis vos propres logiciels.</p></li>
+        </ul>
+        <p class="cws-signature__more"><a href="{{ m.lien_lintello() }}" target="_blank" rel="noopener">Découvrir LintellO en détail <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a></p>
+    </div>
+</section>
+
+{# ====== 5. EXEMPLES D'USAGES ====== #}
+<section class="cws-section cws-offres">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Concrètement, à quoi ça sert&nbsp;?</h2>
+        </div>
+        <div class="cws-cartes cws-cartes--4" data-controller="reveal" data-reveal-stagger-value="70">
+            <div class="cws-carte">
+                <h3>Répondre aux appels d'offres</h3>
+                <p>Analyser un cahier des charges, repérer les exigences, préparer une première trame de réponse. C'est l'outil sur lequel tourne mon propre service d'<a href="/service/externalisation-appels-d-offres">appels d'offres</a>.</p>
+            </div>
+            <div class="cws-carte">
+                <h3>Gagner du temps sur l'écrit</h3>
+                <p>Mails, comptes rendus, propositions commerciales, publications&nbsp;: un premier jet en quelques secondes, que vous ajustez.</p>
+            </div>
+            <div class="cws-carte">
+                <h3>Exploiter vos documents</h3>
+                <p>Résumer un contrat, comparer deux devis, extraire les points clés d'un long PDF.</p>
+            </div>
+            <div class="cws-carte">
+                <h3>Alimenter votre site {{ badgeApi }}</h3>
+                <p>Idées d'articles, fiches produits, textes de pages, directement depuis votre site ComWeb Studio{% if not ia_api_disponible %}, avec l'API{% endif %}.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 6. COMMENT ÇA SE PASSE ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Comment ça se passe</h2>
+        </div>
+        {% set etapes = [
+            { titre: 'On parle de votre activité', texte: '30 minutes pour comprendre vos besoins et vos contraintes.' },
+            { titre: "Je mets en place l'outil", texte: 'Comptes, réglages, modes adaptés à votre métier.' },
+            { titre: 'Je forme votre équipe', texte: 'Sur vos cas réels, sur place en Comminges ou en visio.' },
+            { titre: 'On ajuste ensemble', texte: "Un point après quelques semaines d'usage pour aller plus loin." },
+        ] %}
+        <ol class="cws-etapes" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for e in etapes %}
+            <li class="cws-etape">
+                <span class="cws-etape__num" aria-hidden="true">{{ loop.index }}</span>
+                <h3 class="cws-etape__titre">{{ e.titre }}</h3>
+                <p>{{ e.texte }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 7. FAQ ====== #}
+{% set faqIa = [
+    { q: 'Pourquoi ne pas simplement utiliser ChatGPT ?', r: "Vous pouvez. Mais avec les versions grand public, vos échanges peuvent être conservés et réutilisés, et les données partent hors d'Europe. LintellO est hébergé en France et vos conversations ne servent jamais à entraîner les modèles. Pour un dirigeant qui manipule des données clients, ça change tout." },
+    { q: "Mon entreprise est petite, est-ce que ça vaut le coup ?", r: "Oui, c'est même là que le gain est le plus visible. Quand une seule personne fait la gestion, les devis et la communication, une heure gagnée par jour se ressent tout de suite." },
+    { q: 'Faut-il des compétences techniques ?', r: "Non. Si vous savez écrire un mail, vous savez utiliser LintellO. La formation sert justement à prendre les bons réflexes." },
+    { q: 'Combien ça coûte ?', r: "Ça dépend du nombre de personnes et de ce que vous voulez faire : un simple déploiement avec formation, ou une intégration dans vos outils. Je vous fais une proposition chiffrée après notre premier échange." },
+    { q: "Quand l'intégration dans mes outils sera-t-elle disponible ?", r: (ia_api_disponible ? "Dès maintenant : l'API LintellO est en service. Parlons de votre projet et des outils à connecter." : "L'API LintellO arrive début 2027. Si votre projet en a besoin, on peut déjà en parler : je prépare l'intégration avec vous pour la lancer dès qu'elle est disponible.") },
+] %}
+<section class="home-faq cws-section">
+    <div class="container">
+        <div class="cws-section__head cws-section__head--centre">
+            <h2 class="home-section-title">Questions fréquentes</h2>
+        </div>
+        <div class="cws-faq">
+            <div class="accordion faq-accordion" id="faq-ia">
+                {% for f in faqIa %}
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-ia-{{ loop.index }}" aria-expanded="false" aria-controls="faq-ia-{{ loop.index }}">{{ f.q|insecables }}</button>
+                    </h3>
+                    <div id="faq-ia-{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#faq-ia">
+                        <div class="accordion-body content-body"><p>{{ f.r|insecables }}</p></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% set faqJson = [] %}
+{% for f in faqIa %}
+    {% set faqJson = faqJson|merge([{ '@type': 'Question', 'name': f.q, 'acceptedAnswer': { '@type': 'Answer', 'text': f.r } }]) %}
+{% endfor %}
+<script type="application/ld+json">{{ { '@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faqJson }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+
+{# ====== 8. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' with {
+    cta_titre: 'On en parle 30 minutes ?',
+    cta_texte: "Dites-moi comment votre équipe travaille aujourd'hui. Je vous dis honnêtement ce que l'IA peut vous apporter, et ce qu'elle ne peut pas."
+} %}
