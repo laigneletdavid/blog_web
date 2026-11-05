@@ -63,7 +63,7 @@
                 </div>
 
                 {# --- Titre --- #}
-                <h1 class="article-detail__title">{{ article.title }}</h1>
+                <h1 class="article-detail__title">{{ article.title|insecables }}</h1>
 
                 {% if article.featuredText %}
                     <p class="article-detail__lead">{{ article.featuredText }}</p>

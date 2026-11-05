@@ -15,7 +15,7 @@
         {% else %}
             {% for group in groups %}
                 {% if group.category %}
-                    <h2 class="faq-category__title">{{ group.category.name }}</h2>
+                    <h2 class="faq-category__title">{{ group.category.name|insecables }}</h2>
                 {% endif %}
 
                 <div class="accordion faq-accordion mb-4" id="faq-{{ group.category ? group.category.slug : 'general' }}">
@@ -28,7 +28,7 @@
                                     aria-expanded="false"
                                     aria-controls="faq-answer-{{ faq.id }}">
                                 {% if faq.icon %}{{ bi(faq.icon, 'me-2') }}{% endif %}
-                                {{ faq.question }}
+                                {{ faq.question|insecables }}
                             </button>
                         </h3>
                         <div id="faq-answer-{{ faq.id }}" class="accordion-collapse collapse"

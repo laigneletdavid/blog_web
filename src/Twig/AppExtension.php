@@ -29,6 +29,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('menuVisible', [$this, 'menuVisible']),
             new TwigFilter('plaintext', [$this, 'plaintext']),
             new TwigFilter('phone', [$this, 'phone']),
+            new TwigFilter('insecables', [$this, 'insecables']),
         ];
     }
 
@@ -157,6 +158,21 @@ class AppExtension extends AbstractExtension
      * comme il s'ecrit. Un format non reconnu ressort inchange, plutot que
      * decoupe n'importe comment.
      */
+    /**
+     * Typographie francaise des titres : espace insecable avant ? ! : ; et
+     * avant », apres «. Un titre qui passe a la ligne ne laisse plus son
+     * « ? » seul sur la ligne suivante. Seules les espaces deja presentes sont
+     * remplacees (rien n'est ajoute a « https: » ou « 10:30 »). Texte brut :
+     * l'echappement HTML de Twig reste applique ensuite.
+     */
+    public function insecables(?string $texte): string
+    {
+        $texte = (string) $texte;
+        $texte = preg_replace('/[ \x{00A0}\x{202F}]+([?!:;»])/u', "\u{00A0}$1", $texte);
+
+        return preg_replace('/«[ \x{00A0}\x{202F}]+/u', "«\u{00A0}", $texte);
+    }
+
     public function phone(?string $number): string
     {
         $brut = preg_replace('/[^\d+]/', '', (string) $number);
