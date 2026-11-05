@@ -19,7 +19,7 @@
                 {% if service.shortDescription %}
                 <p class="service-card__text">{{ service.shortDescription }}</p>
                 {% endif %}
-                {% if service.blocks is not empty %}
+                {% if service.hasDetail %}
                 <a href="{{ path('app_service_show', {slug: service.slug}) }}" class="service-card__link">
                     En savoir plus &rarr;
                 </a>

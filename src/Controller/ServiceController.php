@@ -71,8 +71,9 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException('Service introuvable.');
         }
 
-        // Page détail uniquement si le service a du contenu TipTap
-        if (empty($service->getBlocks())) {
+        // Page détail uniquement si le service a du contenu : blocs TipTap, ou
+        // HTML seul quand le texte a été écrit en SQL (comme pour Page)
+        if (!$service->hasDetail()) {
             return $this->redirectToRoute('app_service_index');
         }
 
