@@ -1,7 +1,10 @@
 {# ====== FICHE SERVICE — bw_cws ======
-   Rendu commun, avec deux retouches (brief 4.6) :
-   - le fil d'Ariane ne passe plus par « Services », redirige vers l'accueil ;
-   - l'appel final de la home en bas de chaque fiche. #}
-{% set lienServices = '<li class="breadcrumb-item"><a href="' ~ path('app_service_index') ~ '">' ~ section_title|default('Services') ~ '</a></li>' %}
-{{ include('service/_show_generic.html.twig')|replace({ (lienServices): '' })|raw }}
-{% include 'client/_cta_final.html.twig' %}
+   Une fiche dessinee a son gabarit client/service/_<slug>.html.twig (page IA) ;
+   les autres gardent le rendu commun, avec l'appel final de la home en bas
+   (brief 4.6). Le fil d'Ariane suit la rubrique du menu (main, 05/11/2026). #}
+{% if source('client/service/_' ~ service.slug ~ '.html.twig', true) is not empty %}
+    {% include 'client/service/_' ~ service.slug ~ '.html.twig' %}
+{% else %}
+    {% include 'service/_show_generic.html.twig' %}
+    {% include 'client/_cta_final.html.twig' %}
+{% endif %}
