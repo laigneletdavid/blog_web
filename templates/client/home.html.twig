@@ -23,7 +23,7 @@
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
                 <p class="home-hero__overtitle">Un seul interlocuteur · Comminges et partout en France</p>
-                <h1 class="home-hero__title">Prospection commerciale et site internet : un seul objectif, vos nouveaux {{ m.vague('clients') }}.</h1>
+                <h1 class="home-hero__title">Prospection commerciale et site internet&nbsp;: un seul objectif, vos nouveaux {{ m.vague('clients') }}.</h1>
                 <p class="home-hero__desc">Je vends depuis 2000, je code depuis 2016. Aujourd'hui je mets les deux au service de votre entreprise. Pas de jargon, pas de chargé de compte : un seul interlocuteur, du premier appel à la mise en ligne.</p>
                 <div class="home-hero__actions">
                     <a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
@@ -46,7 +46,7 @@
     <div class="container">
         <div class="cws-section__head">
             <span class="home-overtitle">Les problèmes que je résous</span>
-            <h2 class="home-section-title">Ça vous parle ?</h2>
+            <h2 class="home-section-title">Ça vous parle&nbsp;?</h2>
         </div>
         <div class="home-features__grid home-features__grid--3" data-controller="reveal" data-reveal-stagger-value="90">
             <a href="/page/developpement-commercial" class="home-features__card home-features__card--link">
@@ -107,10 +107,12 @@
         ] %}
         <div class="cws-offres__liste">
             {% for o in offres %}
-            <article class="cws-offre{{ loop.index is even ? ' cws-offre--droite' }}" data-controller="reveal">
-                <span class="cws-num" aria-hidden="true">{{ o.num }}</span>
-                <div class="cws-offre__corps">
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">{{ o.num }}</span>
                     <h3 class="cws-offre__titre">{{ o.titre }}</h3>
+                </div>
+                <div class="cws-offre__corps">
                     <p>{{ o.texte }}</p>
                     <a href="{{ o.lien }}" class="cws-offre__lien">Découvrir l'offre<span class="visually-hidden"> {{ o.titre }}</span> <span class="cw-arrow" aria-hidden="true">→</span></a>
                 </div>
@@ -206,7 +208,7 @@
                 {% for faq in faqHome %}
                 <div class="accordion-item">
                     <h3 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-home-{{ faq.id }}" aria-expanded="false" aria-controls="faq-home-{{ faq.id }}">{{ faq.question }}</button>
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-home-{{ faq.id }}" aria-expanded="false" aria-controls="faq-home-{{ faq.id }}">{{ faq.question|insecables }}</button>
                     </h3>
                     <div id="faq-home-{{ faq.id }}" class="accordion-collapse collapse" data-bs-parent="#faq-home">
                         <div class="accordion-body content-body">{{ faq.content|raw }}</div>
