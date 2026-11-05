@@ -1,0 +1,44 @@
+{# ====== HEADER CLIENT — bw_cws ======
+   Header du theme vitrine, inclus plutot que copie : il continue de recevoir les
+   correctifs de main. Trois retouches (brief du 05/11/2026, meme schema que bw_front) :
+   - plus de recherche (desktop et menu mobile) ;
+   - « Contact » devient « Prendre rendez-vous » (agenda, nouvel onglet) avec,
+     dessous, « ou écrivez-moi » vers /contact ;
+   - header compact au defilement (sticky-header).
+   Si le theme change ces chaines, le remplacement ne fait rien : le header
+   d'origine reste, et le CSS masque quand meme la recherche. #}
+{% import 'client/_macros.html.twig' as m %}
+{% set lienRendezVous = m.lien_rdv() %}
+{% set boutonContact = '<a href="' ~ path('app_contact') ~ '" class="btn btn-primary">Contact</a>' %}
+{% set blocRendezVous %}
+<span class="header-rdv">
+    <a href="{{ lienRendezVous }}" class="btn btn-primary" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span></a>
+    <a href="{{ path('app_contact') }}" class="header-rdv__ecrire">ou écrivez-moi</a>
+</span>
+{% endset %}
+{% set blocRendezVousMobile %}
+<div class="header-rdv header-rdv--mobile mb-4">
+    <a href="{{ lienRendezVous }}" class="btn btn-primary" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span></a>
+    <a href="{{ path('app_contact') }}" class="header-rdv__ecrire">ou écrivez-moi</a>
+</div>
+<ul class="navbar-nav mb-4">
+{% endset %}
+{# Mobile : bouton visible sans ouvrir le menu, place a droite du logo (CSS order) #}
+{% set boutonBarreMobile %}
+<a href="{{ lienRendezVous }}" class="btn btn-primary btn-sm header-rdv-barre" target="_blank" rel="noopener">Rendez-vous<span class="visually-hidden"> : prendre rendez-vous (nouvel onglet)</span></a>
+{% endset %}
+{% set header = include('themes/vitrine/_header.html.twig')|replace({
+    '<header class="header header--vitrine">': '<header class="header header--vitrine" data-controller="sticky-header">',
+    (boutonContact): blocRendezVous|trim,
+    '<ul class="navbar-nav mb-4">': blocRendezVousMobile|trim,
+    '<div class="container d-flex align-items-center justify-content-between py-2">': '<div class="container d-flex align-items-center justify-content-between py-2">' ~ boutonBarreMobile|trim
+}) %}
+{# Recherche retiree : chaque bloc va de <div class="header-search ...> a la fin de
+   sa liste de resultats et de son </div> fermant #}
+{% set morceaux = header|split('<div class="header-search ') %}
+{% set sansRecherche = morceaux|first %}
+{% for morceau in morceaux|slice(1) %}
+    {% set suite = morceau|split('data-search-target="results"></div>', 2) %}
+    {% set sansRecherche = sansRecherche ~ (suite|length == 2 ? (suite[1]|split('</div>', 2)|last) : '<div class="header-search ' ~ morceau) %}
+{% endfor %}
+{{ sansRecherche|raw }}

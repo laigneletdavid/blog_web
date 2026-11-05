@@ -1,194 +1,438 @@
 /* ====== Com Web Solutions — Client CSS Override ====== */
-/* Loaded AFTER vitrine theme.css — overrides only.      */
-/* Palette: Bleu #0A6BFF · Orange #F5A623 · Anthracite #2D2D2D */
+/* Charge APRES le theme vitrine : surcharges seulement.                    */
+/* Charte reprise de ComWeb Studio (bw_front), personnalite « agence »       */
+/* (brief du 05/11/2026, Lot 2). Primaire #0455BF, secondaire (fonce)        */
+/* #1C2226, accent #F7931E, polices Inter + Space Grotesk : reglees dans     */
+/* l'admin (Apparence). Ici, seulement ce que l'admin ne couvre pas.         */
+/* Une seule famille de titres, pas de degrade.                             */
 
-/* Google Fonts Poppins (titres) — Inter loaded by theme */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* ===========================================================================
+   Jetons
+   =========================================================================== */
+:root {
+  --text: #1C2226;
+  --text-muted: #4A5560;     /* 7,6:1 sur blanc, 7,0:1 sur #F6F7F9 */
+  --surface: #F6F7F9;
+  --border: #E6E9EE;
+  --dark: #1C2226;
+  --dark-card: #232B30;
+  --dark-border: rgba(255, 255, 255, 0.12);
+  --dark-muted: rgba(255, 255, 255, 0.78);
+  --accent-text: #B35F00;    /* orange de l'accent assombri : 4,8:1 sur blanc */
+  --radius: 15px;
+  --radius-md: 11px;
+  --radius-lg: 15px;
+  --shadow-card: 0 1px 2px rgba(28, 34, 38, 0.04), 0 2px 8px rgba(28, 34, 38, 0.04);
+  --shadow-card-hover: 0 4px 16px rgba(28, 34, 38, 0.08);
+  --section-space: 6.5rem;
+}
+@media (max-width: 767.98px) {
+  :root { --section-space: 4rem; }
+}
 
-/* Typo override: Poppins for headings */
+/* ===========================================================================
+   Typographie : Space Grotesk (titres 500/700), Inter (texte 400/500/600)
+   =========================================================================== */
+body {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text);
+}
 h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
 .home-hero__title,
 .home-section-title,
-.home-cta__title,
-.home-about__title,
-.home-features__title {
-    font-family: 'Poppins', sans-serif;
+.home-cta__title {
+  font-family: var(--font-display);
 }
-
-/* CTA secondaire en orange accent */
-.home-hero__actions .btn-outline-primary {
-    border-color: var(--secondary);
-    color: var(--secondary);
+h1, .h1, h2, .h2, .home-hero__title, .home-section-title, .home-cta__title { font-weight: 700; }
+h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
+.home-hero__title {
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
 }
-.home-hero__actions .btn-outline-primary:hover {
-    background-color: var(--secondary);
-    border-color: var(--secondary);
-    color: #fff;
+.home-hero__desc,
+.home-section-subtitle,
+.home-cta__desc {
+  max-width: 70ch;
 }
-
-/* Section subtitle */
 .home-section-subtitle {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto;
+  color: var(--text-muted);
+  font-size: 1.1rem;
 }
 
-/* Testimonial stars in accent color */
-.theme-vitrine .home-testimonial::before {
-    color: var(--secondary);
+/* Surtitres en orange (assombri sur fond clair, pur sur fond fonce) */
+.home-overtitle,
+.home-hero__overtitle {
+  display: inline-block;
+  color: var(--accent-text);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.75rem;
+  background: none;
+  padding: 0;
+  text-transform: none;
 }
 
-/* CTA final — gradient bleu CWS */
-.home-cta {
-    background: linear-gradient(135deg, #0A6BFF 0%, #0550CC 100%);
+/* Numeros 01, 02, 03 a la place des icones generiques */
+.cws-num {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.02em;
+  color: var(--accent-text);
+  margin-bottom: 0.5rem;
 }
 
-/* ====== PAIN POINT CARDS ====== */
-
-/* Section background */
-.home-features {
-    background: var(--surface, #F9FAFB);
-    padding: 5rem 0;
+/* ===========================================================================
+   Rythme des sections : blanc / gris clair, et sections foncees
+   =========================================================================== */
+.home-features,
+.home-services,
+.home-testimonials,
+.home-portfolio,
+.home-faq,
+.home-metrics,
+.home-articles,
+.home-cta,
+.cws-section {
+  padding-top: var(--section-space) !important;
+  padding-bottom: var(--section-space) !important;
+}
+.home-features,
+.home-testimonials,
+.cws-section--alt {
+  background: var(--surface) !important;
+}
+.home-services,
+.home-portfolio,
+.home-articles {
+  background: #FFFFFF;
 }
 
-/* 3-column grid */
-.home-features__grid--3 {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+/* Section foncee : fond #1C2226, texte blanc, accents orange */
+.cws-section--dark {
+  background: var(--dark) !important;
+  color: #FFFFFF;
 }
-@media (max-width: 768px) {
-    .home-features__grid--3 {
-        grid-template-columns: 1fr;
-    }
+.cws-section--dark h1, .cws-section--dark h2, .cws-section--dark h3,
+.cws-section--dark h4, .cws-section--dark .home-section-title {
+  color: #FFFFFF;
 }
-
-/* Card base — top color bar + oversized quote */
-.home-features__card--link {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    background: #fff;
-    border: 1px solid var(--border, #E5E7EB);
-    border-top: 5px solid var(--primary);
-    border-radius: 0 0 0.75rem 0.75rem;
-    padding: 2.5rem 2rem 2rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.cws-section--dark p,
+.cws-section--dark li {
+  color: var(--dark-muted);
 }
-
-/* Color variants per card: bleu / orange / bleu foncé */
-.home-features__card--link:nth-child(1) { border-top-color: #0A6BFF; }
-.home-features__card--link:nth-child(2) { border-top-color: #F5A623; }
-.home-features__card--link:nth-child(3) { border-top-color: #0550CC; }
-
-/* Oversized decorative quote mark */
-.home-features__card--link::before {
-    content: "\201C";
-    position: absolute;
-    top: 0.5rem;
-    right: 1.25rem;
-    font-size: 5rem;
-    font-family: Georgia, serif;
-    line-height: 1;
-    opacity: 0.07;
-    pointer-events: none;
+.cws-section--dark .home-overtitle,
+.cws-section--dark .cws-num {
+  color: var(--accent);
 }
-.home-features__card--link:nth-child(1)::before { color: #0A6BFF; opacity: 0.12; }
-.home-features__card--link:nth-child(2)::before { color: #F5A623; opacity: 0.15; }
-.home-features__card--link:nth-child(3)::before { color: #0550CC; opacity: 0.12; }
-
-/* Hover — lift + colored glow */
-.home-features__card--link:hover {
-    transform: translateY(-8px);
-    color: inherit;
+.cws-section--dark a:not(.btn) {
+  color: var(--accent);
 }
-.home-features__card--link:nth-child(1):hover {
-    box-shadow: 0 16px 40px rgba(10, 107, 255, 0.15);
-}
-.home-features__card--link:nth-child(2):hover {
-    box-shadow: 0 16px 40px rgba(245, 166, 35, 0.15);
-}
-.home-features__card--link:nth-child(3):hover {
-    box-shadow: 0 16px 40px rgba(5, 80, 204, 0.15);
+.cws-card-dark {
+  background: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  color: #FFFFFF;
 }
 
-/* Background tint on hover */
-.home-features__card--link::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    border-radius: inherit;
+/* ===========================================================================
+   Header : recherche retiree, « Prendre rendez-vous » + « ou écrivez-moi »
+   =========================================================================== */
+.header--vitrine .header-search {
+  display: none !important;   /* filet si le theme change le markup retire par _header */
 }
-.home-features__card--link:nth-child(1)::after { background: #0A6BFF; }
-.home-features__card--link:nth-child(2)::after { background: #F5A623; }
-.home-features__card--link:nth-child(3)::after { background: #0550CC; }
-.home-features__card--link:hover::after {
-    opacity: 0.03;
+.header--vitrine .header-nav .nav-link,
+.header--vitrine .header-actions .btn {
+  white-space: nowrap;
 }
-
-/* Title — the pain quote */
-.home-features__card--link .home-features__title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    font-style: italic;
-    color: var(--text, #1F2937);
-    line-height: 1.4;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 1;
+.header-rdv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
 }
-
-/* Description */
-.home-features__card--link .home-features__desc {
-    color: var(--text-muted, #6B7280);
-    font-size: 0.95rem;
-    line-height: 1.7;
-    flex-grow: 1;
-    position: relative;
-    z-index: 1;
+.header-rdv .btn {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
 }
-
-/* CTA link at bottom */
-.home-features__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-top: 1.5rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border, #E5E7EB);
-    font-weight: 600;
-    font-size: 0.9rem;
-    position: relative;
-    z-index: 1;
-    transition: gap 0.3s ease;
+.header-rdv__ecrire {
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
-.home-features__card--link:nth-child(1) .home-features__link { color: #0A6BFF; }
-.home-features__card--link:nth-child(2) .home-features__link { color: #D4880A; }
-.home-features__card--link:nth-child(3) .home-features__link { color: #0550CC; }
-
-.home-features__card--link:hover .home-features__link {
-    gap: 0.6rem;
+.header-rdv--mobile {
+  display: flex;
+  gap: 0.375rem;
+}
+.header-rdv--mobile .btn {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  justify-content: center;
+  text-align: center;
+}
+.header-rdv--mobile .header-rdv__ecrire {
+  font-size: 0.875rem;
+  padding: 0.25rem 0;
+}
+.header-rdv-barre {
+  order: 3;
+  white-space: nowrap;
+}
+.header-rdv__ecrire:hover,
+.header-rdv__ecrire:focus-visible {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
-/* ====== TESTIMONIAL INITIALS BADGES ====== */
-.home-testimonial:nth-child(1) .home-testimonial__initials { background: #0A6BFF; }
-.home-testimonial:nth-child(2) .home-testimonial__initials { background: #F5A623; }
-.home-testimonial:nth-child(3) .home-testimonial__initials { background: #0550CC; }
-
-/* Fix: btn-primary text must be white everywhere */
+/* ===========================================================================
+   Boutons
+   =========================================================================== */
+.btn {
+  border-radius: var(--radius-md);
+}
+.btn-lg {
+  border-radius: 12px;
+}
+.btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    color: #fff !important;
+  color: #FFFFFF !important;
+}
+
+/* Bouton orange : texte fonce #1C2226 sur #F7931E = 6,7:1 (AA) */
+.btn-accent,
+.home-hero__actions .btn-primary {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--dark) !important;
+  font-weight: 600;
+}
+.btn-accent:hover,
+.btn-accent:focus,
+.home-hero__actions .btn-primary:hover,
+.home-hero__actions .btn-primary:focus {
+  background: #E5841A !important;
+  border-color: #E5841A !important;
+  color: var(--dark) !important;
+}
+
+/* Bouton contour sur fond fonce */
+.cws-section--dark .btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Fleche des boutons principaux */
+.cw-arrow {
+  display: inline-block;
+  margin-left: 0.375rem;
+  transition: transform 200ms var(--motion-ease);
+}
+.btn:hover .cw-arrow,
+.btn:focus-visible .cw-arrow {
+  transform: translateX(4px);
+}
+
+/* ===========================================================================
+   Cartes : alignees a gauche, bordure fine, ombre douce
+   =========================================================================== */
+.service-card,
+.blog-card,
+.accordion-item,
+.home-testimonial {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.service-card,
+.home-testimonial {
+  text-align: left;
+}
+.service-card__icon {
+  display: none;   /* icones Bootstrap generiques retirees (brief Lot 2) */
+}
+
+/* « Ça vous parle ? » : 3 cartes, liseré haut bleu / orange / bleu */
+.home-features__grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .home-features__grid--3 { grid-template-columns: 1fr; }
+}
+.home-features__card--link {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--primary);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2.25rem 2rem 2rem;
+  transition: transform 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease);
+}
+.home-features__card--link:nth-child(2) { border-top-color: var(--accent); }
+.home-features__card--link .home-features__icon { display: none; }
+.home-features__card--link .home-features__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.35;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+.home-features__card--link .home-features__desc {
+  color: var(--text-muted);
+  font-size: 0.975rem;
+  line-height: 1.7;
+  flex-grow: 1;
+}
+.home-features__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--primary);
+  transition: gap 200ms var(--motion-ease);
+}
+.home-features__card--link:nth-child(2) .home-features__link { color: var(--accent-text); }
+.home-features__card--link:hover {
+  color: inherit;
+}
+.home-features__card--link:hover .home-features__link {
+  gap: 0.6rem;
+}
+
+/* Temoignages : guillemet orange en Space Grotesk, nom en gras, entreprise en gris */
+.theme-vitrine .home-testimonial::before {
+  content: "\201C";
+  font-family: var(--font-display);
+  color: var(--accent);
+}
+.home-testimonial__initials { background: var(--primary); }
+.home-testimonial:nth-child(2) .home-testimonial__initials { background: var(--accent); color: var(--dark); }
+
+/* Elevation au survol (pas sur ecran tactile) */
+@media (hover: hover) {
+  .home-features__card--link:hover,
+  .home-testimonial:hover,
+  .service-card:hover,
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+/* Chiffres : Space Grotesk, chiffre en bleu, libelle en gris, fond clair */
+.home-metrics {
+  background: #FFFFFF;
+}
+.home-metrics__value {
+  font-family: var(--font-display);
+  color: var(--primary);
+}
+.home-metrics__label {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+/* Appel final : couleur unie, plus de degrade */
+.home-cta {
+  background: var(--dark) !important;
+}
+.home-cta .home-cta__title { color: #FFFFFF; }
+.home-cta .home-cta__desc { color: var(--dark-muted); }
+
+/* Footer : le bleu primaire est illisible sur le fond sombre */
+.footer-credit a {
+  color: var(--accent);
+}
+
+/* ===========================================================================
+   Motif « vague » (macro vague() de client/_macros.html.twig)
+   Positionnee en CSS relativement aux mots soulignes (.wave-target).
+   =========================================================================== */
+.vague {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.vague__clip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-0.3em - 4px);
+  height: calc(0.45em + 8px);
+  overflow: hidden;
+  pointer-events: none;
+}
+.vague__trait {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 100%;
+  height: 0.45em;
+  color: var(--accent);
+  overflow: visible;
+}
+
+/* ===========================================================================
+   Animations — controleurs Stimulus de main (reveal, count-up, wave-draw,
+   sticky-header, accordion du theme). Contenu visible sans JS : les etats
+   « en attente » ne sont poses que par les controleurs.
+   =========================================================================== */
+.is-wave-pending .vague__clip { transform: translateX(-101%); }
+.is-wave-pending .vague__trait { transform: translateX(101%); }
+.is-wave-pending.is-wave-drawn .vague__clip,
+.is-wave-pending.is-wave-drawn .vague__trait {
+  transform: none;
+  transition: transform 650ms var(--motion-ease) 150ms;
+}
+
+/* Header compact au defilement (logo reduit + ombre, hauteur inchangee : CLS nul) */
+.header--vitrine {
+  transition: box-shadow 250ms var(--motion-ease);
+}
+.header--vitrine .header-logo img {
+  transition: transform 250ms var(--motion-ease);
+  transform-origin: left center;
+}
+.header--vitrine.is-scrolled {
+  box-shadow: 0 2px 12px rgba(28, 34, 38, 0.08);
+}
+.header--vitrine.is-scrolled .header-logo img {
+  transform: scale(0.88);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-wave-pending .vague__clip, .is-wave-pending .vague__trait { transform: none; }
+  .home-features__card--link, .home-testimonial, .service-card, .blog-card,
+  .home-features__link, .cw-arrow, .header--vitrine, .header--vitrine .header-logo img {
+    transition: none;
+  }
+  .home-features__card--link:hover, .home-testimonial:hover,
+  .service-card:hover, .blog-card:hover { transform: none; }
 }
