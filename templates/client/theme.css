@@ -777,6 +777,129 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-footer-coord a:hover { color: var(--accent); }
 
 /* ===========================================================================
+   Section web en escalier (home, brief du 05/11/2026)
+   =========================================================================== */
+.cws-escalier {
+  position: relative;
+}
+.cws-escalier__marches {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+.cws-marche {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EC;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+}
+.cws-marche--3 {
+  border-top: 3px solid var(--accent);
+}
+.cws-marche__etiquette {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  color: var(--accent-text);
+  margin-bottom: 0.5rem;
+}
+.cws-marche__titre {
+  font-size: 1.375rem;
+  margin-bottom: 0.75rem;
+}
+.cws-marche p {
+  color: var(--text-muted);
+}
+.cws-marche .cws-puces {
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+.cws-marche .cws-carte__lien {
+  margin-top: auto;
+}
+.cws-marche .cws-carte__lien:hover .cw-arrow { transform: translateX(4px); }
+.cws-escalier__vague { display: none; }
+
+/* Desktop : trois marches decalees de 0 / 40 / 80 px.
+   Grille de 5 rangees (40 / 40 / contenu / 40 / 40) : chaque marche couvre 3
+   rangees, dont une seule de contenu -> meme hauteur pour les trois, seul le
+   point de depart change. Aucun transform : l'animation reveal reste intacte. */
+@media (min-width: 992px) {
+  .cws-escalier__marches {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 40px 40px auto 40px 40px;
+    column-gap: 2rem;
+    row-gap: 0;
+  }
+  .cws-marche--1 { grid-column: 1; grid-row: 3 / span 3; }
+  .cws-marche--2 { grid-column: 2; grid-row: 2 / span 3; }
+  .cws-marche--3 { grid-column: 3; grid-row: 1 / span 3; }
+
+  /* Vague en diagonale montante, derriere les cartes (visible entre elles) */
+  .cws-escalier__vague {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    left: 6%;
+    right: 6%;
+    top: 50%;
+    height: 28px;
+    margin-top: -14px;
+    transform: rotate(-4deg);
+    pointer-events: none;
+  }
+  .cws-escalier__vague .vague__clip {
+    inset: 0;
+    height: 100%;
+  }
+  .cws-escalier__vague .vague__trait {
+    top: 4px;
+    height: 20px;
+  }
+}
+
+/* Tablette et mobile : marches empilees, trait vertical orange a gauche (timeline) */
+@media (max-width: 991.98px) {
+  .cws-escalier__marches {
+    grid-template-columns: 1fr;
+    padding-left: 1.75rem;
+  }
+  .cws-escalier__marches::before {
+    content: "";
+    position: absolute;
+    left: 0.45rem;
+    top: 2.5rem;
+    bottom: 2.5rem;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+  .cws-marche {
+    position: relative;
+  }
+  .cws-marche::before {
+    content: "";
+    position: absolute;
+    left: calc(-1.75rem + 0.45rem - 5px);
+    top: 2.35rem;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px #FFFFFF;
+  }
+}
+
+/* ===========================================================================
    Page IA en entreprise (brief IA, Lot B) — memes composants que la home
    =========================================================================== */
 .theme-vitrine .cws-hero--page {

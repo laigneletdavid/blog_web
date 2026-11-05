@@ -4,14 +4,14 @@
    puis (debut 2027) la connecter aux outils du client via l'API LintellO.
    Le produit reste presente sur lintello.fr (macro lien_lintello).
 
-   ia_api_disponible : passer a true quand l'API est en production. Les badges
+   ia_api_disponible (client/_macros) : y mettre 1 quand l'API est en production. Les badges
    « Début 2027 » disparaissent ; ne jamais ecrire « disponible » avant.
    Section 4 validee par David le 05/11/2026 : donnees chiffrees (pas les
    echanges), API 100 % francaise, recherche web souveraine sans partage de
    l'adresse IP, modes accessibles en API. Pas de prix (« sur devis »).
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
-{% set ia_api_disponible = false %}
+{% set ia_api_disponible = m.ia_api_disponible()|trim is not empty %}
 {% set badgeApi %}{% if not ia_api_disponible %}<span class="cws-badge">Début 2027</span>{% endif %}{% endset %}
 {{ m.symbole_vague() }}
 

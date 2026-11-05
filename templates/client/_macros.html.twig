@@ -30,3 +30,10 @@
 {# Site LintellO (les fiches service Studio et LintellO ont ete retirees le 05/11/2026 :
    la home et le menu renvoient vers les sites des produits) #}
 {% macro lien_lintello() %}https://lintello.fr{% endmacro %}
+
+{# Interrupteurs des fonctions a venir : '1' = en production, '' = pas encore.
+   ia_api_disponible : API LintellO (debut 2027) ; tant que '', badges « Début 2027 ».
+   chatbot_disponible : assistant IA sur le site du client ; tant que '', non cite.
+   Usage : {% set ia_api_disponible = m.ia_api_disponible() is not empty %} #}
+{% macro ia_api_disponible() %}{% endmacro %}
+{% macro chatbot_disponible() %}{% endmacro %}

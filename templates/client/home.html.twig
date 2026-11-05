@@ -93,29 +93,60 @@
     </div>
 </section>
 
-{# ====== 4. OFFRES WEB (premiere section d offres : ancre #offres du hero) ====== #}
+{# ====== 4. OFFRES WEB EN ESCALIER (brief du 05/11/2026) ======
+   Trois marches d'un parcours : un site, puis une application, puis l'IA, avec le
+   meme interlocuteur. Premiere section d'offres : ancre #offres du hero.
+   Desktop : marches decalees de 0 / 40 / 80 px par la grille (meme hauteur pour
+   les trois, aucun transform : reveal reste libre), vague en diagonale derriere.
+   Mobile : marches empilees, trait vertical orange a gauche. #}
+{% set iaApiDisponible = m.ia_api_disponible()|trim is not empty %}
+{% set chatbotDisponible = m.chatbot_disponible()|trim is not empty %}
 <section class="cws-section" id="offres">
     <div class="container">
         <div class="cws-section__head">
             <span class="home-overtitle">Le web</span>
-            <h2 class="home-section-title">Des outils qui travaillent pour vous</h2>
+            <h2 class="home-section-title">On commence simple, on va plus loin quand vous êtes prêt</h2>
+            <p>Un site pour être trouvé, une application quand vos outils ne suivent plus, l'IA pour gagner du temps. Vous avancez à votre rythme, avec le même interlocuteur.</p>
         </div>
-        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
-            <a href="/page/votre-site-web" class="cws-carte">
-                <h3>Votre site professionnel</h3>
-                <p>Site vitrine, blog ou click &amp; collect sur ComWeb Studio, le CMS que j'ai conçu. En ligne en 48 h, hébergé en France, sans WordPress.</p>
-                <span class="cws-carte__lien">Votre site web <span class="cw-arrow" aria-hidden="true">→</span></span>
-            </a>
-            <a href="/service/applications-sur-mesure" class="cws-carte">
-                <h3>Applications sur mesure</h3>
-                <p>CRM métier, outils de gestion, plateformes internes : quand aucun logiciel du marché ne colle à votre façon de travailler. Référence : Kayre.</p>
-                <span class="cws-carte__lien">Applications sur mesure <span class="cw-arrow" aria-hidden="true">→</span></span>
-            </a>
-            <a href="/service/integration-ia-entreprise" class="cws-carte">
-                <h3>Intelligence artificielle</h3>
-                <p>Je déploie une IA française et confidentielle dans votre entreprise, je forme votre équipe, et bientôt je la connecte à vos outils.</p>
-                <span class="cws-carte__lien">L'IA en entreprise <span class="cw-arrow" aria-hidden="true">→</span></span>
-            </a>
+        <div class="cws-escalier">
+            <div class="cws-escalier__vague" data-controller="wave-draw" aria-hidden="true">
+                <span class="vague__clip"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span>
+            </div>
+            <ol class="cws-escalier__marches" data-controller="reveal" data-reveal-stagger-value="120">
+                <li class="cws-marche cws-marche--1">
+                    <span class="cws-marche__etiquette">01 · Démarrer</span>
+                    <h3 class="cws-marche__titre">Votre site professionnel</h3>
+                    <p>Un site vitrine, un blog ou du click &amp; collect sur ComWeb Studio, le CMS que j'ai conçu. En ligne en 48 h, hébergé en France, sans WordPress.</p>
+                    <ul class="cws-puces">
+                        <li>Prix fixe, dès 450 € HT</li>
+                        <li>Vous modifiez vos textes vous-même</li>
+                        <li>Prêt pour Google</li>
+                    </ul>
+                    <a href="/page/votre-site-web" class="cws-carte__lien">Votre site web <span class="cw-arrow" aria-hidden="true">→</span></a>
+                </li>
+                <li class="cws-marche cws-marche--2">
+                    <span class="cws-marche__etiquette">02 · Aller plus loin</span>
+                    <h3 class="cws-marche__titre">Votre application sur mesure</h3>
+                    <p>Quand aucun logiciel du marché ne colle à votre façon de travailler&nbsp;: CRM métier, outil de gestion, plateforme interne. Je la conçois et je la code pour vous.</p>
+                    <ul class="cws-puces">
+                        <li>Développée sur mesure</li>
+                        <li>Évolutive avec votre activité</li>
+                        <li>Référence&nbsp;: Kayre</li>
+                    </ul>
+                    <a href="/service/applications-sur-mesure" class="cws-carte__lien">Applications sur mesure <span class="cw-arrow" aria-hidden="true">→</span></a>
+                </li>
+                <li class="cws-marche cws-marche--3">
+                    <span class="cws-marche__etiquette">03 · Automatiser</span>
+                    <h3 class="cws-marche__titre">L'IA dans votre entreprise</h3>
+                    <p>{% if chatbotDisponible %}Une IA française et confidentielle pour votre équipe, un assistant sur votre site, puis l'IA connectée directement à vos outils.{% else %}Une IA française et confidentielle pour votre équipe, puis l'IA connectée directement à vos outils.{% endif %}</p>
+                    <ul class="cws-puces">
+                        <li>Hébergée en France</li>
+                        <li>Équipe formée sur vos cas réels</li>
+                        <li>Connexion à vos outils{% if not iaApiDisponible %} <span class="cws-badge">Début 2027</span>{% endif %}</li>
+                    </ul>
+                    <a href="/service/integration-ia-entreprise" class="cws-carte__lien">L'IA en entreprise <span class="cw-arrow" aria-hidden="true">→</span></a>
+                </li>
+            </ol>
         </div>
     </div>
 </section>
