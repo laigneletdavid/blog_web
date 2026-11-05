@@ -111,6 +111,7 @@
         <div class="cws-escalier">
             <div class="cws-escalier__vague" data-controller="wave-draw" aria-hidden="true">
                 <span class="vague__clip"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span>
+                {% for i in 1..2 %}<svg class="cws-pointe cws-pointe--{{ i }}" viewBox="0 0 12 16"><path d="M2 2 L10 8 L2 14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>{% endfor %}
             </div>
             <ol class="cws-escalier__marches" data-controller="reveal" data-reveal-stagger-value="120">
                 <li class="cws-marche cws-marche--1">

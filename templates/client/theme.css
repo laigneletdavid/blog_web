@@ -844,30 +844,6 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   .cws-marche--2 { grid-column: 2; grid-row: 2 / span 3; }
   .cws-marche--3 { grid-column: 3; grid-row: 1 / span 3; }
 
-  /* Petite fleche orange entre deux marches, dans l'ecart de 2rem, a mi-hauteur
-     de la marche ; pastille blanche pour se poser proprement sur la vague */
-  .cws-marche { position: relative; }
-  .cws-marche--1::after,
-  .cws-marche--2::after {
-    content: "→";
-    position: absolute;
-    top: 50%;
-    right: calc(-1rem - 14px);
-    width: 28px;
-    height: 28px;
-    margin-top: -14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #FFFFFF;
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.5rem;
-    line-height: 1;
-    z-index: 2;
-  }
 
   /* Vague en diagonale montante, derriere les cartes (visible entre elles) */
   .cws-escalier__vague {
@@ -890,6 +866,29 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
     top: 4px;
     height: 20px;
   }
+
+  /* Pointes de fleche posees sur la vague, dans les deux ecarts entre les
+     marches. Meme trait que la vague (orange, 4 px, bouts arrondis). Placees
+     sur le trace : a 31 % la vague est au creux (y = 19 sur 20), a 69 % au
+     sommet (y = 1). Elles apparaissent une fois la vague dessinee. */
+  .cws-pointe {
+    position: absolute;
+    width: 12px;
+    height: 16px;
+    margin: -8px 0 0 -6px;
+    color: var(--accent);
+    overflow: visible;
+  }
+  .cws-pointe--1 { left: 30.4%; top: calc(4px + 19px); }
+  .cws-pointe--2 { left: 69.9%; top: calc(4px + 1px); }
+  .is-wave-pending .cws-pointe { opacity: 0; }
+  .is-wave-pending.is-wave-drawn .cws-pointe {
+    opacity: 1;
+    transition: opacity 250ms var(--motion-ease) 700ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-wave-pending .cws-pointe { opacity: 1; transition: none; }
 }
 
 /* Tablette et mobile : marches empilees, trait vertical orange a gauche (timeline) */
