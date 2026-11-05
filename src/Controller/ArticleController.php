@@ -60,7 +60,8 @@ class ArticleController extends AbstractController
             $titlePage = sprintf('Articles de %s %d', $monthNames[$month] ?? '', $year);
         }
 
-        $seo = $this->seoService->resolveForPage($titlePage);
+        // Options seo.blog.* : seulement pour la liste complete, pas pour un mois
+        $seo = $this->seoService->resolveForPage($titlePage, null, ($month && $year) ? null : 'blog');
 
         if ($page > 1 || count($paginator) === 0) {
             $seo['noIndex'] = true;

@@ -46,7 +46,7 @@ class PortfolioController extends AbstractController
             ? $portfolioItemRepository->findActiveByCategory($activeCategory)
             : $portfolioItemRepository->findAllActive();
 
-        $seo = $this->seoService->resolveForPage('Réalisations', 'Les sites réalisés par %s : exemples, secteurs et liens vers les sites en ligne.');
+        $seo = $this->seoService->resolveForPage('Réalisations', 'Les sites réalisés par %s : exemples, secteurs et liens vers les sites en ligne.', 'realisations');
 
         if (count($items) === 0) {
             $seo['noIndex'] = true;
