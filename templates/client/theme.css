@@ -215,17 +215,14 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 
 /* Bouton orange : texte fonce #1C2226 sur #F7931E = 6,7:1 (AA) */
-.btn-accent,
-.home-hero__actions .btn-primary {
+.btn-accent {
   background: var(--accent) !important;
   border-color: var(--accent) !important;
   color: var(--dark) !important;
   font-weight: 600;
 }
 .btn-accent:hover,
-.btn-accent:focus,
-.home-hero__actions .btn-primary:hover,
-.home-hero__actions .btn-primary:focus {
+.btn-accent:focus {
   background: #E5841A !important;
   border-color: #E5841A !important;
   color: var(--dark) !important;
@@ -372,6 +369,298 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 
 /* ===========================================================================
+   Home (Lot 3)
+   =========================================================================== */
+
+/* En-tete de section : aligne a gauche, largeur de lecture */
+.cws-section__head {
+  max-width: 46rem;
+  margin-bottom: 3rem;
+}
+.cws-section__head .home-section-title {
+  margin-bottom: 0.75rem;
+}
+.cws-section__head p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* --- 1. Hero : la photo de David, plus grande, coins arrondis, ombre douce --- */
+.theme-vitrine .cws-hero {
+  padding: 4.5rem 0 var(--section-space);
+  background: #FFFFFF;
+}
+.cws-hero .home-hero__desc {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+.cws-hero .home-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.cws-hero__photo {
+  aspect-ratio: 3 / 2;   /* place reservee avant chargement : pas de decalage */
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(28, 34, 38, 0.16);
+}
+.cws-hero__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (min-width: 992px) {
+  .cws-hero__photo { aspect-ratio: 4 / 5; }
+}
+@media (max-width: 575.98px) {
+  .cws-hero .home-hero__actions .btn { width: 100%; justify-content: center; }
+}
+
+/* --- 3. Bloc signature : deux colonnes reliees par la vague --- */
+.cws-signature__grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(180px, 0.8fr) 1fr;
+  align-items: center;
+  gap: 2rem;
+}
+.cws-signature__col {
+  padding: 2rem;
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  background: var(--dark-card);
+}
+.cws-signature__col h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.cws-signature__col p { margin: 0; }
+.cws-signature__lien {
+  position: relative;
+  min-height: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cws-signature__axe {
+  position: absolute;
+  left: -2rem;
+  right: -2rem;
+  top: 50%;
+  height: 28px;
+  margin-top: -14px;
+}
+.cws-signature__axe .vague__clip {
+  inset: 0;
+  height: 100%;
+}
+.cws-signature__axe .vague__trait {
+  top: 4px;
+  height: 20px;
+}
+.cws-signature__label {
+  position: relative;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: var(--dark);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.0625rem;
+  text-align: center;
+  transform: translateY(-1.6rem);
+}
+.cws-signature__more {
+  margin: 2.5rem 0 0;
+  font-weight: 600;
+}
+@media (max-width: 991.98px) {
+  .cws-signature__grid { grid-template-columns: 1fr; gap: 0; }
+  .cws-signature__lien { min-height: 9rem; }
+  /* Vague verticale : l'axe tourne, le devoilement suit (de haut en bas) */
+  .cws-signature__axe {
+    left: 50%;
+    right: auto;
+    width: 9rem;
+    margin-left: -4.5rem;
+    transform: rotate(90deg);
+  }
+  .cws-signature__label { transform: none; }
+}
+
+/* --- 4. Offres commerce : lignes alternees, numero orange --- */
+.cws-offres { background: #FFFFFF; }
+.cws-offres__liste {
+  display: grid;
+  gap: 1.5rem;
+}
+.cws-offre {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 1.5rem;
+  max-width: 48rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+}
+.cws-offre--droite {
+  margin-left: auto;
+}
+.cws-offre .cws-num {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+.cws-offre__titre {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.cws-offre__corps p {
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+.cws-offre__lien,
+.cws-carte__lien {
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+.cws-offre__lien:hover .cw-arrow,
+.cws-carte:hover .cw-arrow,
+.cws-signature__more a:hover .cw-arrow,
+.cws-faq__plus a:hover .cw-arrow {
+  transform: translateX(4px);
+}
+@media (max-width: 767.98px) {
+  .cws-offre { grid-template-columns: 1fr; gap: 0.5rem; }
+  .cws-offre--droite { margin-left: 0; }   /* pas d'alternance en mobile */
+}
+
+/* --- 5 et 7. Cartes cote a cote, alignees a gauche, sans icone --- */
+.cws-cartes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 767.98px) {
+  .cws-cartes { grid-template-columns: 1fr; }
+}
+.cws-carte {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease);
+}
+.cws-carte h3 {
+  font-size: 1.375rem;
+  margin-bottom: 0.75rem;
+}
+.cws-carte p {
+  color: var(--text-muted);
+  flex-grow: 1;
+}
+.cws-carte.cws-card-dark {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+  box-shadow: none;
+}
+.cws-carte.cws-card-dark h3 { color: #FFFFFF; }
+.cws-carte.cws-card-dark p { color: var(--dark-muted); }
+.cws-carte.cws-card-dark .cws-carte__lien { color: var(--accent); }
+@media (hover: hover) {
+  .cws-carte:hover {
+    color: inherit;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+/* --- 8. Temoignages : guillemet orange, nom en gras, entreprise en gris --- */
+.cws-temoignages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 991.98px) {
+  .cws-temoignages { grid-template-columns: 1fr; }
+}
+.cws-temoignage {
+  margin: 0;
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+.cws-temoignage__guillemet {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 3.5rem;
+  line-height: 0.8;
+  color: var(--accent);
+  height: 2rem;
+}
+.cws-temoignage__texte {
+  margin: 0 0 1.5rem;
+  flex-grow: 1;
+}
+.cws-temoignage__texte p {
+  margin: 0;
+  color: var(--text);
+}
+.cws-temoignage__auteur strong {
+  display: block;
+  color: var(--text);
+}
+.cws-temoignage__auteur span {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+/* --- 9. FAQ courte --- */
+.home-faq.cws-section { background: #FFFFFF !important; }
+.cws-faq {
+  max-width: 52rem;
+}
+.cws-faq .accordion-item + .accordion-item {
+  margin-top: 0.75rem;
+}
+.cws-faq .accordion-button {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.0625rem;
+}
+.cws-faq__plus {
+  margin: 1.5rem 0 0;
+  font-weight: 600;
+}
+
+/* --- 10. Appel final (fonce) --- */
+.home-cta .container { max-width: 52rem; }
+.cws-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 1.5rem;
+  margin-top: 2rem;
+}
+.cws-cta__tel {
+  color: #FFFFFF;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cws-cta__tel:hover { color: var(--accent); }
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */
@@ -429,10 +718,10 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 
 @media (prefers-reduced-motion: reduce) {
   .is-wave-pending .vague__clip, .is-wave-pending .vague__trait { transform: none; }
-  .home-features__card--link, .home-testimonial, .service-card, .blog-card,
+  .home-features__card--link, .home-testimonial, .service-card, .blog-card, .cws-carte,
   .home-features__link, .cw-arrow, .header--vitrine, .header--vitrine .header-logo img {
     transition: none;
   }
-  .home-features__card--link:hover, .home-testimonial:hover,
+  .home-features__card--link:hover, .home-testimonial:hover, .cws-carte:hover,
   .service-card:hover, .blog-card:hover { transform: none; }
 }

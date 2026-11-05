@@ -1,34 +1,55 @@
-{# ====== HOME — Com Web Solutions ====== #}
+{# ====== HOME — Com Web Solutions (brief du 05/11/2026, Lot 3) ======
+   Voix : « je », vouvoiement du lecteur. Charte et composants : client/theme.css.
+   Choix de David (05/11/2026) :
+   - pas de section chiffres (section 6 du brief) : aucun chiffre assez solide ;
+   - appels d'offres retires des offres de la home (la fiche reste dans le menu) ;
+   - hero : « Je vends depuis 2000, je code depuis 2016 » (aligne sur la frise de Studio). #}
+{% import 'client/_macros.html.twig' as m %}
+{% set lienRdv = m.lien_rdv() %}
+{% set telephone = site.phone|default('0622283754')|replace({' ': '', '.': ''}) %}
+{% set telAffiche = telephone|split('', 2)|join(' ') %}
+{% set telLien = '+33' ~ telephone|slice(1) %}
+{# FAQ de la home : commerce + web, reponses reprises de /faq (ids en base) #}
+{% set faqHomeIds = [1, 3, 4, 8, 12] %}
+{% set faqHome = [] %}
+{% for id in faqHomeIds %}
+    {% for faq in faqs|default([]) %}{% if faq.id == id %}{% set faqHome = faqHome|merge([faq]) %}{% endif %}{% endfor %}
+{% endfor %}
 
-{# ====== HERO (split texte / image) ====== #}
-<section class="home-hero">
-    <div class="container position-relative">
-        <div class="row align-items-center home-hero__row">
-            <div class="col-lg-7 home-hero__content">
-                <h1 class="home-hero__title">Le commerce qui vend,<br>le web qui convertit.</h1>
-                <p class="home-hero__desc">15 ans à vendre, 10 ans à coder. Je mets les deux au service de votre boîte. Pas de jargon, pas de slides PowerPoint, pas de chargé de compte — un seul interlocuteur, du premier appel à la mise en ligne.</p>
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero cws-hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <p class="home-hero__overtitle">Commerce &amp; web · Comminges et partout en France</p>
+                <h1 class="home-hero__title">Le commerce qui vend, le web qui {{ m.vague('convertit') }}.</h1>
+                <p class="home-hero__desc">Je vends depuis 2000, je code depuis 2016. Aujourd'hui je mets les deux au service de votre entreprise. Pas de jargon, pas de chargé de compte : un seul interlocuteur, du premier appel à la mise en ligne.</p>
                 <div class="home-hero__actions">
-                    <a href="https://calendar.app.google/HjoNfP83BWDB3rkW6" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Prendre RDV (gratuit)</a>
-                    <a href="#services" class="btn btn-outline-primary btn-lg">Découvrir mes offres</a>
+                    <a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
+                    <a href="#offres" class="btn btn-outline-primary btn-lg">Voir ce que je fais</a>
                 </div>
             </div>
             {% if site.heroImage %}
-            <div class="col-lg-5 home-hero__visual d-none d-lg-block">
-                {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 42vw', 'home-hero__img', 'David Laignelet — Com Web Solutions', true) }}
+            <div class="col-lg-5">
+                <div class="cws-hero__photo">
+                    {{ responsive_img(site.heroImage, '(max-width: 991px) 100vw, 40vw', 'cws-hero__img', 'David Laignelet, Com Web Solutions', true) }}
+                </div>
             </div>
             {% endif %}
         </div>
     </div>
 </section>
 
-{# ====== PAIN POINTS (3 cartes) ====== #}
-<section class="home-features" id="services">
+{# ====== 2. ÇA VOUS PARLE ? ====== #}
+<section class="home-features">
     <div class="container">
-        <div class="text-center mb-5">
-            <span class="home-overtitle">Les problèmes qu'on résout</span>
+        <div class="cws-section__head">
+            <span class="home-overtitle">Les problèmes que je résous</span>
             <h2 class="home-section-title">Ça vous parle ?</h2>
         </div>
-        <div class="home-features__grid home-features__grid--3">
+        <div class="home-features__grid home-features__grid--3" data-controller="reveal" data-reveal-stagger-value="90">
             <a href="/page/developpement-commercial" class="home-features__card home-features__card--link">
                 <h3 class="home-features__title">« On n'a personne pour prospecter »</h3>
                 <p class="home-features__desc">Vous êtes dirigeant, vous faites tout — y compris le commercial. Sauf que prospecter prend du temps, de la méthode et de la régularité. Vous savez que ça bloque, mais vous ne pouvez pas embaucher un directeur commercial.</p>
@@ -48,73 +69,170 @@
     </div>
 </section>
 
-{# ====== SERVICES (fiches détaillées si module actif) ====== #}
-{% if services|default([])|length > 0 %}
-<section class="home-services">
+{# ====== 3. BLOC SIGNATURE (fonce) ====== #}
+<section class="cws-section cws-section--dark cws-signature">
     <div class="container">
-        <div class="home-services__header text-center">
-            <span class="home-overtitle">Commerce &amp; Web</span>
-            <h2 class="home-section-title">Les offres en détail</h2>
+        <div class="cws-section__head">
+            <span class="home-overtitle">Pourquoi un seul interlocuteur</span>
+            <h2 class="home-section-title">Votre commercial et votre webmaster, c'est la même personne.</h2>
         </div>
-        {% include '_partials/_services_grid.html.twig' with { services: services } %}
+        <div class="cws-signature__grid">
+            <div class="cws-signature__col">
+                <h3>Le commerce</h3>
+                <p>Trouver des clients, structurer la prospection, répondre aux appels d'offres. Ce que j'ai fait sur le terrain pendant des années.</p>
+            </div>
+            <div class="cws-signature__lien" data-controller="wave-draw">
+                <span class="cws-signature__axe" aria-hidden="true"><span class="vague__clip"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></span>
+                <span class="cws-signature__label">Un seul interlocuteur</span>
+            </div>
+            <div class="cws-signature__col">
+                <h3>Le web</h3>
+                <p>Des sites et des outils qui servent à vendre, pas à faire joli. Je les conçois et je les code moi-même.</p>
+            </div>
+        </div>
+        <p class="cws-signature__more"><a href="/page/pourquoi-un-seul-interlocuteur">Pourquoi c'est plus efficace <span class="cw-arrow" aria-hidden="true">→</span></a></p>
     </div>
 </section>
-{% endif %}
 
-{# ====== PORTFOLIO (si module actif + realisations) ====== #}
-{% if featuredPortfolio|default([])|length > 0 %}
-<section class="home-portfolio py-5">
+{# ====== 4. OFFRES COMMERCE ====== #}
+<section class="cws-section cws-offres" id="offres">
     <div class="container">
-        <h2 class="home-section-title text-center">Réalisations</h2>
-        {% include '_partials/_portfolio_grid.html.twig' with { portfolioItems: featuredPortfolio } %}
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le commerce</span>
+            <h2 class="home-section-title">Développer vos ventes, sans recruter</h2>
+        </div>
+        {% set offres = [
+            { num: '01', titre: 'Direction commerciale externalisée', texte: "Vous n'avez pas de directeur commercial ? Je joue ce rôle à temps partagé : diagnostic, plan d'action, formation de votre équipe, suivi des résultats.", lien: '/service/direction-commerciale-externalisee' },
+            { num: '02', titre: 'Externalisation commerciale B2B', texte: 'Je prends en charge votre prospection de A à Z : ciblage, séquences email et LinkedIn, phoning. Vous vous concentrez sur votre métier et sur la signature.', lien: '/service/externalisation-commerciale-b2b' },
+        ] %}
+        <div class="cws-offres__liste">
+            {% for o in offres %}
+            <article class="cws-offre{{ loop.index is even ? ' cws-offre--droite' }}" data-controller="reveal">
+                <span class="cws-num" aria-hidden="true">{{ o.num }}</span>
+                <div class="cws-offre__corps">
+                    <h3 class="cws-offre__titre">{{ o.titre }}</h3>
+                    <p>{{ o.texte }}</p>
+                    <a href="{{ o.lien }}" class="cws-offre__lien">Découvrir l'offre<span class="visually-hidden"> {{ o.titre }}</span> <span class="cw-arrow" aria-hidden="true">→</span></a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
     </div>
 </section>
-{% endif %}
 
-{# ====== FAQ (si module actif) ====== #}
-{% if faqs|default([])|length > 0 %}
-<section class="home-faq py-5" style="background: var(--surface);">
+{# ====== 5. OFFRES WEB ====== #}
+<section class="cws-section cws-section--alt">
     <div class="container">
-        <h2 class="home-section-title text-center">Questions fréquentes</h2>
-        {% include '_partials/_faq_accordion.html.twig' with { faqs: faqs } %}
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le web</span>
+            <h2 class="home-section-title">Des outils qui travaillent pour vous</h2>
+        </div>
+        <div class="cws-cartes" data-controller="reveal" data-reveal-stagger-value="90">
+            <a href="/page/votre-site-web" class="cws-carte">
+                <h3>Votre site professionnel</h3>
+                <p>Site vitrine, blog ou click &amp; collect sur ComWeb Studio, le CMS que j'ai conçu. En ligne en 48 h, hébergé en France, sans WordPress.</p>
+                <span class="cws-carte__lien">Votre site web <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+            <a href="/service/applications-sur-mesure" class="cws-carte">
+                <h3>Applications sur mesure</h3>
+                <p>CRM métier, outils de gestion, plateformes internes : quand aucun logiciel du marché ne colle à votre façon de travailler. Référence : Kayre.</p>
+                <span class="cws-carte__lien">Applications sur mesure <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+        </div>
     </div>
 </section>
-{% endif %}
 
-{# ====== TEMOIGNAGES ====== #}
+{# ====== 6. CHIFFRES : retiree (decision David, 05/11/2026) ====== #}
+
+{# ====== 7. OUTILS DE LA MAISON (fonce) ======
+   Logos a fournir : en attendant, les noms en texte. #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Conçus ici</span>
+            <h2 class="home-section-title">Les outils de la maison</h2>
+            <p>Je développe mes propres outils, et mes clients en profitent les premiers.</p>
+        </div>
+        <div class="cws-cartes" data-controller="reveal" data-reveal-stagger-value="90">
+            <a href="{{ m.lien_studio() }}" target="_blank" rel="noopener" class="cws-carte cws-card-dark">
+                <h3>ComWeb Studio</h3>
+                <p>Le CMS français pour les artisans, commerçants et indépendants. Votre site en 48 h, sans WordPress.</p>
+                <span class="cws-carte__lien">Découvrir ComWeb Studio<span class="visually-hidden"> (nouvel onglet)</span> <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+            <a href="/service/lintello" class="cws-carte cws-card-dark">
+                <h3>LintellO</h3>
+                <p>L'IA française et confidentielle. Hébergée en France, vos données ne servent jamais à entraîner les modèles.</p>
+                <span class="cws-carte__lien">Découvrir LintellO <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{# ====== 8. TEMOIGNAGES ======
+   Titre en base : « Nom — Entreprise » (entreprise facultative). #}
 {% set testimonials = site.getGalleryBySlot('testimonial') %}
 {% if testimonials|length > 0 %}
 <section class="home-testimonials">
     <div class="container">
-        <h2 class="home-section-title text-center">Ils ont travaillé avec moi</h2>
-        {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Ils ont travaillé avec moi</h2>
+        </div>
+        <div class="cws-temoignages" data-controller="reveal" data-reveal-stagger-value="90">
+            {% for item in testimonials|slice(0, 3) %}
+            {% set parts = item.title|default('')|split(' — ', 2) %}
+            <figure class="cws-temoignage">
+                <span class="cws-temoignage__guillemet" aria-hidden="true">“</span>
+                <blockquote class="cws-temoignage__texte"><p>{{ item.content }}</p></blockquote>
+                <figcaption class="cws-temoignage__auteur">
+                    <strong>{{ parts|first }}</strong>
+                    {% if parts|length > 1 %}<span>{{ parts|last }}</span>{% endif %}
+                </figcaption>
+            </figure>
+            {% endfor %}
+        </div>
     </div>
 </section>
 {% endif %}
 
-{# ====== DERNIERS ARTICLES ====== #}
-{% if articles|default([])|length > 0 %}
-<section class="home-articles">
+{# ====== 9. FAQ COURTE ====== #}
+{% if faqHome|length > 0 %}
+<section class="home-faq cws-section">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="home-section-title mb-1">Le journal — terrain, sans filtre</h2>
-                <p class="text-muted mb-0">Stratégie commerciale, web sans WordPress, IA souveraine, vie d'entrepreneur. Ce que j'apprends sur le terrain, partagé sans langue de bois.</p>
-            </div>
-            <a href="{{ path('app_article_show_all') }}" class="btn btn-outline-primary btn-sm">Lire le blog →</a>
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Questions fréquentes</h2>
         </div>
-        <div class="row">
-            {% include 'article/article_liste.html.twig' with { articles } %}
+        <div class="cws-faq">
+            <div class="accordion faq-accordion" id="faq-home">
+                {% for faq in faqHome %}
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-home-{{ faq.id }}" aria-expanded="false" aria-controls="faq-home-{{ faq.id }}">{{ faq.question }}</button>
+                    </h3>
+                    <div id="faq-home-{{ faq.id }}" class="accordion-collapse collapse" data-bs-parent="#faq-home">
+                        <div class="accordion-body content-body">{{ faq.content|raw }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <p class="cws-faq__plus"><a href="{{ path('app_faq_index') }}">Voir toutes les questions <span class="cw-arrow" aria-hidden="true">→</span></a></p>
         </div>
     </div>
 </section>
+{% set faqJson = [] %}
+{% for faq in faqHome %}
+    {% set faqJson = faqJson|merge([{ '@type': 'Question', 'name': faq.question, 'acceptedAnswer': { '@type': 'Answer', 'text': faq.content|striptags|replace({'&#039;': "'", '&nbsp;': ' '})|trim } }]) %}
+{% endfor %}
+<script type="application/ld+json">{{ { '@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faqJson }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endif %}
 
-{# ====== CTA FINAL ====== #}
+{# ====== 10. CTA FINAL ====== #}
 <section class="home-cta">
-    <div class="container text-center">
+    <div class="container">
         <h2 class="home-cta__title">Un échange de 30 minutes pour faire le point ?</h2>
-        <p class="home-cta__desc">Pas d'engagement, pas de présentation commerciale. On parle de votre boîte, de ce qui bloque, et je vous dis honnêtement si je peux aider — ou non.</p>
-        <a href="https://calendar.app.google/HjoNfP83BWDB3rkW6" target="_blank" rel="noopener" class="btn btn-light btn-lg">Réserver un créneau</a>
+        <p class="home-cta__desc">Pas d'engagement, pas de présentation commerciale. On parle de votre entreprise, de ce qui bloque, et je vous dis honnêtement si je peux aider, ou non.</p>
+        <div class="cws-cta__actions">
+            <a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Réserver un créneau<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="tel:{{ telLien }}" class="cws-cta__tel">ou appelez-moi au {{ telAffiche }}</a>
+        </div>
     </div>
 </section>
