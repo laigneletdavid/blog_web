@@ -666,6 +666,107 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-cta__tel:hover { color: var(--accent); }
 
 /* ===========================================================================
+   Autres pages (Lot 4)
+   =========================================================================== */
+
+/* --- En-tete de page court (Contact) --- */
+.cws-page-head {
+  padding: 4rem 0 3rem;
+  background: #FFFFFF;
+}
+.cws-page-head__title {
+  font-size: clamp(1.875rem, 3.6vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.cws-page-head__lead {
+  max-width: 46rem;
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- Contact : rendez-vous en tete, formulaire et coordonnees dessous --- */
+.cws-section.cws-contact {
+  padding-top: 3rem !important;
+}
+.cws-contact__rdv {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  background: var(--dark);
+  border-radius: var(--radius-lg);
+  color: #FFFFFF;
+}
+.cws-contact__rdv .cws-contact__titre { color: #FFFFFF; }
+.cws-contact__rdv p { margin: 0; color: var(--dark-muted); }
+.cws-contact__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 991.98px) {
+  .cws-contact__grille { grid-template-columns: 1fr; }
+}
+.cws-contact__form {
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.cws-contact__titre {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.cws-contact__delai {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.cws-contact__coord {
+  list-style: none;
+  margin: 0;
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.cws-contact__coord li + li { margin-top: 1.25rem; }
+.cws-contact__label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--accent-text);
+  margin-bottom: 0.15rem;
+}
+
+/* --- Footer : coordonnees au-dessus de la ligne du theme --- */
+.cws-footer-coord {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 2rem;
+  margin: 0 0 1.5rem;
+  padding: 0 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.9375rem;
+}
+.cws-footer-coord a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cws-footer-coord a:hover { color: var(--accent); }
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */

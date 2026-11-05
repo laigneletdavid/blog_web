@@ -8,9 +8,6 @@
      (« site internet » plutot que « web » ou « digital »). #}
 {% import 'client/_macros.html.twig' as m %}
 {% set lienRdv = m.lien_rdv() %}
-{% set telephone = site.phone|default('0622283754')|replace({' ': '', '.': ''}) %}
-{% set telAffiche = telephone|split('', 2)|join(' ') %}
-{% set telLien = '+33' ~ telephone|slice(1) %}
 {# FAQ de la home : commerce + web, reponses reprises de /faq (ids en base) #}
 {% set faqHomeIds = [1, 3, 4, 8, 12] %}
 {% set faqHome = [] %}
@@ -228,14 +225,5 @@
 <script type="application/ld+json">{{ { '@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faqJson }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endif %}
 
-{# ====== 10. CTA FINAL ====== #}
-<section class="home-cta">
-    <div class="container">
-        <h2 class="home-cta__title">Un échange de 30 minutes pour faire le point ?</h2>
-        <p class="home-cta__desc">Pas d'engagement, pas de présentation commerciale. On parle de votre entreprise, de ce qui bloque, et je vous dis honnêtement si je peux aider, ou non.</p>
-        <div class="cws-cta__actions">
-            <a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Réserver un créneau<span class="visually-hidden"> (nouvel onglet)</span></a>
-            <a href="tel:{{ telLien }}" class="cws-cta__tel">ou appelez-moi au {{ telAffiche }}</a>
-        </div>
-    </div>
-</section>
+{# ====== 10. CTA FINAL (partiel commun avec les fiches services) ====== #}
+{% include 'client/_cta_final.html.twig' %}

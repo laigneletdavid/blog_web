@@ -1,0 +1,7 @@
+{# ====== FICHE SERVICE — bw_cws ======
+   Rendu commun, avec deux retouches (brief 4.6) :
+   - le fil d'Ariane ne passe plus par « Services », redirige vers l'accueil ;
+   - l'appel final de la home en bas de chaque fiche. #}
+{% set lienServices = '<li class="breadcrumb-item"><a href="' ~ path('app_service_index') ~ '">' ~ section_title|default('Services') ~ '</a></li>' %}
+{{ include('service/_show_generic.html.twig')|replace({ (lienServices): '' })|raw }}
+{% include 'client/_cta_final.html.twig' %}

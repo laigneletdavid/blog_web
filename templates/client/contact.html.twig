@@ -1,0 +1,64 @@
+{# ======================================================================
+   CONTACT — bw_cws (brief du 05/11/2026, 4.2)
+   H1 « Parlons de votre projet », le rendez-vous au-dessus du formulaire,
+   « je » partout. Formulaire du coeur (nom, prenom, e-mail, sujet, message).
+   Delai de reponse : 48 h ouvrees.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+<section class="cws-page-head">
+    <div class="container">
+        <h1 class="cws-page-head__title">Parlons de {{ m.vague('votre projet') }}</h1>
+        <p class="cws-page-head__lead">Le plus simple : réservez 30 minutes dans mon agenda. Vous préférez écrire ? Le formulaire est juste en dessous, je réponds sous 48 h ouvrées.</p>
+    </div>
+</section>
+
+<section class="cws-section cws-section--alt cws-contact">
+    <div class="container">
+        {# ====== RENDEZ-VOUS (au-dessus du formulaire) ====== #}
+        <div class="cws-contact__rdv">
+            <div>
+                <h2 class="cws-contact__titre">Prendre rendez-vous</h2>
+                <p>30 minutes au téléphone ou en visio pour parler de votre entreprise. Gratuit et sans engagement.</p>
+            </div>
+            <a href="{{ m.lien_rdv() }}" class="btn btn-accent btn-lg" target="_blank" rel="noopener">Choisir un créneau<span class="visually-hidden"> (nouvel onglet)</span> <span class="cw-arrow" aria-hidden="true">→</span></a>
+        </div>
+
+        <div class="cws-contact__grille">
+            {# ====== FORMULAIRE ====== #}
+            <div class="cws-contact__form">
+                <h2 class="cws-contact__titre">Ou écrivez-moi</h2>
+                <p class="cws-contact__delai">Je réponds personnellement sous 48 h ouvrées.</p>
+                {{ form_start(contactForm) }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">{{ form_row(contactForm.firstname) }}</div>
+                        <div class="col-sm-6">{{ form_row(contactForm.name) }}</div>
+                    </div>
+                    {{ form_row(contactForm.email) }}
+                    {{ form_row(contactForm.subject) }}
+                    {{ form_row(contactForm.message) }}
+                    {{ form_rest(contactForm) }}
+                    <button class="btn btn-primary btn-lg w-100 mt-2" type="submit">Envoyer le message</button>
+                    {% include '_partials/_contact_rgpd.html.twig' %}
+                {{ form_end(contactForm) }}
+            </div>
+
+            {# ====== COORDONNEES ====== #}
+            <ul class="cws-contact__coord">
+                {% if site.phone %}
+                <li><span class="cws-contact__label">Téléphone</span><a href="tel:{{ site.phone|phone|replace({' ': ''}) }}">{{ site.phone|phone }}</a></li>
+                {% endif %}
+                {% if site.email %}
+                <li><span class="cws-contact__label">E-mail</span><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+                {% endif %}
+                {% if site.address1 %}
+                <li><span class="cws-contact__label">Adresse</span>{{ site.address1 }}<br>{{ site.postCode|default('') }} {{ site.town|default('') }}</li>
+                {% endif %}
+                <li><span class="cws-contact__label">Zone</span>Comminges et Sud-Ouest sur place, partout en France en visio</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+{% include '_partials/_contact_map.html.twig' with { wrapperClass: 'container my-5', height: 300 } %}

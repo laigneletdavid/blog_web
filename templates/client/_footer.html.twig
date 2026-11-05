@@ -1,0 +1,17 @@
+{# ====== FOOTER CLIENT — bw_cws ======
+   Footer du theme vitrine, inclus (il garde les correctifs de main), avec en tete
+   les coordonnees et le lien agenda (brief 4.3). Accents des liens legaux : en
+   base (menu). Credit « Développé avec ComWeb Studio » : celui de main. #}
+{% import 'client/_macros.html.twig' as m %}
+{% set coordonnees %}
+<div class="container py-4">
+    <ul class="cws-footer-coord">
+        {% if site.phone %}<li><a href="tel:{{ site.phone|phone|replace({' ': ''}) }}">{{ site.phone|phone }}</a></li>{% endif %}
+        {% if site.email %}<li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>{% endif %}
+        {% if site.address1 %}<li>{{ site.address1 }}, {{ site.postCode|default('') }} {{ site.town|default('') }}</li>{% endif %}
+        <li><a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener">Prendre rendez-vous<span class="visually-hidden"> (nouvel onglet)</span></a></li>
+    </ul>
+{% endset %}
+{{ include('themes/vitrine/_footer.html.twig')|replace({
+    '<div class="container py-4">': coordonnees|trim
+})|raw }}

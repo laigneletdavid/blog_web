@@ -1,0 +1,14 @@
+{# ====== APPEL FINAL — bw_cws ======
+   Commun a la home (section 10) et au bas des fiches services (brief 4.6). #}
+{% import 'client/_macros.html.twig' as m %}
+{% set telephone = site.phone|default('0622283754')|replace({' ': '', '.': ''}) %}
+<section class="home-cta">
+    <div class="container">
+        <h2 class="home-cta__title">Un échange de 30 minutes pour faire le point ?</h2>
+        <p class="home-cta__desc">Pas d'engagement, pas de présentation commerciale. On parle de votre entreprise, de ce qui bloque, et je vous dis honnêtement si je peux aider, ou non.</p>
+        <div class="cws-cta__actions">
+            <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Réserver un créneau<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="tel:+33{{ telephone|slice(1) }}" class="cws-cta__tel">ou appelez-moi au {{ telephone|split('', 2)|join(' ') }}</a>
+        </div>
+    </div>
+</section>

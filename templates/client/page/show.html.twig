@@ -1,0 +1,19 @@
+{# ====== PAGES — bw_cws ======
+   Rendu commun ; sur À propos, la fiche Person (brief 4.4). LinkedIn (sameAs) :
+   a ajouter quand David le fournira. #}
+{% include [
+    'client/page/_' ~ page.slug ~ '.html.twig',
+    'page/_show_generic.html.twig'
+] %}
+{% if page.slug == 'a-propos' %}
+{% set personne = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    'name': 'David Laignelet',
+    'jobTitle': 'Consultant en développement commercial et développeur web',
+    'url': absolute_url(path('app_page_show', { slug: page.slug })),
+    'worksFor': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') }
+} %}
+{% if site.heroImage %}{% set personne = personne|merge({ 'image': absolute_url(asset('documents/medias/' ~ site.heroImage.fileName)) }) %}{% endif %}
+<script type="application/ld+json">{{ personne|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+{% endif %}
