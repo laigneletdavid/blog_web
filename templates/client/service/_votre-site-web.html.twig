@@ -1,7 +1,7 @@
 {# ======================================================================
-   PAGE « VOTRE SITE WEB » — bw_cws (spec du 06/11/2026, lot 2)
+   FICHE « VOTRE SITE WEB » — bw_cws (spec du 06/11/2026, lot 2 ; page devenue fiche service le 06/11/2026, 301 depuis /service/votre-site-web)
    Marche 01 · Démarrer de l'escalier de la home. Pleine largeur, sans colonne
-   laterale. Le texte vit ici ; en base, la page garde titre, slug et SEO.
+   laterale. Le texte vit ici ; en base, la fiche garde titre, slug, resume et SEO.
    Visuel du hero (brief du 06/11/2026) : capture de bm-notaire.fr si l'accord
    du notaire est donne (ref_bm_notaire_publiee) et le fichier depose, sinon la
    home de comwebstudio.fr si son fichier est depose, sinon pas d'image (jamais
@@ -215,7 +215,7 @@
     '@context': 'https://schema.org',
     '@type': 'Service',
     'name': 'Création de site internet',
-    'description': page.seoDescription|default(''),
+    'description': service.seoDescription|default(''),
     'serviceType': 'Création de site internet',
     'areaServed': 'France',
     'provider': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') },
