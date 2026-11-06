@@ -5,6 +5,7 @@ namespace App\Twig;
 use App\Entity\Menu;
 use App\Enum\VisibilityEnum;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -16,6 +17,8 @@ class AppExtension extends AbstractExtension
         public function __construct(
             private RouterInterface $router,
             private Security $security,
+            #[Autowire('%kernel.project_dir%')]
+            private string $projectDir = '',
         ) {
         }
 
@@ -38,6 +41,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('toc_extract', [$this, 'extractToc']),
+            new TwigFunction('fichier_public', [$this, 'fichierPublic']),
         ];
     }
 
@@ -237,6 +241,21 @@ class AppExtension extends AbstractExtension
      * l'ouvre dans un nouvel onglet, avec une fleche. Les liens internes du
      * menu sont relatifs, generes depuis les routes.
      */
+    /**
+     * Un fichier existe-t-il dans public/ ? Pour afficher une image deposee a la
+     * main (capture de reference...) seulement quand elle est la, sans jamais
+     * produire de lien casse. Chemin relatif a public/, sans remontee (..).
+     */
+    public function fichierPublic(string $chemin): bool
+    {
+        $chemin = ltrim($chemin, '/');
+        if ($chemin === '' || str_contains($chemin, '..') || $this->projectDir === '') {
+            return false;
+        }
+
+        return is_file($this->projectDir . '/public/' . $chemin);
+    }
+
     public function menuExterne(Menu $menu): bool
     {
         return $menu->getTarget() === 'url'
