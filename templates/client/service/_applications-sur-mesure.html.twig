@@ -86,14 +86,16 @@
     </div>
 </section>
 
-{# ====== 4. REFERENCES (fonce) ====== #}
+{# ====== 4. REFERENCES (fonce) ======
+   Sans animation d'apparition : on y arrive souvent par l'ancre #references
+   (bouton du hero), les cartes doivent etre lisibles tout de suite. #}
 <section class="cws-section cws-section--dark" id="references">
     <div class="container">
         <div class="cws-section__head">
             <span class="home-overtitle">Réalisations</span>
             <h2 class="home-section-title">Des applications en production, pas des maquettes</h2>
         </div>
-        <div class="cws-card-dark cws-reference" data-controller="reveal">
+        <div class="cws-card-dark cws-reference">
             <h3>Kayre</h3>
             <p>Plateforme de gestion complète développée sur mesure&nbsp;: suivi de formation, e-learning, abonnements, rapports de données. Un outil unique qui remplace plusieurs logiciels.</p>
             <figure class="cws-citation">
@@ -101,7 +103,7 @@
                 <figcaption>Mickaël Lamy, Kayre</figcaption>
             </figure>
         </div>
-        <div class="cws-cartes" data-controller="reveal" data-reveal-stagger-value="90">
+        <div class="cws-cartes">
             <a href="{{ m.lien_studio()|trim }}" target="_blank" rel="noopener" class="cws-carte cws-card-dark">
                 <h3>ComWeb Studio</h3>
                 <p>Mon propre CMS, développé sous Symfony. Il fait tourner ce site et ceux de mes clients.</p>
