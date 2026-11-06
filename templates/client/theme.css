@@ -1067,6 +1067,77 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 
 /* ===========================================================================
+   Pages Votre site web et Applications sur mesure (spec du 06/11/2026)
+   Composants de la home et de la page IA ; ici seulement leurs variantes.
+   =========================================================================== */
+/* Atouts sur fond clair, en 2 colonnes */
+.cws-atouts--2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 575.98px) { .cws-atouts--2 { grid-template-columns: 1fr; } }
+.cws-section:not(.cws-section--dark) .cws-atouts h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.4rem;
+  color: var(--text);
+}
+.cws-section:not(.cws-section--dark) .cws-atouts p { color: var(--text-muted); }
+
+/* Formules : prix en Space Grotesk, note sous les cartes */
+.cws-formule__prix {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text) !important;
+  flex-grow: 0 !important;
+  margin-bottom: 0.5rem;
+}
+.cws-formule__prix span {
+  display: block;
+  font-family: var(--font-body, inherit);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+.cws-formules__note {
+  margin: 1.5rem 0 0;
+  color: var(--text-muted);
+}
+
+/* Etapes : variante a 5 colonnes (Applications sur mesure) */
+@media (min-width: 1200px) {
+  .cws-etapes--5 { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Reference principale (Kayre) : carte pleine largeur sur fond fonce */
+.cws-reference {
+  padding: 2.25rem;
+  margin-bottom: 1.5rem;
+}
+.cws-reference h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.cws-citation {
+  margin: 1.5rem 0 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--accent);
+}
+.cws-citation blockquote { margin: 0 0 0.5rem; }
+.cws-citation blockquote p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #FFFFFF !important;
+}
+.cws-citation blockquote p::before { content: "«\00a0"; color: var(--accent); }
+.cws-citation blockquote p::after { content: "\00a0»"; color: var(--accent); }
+.cws-citation figcaption { color: var(--dark-muted); font-size: 0.9375rem; }
+
+/* Bloc court centre (Pour qui ?) */
+.cws-bloc-centre {
+  max-width: 46rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.cws-bloc-centre p { color: var(--text-muted); font-size: 1.0625rem; margin: 0; }
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */

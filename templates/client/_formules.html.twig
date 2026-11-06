@@ -1,0 +1,21 @@
+{# ====== FORMULES COMWEB STUDIO — bw_cws ======
+   Source unique des prix affiches sur comwebsolutions.fr. Valeurs identiques a
+   celles du site Studio (bw_front, client/_offres.html.twig, prix donnes par
+   David le 04/11/2026) : si un prix change sur Studio, le changer ici aussi.
+   Deux sites, deux branches : pas de source commune possible entre eux.
+   Usage : {% include 'client/_formules.html.twig' %} #}
+{% import 'client/_macros.html.twig' as m %}
+{% set formules = [
+    { nom: 'Vitrine', install_ht: 450, mois_ht: 30, pour: 'Présenter votre activité et être trouvé', avant: false },
+    { nom: 'Blog', install_ht: 550, mois_ht: 30, pour: 'Publier vos actualités et vos conseils', avant: true },
+    { nom: 'Click & Collect', install_ht: 850, mois_ht: 50, pour: 'Vendre en ligne, retrait sur place', avant: false },
+] %}
+<div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+    {% for f in formules %}
+    <div class="cws-carte cws-formule{{ f.avant ? ' cws-carte--avant' }}">
+        <h3>{{ f.nom }}</h3>
+        <p class="cws-formule__prix">{{ m.euros(f.install_ht) }} HT <span>+ {{ m.euros(f.mois_ht) }} HT/mois</span></p>
+        <p>{{ f.pour }}</p>
+    </div>
+    {% endfor %}
+</div>

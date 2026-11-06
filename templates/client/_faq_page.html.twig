@@ -1,0 +1,30 @@
+{# ====== FAQ D'UNE PAGE — bw_cws ======
+   Accordeon centre + JSON-LD FAQPage, pour les pages dont les questions sont
+   ecrites dans le gabarit (Votre site web, Applications sur mesure).
+   Variables : faqItems (liste de { q, r }), faqId (identifiant unique). #}
+<section class="home-faq cws-section">
+    <div class="container">
+        <div class="cws-section__head cws-section__head--centre">
+            <h2 class="home-section-title">Questions fréquentes</h2>
+        </div>
+        <div class="cws-faq">
+            <div class="accordion faq-accordion" id="{{ faqId }}">
+                {% for f in faqItems %}
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ faqId }}-{{ loop.index }}" aria-expanded="false" aria-controls="{{ faqId }}-{{ loop.index }}">{{ f.q|insecables }}</button>
+                    </h3>
+                    <div id="{{ faqId }}-{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#{{ faqId }}">
+                        <div class="accordion-body content-body"><p>{{ f.r|insecables }}</p></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% set faqJson = [] %}
+{% for f in faqItems %}
+    {% set faqJson = faqJson|merge([{ '@type': 'Question', 'name': f.q, 'acceptedAnswer': { '@type': 'Answer', 'text': f.r } }]) %}
+{% endfor %}
+<script type="application/ld+json">{{ { '@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faqJson }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>

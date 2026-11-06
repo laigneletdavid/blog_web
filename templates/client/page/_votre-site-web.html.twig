@@ -1,0 +1,184 @@
+{# ======================================================================
+   PAGE « VOTRE SITE WEB » — bw_cws (spec du 06/11/2026, lot 2)
+   Marche 01 · Démarrer de l'escalier de la home. Pleine largeur, sans colonne
+   laterale. Le texte vit ici ; en base, la page garde titre, slug et SEO.
+   Visuel du hero : aucun tant que David n'a pas fourni la capture d'un site
+   client (pas d'image generique) ; le texte passe alors en pleine largeur.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set lienStudio = m.lien_studio()|trim %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item">Le Web</li>
+                <li class="breadcrumb-item active" aria-current="page">Votre site web</li>
+            </ol>
+        </nav>
+        <p class="home-hero__overtitle">01 · Démarrer — Votre site web</p>
+        <h1 class="home-hero__title">Un site internet qui vous apporte des {{ m.vague('clients') }}, pas seulement une vitrine</h1>
+        <p class="home-hero__desc">Vous avez un site. Il est «&nbsp;joli&nbsp;». Mais quand vous comptez les contacts reçus depuis un an, c'est le vide. Le problème n'est pas d'avoir un site, c'est ce qu'on en fait. Je conçois des sites pensés pour vendre, et je reste votre interlocuteur après la mise en ligne.</p>
+        <div class="home-hero__actions">
+            <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="{{ lienStudio }}/page/offres" target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg">Voir les formules <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>
+        </div>
+    </div>
+</section>
+
+{# ====== 2. LE CONSTAT ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le constat</span>
+            <h2 class="home-section-title">La plupart des sites de TPE ne servent à rien. Le vôtre peut faire mieux.</h2>
+        </div>
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">01</span>
+                <h3>Une vitrine oubliée</h3>
+                <p>Mis en ligne il y a trois ans, jamais mis à jour. Il existe parce qu'«&nbsp;il en faut un&nbsp;», pas parce qu'il sert à quelque chose.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">02</span>
+                <h3>Invisible sur Google</h3>
+                <p>Vos prospects cherchent ce que vous vendez, mais c'est votre concurrent qu'ils trouvent.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">03</span>
+                <h3>Prisonnier de votre prestataire</h3>
+                <p>Changer un horaire ou une photo demande un mail, un devis et deux semaines d'attente.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. CE QU'UN BON SITE FAIT POUR VOUS ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">L'objectif</span>
+            <h2 class="home-section-title">Un site qui travaille pour vous</h2>
+        </div>
+        <ul class="cws-atouts cws-atouts--2" data-controller="reveal" data-reveal-stagger-value="70">
+            <li><h3>Il vous rend visible</h3><p>Référencement intégré, pages rapides, structure pensée pour Google.</p></li>
+            <li><h3>Il rassure vos prospects</h3><p>Un design professionnel, des avis, du contenu qui montre que vous connaissez votre métier.</p></li>
+            <li><h3>Il génère des contacts</h3><p>Des appels à l'action clairs et un parcours pensé par quelqu'un qui vend depuis 2000.</p></li>
+            <li><h3>Il vous appartient</h3><p>Hébergé en France, vos textes et vos photos restent à vous, vous les modifiez vous-même.</p></li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 4. SANS WORDPRESS (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le choix technique</span>
+            <h2 class="home-section-title">Je ne construis pas sur WordPress</h2>
+            <p>WordPress fait tourner une grande partie des sites de TPE, avec cinq, dix, parfois vingt extensions. Chacune est une porte d'entrée potentielle et chaque mise à jour peut tout casser. Je construis sur ComWeb Studio, le CMS que j'ai développé moi-même et que je maintiens personnellement&nbsp;: pas d'extensions à empiler, un site rapide, sécurisé, hébergé en France.</p>
+        </div>
+        <p class="cws-signature__more"><a href="{{ lienStudio }}/page/wordpress-gratuit-vrai-cout" target="_blank" rel="noopener">WordPress gratuit&nbsp;: le vrai coût <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a></p>
+    </div>
+</section>
+
+{# ====== 5. LA DIFFERENCE ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Ma différence</span>
+            <h2 class="home-section-title">Et si votre site pouvait aussi {{ m.vague('vendre') }}&nbsp;?</h2>
+            <p>Quand celui qui construit votre site sait aussi vendre, les choses s'alignent. Vos pages sont pensées pour convertir, pas pour décorer. Votre site devient un outil commercial, pas une ligne de dépense.</p>
+        </div>
+        <p class="cws-signature__more"><a href="/page/pourquoi-un-seul-interlocuteur">Pourquoi un seul interlocuteur <span class="cw-arrow" aria-hidden="true">→</span></a></p>
+    </div>
+</section>
+
+{# ====== 6. LES FORMULES ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Les formules</span>
+            <h2 class="home-section-title">Un prix fixe, sans surprise</h2>
+        </div>
+        {% include 'client/_formules.html.twig' %}
+        <p class="cws-formules__note">Sans engagement, hébergement et maintenance compris. · <a href="{{ lienStudio }}/page/offres" target="_blank" rel="noopener">Comparer les formules en détail <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a></p>
+    </div>
+</section>
+
+{# ====== 7. COMMENT ÇA SE PASSE ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Votre site en ligne en 48 h</h2>
+        </div>
+        {% set etapes = [
+            { titre: 'On parle de votre projet', texte: '30 minutes par téléphone, en visio ou autour d’un café en Comminges.' },
+            { titre: 'Vous m’envoyez vos contenus', texte: 'Textes, photos, logo. Je vous aide si vous partez de zéro.' },
+            { titre: 'Je monte votre site', texte: 'En ligne en 48 h, prêt pour Google.' },
+            { titre: 'Je reste votre interlocuteur', texte: 'Une question, une évolution : vous m’appelez, moi directement.' },
+        ] %}
+        <ol class="cws-etapes" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for e in etapes %}
+            <li class="cws-etape">
+                <span class="cws-etape__num" aria-hidden="true">{{ loop.index }}</span>
+                <h3 class="cws-etape__titre">{{ e.titre }}</h3>
+                <p>{{ e.texte|insecables }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 8. ET ENSUITE ? (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">La suite</span>
+            <h2 class="home-section-title">Votre site est la première marche</h2>
+            <p>Quand votre activité grandit, votre site peut grandir avec elle&nbsp;: des fonctionnalités sur mesure, une application métier, l'IA connectée à vos outils. Même interlocuteur, même hébergement.</p>
+        </div>
+        <div class="cws-cartes">
+            <a href="/service/applications-sur-mesure" class="cws-carte cws-card-dark">
+                <span class="cws-marche__etiquette">02 · Aller plus loin</span>
+                <h3>Votre application sur mesure</h3>
+                <span class="cws-carte__lien">Applications sur mesure <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+            <a href="/service/integration-ia-entreprise" class="cws-carte cws-card-dark">
+                <span class="cws-marche__etiquette">03 · Automatiser</span>
+                <h3>L'IA dans votre entreprise</h3>
+                <span class="cws-carte__lien">L'IA en entreprise <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{# ====== 9. FAQ ====== #}
+{% set faqPage = [
+    { q: 'Le site est-il vraiment en ligne en 48 h ?', r: "Oui, une fois que j'ai vos textes et vos photos. C'est possible parce que je ne repars pas de zéro : je m'appuie sur ComWeb Studio, que j'ai conçu pour ça." },
+    { q: 'Est-ce que je peux modifier mon site moi-même ?', r: "Oui. Vos textes, vos photos, vos actualités : tout se modifie depuis un éditeur simple, sans compétence technique." },
+    { q: "J'ai déjà un site sous WordPress. On repart de zéro ?", r: "On reprend vos contenus et on conserve vos adresses de pages, ou on les redirige proprement, pour ne pas perdre votre référencement. La migration se fait sur devis." },
+    { q: 'Y a-t-il un engagement ?', r: "Non. L'abonnement mensuel couvre l'hébergement, la maintenance et les mises à jour. Vous arrêtez quand vous voulez, l'arrêt prend effet en fin de mois. Votre nom de domaine, vos textes et vos photos restent à vous." },
+    { q: 'Vous travaillez uniquement en Comminges ?', r: "Je suis basé à Montsaunès et je me déplace volontiers dans le Sud-Ouest. Pour le reste de la France, tout se fait très bien en visio et par téléphone." },
+] %}
+{% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-site' } %}
+
+{# ====== JSON-LD : Service (le fil d'Ariane et WebPage viennent du coeur) ====== #}
+<script type="application/ld+json">{{ {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'name': 'Création de site internet',
+    'description': page.seoDescription|default(''),
+    'serviceType': 'Création de site internet',
+    'areaServed': 'France',
+    'provider': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') },
+    'offers': { '@type': 'Offer', 'priceCurrency': 'EUR', 'price': '450', 'description': 'Formule Vitrine, hors taxes, puis abonnement mensuel' }
+}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+
+{# ====== 10. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' with {
+    cta_titre: 'On regarde ensemble ce que votre site pourrait faire ?',
+    cta_texte: "Audit gratuit de votre site actuel en 30 minutes. Je vous dis ce qui marche, ce qui ne marche pas, et ce qu'on peut améliorer."
+} %}
