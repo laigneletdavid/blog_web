@@ -908,7 +908,7 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
     width: 12px;
     height: 16px;
     margin: -8px 0 0 -6px;
-    color: var(--primary);
+    color: var(--accent);   /* meme orange que la vague qui les porte (David, 06/11/2026) */
     overflow: visible;
   }
   .cws-pointe--1 { left: 30.4%; top: calc(4px + 19px); }
