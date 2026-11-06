@@ -1,0 +1,136 @@
+{# ======================================================================
+   PAGE « DÉVELOPPEMENT COMMERCIAL » — bw_cws (spec du 06/11/2026, lot A)
+   Page d'entree du commerce (carte « On n'a personne pour prospecter » de la
+   home). Pleine largeur, sans colonne laterale ni image generique.
+   Activite commerciale : franchise Enleys, Occitanie uniquement.
+   Prix : client/_macros (prix_direction, prix_prospection, prix_ao_*).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set ht = m.ht() %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}#commerce">Le Commerce</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Développement commercial</li>
+            </ol>
+        </nav>
+        <p class="home-hero__overtitle">Le commerce</p>
+        <h1 class="home-hero__title">Vous n'avez personne pour prospecter, et ça vous coûte des {{ m.vague('clients') }}</h1>
+        <p class="home-hero__desc">Vous êtes dirigeant, vous faites tout&nbsp;: la production, la gestion, le commercial. Sauf que le commercial, c'est ce qui saute en premier quand le quotidien déborde. Je prends le relais, avec 26 ans de terrain.</p>
+        <div class="home-hero__actions">
+            <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="#offres-commerce" class="btn btn-outline-primary btn-lg">Voir les 3 offres</a>
+        </div>
+        {% include 'client/_zone_commerce.html.twig' %}
+    </div>
+</section>
+
+{# ====== 2. LE CONSTAT ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Le problème n'est pas que vous ne savez pas vendre</h2>
+            <p>Vous avez monté votre entreprise, trouvé vos premiers clients&nbsp;: vous savez vendre. Le problème, c'est que la prospection demande de la régularité, de la méthode et du temps. Trois choses que vous n'avez plus.</p>
+        </div>
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">01</span>
+                <h3>Vous vivez sur votre carnet d'adresses</h3>
+                <p>Le bouche-à-oreille fonctionne, mais il ne suffit plus. Et quand un gros client part, c'est la panique.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">02</span>
+                <h3>Recruter, c'est long et risqué</h3>
+                <p>Trouver un bon commercial prend des mois, le former aussi, et rien ne garantit qu'il reste.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">03</span>
+                <h3>Les appels d'offres passent sous votre nez</h3>
+                <p>Pas le temps de surveiller, encore moins de rédiger. Les marchés partent chez les autres.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. LES 3 OFFRES ====== #}
+<section class="cws-section" id="offres-commerce">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Mes offres</span>
+            <h2 class="home-section-title">Trois façons de développer vos ventes, sans recruter</h2>
+        </div>
+        {% set offres = [
+            { nom: 'Direction commerciale externalisée', pour: "Vous n'avez pas de directeur commercial", fait: "Stratégie, organisation de la prospection, pilotage, formation de l'équipe", prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '/mois', lien: '/service/direction-commerciale-externalisee', avant: false },
+            { nom: 'Prospection B2B', pour: 'Vous manquez de rendez-vous', fait: 'Ciblage, appels, emails, relances, prise de rendez-vous', prix: m.prix_prospection() ~ ' €' ~ ht ~ '/mois', lien: '/service/externalisation-commerciale-b2b', avant: true },
+            { nom: "Appels d'offres", pour: 'Vous visez les marchés publics', fait: 'Veille, sélection des marchés, rédaction et dépôt des dossiers', prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '/mois + ' ~ m.prix_ao_dossier() ~ ' € par dossier', lien: '/service/externalisation-appels-d-offres', avant: false },
+        ] %}
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            {% for o in offres %}
+            <a href="{{ o.lien }}" class="cws-carte cws-formule cws-offre-carte{{ o.avant ? ' cws-carte--avant' }}">
+                <h3>{{ o.nom }}</h3>
+                <dl>
+                    <dt>Pour qui</dt><dd>{{ o.pour }}</dd>
+                    <dt>Ce que je fais</dt><dd>{{ o.fait }}</dd>
+                </dl>
+                <p class="cws-formule__prix">{{ o.prix|raw }}</p>
+                <span class="cws-carte__lien">Découvrir l'offre <span class="cw-arrow" aria-hidden="true">→</span></span>
+            </a>
+            {% endfor %}
+        </div>
+        <p class="cws-formules__note">Sans engagement. Intervention en Occitanie.</p>
+    </div>
+</section>
+
+{# ====== 4. POURQUOI EXTERNALISER (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">L'alternative au recrutement</span>
+            <h2 class="home-section-title">Quelqu'un qui connaît le terrain, pas un centre d'appels</h2>
+            <p>Externaliser, ce n'est pas confier votre image à une plateforme. C'est travailler avec quelqu'un qui comprend votre métier, votre offre et vos clients, et qui vend depuis 2000.</p>
+        </div>
+        <ul class="cws-atouts" data-controller="reveal" data-reveal-stagger-value="70">
+            <li><h3>Opérationnel tout de suite.</h3><p>Pas de recrutement, pas de période de formation.</p></li>
+            <li><h3>Sans charge fixe.</h3><p>Un abonnement mensuel, sans engagement.</p></li>
+            <li><h3>Mesurable.</h3><p>Chaque action est tracée, vous voyez ce qui marche.</p></li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 5. CE QUE ÇA NE SERA PAS ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Ce que ça ne sera pas</h2>
+            <p>Pas de slides PowerPoint. Pas de «&nbsp;stratégie de marque&nbsp;» en jargon. Pas de reporting de 40 pages que personne ne lit. Du concret, du terrain, des résultats mesurables.</p>
+            <p>Si au bout de trois mois ça ne bouge pas, on se le dit.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 6. POUR QUI ? ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">C'est pour vous si…</h2>
+        </div>
+        <ul class="cws-liste-pour-qui">
+            <li>vous faites le commercial vous-même et vous saturez&nbsp;;</li>
+            <li>vous avez une bonne offre B2B, mais pas de prospection régulière&nbsp;;</li>
+            <li>vous avez essayé de recruter un commercial, sans succès&nbsp;;</li>
+            <li>vous répondez aux appels d'offres au dernier moment, ou pas du tout&nbsp;;</li>
+            <li>votre entreprise est en Occitanie.</li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 7. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' with {
+    cta_titre: 'On fait le point sur votre développement commercial ?',
+    cta_texte: '30 minutes pour comprendre où vous en êtes et si je peux vous aider. Sans engagement.'
+} %}
