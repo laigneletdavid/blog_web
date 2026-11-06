@@ -265,5 +265,42 @@
 <script type="application/ld+json">{{ { '@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faqJson }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endif %}
 
+{# ====== 9 bis. DERNIER ARTICLE (06/11/2026) ======
+   Affiche le dernier article publie (un article « à la une » passe devant).
+   Rien tant qu'aucun article n'est publie. Fond gris entre la FAQ (blanche) et
+   l'appel final (fonce). #}
+{% set dernier = articles|default([])|first %}
+{% if dernier %}
+{% set dateArticle = dernier.publishedAt ?? dernier.createdAt %}
+<section class="cws-section cws-section--alt cws-dernier-article">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le blog</span>
+            <h2 class="home-section-title">Le dernier article</h2>
+        </div>
+        <article class="cws-article-carte">
+            {% if dernier.featuredMedia %}
+            <a href="{{ path('app_article_show', { slug: dernier.slug }) }}" class="cws-article-carte__image" tabindex="-1" aria-hidden="true">
+                {{ responsive_img(dernier.featuredMedia, '(max-width: 767px) 100vw, 40vw', 'cws-article-carte__img', dernier.featuredMedia.alt|default(dernier.title)) }}
+            </a>
+            {% endif %}
+            <div class="cws-article-carte__corps">
+                <p class="cws-article-carte__meta">
+                    {% if dernier.categories|length > 0 %}<span>{{ dernier.categories|first.name }}</span> · {% endif %}
+                    <time datetime="{{ dateArticle|date('Y-m-d') }}">{{ dateArticle|format_date('long', locale='fr') }}</time>
+                    · {{ dernier.content|readingTime }} min de lecture
+                </p>
+                <h3 class="cws-article-carte__titre"><a href="{{ path('app_article_show', { slug: dernier.slug }) }}">{{ dernier.title|insecables }}</a></h3>
+                {% if dernier.featuredText %}<p class="cws-article-carte__resume">{{ dernier.featuredText|striptags|u.truncate(220, '…', false) }}</p>{% endif %}
+                <p class="cws-article-carte__liens">
+                    <a href="{{ path('app_article_show', { slug: dernier.slug }) }}" class="cws-offre__lien">Lire l'article<span class="visually-hidden"> : {{ dernier.title }}</span> <span class="cw-arrow" aria-hidden="true">→</span></a>
+                    <a href="{{ path('app_article_show_all') }}" class="cws-article-carte__tous">Tous les articles</a>
+                </p>
+            </div>
+        </article>
+    </div>
+</section>
+{% endif %}
+
 {# ====== 10. CTA FINAL (partiel commun avec les fiches services) ====== #}
 {% include 'client/_cta_final.html.twig' %}
