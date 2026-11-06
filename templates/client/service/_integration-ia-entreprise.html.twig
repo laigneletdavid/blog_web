@@ -221,6 +221,12 @@
 {% endfor %}
 <script type="application/ld+json">{{ { '@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faqJson }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 
+{% include 'client/_jsonld_service_commerce.html.twig' with {
+    nom: "Intégration de l'IA en entreprise",
+    description: service.seoDescription|default(''),
+    zone: 'France'
+} %}
+
 {# ====== 8. APPEL FINAL ====== #}
 {% include 'client/_cta_final.html.twig' with {
     cta_titre: 'On en parle 30 minutes ?',

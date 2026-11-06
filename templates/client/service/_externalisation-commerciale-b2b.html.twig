@@ -80,7 +80,7 @@
 {# ====== 4 bis. LES 3 FORMULES (fond gris, entre la section foncee et « inclus ») ====== #}
 {% set formules = [
     { nom: 'Au lead', prix: m.prix_b2b_lead_mois() ~ ' € HT', unite: '/mois', plus: '+ ' ~ m.prix_b2b_lead() ~ ' € HT par lead qualifié', pour: 'Vous payez au résultat : un abonnement réduit, puis chaque lead qualifié transmis.' },
-    { nom: '500 appels', prix: m.prix_b2b_500() ~ ' € HT', unite: '/mois', plus: '500 appels par mois', pour: 'Un volume d’appels défini chaque mois, pour une prospection régulière.' },
+    { nom: '500 appels', prix: m.prix_b2b_500() ~ ' € HT', unite: '/mois', plus: '500 appels par mois', pour: 'Un volume d’appels défini chaque mois, pour une prospection régulière.', avant: true },
     { nom: '1 000 appels', prix: m.prix_b2b_1000() ~ ' € HT', unite: '/mois', plus: '1&nbsp;000 appels par mois', pour: 'Le volume pour couvrir un marché large ou accélérer.' },
 ] %}
 <section class="cws-section cws-section--alt" id="formules">
@@ -91,14 +91,15 @@
         </div>
         <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
             {% for f in formules %}
-            <div class="cws-carte cws-formule">
+            <div class="cws-carte cws-formule{{ f.avant|default(false) ? ' cws-carte--avant' }}">
                 <h3>{{ f.nom }}</h3>
-                <p class="cws-formule__prix">{{ f.prix|raw }} <span>{{ f.unite }}</span></p>
+                <p class="cws-formule__prix cws-formule__prix--ligne">{{ f.prix|raw }}&nbsp;<span>{{ f.unite }}</span></p>
                 <p class="cws-formule__plus">{{ f.plus|raw }}</p>
                 <p>{{ f.pour }}</p>
             </div>
             {% endfor %}
         </div>
+        <p class="cws-formules__aide">Vous démarrez ou testez&nbsp;? Prenez la formule au lead. Vous voulez un flux régulier&nbsp;? 500 appels. Vous couvrez un marché large&nbsp;? 1&nbsp;000 appels.</p>
         <p class="cws-formules__note">Sans engagement. Même équipe, même qualification des leads, même pilotage dans les trois formules.</p>
     </div>
 </section>

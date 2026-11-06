@@ -201,6 +201,12 @@
 ] %}
 {% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-applications' } %}
 
+{% include 'client/_jsonld_service_commerce.html.twig' with {
+    nom: 'Applications web sur mesure',
+    description: service.seoDescription|default(''),
+    zone: 'France'
+} %}
+
 {# ====== 9. APPEL FINAL ====== #}
 {% include 'client/_cta_final.html.twig' with {
     cta_titre: 'Un outil qui vous fait perdre du temps ? Parlons-en.',

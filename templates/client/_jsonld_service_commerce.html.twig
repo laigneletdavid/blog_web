@@ -1,16 +1,28 @@
-{# JSON-LD Service des fiches commerce : zone Occitanie et prix.
-   Variables : nom, description, et soit prix + unite (une offre), soit offres
-   (liste de { nom, prix, unite }). #}
+{# JSON-LD Service des fiches dessinees cote client (le coeur ne publie alors pas
+   le sien : une seule fiche Service par page).
+   Variables : nom, description, zone (defaut : Occitanie), et facultativement
+   soit prix + unite (une offre), soit offres (liste de { nom, prix, unite }). #}
 {% set listeOffres = [] %}
-{% for o in offres|default([{ nom: nom, prix: prix|default(''), unite: unite|default('') }]) %}
+{% if offres is defined %}
+    {% set sources = offres %}
+{% elseif prix is defined and prix is not empty %}
+    {% set sources = [{ nom: nom, prix: prix, unite: unite|default('') }] %}
+{% else %}
+    {% set sources = [] %}
+{% endif %}
+{% for o in sources %}
     {% set listeOffres = listeOffres|merge([{ '@type': 'Offer', 'name': o.nom, 'priceCurrency': 'EUR', 'price': o.prix, 'description': o.unite }]) %}
 {% endfor %}
-<script type="application/ld+json">{{ {
+{% set zoneNom = zone|default('Occitanie') %}
+{% set fiche = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     'name': nom,
     'description': description,
-    'areaServed': { '@type': 'AdministrativeArea', 'name': 'Occitanie' },
-    'provider': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') },
-    'offers': listeOffres|length == 1 ? listeOffres|first : listeOffres
-}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+    'areaServed': zoneNom == 'France' ? { '@type': 'Country', 'name': 'France' } : { '@type': 'AdministrativeArea', 'name': zoneNom },
+    'provider': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') }
+} %}
+{% if listeOffres|length > 0 %}
+    {% set fiche = fiche|merge({ 'offers': listeOffres|length == 1 ? listeOffres|first : listeOffres }) %}
+{% endif %}
+<script type="application/ld+json">{{ fiche|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>

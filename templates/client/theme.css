@@ -1101,6 +1101,15 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   font-weight: 600;
   color: var(--primary) !important;
 }
+.cws-formule__prix--ligne span {
+  display: inline;
+  font-size: 0.9375rem;
+}
+.cws-formules__aide {
+  margin: 1.5rem 0 0;
+  font-weight: 500;
+  color: var(--text);
+}
 .cws-formules__note {
   margin: 1.5rem 0 0;
   color: var(--text-muted);
