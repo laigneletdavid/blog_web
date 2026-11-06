@@ -115,7 +115,6 @@
             <li>Appels par une équipe de téléopérateurs dédiée</li>
             <li>Séquences d'emails</li>
             <li>Leads qualifiés (besoin validé et/ou rendez-vous) transmis directement</li>
-            <li>CRM partagé avec reporting</li>
             <li>Pilotage et centralisation par un interlocuteur unique</li>
             <li>Aucun recrutement, aucune charge salariale</li>
         </ul>
@@ -140,7 +139,7 @@
 {% endif %}
 {% set faqPage = faqPage|merge([
     { q: 'Les prospects savent-ils que c’est externalisé ?', r: "Non. Je prospecte en votre nom, avec votre identité, votre adresse email, votre numéro. Pour le prospect, c'est votre entreprise qui le contacte. Quand le rendez-vous est pris, c'est vous qui reprenez la main sur la relation commerciale. C'est votre marque, votre image, votre pipe. Moi je suis le moteur, pas la carrosserie." },
-    { q: 'Comment se passe le démarrage ?', r: "On définit ensemble vos cibles et votre discours. Je construis la base de prospects et le script, puis l'équipe appelle : chaque contact est qualifié, son besoin validé et, si possible, un rendez-vous pris. Je vous transmets les leads au fil de l'eau, vous suivez tout dans le CRM." },
+    { q: 'Comment se passe le démarrage ?', r: "On définit ensemble vos cibles et votre discours. Je construis la base de prospects et le script, puis l'équipe appelle : chaque contact est qualifié, son besoin validé et, si possible, un rendez-vous pris. Je vous transmets les leads au fil de l'eau." },
     { q: 'Quelle formule choisir ?', r: "Au lead si vous voulez payer au résultat : un abonnement de " ~ m.prix_b2b_lead_mois() ~ " € HT par mois, puis " ~ m.prix_b2b_lead() ~ " € HT par lead qualifié transmis. Les forfaits de 500 ou 1 000 appels si vous préférez un volume d'appels défini chaque mois, à " ~ m.prix_b2b_500() ~ " ou " ~ m.prix_b2b_1000() ~ " € HT par mois. On en parle au premier échange." },
     { q: 'Et si ça ne marche pas ?', r: "C'est sans engagement. On fait le point régulièrement ; si les résultats ne sont pas là, on ajuste ou on arrête." },
 ]) %}
