@@ -1,0 +1,183 @@
+{# ======================================================================
+   PAGE « APPLICATIONS SUR MESURE » — bw_cws (spec du 06/11/2026, lot 3)
+   Marche 02 · Aller plus loin de l'escalier de la home. Pleine largeur.
+   Le texte vit ici ; en base, la fiche garde titre, slug, resume et SEO.
+   Visuel du hero : aucun tant que David n'a pas fourni une capture de Kayre
+   validee par le client. Citation de Mickael Lamy : temoignage deja publie
+   sur la home, a confirmer par David pour cette page.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item">Le Web</li>
+                <li class="breadcrumb-item active" aria-current="page">Applications sur mesure</li>
+            </ol>
+        </nav>
+        <p class="home-hero__overtitle">02 · Aller plus loin — Applications sur mesure</p>
+        <h1 class="home-hero__title">Des outils qui s'adaptent à votre {{ m.vague('métier') }}, pas l'inverse</h1>
+        <p class="home-hero__desc">Les logiciels du marché ne couvrent jamais tout à fait votre façon de travailler. Entre les tableurs qui s'empilent et les outils qui ne se parlent pas, je conçois et je code l'application dont votre entreprise a besoin.</p>
+        <div class="home-hero__actions">
+            <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Parlons de votre projet<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="#references" class="btn btn-outline-primary btn-lg">Voir mes réalisations</a>
+        </div>
+    </div>
+</section>
+
+{# ====== 2. VOUS EN ÊTES LÀ ? ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le constat</span>
+            <h2 class="home-section-title">Vous en êtes là&nbsp;?</h2>
+        </div>
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">01</span>
+                <h3>Des tableurs partout</h3>
+                <p>Un fichier Excel pour les clients, un autre pour le planning, un troisième pour la facturation. Et personne n'a la dernière version.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">02</span>
+                <h3>Des logiciels qui ne se parlent pas</h3>
+                <p>Vous ressaisissez les mêmes informations dans trois outils différents, à la main.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">03</span>
+                <h3>Un logiciel qui vous impose sa logique</h3>
+                <p>Vous adaptez votre organisation à l'outil, au lieu que l'outil s'adapte à vous.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. CE QUE JE DEVELOPPE (lignes pleine largeur) ====== #}
+<section class="cws-section cws-offres">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Ce que je développe</span>
+            <h2 class="home-section-title">Une application pensée pour votre fonctionnement</h2>
+        </div>
+        {% set lignes = [
+            { titre: 'CRM et gestion commerciale', texte: 'Suivi clients, pipeline commercial, relances automatiques, tableaux de bord. Conçu pour votre cycle de vente, pas pour un cas générique.' },
+            { titre: 'Gestion interne', texte: 'Gestion de projets, suivi de production, planification, processus métier. Chaque fonctionnalité répond à un besoin réel de votre organisation.' },
+            { titre: 'Plateformes web complètes', texte: 'Portails clients, intranets, systèmes de réservation, marketplaces : gestion des droits, API et connexions avec vos autres outils.' },
+            { titre: 'Automatisation et IA', texte: 'Génération de documents, reporting automatique, IA intégrée pour analyser ou rédiger. Le temps gagné se compte en heures par semaine.', lien: '/service/integration-ia-entreprise', libelle: "L'IA dans votre entreprise" },
+        ] %}
+        <div class="cws-offres__liste">
+            {% for l in lignes %}
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">{{ '%02d'|format(loop.index) }}</span>
+                    <h3 class="cws-offre__titre">{{ l.titre }}</h3>
+                </div>
+                <div class="cws-offre__corps">
+                    <p>{{ l.texte|insecables }}</p>
+                    {% if l.lien is defined %}<a href="{{ l.lien }}" class="cws-offre__lien">{{ l.libelle }} <span class="cw-arrow" aria-hidden="true">→</span></a>{% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ====== 4. REFERENCES (fonce) ====== #}
+<section class="cws-section cws-section--dark" id="references">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Réalisations</span>
+            <h2 class="home-section-title">Des applications en production, pas des maquettes</h2>
+        </div>
+        <div class="cws-card-dark cws-reference" data-controller="reveal">
+            <h3>Kayre</h3>
+            <p>Plateforme de gestion complète développée sur mesure&nbsp;: suivi de formation, e-learning, abonnements, rapports de données. Un outil unique qui remplace plusieurs logiciels.</p>
+            <figure class="cws-citation">
+                <blockquote><p>Voilà quelqu'un qui se met à votre portée, qui comprend vite et travaille bien.</p></blockquote>
+                <figcaption>Mickaël Lamy, Kayre</figcaption>
+            </figure>
+        </div>
+        <div class="cws-cartes" data-controller="reveal" data-reveal-stagger-value="90">
+            <a href="{{ m.lien_studio()|trim }}" target="_blank" rel="noopener" class="cws-carte cws-card-dark">
+                <h3>ComWeb Studio</h3>
+                <p>Mon propre CMS, développé sous Symfony. Il fait tourner ce site et ceux de mes clients.</p>
+                <span class="cws-carte__lien">Découvrir ComWeb Studio <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></span>
+            </a>
+            <a href="{{ m.lien_lintello() }}" target="_blank" rel="noopener" class="cws-carte cws-card-dark">
+                <h3>LintellO</h3>
+                <p>Une plateforme d'IA avec abonnements, plusieurs modèles et chiffrement, utilisée par de vrais utilisateurs.</p>
+                <span class="cws-carte__lien">Découvrir LintellO <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{# ====== 5. COMMENT ÇA SE PASSE ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Comment ça se passe</h2>
+        </div>
+        {% set etapes = [
+            { titre: 'Cadrage', texte: 'Je comprends votre métier, vos processus et ce qui vous fait perdre du temps.' },
+            { titre: 'Maquettes', texte: 'Vous validez les écrans avant la moindre ligne de code.' },
+            { titre: 'Développement par étapes', texte: 'Des livraisons régulières, vos retours intégrés au fil de l’eau.' },
+            { titre: 'Mise en production', texte: 'Déploiement, formation de votre équipe, documentation.' },
+            { titre: 'Suivi', texte: 'Maintenance et évolutions selon vos besoins.' },
+        ] %}
+        <ol class="cws-etapes cws-etapes--5" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for e in etapes %}
+            <li class="cws-etape">
+                <span class="cws-etape__num" aria-hidden="true">{{ loop.index }}</span>
+                <h3 class="cws-etape__titre">{{ e.titre }}</h3>
+                <p>{{ e.texte }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 6. LES FONDATIONS TECHNIQUES ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Du solide, pour durer</h2>
+        </div>
+        <ul class="cws-atouts cws-atouts--2" data-controller="reveal" data-reveal-stagger-value="70">
+            <li><h3>Symfony (PHP)</h3><p>Un framework professionnel, maintenable et évolutif.</p></li>
+            <li><h3>Hébergé en France</h3><p>Chez OVH, avec sauvegardes.</p></li>
+            <li><h3>Connecté à vos outils</h3><p>API, CRM, logiciels comptables, IA.</p></li>
+            <li><h3>Un seul interlocuteur</h3><p>Celui qui conçoit votre application est celui qui la maintient.</p></li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 7. POUR QUI ? ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-bloc-centre">
+            <h2 class="home-section-title">Pour qui&nbsp;?</h2>
+            <p>Les TPE et PME dont les outils standards ne suffisent plus. Les dirigeants qui perdent du temps avec des tâches manuelles ou des logiciels inadaptés. Les entreprises qui veulent un outil à leur image, qui leur donne une longueur d'avance.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 8. FAQ ====== #}
+{% set faqPage = [
+    { q: 'Combien coûte une application sur mesure ?', r: "Ça dépend entièrement de ce dont vous avez besoin. Après un premier échange et un cadrage, je vous remets un devis détaillé, fonctionnalité par fonctionnalité." },
+    { q: 'Combien de temps faut-il ?', r: "Ça dépend du périmètre. Je découpe le projet en livraisons courtes : vous utilisez une première version rapidement, puis on l'enrichit." },
+    { q: 'On peut partir de nos fichiers Excel actuels ?', r: "Oui, c'est même souvent le point de départ. Je reprends vos données et votre logique pour construire un outil qui vous ressemble." },
+    { q: 'Que se passe-t-il après la mise en ligne ?', r: "Je reste votre interlocuteur pour la maintenance, les corrections et les évolutions. Votre application grandit avec votre entreprise." },
+    { q: "Peut-on y intégrer de l'IA ?", r: "Oui. Je développe LintellO, une IA française et confidentielle : on peut l'utiliser pour rédiger, analyser ou trier automatiquement dans votre application. L'intégration complète par API arrive début 2027." },
+] %}
+{% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-applications' } %}
+
+{# ====== 9. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' with {
+    cta_titre: 'Un outil qui vous fait perdre du temps ? Parlons-en.',
+    cta_texte: "30 minutes pour comprendre comment vous travaillez aujourd'hui. Je vous dis honnêtement si une application sur mesure vaut le coup, ou si un outil existant suffit."
+} %}
