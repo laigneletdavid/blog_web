@@ -147,6 +147,8 @@
 {% set parts = avis.title|split(' — ', 2) %}
 <section class="cws-section">
     <div class="container">
+        {# Titre pour la structure de la page (lecteurs d ecran, moteurs), masque a l ecran #}
+        <h2 class="visually-hidden">Ce qu'en disent mes clients</h2>
         <figure class="cws-temoignage-seul">
             <span class="cws-temoignage__guillemet" aria-hidden="true">“</span>
             <blockquote><p>{{ avis.content }}</p></blockquote>
