@@ -19,6 +19,7 @@
   --dark-border: rgba(255, 255, 255, 0.12);
   --dark-muted: rgba(255, 255, 255, 0.78);
   --accent-text: #B35F00;    /* orange de l'accent assombri : 4,8:1 sur blanc */
+  --primary-clair: #8AB8F5;  /* bleu de la charte eclairci pour fond fonce : 7,9:1 sur #1C2226 */
   --radius: 15px;
   --radius-md: 11px;
   --radius-lg: 15px;
@@ -63,11 +64,12 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   font-size: 1.1rem;
 }
 
-/* Surtitres en orange (assombri sur fond clair, pur sur fond fonce) */
+/* Surtitres en bleu (6,9:1 sur blanc ; bleu eclairci sur fond fonce).
+   L'orange est reserve a l'action principale et a la vague. */
 .home-overtitle,
 .home-hero__overtitle {
   display: inline-block;
-  color: var(--accent-text);
+  color: var(--primary);
   font-weight: 600;
   font-size: 0.9375rem;
   letter-spacing: 0.01em;
@@ -84,7 +86,7 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   font-weight: 700;
   font-size: 1.125rem;
   letter-spacing: 0.02em;
-  color: var(--accent-text);
+  color: var(--primary);
   margin-bottom: 0.5rem;
 }
 
@@ -129,7 +131,7 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 .cws-section--dark .home-overtitle,
 .cws-section--dark .cws-num {
-  color: var(--accent);
+  color: var(--primary-clair);
 }
 .cws-section--dark a:not(.btn) {
   color: var(--accent);
@@ -420,6 +422,29 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 @media (max-width: 575.98px) {
   .cws-hero .home-hero__actions .btn { width: 100%; justify-content: center; }
+}
+/* Bouton secondaire du hero : contour et texte bleus */
+.theme-vitrine .home-hero__actions .btn-outline-primary {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+}
+.theme-vitrine .home-hero__actions .btn-outline-primary:hover,
+.theme-vitrine .home-hero__actions .btn-outline-primary:focus-visible {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #FFFFFF;
+}
+/* Aplat bleu decale derriere la photo : la masse de bleu du premier ecran.
+   Ombre pleine decalee (aucune boite en plus, rien ne bouge au chargement). */
+.cws-hero__photo {
+  box-shadow: 22px 22px 0 0 var(--primary), 0 18px 40px rgba(28, 34, 38, 0.16);
+}
+@media (max-width: 991.98px) {
+  .cws-hero__photo {
+    margin-right: 12px;
+    box-shadow: 12px 12px 0 0 var(--primary), 0 12px 28px rgba(28, 34, 38, 0.14);
+  }
 }
 
 /* --- 3. Bloc signature : deux colonnes reliees par la vague --- */
@@ -809,7 +834,7 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   font-weight: 700;
   font-size: 0.9375rem;
   letter-spacing: 0.02em;
-  color: var(--accent-text);
+  color: var(--primary);
   margin-bottom: 0.5rem;
 }
 .cws-marche__titre {
@@ -876,7 +901,7 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
     width: 12px;
     height: 16px;
     margin: -8px 0 0 -6px;
-    color: var(--accent);
+    color: var(--primary);
     overflow: visible;
   }
   .cws-pointe--1 { left: 30.4%; top: calc(4px + 19px); }
@@ -959,7 +984,7 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   color: var(--text-muted);
 }
 .cws-puces li + li { margin-top: 0.35rem; }
-.cws-puces li::marker { color: var(--accent); }
+.cws-puces li::marker { color: var(--primary); }
 
 /* Cartes : numero au-dessus du titre ; grille de 4 */
 .cws-carte .cws-num { margin-bottom: 0.75rem; }
