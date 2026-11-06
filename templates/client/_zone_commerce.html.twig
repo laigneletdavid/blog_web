@@ -1,3 +1,5 @@
-{# Mention de zone, sous le CTA du hero des pages commerce (spec du 06/11/2026).
-   Si le contrat Enleys impose un logo ou une mention, c'est ici qu'elle se place. #}
-<p class="cws-zone">Intervention en Occitanie, en partenariat avec le réseau Enleys.</p>
+{# Mention de zone, sous le CTA du hero des pages commerce. David travaille avec le
+   reseau Enleys et ne s'occupe que de l'Occitanie (06/11/2026). Si le contrat
+   impose un logo ou une mention, c'est ici qu'elle se place. #}
+{% import 'client/_macros.html.twig' as m %}
+<p class="cws-zone">Intervention en Occitanie uniquement, en partenariat avec le réseau <a href="{{ m.lien_enleys() }}" target="_blank" rel="noopener">Enleys <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>.</p>

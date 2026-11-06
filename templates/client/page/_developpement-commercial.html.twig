@@ -65,8 +65,8 @@
             <h2 class="home-section-title">Trois façons de développer vos ventes, sans recruter</h2>
         </div>
         {% set offres = [
-            { nom: 'Direction commerciale externalisée', pour: "Vous n'avez pas de directeur commercial", fait: "Stratégie, organisation de la prospection, pilotage, formation de l'équipe", prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '/mois', lien: '/service/direction-commerciale-externalisee', avant: false },
             { nom: 'Prospection B2B', pour: 'Vous manquez de rendez-vous', fait: 'Ciblage, appels, emails, relances, prise de rendez-vous', prix: m.prix_prospection() ~ ' €' ~ ht ~ '/mois', lien: '/service/externalisation-commerciale-b2b', avant: true },
+            { nom: 'Direction commerciale externalisée', pour: "Vous n'avez pas de directeur commercial", fait: "Stratégie, organisation de la prospection, pilotage, formation de l'équipe", prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '/mois', lien: '/service/direction-commerciale-externalisee', avant: false },
             { nom: "Appels d'offres", pour: 'Vous visez les marchés publics', fait: 'Veille, sélection des marchés, rédaction et dépôt des dossiers', prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '/mois + ' ~ m.prix_ao_dossier() ~ ' € par dossier', lien: '/service/externalisation-appels-d-offres', avant: false },
         ] %}
         <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
@@ -126,6 +126,23 @@
             <li>vous répondez aux appels d'offres au dernier moment, ou pas du tout&nbsp;;</li>
             <li>votre entreprise est en Occitanie.</li>
         </ul>
+    </div>
+</section>
+
+{# ====== 6 bis. LE RÉSEAU ENLEYS ======
+   David travaille avec Enleys et ne s'occupe que de l'Occitanie (06/11/2026).
+   Fond blanc entre « C'est pour vous si… » (gris) et l'appel final (fonce). #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Mon réseau</span>
+            <h2 class="home-section-title">Je travaille avec Enleys, en Occitanie uniquement</h2>
+            <p>Pour le développement commercial, je fais partie du réseau Enleys, apporteur d'affaires pour les professionnels, avec des agences dans plusieurs régions. Je m'occupe uniquement des entreprises d'Occitanie. Si votre entreprise est ailleurs en France, l'agence Enleys de votre région prend le relais.</p>
+        </div>
+        <p class="cws-liens-enleys">
+            <a href="{{ m.lien_enleys() }}" target="_blank" rel="noopener" class="cws-offre__lien">Le réseau Enleys <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="{{ m.lien_enleys_agences() }}" target="_blank" rel="noopener" class="cws-offre__lien">Trouver l'agence de votre région <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>
+        </p>
     </div>
 </section>
 
