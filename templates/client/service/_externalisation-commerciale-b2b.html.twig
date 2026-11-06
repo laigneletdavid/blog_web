@@ -1,0 +1,126 @@
+{# ======================================================================
+   FICHE « PROSPECTION B2B » — bw_cws (spec du 06/11/2026, lot C)
+   Pleine largeur, sans image generique. Prix : client/_macros (prix_prospection).
+   En attente de David : « 1 000 appels par mois » (absent tant que non valide,
+   sinon remplacer « Des appels réguliers ») ; la question « Qui passe les
+   appels ? » n'est pas publiee tant qu'il n'a pas precise qui appelle
+   (mettre faq_qui_appelle_valide a true et ajuster la reponse).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set ht = m.ht() %}
+{% set prix = m.prix_prospection() ~ ' €' ~ ht ~ '/mois' %}
+{% set faq_qui_appelle_valide = false %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO + CARTE PRIX ====== #}
+{% include 'client/_hero_commerce.html.twig' with {
+    page_nom: 'Prospection B2B',
+    surtitre: 'Le commerce — Prospection B2B',
+    h1_avant: 'Des rendez-vous qualifiés dans votre ',
+    h1_vague: 'agenda',
+    h1_apres: ', sans recruter',
+    texte: "Prospecter demande du temps, des outils et de la régularité. Je prends en charge votre prospection de A à Z ; vous vous concentrez sur ce qui rapporte : le rendez-vous et la signature.",
+    carte: { libelle: 'Prospection B2B', prix: m.prix_prospection() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Appels et emails vers vos cibles', 'Base de prospects fournie', 'Reporting dans le CRM'] }
+} %}
+
+{# ====== 2. LE CONSTAT ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Entre deux contrats, votre carnet de commandes se vide</h2>
+            <p>La plupart des dirigeants de TPE et PME n'ont ni le temps ni les outils pour prospecter régulièrement. On prospecte quand ça va mal, on arrête quand ça repart, et le cycle recommence.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. CE QUE JE FAIS ====== #}
+<section class="cws-section cws-offres">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Votre prospection, clé en main</h2>
+        </div>
+        {% set lignes = [
+            { titre: 'Prospection téléphonique', texte: 'Des appels réguliers vers vos cibles, avec un script validé ensemble et adapté à votre offre. Objectif : des rendez-vous qualifiés.' },
+            { titre: "Campagnes d'emails", texte: 'Prise de contact, relances, contenus utiles : des séquences ciblées sur les segments précis de votre marché.' },
+            { titre: 'Base de prospects fournie', texte: "Pas besoin d'acheter de fichiers : je constitue et qualifie votre base à partir de sources professionnelles, par secteur, taille d'entreprise et zone." },
+            { titre: 'Reporting automatique', texte: 'Appels, emails, réponses, rendez-vous : tout est tracé dans le CRM, vous recevez un suivi clair sans rien faire.' },
+        ] %}
+        <div class="cws-offres__liste">
+            {% for l in lignes %}
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">{{ '%02d'|format(loop.index) }}</span>
+                    <h3 class="cws-offre__titre">{{ l.titre }}</h3>
+                </div>
+                <div class="cws-offre__corps"><p>{{ l.texte|insecables }}</p></div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ====== 4. LE PRINCIPE 20/80 (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le principe</span>
+            <h2 class="home-section-title">Je fais les 80&nbsp;%, vous gardez les 20&nbsp;% qui comptent</h2>
+        </div>
+        <div class="cws-barre" role="img" aria-label="80 % du travail pour moi : ciblage, appels, relances, qualification. 20 % pour vous : rendez-vous et signature.">
+            <div class="cws-barre__moi"><strong>80&nbsp;%</strong><span>Ciblage, appels, relances, qualification — moi</span></div>
+            <div class="cws-barre__vous"><strong>20&nbsp;%</strong><span>Rendez-vous et signature — vous</span></div>
+        </div>
+        <p class="cws-section__texte">Je prends en charge le travail de fond de la prospection pour que vous investissiez votre temps là où il rapporte&nbsp;: face à vos futurs clients.</p>
+    </div>
+</section>
+
+{# ====== 5. CE QUI EST INCLUS ====== #}
+<section class="cws-section" id="inclus">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Ce qui est inclus</h2>
+        </div>
+        <ul class="cws-checklist">
+            <li>Ciblage et constitution de la base de prospects</li>
+            <li>Script d'appel validé ensemble</li>
+            <li>Appels sortants vers vos cibles</li>
+            <li>Séquences d'emails et relances</li>
+            <li>Rendez-vous qualifiés directement dans votre agenda</li>
+            <li>CRM partagé avec reporting</li>
+            <li>Aucun recrutement, aucune charge salariale</li>
+        </ul>
+        <p class="cws-rappel-prix">{{ prix|raw }}, sans engagement.</p>
+    </div>
+</section>
+
+{# ====== 6. POUR QUI ? ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Pour qui&nbsp;?</h2>
+            <p>Les TPE et PME en B2B qui veulent une prospection régulière sans embaucher de commercial&nbsp;: entreprises de services, ESN, bureaux d'études, prestataires industriels, et toute structure qui se développe en conquérant de nouveaux clients, en Occitanie.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 7. FAQ ====== #}
+{% set faqPage = [] %}
+{% if faq_qui_appelle_valide %}
+    {% set faqPage = faqPage|merge([{ q: 'Qui passe les appels ?', r: "C'est moi qui pilote votre prospection et qui en réponds, dans le cadre du réseau Enleys." }]) %}
+{% endif %}
+{% set faqPage = faqPage|merge([
+    { q: 'Les prospects savent-ils que c’est externalisé ?', r: "Non. Je prospecte en votre nom, avec votre identité, votre adresse email, votre numéro. Pour le prospect, c'est votre entreprise qui le contacte. Quand le rendez-vous est pris, c'est vous qui reprenez la main sur la relation commerciale. C'est votre marque, votre image, votre pipe. Moi je suis le moteur, pas la carrosserie." },
+    { q: 'Comment se passe le démarrage ?', r: "On définit ensemble vos cibles et votre discours, je construis la base de prospects et le script, puis la prospection démarre. Vous suivez tout dans le CRM." },
+    { q: 'Et si ça ne marche pas ?', r: "C'est sans engagement. On fait le point régulièrement ; si les résultats ne sont pas là, on ajuste ou on arrête." },
+]) %}
+{% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-prospection' } %}
+
+{% include 'client/_jsonld_service_commerce.html.twig' with {
+    nom: 'Prospection B2B externalisée',
+    description: service.seoDescription|default(''),
+    prix: '950',
+    unite: 'Par mois' ~ ht ~ ', sans engagement'
+} %}
+
+{# ====== 8. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' %}
