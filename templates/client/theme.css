@@ -1660,6 +1660,42 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 
 /* ===========================================================================
+   Articles : bloc d appel de fin d article (div.cws-article-cta dans le contenu)
+   =========================================================================== */
+.cws-article-cta {
+  margin: 3rem 0 1rem;
+  padding: 2rem;
+  background: var(--dark);
+  border-radius: var(--radius-lg);
+  color: #FFFFFF;
+}
+.cws-article-cta .cws-article-cta__titre {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  color: #FFFFFF;
+}
+.cws-article-cta p:not(.cws-article-cta__titre) { color: var(--dark-muted); }
+.cws-article-cta p:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0;
+}
+.cws-article-cta a.btn { text-decoration: none; }
+.cws-article-cta .btn-outline-primary {
+  border: 2px solid var(--primary-clair);
+  color: var(--primary-clair) !important;
+  background: transparent;
+}
+.cws-article-cta .btn-outline-primary:hover {
+  background: var(--primary-clair);
+  color: var(--dark) !important;
+}
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */
