@@ -101,8 +101,10 @@
     </div>
 </section>
 
-{# ====== 5. LA DIFFERENCE ====== #}
-<section class="cws-section">
+{# ====== 5. LA DIFFERENCE ======
+   Fond gris quand la section « Une réalisation » (blanche) suit : les fonds
+   restent alternes (fonce, gris, blanc, gris). #}
+<section class="cws-section{{ bmPubliee ? ' cws-section--alt' }}">
     <div class="container">
         <div class="cws-section__head">
             <span class="home-overtitle">Ma différence</span>
@@ -112,6 +114,32 @@
         <p class="cws-signature__more"><a href="/page/pourquoi-un-seul-interlocuteur">Pourquoi un seul interlocuteur <span class="cw-arrow" aria-hidden="true">→</span></a></p>
     </div>
 </section>
+
+{# ====== 5 bis. UNE REALISATION (bm-notaire.fr) ======
+   Seulement avec l'accord du notaire (ref_bm_notaire_publiee) et la capture
+   deposee ; sinon la section n'existe pas dans le HTML. #}
+{% if bmPubliee %}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-realisation">
+            {% include 'client/_navigateur.html.twig' with { src: 'images/references/bm-notaire-home.webp', alt: "Site de l'étude notariale bm-notaire.fr, réalisé avec ComWeb Studio" } only %}
+            <div>
+                <div class="cws-section__head">
+                    <span class="home-overtitle">Une réalisation</span>
+                    <h2 class="home-section-title">Le site d'une étude notariale, en ligne avec ComWeb Studio</h2>
+                    <p>Une étude notariale du Comminges avait besoin d'un site sobre, rassurant et facile à tenir à jour&nbsp;: présentation de l'étude et de ses services, coordonnées, prise de contact. Le tout sur ComWeb Studio, hébergé en France.</p>
+                </div>
+                <ul class="cws-puces">
+                    <li>Un site professionnel pour une profession réglementée</li>
+                    <li>Contenus modifiables par l'étude elle-même</li>
+                    <li>Hébergé en France, maintenu par mes soins</li>
+                </ul>
+                <a href="https://bm-notaire.fr" target="_blank" rel="noopener" class="cws-offre__lien">Voir le site <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
 
 {# ====== 6. LES FORMULES ====== #}
 <section class="cws-section cws-section--alt">
