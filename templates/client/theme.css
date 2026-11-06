@@ -1213,6 +1213,13 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-section--dark .cws-carte.cws-card-dark h3 { color: #FFFFFF; }
 .cws-reference .cws-navigateur-bloc { margin-bottom: 1.75rem; }
 #references .cws-cartes { align-items: stretch; }
+.cws-vignettes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: -0.5rem 0 1.75rem;
+}
+.cws-vignettes .cws-navigateur { box-shadow: 6px 6px 0 0 var(--primary); }
 
 /* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
