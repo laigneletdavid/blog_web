@@ -1,15 +1,16 @@
 {# ======================================================================
    FICHE « PROSPECTION B2B » — bw_cws (spec du 06/11/2026, lot C)
    Pleine largeur, sans image generique. Prix : client/_macros (prix_prospection).
-   En attente de David : « 1 000 appels par mois » (absent tant que non valide,
-   sinon remplacer « Des appels réguliers ») ; la question « Qui passe les
-   appels ? » n'est pas publiee tant qu'il n'a pas precise qui appelle
-   (mettre faq_qui_appelle_valide a true et ajuster la reponse).
+   Process precise par David (06/11/2026) : une equipe de teleoperateurs appelle,
+   qualifie le lead, valide le besoin et/ou le rendez-vous, et le lead est
+   transmis au client ; David pilote et centralise l'ensemble. Plus de relance
+   apres devis, de suivi apres vente, d'exclusivite ni de reunion mensuelle.
+   « 1 000 appels par mois » : absent tant que non valide.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set ht = m.ht() %}
 {% set prix = m.prix_prospection() ~ ' €' ~ ht ~ '/mois' %}
-{% set faq_qui_appelle_valide = false %}
+{% set faq_qui_appelle_valide = true %}
 {{ m.symbole_vague() }}
 
 {# ====== 1. HERO + CARTE PRIX ====== #}
@@ -20,7 +21,7 @@
     h1_vague: 'agenda',
     h1_apres: ', sans recruter',
     texte: "Prospecter demande du temps, des outils et de la régularité. Je prends en charge votre prospection de A à Z ; vous vous concentrez sur ce qui rapporte : le rendez-vous et la signature.",
-    carte: { libelle: 'Prospection B2B', prix: m.prix_prospection() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Appels et emails vers vos cibles', 'Base de prospects fournie', 'Reporting dans le CRM'] }
+    carte: { libelle: 'Prospection B2B', prix: m.prix_prospection() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Une équipe de téléopérateurs dédiée', 'Leads qualifiés : besoin validé et/ou rendez-vous', 'Je pilote et centralise l’ensemble'] }
 } %}
 
 {# ====== 2. LE CONSTAT ====== #}
@@ -40,10 +41,11 @@
             <h2 class="home-section-title">Votre prospection, clé en main</h2>
         </div>
         {% set lignes = [
-            { titre: 'Prospection téléphonique', texte: 'Des appels réguliers vers vos cibles, avec un script validé ensemble et adapté à votre offre. Objectif : des rendez-vous qualifiés.' },
-            { titre: "Campagnes d'emails", texte: 'Prise de contact, relances, contenus utiles : des séquences ciblées sur les segments précis de votre marché.' },
+            { titre: 'Prospection téléphonique', texte: 'Une équipe de téléopérateurs appelle vos cibles avec un script validé ensemble et adapté à votre offre.' },
+            { titre: 'Qualification et transmission', texte: 'Chaque contact est qualifié : on valide qu’il a un besoin et, si possible, on prend le rendez-vous. Le lead vous est alors transmis directement.' },
+            { titre: "Campagnes d'emails", texte: 'Prise de contact et contenus utiles : des séquences ciblées sur les segments précis de votre marché.' },
             { titre: 'Base de prospects fournie', texte: "Pas besoin d'acheter de fichiers : je constitue et qualifie votre base à partir de sources professionnelles, par secteur, taille d'entreprise et zone." },
-            { titre: 'Reporting automatique', texte: 'Appels, emails, réponses, rendez-vous : tout est tracé dans le CRM, vous recevez un suivi clair sans rien faire.' },
+            { titre: 'Pilotage et reporting', texte: 'Je pilote l’équipe et je centralise l’ensemble : appels, réponses, leads, rendez-vous. Tout est tracé dans le CRM, vous recevez un suivi clair sans rien faire.' },
         ] %}
         <div class="cws-offres__liste">
             {% for l in lignes %}
@@ -66,8 +68,8 @@
             <span class="home-overtitle">Le principe</span>
             <h2 class="home-section-title">Je fais les 80&nbsp;%, vous gardez les 20&nbsp;% qui comptent</h2>
         </div>
-        <div class="cws-barre" role="img" aria-label="80 % du travail pour moi : ciblage, appels, relances, qualification. 20 % pour vous : rendez-vous et signature.">
-            <div class="cws-barre__moi"><strong>80&nbsp;%</strong><span>Ciblage, appels, relances, qualification — moi</span></div>
+        <div class="cws-barre" role="img" aria-label="80 % du travail pour mon équipe et moi : ciblage, appels, qualification. 20 % pour vous : rendez-vous et signature.">
+            <div class="cws-barre__moi"><strong>80&nbsp;%</strong><span>Ciblage, appels, qualification — mon équipe et moi</span></div>
             <div class="cws-barre__vous"><strong>20&nbsp;%</strong><span>Rendez-vous et signature — vous</span></div>
         </div>
         <p class="cws-section__texte">Je prends en charge le travail de fond de la prospection pour que vous investissiez votre temps là où il rapporte&nbsp;: face à vos futurs clients.</p>
@@ -83,13 +85,11 @@
         <ul class="cws-checklist">
             <li>Ciblage et constitution de la base de prospects</li>
             <li>Script d'appel validé ensemble</li>
-            <li>Appels sortants vers vos cibles</li>
-            <li>Séquences d'emails et relances</li>
-            <li>Rendez-vous qualifiés directement dans votre agenda</li>
+            <li>Appels par une équipe de téléopérateurs dédiée</li>
+            <li>Séquences d'emails</li>
+            <li>Leads qualifiés (besoin validé et/ou rendez-vous) transmis directement</li>
             <li>CRM partagé avec reporting</li>
-            <li>Relance après devis et suivi après la vente</li>
-            <li>Exclusivité : un prospect n'est jamais transmis à deux clients</li>
-            <li>Réunion de suivi chaque mois</li>
+            <li>Pilotage et centralisation par un interlocuteur unique</li>
             <li>Aucun recrutement, aucune charge salariale</li>
         </ul>
         <p class="cws-rappel-prix">{{ prix|raw }}, sans engagement.</p>
@@ -109,11 +109,11 @@
 {# ====== 7. FAQ ====== #}
 {% set faqPage = [] %}
 {% if faq_qui_appelle_valide %}
-    {% set faqPage = faqPage|merge([{ q: 'Qui passe les appels ?', r: "C'est moi qui pilote votre prospection et qui en réponds, dans le cadre du réseau Enleys." }]) %}
+    {% set faqPage = faqPage|merge([{ q: 'Qui passe les appels ?', r: "Une équipe de téléopérateurs dédiée à la prospection. Moi, je pilote et je centralise l'ensemble : ciblage, script, qualification des contacts et transmission des leads. Votre interlocuteur, c'est moi." }]) %}
 {% endif %}
 {% set faqPage = faqPage|merge([
     { q: 'Les prospects savent-ils que c’est externalisé ?', r: "Non. Je prospecte en votre nom, avec votre identité, votre adresse email, votre numéro. Pour le prospect, c'est votre entreprise qui le contacte. Quand le rendez-vous est pris, c'est vous qui reprenez la main sur la relation commerciale. C'est votre marque, votre image, votre pipe. Moi je suis le moteur, pas la carrosserie." },
-    { q: 'Comment se passe le démarrage ?', r: "On définit ensemble vos cibles et votre discours, je construis la base de prospects et le script, puis la prospection démarre. Vous suivez tout dans le CRM." },
+    { q: 'Comment se passe le démarrage ?', r: "On définit ensemble vos cibles et votre discours. Je construis la base de prospects et le script, puis l'équipe appelle : chaque contact est qualifié, son besoin validé et, si possible, un rendez-vous pris. Je vous transmets les leads au fil de l'eau, vous suivez tout dans le CRM." },
     { q: 'Et si ça ne marche pas ?', r: "C'est sans engagement. On fait le point régulièrement ; si les résultats ne sont pas là, on ajuste ou on arrête." },
 ]) %}
 {% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-prospection' } %}
