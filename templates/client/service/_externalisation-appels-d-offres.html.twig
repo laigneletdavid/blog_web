@@ -1,0 +1,125 @@
+{# ======================================================================
+   FICHE « APPELS D'OFFRES » — bw_cws (spec du 06/11/2026, lot D)
+   Pleine largeur, sans image generique. Prix : client/_macros (prix_ao_mois,
+   prix_ao_dossier). Statistiques non sourcees retirees (80 %, 2 a 5 jours).
+   A valider par David : la repartition abonnement / prix par dossier (section 5).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set ht = m.ht() %}
+{% set prixMois = m.prix_ao_mois() ~ ' €' ~ ht ~ '/mois' %}
+{% set prixDossier = m.prix_ao_dossier() ~ ' €' ~ ht %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO + CARTE PRIX ====== #}
+{% include 'client/_hero_commerce.html.twig' with {
+    page_nom: "Appels d'offres",
+    surtitre: "Le commerce — Appels d'offres",
+    h1_avant: 'Ne passez plus à côté des marchés à votre ',
+    h1_vague: 'portée',
+    texte: "Veille, analyse des cahiers des charges, mémoire technique, dossier administratif : répondre à un appel d'offres est un métier à part entière. Je m'en charge de A à Z ; vous relisez et vous validez.",
+    carte: { libelle: "Appels d'offres", prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '<small>/mois</small>', complement: '+ ' ~ prixDossier ~ ' par dossier déposé', puces: ['Veille quotidienne', 'Sélection argumentée des marchés', 'Rédaction et dépôt'] }
+} %}
+
+{# ====== 2. LE CONSTAT ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Des marchés à votre portée, auxquels vous ne répondez pas</h2>
+            <p>Les appels d'offres sont un vrai levier de croissance pour les TPE et PME&nbsp;: des contrats souvent récurrents, avec des clients solides. Mais entre la veille, l'analyse et la rédaction, la plupart des dirigeants n'ont pas le temps de répondre, ou répondent trop tard.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. MON PROCESSUS EN 4 ÉTAPES ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Mon processus en 4 étapes</h2>
+        </div>
+        {% set etapes = [
+            { titre: 'Veille automatisée', texte: 'Je surveille chaque jour les plateformes de marchés publics et privés (BOAMP, JOUE, plateformes de dématérialisation).' },
+            { titre: 'Sélection argumentée', texte: 'Chaque marché est analysé : critères, montant estimé, chances de succès, adéquation avec vos références. Vous ne recevez que les pertinents, avec ma recommandation.' },
+            { titre: 'Rédaction complète', texte: 'Mémoire technique, note méthodologique, références, moyens humains et matériels : je rédige le dossier, vous relisez et validez.' },
+            { titre: 'Dépôt et suivi', texte: 'Dossier administratif (DC1, DC2, attestations), dépôt dans les délais, suivi de la notification.' },
+        ] %}
+        <ol class="cws-etapes" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for e in etapes %}
+            <li class="cws-etape">
+                <span class="cws-etape__num" aria-hidden="true">{{ loop.index }}</span>
+                <h3 class="cws-etape__titre">{{ e.titre }}</h3>
+                <p>{{ e.texte|insecables }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 4. OUTILLÉ PAR L'IA (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Mes outils</span>
+            <h2 class="home-section-title">Une veille et une analyse accélérées par l'IA</h2>
+            <p>Je m'appuie sur LintellO, l'IA française et confidentielle que je développe, pour analyser les cahiers des charges et préparer les trames de réponse. Je garde la main sur la sélection et la rédaction finale.</p>
+        </div>
+        <p class="cws-signature__more"><a href="/service/integration-ia-entreprise">L'IA dans votre entreprise <span class="cw-arrow" aria-hidden="true">→</span></a></p>
+    </div>
+</section>
+
+{# ====== 5. CE QUI EST INCLUS (abonnement / par dossier) ====== #}
+<section class="cws-section" id="inclus">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Ce qui est inclus</h2>
+        </div>
+        <div class="cws-inclus-colonnes">
+            <div class="cws-carte">
+                <h3>Dans l'abonnement ({{ prixMois|raw }})</h3>
+                <ul class="cws-checklist">
+                    <li>Veille quotidienne sur les plateformes</li>
+                    <li>Sélection et recommandation des marchés</li>
+                    <li>Alerte par email pour chaque opportunité</li>
+                    <li>Conseil sur la stratégie de réponse</li>
+                </ul>
+            </div>
+            <div class="cws-carte">
+                <h3>Par dossier déposé ({{ prixDossier|raw }})</h3>
+                <ul class="cws-checklist">
+                    <li>Rédaction du mémoire technique et des pièces</li>
+                    <li>Constitution du dossier administratif</li>
+                    <li>Dépôt sur la plateforme</li>
+                    <li>Suivi de la notification</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 6. POUR QUI ? ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Pour qui&nbsp;?</h2>
+            <p>Les TPE, PME, artisans et prestataires de services qui veulent accéder aux marchés publics sans mobiliser de ressources internes. Particulièrement adapté au BTP, aux services aux collectivités, à l'informatique, à la formation et au conseil, en Occitanie.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 7. FAQ ====== #}
+{% set faqPage = [
+    { q: "Je n'ai jamais répondu à un appel d'offres. C'est pour moi ?", r: "Oui. Je vous aide à constituer vos références et votre dossier administratif dès le départ." },
+    { q: 'Qui signe et qui dépose ?', r: "Vous restez le candidat : vous validez et signez. Je prépare tout et je dépose pour vous." },
+    { q: 'Combien de dossiers par mois ?', r: "Autant que de marchés pertinents. Vous choisissez ceux auxquels vous répondez, et vous ne payez que les dossiers déposés." },
+    { q: 'Vous intervenez où ?', r: "La veille couvre toute la France ; l'accompagnement se fait pour les entreprises basées en Occitanie, en partenariat avec le réseau Enleys." },
+] %}
+{% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-ao' } %}
+
+{% include 'client/_jsonld_service_commerce.html.twig' with {
+    nom: "Réponse aux appels d'offres externalisée",
+    description: service.seoDescription|default(''),
+    prix: '375',
+    unite: 'Par mois' ~ ht ~ ', plus 150 € par dossier déposé, sans engagement'
+} %}
+
+{# ====== 8. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' %}
