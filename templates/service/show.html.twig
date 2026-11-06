@@ -3,6 +3,9 @@
 {# SEO gere par SeoService via la variable seo (base.html.twig) #}
 
 {% block jsonld %}
+{# Une fiche dessinee par le client (templates/client/service/_<slug>.html.twig)
+   publie sa propre fiche Service (zone, offres, prix) : pas de doublon ici. #}
+{% if not theme_service.hasClientTemplate('service/_' ~ service.slug ~ '.html.twig') %}
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -18,6 +21,7 @@
     }
 }
 </script>
+{% endif %}
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
