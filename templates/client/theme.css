@@ -1508,6 +1508,93 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-liste-pour-qui li::marker { color: var(--primary); }
 
 /* ===========================================================================
+   Page Pourquoi un seul interlocuteur (spec du 06/11/2026)
+   =========================================================================== */
+/* Les trois questions que l'agence ne pose pas : Space Grotesk, puces bleues */
+.cws-questions {
+  max-width: 46rem;
+  margin: 0 0 1.75rem;
+  padding-left: 1.4rem;
+}
+.cws-questions li {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+.cws-questions li + li { margin-top: 0.6rem; }
+.cws-questions li::marker { color: var(--primary); }
+.cws-conclusion {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 1.0625rem;
+}
+
+/* Points sous le bloc signature */
+.cws-lien__points { margin-top: 3rem; }
+
+/* Deceptions : 4 cartes compactes, texte seul */
+.cws-deceptions {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 991.98px) { .cws-deceptions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 575.98px) { .cws-deceptions { grid-template-columns: 1fr; } }
+.cws-deceptions .cws-carte {
+  padding: 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+.cws-reponse {
+  max-width: 46rem;
+  margin: 2.5rem auto 0;
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--text);
+}
+
+/* Etapes : variante a 3 colonnes */
+@media (min-width: 992px) {
+  .cws-etapes--3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Pour qui : deux colonnes, coches bleues / tirets gris */
+.cws-pour-qui {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 767.98px) { .cws-pour-qui { grid-template-columns: 1fr; gap: 2rem; } }
+.cws-pour-qui h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+.cws-pour-qui .cws-checklist { grid-template-columns: 1fr; }
+.cws-liste-non {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cws-liste-non li {
+  position: relative;
+  padding-left: 1.75rem;
+  color: var(--text-muted);
+}
+.cws-liste-non li + li { margin-top: 0.85rem; }
+.cws-liste-non li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: #9AA4AE;
+}
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */

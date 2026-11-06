@@ -1,0 +1,178 @@
+{# ======================================================================
+   PAGE « POURQUOI UN SEUL INTERLOCUTEUR » — bw_cws (spec du 06/11/2026)
+   Pleine largeur, sans colonne laterale. Bloc signature de la home en section 4.
+   Retires : la statistique « 80 % des TPE/PME », les couts chiffres
+   (ordres de grandeur seulement) et « pas de sous-traitance » (la prospection
+   s'appuie sur une equipe de teleoperateurs : un seul interlocuteur, meme
+   quand une equipe intervient). Commerce en Occitanie, avec Enleys.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO ====== #}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Pourquoi un seul interlocuteur</li>
+            </ol>
+        </nav>
+        <p class="home-hero__overtitle">Ma différence</p>
+        <h1 class="home-hero__title">Pourquoi un seul {{ m.vague('interlocuteur') }} pour le commerce et le web&nbsp;?</h1>
+        <p class="home-hero__desc">Vous êtes dirigeant de TPE ou de PME, vous gérez tout. Pour le commercial et pour le web, vous faites avec les moyens du bord, ou vous déléguez à des prestataires qui ne se parlent pas. Je fais l'inverse&nbsp;: je réunis les deux.</p>
+        <div class="home-hero__actions">
+            <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
+            <a href="#comment" class="btn btn-outline-primary btn-lg">Voir comment ça se passe</a>
+        </div>
+    </div>
+</section>
+
+{# ====== 2. LE CONSTAT ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le constat</span>
+            <h2 class="home-section-title">Une agence web d'un côté, un commercial de l'autre, et personne entre les deux</h2>
+            <p>Un directeur commercial coûte en général plusieurs dizaines de milliers d'euros par an. Une agence web facture souvent plusieurs milliers d'euros le site, puis la maintenance, puis le référencement en option. Et entre les deux, personne ne se parle.</p>
+        </div>
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">01</span>
+                <h3>Un site qui ne vend pas</h3>
+                <p>Il est «&nbsp;joli&nbsp;», mais il ne génère aucun contact. Personne ne l'a pensé pour vendre.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">02</span>
+                <h3>Un commercial sans appui</h3>
+                <p>Quand vous en avez un, il prospecte à froid, sans pages à montrer ni contenus pour préparer le terrain.</p>
+            </div>
+            <div class="cws-carte">
+                <span class="cws-num" aria-hidden="true">03</span>
+                <h3>Deux factures, aucun résultat mesurable</h3>
+                <p>Chacun fait sa part, personne ne regarde l'ensemble, et vous ne savez pas ce qui rapporte.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. L'ANGLE MORT DES AGENCES ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">L'angle mort</span>
+            <h2 class="home-section-title">Votre agence web ne sait pas ce qu'est un cycle de vente</h2>
+            <p>Elle parle responsive, expérience utilisateur, charte graphique. Elle livre un site soigné. Mais elle ne vous a jamais posé ces questions&nbsp;:</p>
+        </div>
+        <ul class="cws-questions">
+            <li>Combien vous coûte un nouveau client&nbsp;?</li>
+            <li>Quel est votre taux de transformation&nbsp;?</li>
+            <li>À quel moment du parcours perdez-vous des prospects&nbsp;?</li>
+        </ul>
+        <p class="cws-conclusion">J'ai vendu pendant 16 ans avant d'écrire ma première ligne de code. Ça change tout dans la façon de construire un site&nbsp;: on ne pense pas maquette, on pense parcours de conversion.</p>
+    </div>
+</section>
+
+{# ====== 4. LE LIEN ENTRE LES DEUX (bloc signature de la home) ====== #}
+<section class="cws-section cws-section--dark cws-signature">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le lien</span>
+            <h2 class="home-section-title">Ce qui manque, ce n'est ni le site ni le commercial. C'est le lien.</h2>
+        </div>
+        <div class="cws-signature__grid">
+            <div class="cws-signature__col">
+                <h3>Le web</h3>
+                <p>Sites, applications, IA&nbsp;: je construis les outils qui servent ces ventes.</p>
+            </div>
+            <div class="cws-signature__lien" data-controller="wave-draw">
+                <span class="cws-signature__axe" aria-hidden="true"><span class="vague__clip"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></span>
+                <span class="cws-signature__label">Un seul interlocuteur</span>
+            </div>
+            <div class="cws-signature__col">
+                <h3>Le commerce</h3>
+                <p>Prospection, rendez-vous, appels d'offres&nbsp;: je sais ce qui fait signer un client.</p>
+            </div>
+        </div>
+        <ul class="cws-atouts cws-atouts--2 cws-lien__points" data-controller="reveal" data-reveal-stagger-value="70">
+            <li><h3>Des campagnes qui mènent quelque part.</h3><p>Vos emails de prospection renvoient vers des pages pensées pour convertir.</p></li>
+            <li><h3>Un site au service de la vente.</h3><p>Il aide votre commercial, il n'est pas là pour décorer.</p></li>
+            <li><h3>Des outils connectés.</h3><p>CRM, formulaires, relances&nbsp;: tout fonctionne ensemble, sans trois prestataires.</p></li>
+            <li><h3>Un objectif pour chaque euro.</h3><p>Chaque dépense a un objectif commercial mesurable.</p></li>
+        </ul>
+    </div>
+</section>
+
+{# ====== 5. UN SEUL INTERLOCUTEUR, VRAIMENT ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">La relation</span>
+            <h2 class="home-section-title">Vous avez déjà été déçu par un prestataire&nbsp;?</h2>
+        </div>
+        <ul class="cws-deceptions" data-controller="reveal" data-reveal-stagger-value="70">
+            <li class="cws-carte">L'agence qui disparaît après la livraison.</li>
+            <li class="cws-carte">Le freelance qui ne répond plus au bout de trois mois.</li>
+            <li class="cws-carte">Le consultant qui facture des slides que personne ne lit.</li>
+            <li class="cws-carte">Le sous-traitant que vous n'avez jamais rencontré.</li>
+        </ul>
+        <p class="cws-reponse">Avec moi, pas de chargé de compte ni de chef de projet intermédiaire. Même quand une équipe intervient, comme les téléopérateurs pour la prospection, c'est moi qui pilote et c'est moi qui vous réponds. Du premier appel à la mise en ligne, et après.</p>
+    </div>
+</section>
+
+{# ====== 6. COMMENT ÇA SE PASSE ====== #}
+<section class="cws-section cws-section--alt" id="comment">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Concrètement, comment ça se passe&nbsp;?</h2>
+        </div>
+        {% set etapes = [
+            { titre: 'On se parle 30 minutes', texte: 'Pas de présentation commerciale. Je vous pose des questions sur votre entreprise, votre marché, ce qui bloque. Je vous dis honnêtement si je peux aider.' },
+            { titre: 'Je vous propose un plan d’action', texte: 'Pas 40 pages de recommandations : un document clair. Ce qu’on fait, dans quel ordre, pour quel résultat, à quel prix.' },
+            { titre: 'On avance ensemble', texte: 'Pas de tunnel de six mois sans nouvelles. Vous voyez ce qui se construit, vous validez au fur et à mesure.' },
+        ] %}
+        <ol class="cws-etapes cws-etapes--3" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for e in etapes %}
+            <li class="cws-etape">
+                <span class="cws-etape__num" aria-hidden="true">{{ loop.index }}</span>
+                <h3 class="cws-etape__titre">{{ e.titre }}</h3>
+                <p>{{ e.texte|insecables }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+{# ====== 7. POUR QUI ? ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Ce n'est pas pour tout le monde</h2>
+        </div>
+        <div class="cws-pour-qui">
+            <div>
+                <h3>C'est pour vous si</h3>
+                <ul class="cws-checklist">
+                    <li>vous faites le commercial vous-même et vous n'en pouvez plus&nbsp;;</li>
+                    <li>votre site ne vous rapporte rien&nbsp;;</li>
+                    <li>vous voulez un interlocuteur unique, pas un organigramme de prestataires&nbsp;;</li>
+                    <li>vous cherchez du concret, pas du jargon.</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Ce n'est pas pour vous si</h3>
+                <ul class="cws-liste-non">
+                    <li>vous cherchez une grande agence avec des process certifiés et des comités de pilotage&nbsp;;</li>
+                    <li>vous voulez déléguer sans jamais être impliqué.</li>
+                </ul>
+            </div>
+        </div>
+        <p class="cws-zone">Le web et l'IA partout en France&nbsp;; le développement commercial en Occitanie, en partenariat avec le réseau <a href="{{ m.lien_enleys() }}" target="_blank" rel="noopener">Enleys <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>.</p>
+    </div>
+</section>
+
+{# ====== 8. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' with {
+    cta_titre: '30 minutes pour faire le point ?',
+    cta_texte: "Pas d'engagement, pas de présentation PowerPoint. On parle de votre entreprise, et je vous dis ce que je ferais à votre place, ou pas."
+} %}
