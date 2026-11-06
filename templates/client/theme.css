@@ -436,14 +436,14 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   color: #FFFFFF;
 }
 /* Aplat bleu decale derriere la photo : la masse de bleu du premier ecran.
-   Ombre pleine decalee (aucune boite en plus, rien ne bouge au chargement). */
+   Ombre pleine decalee de 8 px (aucune boite en plus, rien ne bouge au chargement). */
 .cws-hero__photo {
-  box-shadow: 22px 22px 0 0 var(--primary), 0 18px 40px rgba(28, 34, 38, 0.16);
+  box-shadow: 8px 8px 0 0 var(--primary), 0 18px 40px rgba(28, 34, 38, 0.16);
 }
 @media (max-width: 991.98px) {
   .cws-hero__photo {
-    margin-right: 12px;
-    box-shadow: 12px 12px 0 0 var(--primary), 0 12px 28px rgba(28, 34, 38, 0.14);
+    margin-right: 8px;
+    box-shadow: 8px 8px 0 0 var(--primary), 0 12px 28px rgba(28, 34, 38, 0.14);
   }
 }
 
