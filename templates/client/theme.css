@@ -1595,6 +1595,26 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 
 /* ===========================================================================
+   Etapes numerotees : alternance bleu / orange / bleu... (David, 06/11/2026)
+   Texte sur fond clair : orange fonce #B35F00 (4,8:1, l orange vif ne fait que
+   2,1:1 sur blanc). Ronds des etapes et fonds fonces : orange vif.
+   =========================================================================== */
+.cws-offres__liste > .cws-offre:nth-child(even) .cws-num,
+.cws-cartes > .cws-carte:nth-child(even) .cws-num,
+.cws-escalier__marches > .cws-marche:nth-child(even) .cws-marche__etiquette {
+  color: var(--accent-text);
+}
+.cws-section--dark .cws-offres__liste > .cws-offre:nth-child(even) .cws-num,
+.cws-section--dark .cws-cartes > .cws-carte:nth-child(even) .cws-num,
+.cws-section--dark .cws-cartes > .cws-carte:nth-child(even) .cws-marche__etiquette {
+  color: var(--accent);
+}
+.cws-etapes > .cws-etape:nth-child(even) .cws-etape__num {
+  background: var(--accent);
+  color: var(--dark);
+}
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */
