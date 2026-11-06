@@ -1,6 +1,7 @@
 {# ======================================================================
    FICHE « PROSPECTION B2B » — bw_cws (spec du 06/11/2026, lot C)
-   Pleine largeur, sans image generique. Prix : client/_macros (prix_prospection).
+   Pleine largeur, sans image generique. Prix : client/_macros (prix_b2b_*),
+   trois formules HT : au lead, 500 appels, 1 000 appels (David, 06/11/2026).
    Process precise par David (06/11/2026) : une equipe de teleoperateurs appelle,
    qualifie le lead, valide le besoin et/ou le rendez-vous, et le lead est
    transmis au client ; David pilote et centralise l'ensemble. Plus de relance
@@ -9,7 +10,7 @@
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set ht = m.ht() %}
-{% set prix = m.prix_prospection() ~ ' €' ~ ht ~ '/mois' %}
+{% set prix = 'dès ' ~ m.prix_b2b_lead_mois() ~ ' € HT/mois' %}
 {% set faq_qui_appelle_valide = true %}
 {{ m.symbole_vague() }}
 
@@ -21,7 +22,7 @@
     h1_vague: 'agenda',
     h1_apres: ', sans recruter',
     texte: "Prospecter demande du temps, des outils et de la régularité. Je prends en charge votre prospection de A à Z ; vous vous concentrez sur ce qui rapporte : le rendez-vous et la signature.",
-    carte: { libelle: 'Prospection B2B', prix: m.prix_prospection() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Une équipe de téléopérateurs dédiée', 'Leads qualifiés : besoin validé et/ou rendez-vous', 'Je pilote et centralise l’ensemble'] }
+    carte: { libelle: 'Prospection B2B — 3 formules', prix: '<small>dès</small> ' ~ m.prix_b2b_lead_mois() ~ ' € HT<small>/mois</small>', complement: 'Au lead, ou forfaits de 500 et 1&nbsp;000 appels par mois', lien_ancre: '#formules', lien_libelle: 'Voir les 3 formules', puces: ['Une équipe de téléopérateurs dédiée', 'Leads qualifiés : besoin validé et/ou rendez-vous', 'Je pilote et centralise l’ensemble'] }
 } %}
 
 {# ====== 2. LE CONSTAT ====== #}
@@ -76,6 +77,32 @@
     </div>
 </section>
 
+{# ====== 4 bis. LES 3 FORMULES (fond gris, entre la section foncee et « inclus ») ====== #}
+{% set formules = [
+    { nom: 'Au lead', prix: m.prix_b2b_lead_mois() ~ ' € HT', unite: '/mois', plus: '+ ' ~ m.prix_b2b_lead() ~ ' € HT par lead qualifié', pour: 'Vous payez au résultat : un abonnement réduit, puis chaque lead qualifié transmis.' },
+    { nom: '500 appels', prix: m.prix_b2b_500() ~ ' € HT', unite: '/mois', plus: '500 appels par mois', pour: 'Un volume d’appels défini chaque mois, pour une prospection régulière.' },
+    { nom: '1 000 appels', prix: m.prix_b2b_1000() ~ ' € HT', unite: '/mois', plus: '1&nbsp;000 appels par mois', pour: 'Le volume pour couvrir un marché large ou accélérer.' },
+] %}
+<section class="cws-section cws-section--alt" id="formules">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Les formules</span>
+            <h2 class="home-section-title">Trois formules, selon votre façon de payer</h2>
+        </div>
+        <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
+            {% for f in formules %}
+            <div class="cws-carte cws-formule">
+                <h3>{{ f.nom }}</h3>
+                <p class="cws-formule__prix">{{ f.prix|raw }} <span>{{ f.unite }}</span></p>
+                <p class="cws-formule__plus">{{ f.plus|raw }}</p>
+                <p>{{ f.pour }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="cws-formules__note">Sans engagement. Même équipe, même qualification des leads, même pilotage dans les trois formules.</p>
+    </div>
+</section>
+
 {# ====== 5. CE QUI EST INCLUS ====== #}
 <section class="cws-section" id="inclus">
     <div class="container">
@@ -92,7 +119,7 @@
             <li>Pilotage et centralisation par un interlocuteur unique</li>
             <li>Aucun recrutement, aucune charge salariale</li>
         </ul>
-        <p class="cws-rappel-prix">{{ prix|raw }}, sans engagement.</p>
+        <p class="cws-rappel-prix">{{ prix|capitalize|raw }}, sans engagement. <a href="#formules">Voir les 3 formules</a></p>
     </div>
 </section>
 
@@ -114,6 +141,7 @@
 {% set faqPage = faqPage|merge([
     { q: 'Les prospects savent-ils que c’est externalisé ?', r: "Non. Je prospecte en votre nom, avec votre identité, votre adresse email, votre numéro. Pour le prospect, c'est votre entreprise qui le contacte. Quand le rendez-vous est pris, c'est vous qui reprenez la main sur la relation commerciale. C'est votre marque, votre image, votre pipe. Moi je suis le moteur, pas la carrosserie." },
     { q: 'Comment se passe le démarrage ?', r: "On définit ensemble vos cibles et votre discours. Je construis la base de prospects et le script, puis l'équipe appelle : chaque contact est qualifié, son besoin validé et, si possible, un rendez-vous pris. Je vous transmets les leads au fil de l'eau, vous suivez tout dans le CRM." },
+    { q: 'Quelle formule choisir ?', r: "Au lead si vous voulez payer au résultat : un abonnement de " ~ m.prix_b2b_lead_mois() ~ " € HT par mois, puis " ~ m.prix_b2b_lead() ~ " € HT par lead qualifié transmis. Les forfaits de 500 ou 1 000 appels si vous préférez un volume d'appels défini chaque mois, à " ~ m.prix_b2b_500() ~ " ou " ~ m.prix_b2b_1000() ~ " € HT par mois. On en parle au premier échange." },
     { q: 'Et si ça ne marche pas ?', r: "C'est sans engagement. On fait le point régulièrement ; si les résultats ne sont pas là, on ajuste ou on arrête." },
 ]) %}
 {% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-prospection' } %}
@@ -121,8 +149,11 @@
 {% include 'client/_jsonld_service_commerce.html.twig' with {
     nom: 'Prospection B2B externalisée',
     description: service.seoDescription|default(''),
-    prix: '950',
-    unite: 'Par mois' ~ ht ~ ', sans engagement'
+    offres: [
+        { nom: 'Au lead', prix: m.prix_b2b_lead_mois()|trim, unite: 'HT par mois, plus ' ~ m.prix_b2b_lead()|trim ~ ' € HT par lead qualifié' },
+        { nom: '500 appels', prix: m.prix_b2b_500()|trim, unite: 'HT par mois, 500 appels' },
+        { nom: '1 000 appels', prix: m.prix_b2b_1000()|trim, unite: 'HT par mois, 1 000 appels' },
+    ]
 } %}
 
 {# ====== 8. APPEL FINAL ====== #}

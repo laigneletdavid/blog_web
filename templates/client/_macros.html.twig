@@ -56,6 +56,11 @@
 {% macro prix_commerce_ht() %}{% endmacro %}
 {% macro ht() %}{% import _self as s %}{% if s.prix_commerce_ht()|trim is not empty %} HT{% endif %}{% endmacro %}
 {% macro prix_direction() %}1&nbsp;650{% endmacro %}
-{% macro prix_prospection() %}950{% endmacro %}
+{# Prospection B2B : trois formules, prix HT (David, 06/11/2026).
+   Au lead : abonnement + prix par lead qualifie ; forfaits 500 et 1 000 appels par mois. #}
+{% macro prix_b2b_lead_mois() %}375{% endmacro %}
+{% macro prix_b2b_lead() %}65{% endmacro %}
+{% macro prix_b2b_500() %}650{% endmacro %}
+{% macro prix_b2b_1000() %}950{% endmacro %}
 {% macro prix_ao_mois() %}375{% endmacro %}
 {% macro prix_ao_dossier() %}150{% endmacro %}

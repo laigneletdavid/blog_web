@@ -1,6 +1,6 @@
 {# Carte prix du hero des pages commerce : carte blanche, aplat bleu decale.
    Variables : libelle, prix (HTML deja formate), complement (facultatif),
-   puces (liste). Lien vers #inclus. #}
+   puces (liste), lien_ancre et lien_libelle (par defaut #inclus). #}
 <div class="cws-prix-carte">
     <p class="cws-prix-carte__libelle">{{ libelle }}</p>
     <p class="cws-prix-carte__prix">{{ prix|raw }}</p>
@@ -9,5 +9,5 @@
     <ul class="cws-puces">
         {% for p in puces %}<li>{{ p }}</li>{% endfor %}
     </ul>
-    <a href="#inclus" class="cws-offre__lien">Tout ce qui est inclus <span aria-hidden="true">↓</span></a>
+    <a href="{{ lien_ancre|default('#inclus') }}" class="cws-offre__lien">{{ lien_libelle|default('Tout ce qui est inclus') }} <span aria-hidden="true">↓</span></a>
 </div>
