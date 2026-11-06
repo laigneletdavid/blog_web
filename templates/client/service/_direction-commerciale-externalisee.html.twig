@@ -86,7 +86,7 @@
             <li>Marketing et communication commerciale</li>
             <li>Optimisation de votre CRM</li>
         </ul>
-        <p class="cws-rappel-prix">{{ prix|capitalize|raw }}, sans engagement.</p>
+        <p class="cws-rappel-prix">{{ ('D' ~ prix|slice(1))|raw }}, sans engagement.</p>
     </div>
 </section>
 

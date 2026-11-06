@@ -67,7 +67,7 @@
         {% set offres = [
             { nom: 'Prospection B2B', pour: 'Vous manquez de rendez-vous', fait: 'Ciblage, appels par une équipe dédiée, qualification des leads, prise de rendez-vous', prix: 'dès ' ~ m.prix_b2b_lead_mois() ~ ' € HT/mois', lien: '/service/externalisation-commerciale-b2b', avant: true },
             { nom: 'Direction commerciale externalisée', pour: "Vous n'avez pas de directeur commercial", fait: "Stratégie, organisation de la prospection, pilotage, formation de l'équipe", prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '/mois', lien: '/service/direction-commerciale-externalisee', avant: false },
-            { nom: "Appels d'offres", pour: 'Vous visez les marchés publics', fait: 'Veille, sélection des marchés, rédaction et dépôt des dossiers', prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '/mois + ' ~ m.prix_ao_dossier() ~ ' € par dossier', lien: '/service/externalisation-appels-d-offres', avant: false },
+            { nom: "Appels d'offres", pour: 'Vous visez les marchés publics', fait: 'Veille, sélection des marchés, rédaction et dépôt des dossiers', prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '/mois + ' ~ m.prix_ao_dossier() ~ ' €' ~ ht ~ ' par dossier', lien: '/service/externalisation-appels-d-offres', avant: false },
         ] %}
         <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
             {% for o in offres %}

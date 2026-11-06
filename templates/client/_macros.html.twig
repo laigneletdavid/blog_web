@@ -53,7 +53,7 @@
    Un seul endroit pour les changer. Montants repris des anciennes pages.
    prix_commerce_ht : mettre 1 quand David confirme que les prix sont HT ;
    « HT » s'ajoute alors partout (m.ht()). #}
-{% macro prix_commerce_ht() %}{% endmacro %}
+{% macro prix_commerce_ht() %}1{% endmacro %}
 {% macro ht() %}{% import _self as s %}{% if s.prix_commerce_ht()|trim is not empty %} HT{% endif %}{% endmacro %}
 {% macro prix_direction() %}1&nbsp;650{% endmacro %}
 {# Prospection B2B : trois formules, prix HT (David, 06/11/2026).

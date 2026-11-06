@@ -87,7 +87,7 @@
     <div class="container">
         <div class="cws-section__head">
             <span class="home-overtitle">Les formules</span>
-            <h2 class="home-section-title">Trois formules, selon votre façon de payer</h2>
+            <h2 class="home-section-title">Trois formules pour s'adapter à vos besoins</h2>
         </div>
         <div class="cws-cartes cws-cartes--3" data-controller="reveal" data-reveal-stagger-value="90">
             {% for f in formules %}
@@ -118,7 +118,7 @@
             <li>Pilotage et centralisation par un interlocuteur unique</li>
             <li>Aucun recrutement, aucune charge salariale</li>
         </ul>
-        <p class="cws-rappel-prix">{{ prix|capitalize|raw }}, sans engagement. <a href="#formules">Voir les 3 formules</a></p>
+        <p class="cws-rappel-prix">{{ ('D' ~ prix|slice(1))|raw }}, sans engagement. <a href="#formules">Voir les 3 formules</a></p>
     </div>
 </section>
 
