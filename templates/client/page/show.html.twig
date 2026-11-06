@@ -1,6 +1,6 @@
 {# ====== PAGES — bw_cws ======
-   Rendu commun ; sur À propos, la fiche Person (brief 4.4). LinkedIn (sameAs) :
-   a ajouter quand David le fournira. #}
+   Une page dessinee a son gabarit client/page/_<slug>.html.twig, les autres
+   gardent le rendu commun. Sur À propos, la fiche Person (spec du 06/11/2026). #}
 {% include [
     'client/page/_' ~ page.slug ~ '.html.twig',
     'page/_show_generic.html.twig'
@@ -10,9 +10,11 @@
     '@context': 'https://schema.org',
     '@type': 'Person',
     'name': 'David Laignelet',
-    'jobTitle': 'Consultant en développement commercial et développeur web',
+    'jobTitle': 'Développeur web et chef de projet marketing digital',
     'url': absolute_url(path('app_page_show', { slug: page.slug })),
-    'worksFor': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') }
+    'worksFor': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') },
+    'address': { '@type': 'PostalAddress', 'addressLocality': 'Montsaunès', 'postalCode': '31260', 'addressCountry': 'FR' },
+    'sameAs': ['https://www.linkedin.com/in/david-laignelet-762ba6324/']
 } %}
 {% if site.heroImage %}{% set personne = personne|merge({ 'image': absolute_url(asset('documents/medias/' ~ site.heroImage.fileName)) }) %}{% endif %}
 <script type="application/ld+json">{{ personne|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
