@@ -37,3 +37,10 @@
    Usage : {% set ia_api_disponible = m.ia_api_disponible() is not empty %} #}
 {% macro ia_api_disponible() %}{% endmacro %}
 {% macro chatbot_disponible() %}{% endmacro %}
+
+{# Accords pour montrer des references (meme convention : '1' = oui, '' = non).
+   ref_bm_notaire_publiee : accord du notaire pour montrer bm-notaire.fr.
+   kayre_captures_publiees : captures anonymisees de Kayre validees par le client.
+   Les images vont dans public/images/references/ (voir les gabarits). #}
+{% macro ref_bm_notaire_publiee() %}{% endmacro %}
+{% macro kayre_captures_publiees() %}{% endmacro %}

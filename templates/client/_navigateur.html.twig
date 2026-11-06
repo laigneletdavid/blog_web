@@ -1,0 +1,12 @@
+{# ====== CAPTURE EN CADRE DE NAVIGATEUR — bw_cws ======
+   Barre grise a 3 points, coins arrondis, aplat bleu decale (regle des couleurs).
+   Variables : src (chemin sous public/), alt, legende (facultatif),
+   eager (true pour un visuel du premier ecran). L'appelant verifie d'abord que
+   le fichier existe : fichier_public(src). #}
+<figure class="cws-navigateur-bloc">
+    <div class="cws-navigateur">
+        <span class="cws-navigateur__barre" aria-hidden="true"><i></i><i></i><i></i></span>
+        <img src="{{ asset(src) }}" alt="{{ alt }}" width="1600" height="1000"{% if not eager|default(false) %} loading="lazy"{% endif %} decoding="async">
+    </div>
+    {% if legende|default('') is not empty %}<figcaption class="cws-legende">{{ legende }}</figcaption>{% endif %}
+</figure>

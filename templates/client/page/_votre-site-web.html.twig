@@ -2,11 +2,22 @@
    PAGE « VOTRE SITE WEB » — bw_cws (spec du 06/11/2026, lot 2)
    Marche 01 · Démarrer de l'escalier de la home. Pleine largeur, sans colonne
    laterale. Le texte vit ici ; en base, la page garde titre, slug et SEO.
-   Visuel du hero : aucun tant que David n'a pas fourni la capture d'un site
-   client (pas d'image generique) ; le texte passe alors en pleine largeur.
+   Visuel du hero (brief du 06/11/2026) : capture de bm-notaire.fr si l'accord
+   du notaire est donne (ref_bm_notaire_publiee) et le fichier depose, sinon la
+   home de comwebstudio.fr si son fichier est depose, sinon pas d'image (jamais
+   d'image generique) et le texte reste en pleine largeur.
+   Fichiers : public/images/references/bm-notaire-home.webp et
+   comwebstudio-home.webp (1 600 px de large).
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set lienStudio = m.lien_studio()|trim %}
+{% set bmPubliee = m.ref_bm_notaire_publiee()|trim is not empty and fichier_public('images/references/bm-notaire-home.webp') %}
+{% set capture = null %}
+{% if bmPubliee %}
+    {% set capture = { src: 'images/references/bm-notaire-home.webp', alt: "Site de l'étude notariale bm-notaire.fr, réalisé avec ComWeb Studio", legende: 'bm-notaire.fr, réalisé avec ComWeb Studio' } %}
+{% elseif fichier_public('images/references/comwebstudio-home.webp') %}
+    {% set capture = { src: 'images/references/comwebstudio-home.webp', alt: 'Page d’accueil de ComWeb Studio, le CMS conçu par Com Web Solutions', legende: 'Ce site et celui de ComWeb Studio tournent sur le CMS que j’ai conçu.' } %}
+{% endif %}
 {{ m.symbole_vague() }}
 
 {# ====== 1. HERO ====== #}
@@ -19,6 +30,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Votre site web</li>
             </ol>
         </nav>
+        {% if capture %}<div class="cws-hero__grille"><div>{% endif %}
         <p class="home-hero__overtitle">01 · Démarrer — Votre site web</p>
         <h1 class="home-hero__title">Un site internet qui vous apporte des {{ m.vague('clients') }}, pas seulement une vitrine</h1>
         <p class="home-hero__desc">Vous avez un site. Il est «&nbsp;joli&nbsp;». Mais quand vous comptez les contacts reçus depuis un an, c'est le vide. Le problème n'est pas d'avoir un site, c'est ce qu'on en fait. Je conçois des sites pensés pour vendre, et je reste votre interlocuteur après la mise en ligne.</p>
@@ -26,6 +38,11 @@
             <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
             <a href="{{ lienStudio }}/page/offres" target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg">Voir les formules <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>
         </div>
+        {% if capture %}
+        </div>
+        {% include 'client/_navigateur.html.twig' with capture|merge({ eager: true }) only %}
+        </div>
+        {% endif %}
     </div>
 </section>
 

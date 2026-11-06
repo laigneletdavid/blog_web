@@ -1138,6 +1138,83 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-bloc-centre p { color: var(--text-muted); font-size: 1.0625rem; margin: 0; }
 
 /* ===========================================================================
+   Captures de references (brief du 06/11/2026)
+   =========================================================================== */
+/* Cadre de navigateur : barre grise a 3 points, coins arrondis, aplat bleu
+   decale de 8 px (meme regle que la photo du hero de la home) */
+.cws-navigateur-bloc { margin: 0; }
+.cws-navigateur {
+  margin-right: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  box-shadow: 8px 8px 0 0 var(--primary), 0 18px 40px rgba(28, 34, 38, 0.16);
+}
+.cws-navigateur__barre {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  background: #E6E9EE;
+}
+.cws-navigateur__barre i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #B8C0CA;
+}
+.cws-navigateur img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;   /* place reservee : pas de decalage au chargement */
+  object-fit: cover;
+  object-position: top center;
+}
+.cws-legende {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.cws-section--dark .cws-legende { color: var(--dark-muted); }
+
+/* Hero avec visuel : texte a gauche, capture a droite ; dessous en mobile */
+.cws-hero__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 991.98px) {
+  .cws-hero__grille { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* Une realisation : capture a gauche, texte a droite */
+.cws-realisation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 991.98px) {
+  .cws-realisation { grid-template-columns: 1fr; gap: 2rem; }
+}
+.cws-realisation .cws-section__head { margin-bottom: 1.25rem; }
+.cws-realisation .cws-puces { margin-bottom: 1.25rem; }
+
+/* References (Applications) : texte lisible sur fond fonce, cartes alignees */
+.cws-reference p,
+.cws-section--dark .cws-carte.cws-card-dark p {
+  color: #D5DBE1;   /* 10,6:1 sur #232B30 */
+}
+.cws-reference h3,
+.cws-section--dark .cws-carte.cws-card-dark h3 { color: #FFFFFF; }
+.cws-reference .cws-navigateur-bloc { margin-bottom: 1.75rem; }
+#references .cws-cartes { align-items: stretch; }
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */
