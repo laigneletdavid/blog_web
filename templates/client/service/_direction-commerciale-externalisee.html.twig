@@ -1,0 +1,116 @@
+{# ======================================================================
+   FICHE « DIRECTION COMMERCIALE EXTERNALISÉE » — bw_cws (spec du 06/11/2026, lot B)
+   Pleine largeur, sans image generique. Prix : client/_macros (prix_direction).
+   Pas d'engagement « résultats dès le premier mois » (non valide par David).
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{% set ht = m.ht() %}
+{% set prix = 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '/mois' %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO + CARTE PRIX ====== #}
+{% include 'client/_hero_commerce.html.twig' with {
+    page_nom: 'Direction commerciale externalisée',
+    surtitre: 'Le commerce — Direction commerciale externalisée',
+    h1_avant: 'Un directeur commercial, sans le coût d’un ',
+    h1_vague: 'CDI',
+    texte: "Vous n'avez pas de directeur commercial en interne ? Je joue ce rôle à temps partagé : je structure votre développement commercial, je le pilote avec vous chaque semaine et je forme votre équipe.",
+    carte: { libelle: 'Direction commerciale externalisée', prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Point stratégique chaque semaine', 'Prospection et appels d’offres intégrés', 'CRM et reporting inclus'] }
+} %}
+
+{# ====== 2. LE CONSTAT ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Un directeur commercial, vous en avez besoin. Un CDI, pas forcément.</h2>
+            <p>Recruter un directeur commercial coûte en général plusieurs dizaines de milliers d'euros par an, sans compter les charges, le véhicule et les outils. Pour une TPE ou une PME, c'est souvent hors de portée, alors le sujet reste sur le bureau du dirigeant.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 3. LES 5 PILIERS ====== #}
+<section class="cws-section cws-offres">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Mon accompagnement</span>
+            <h2 class="home-section-title">Les 5 piliers de l'accompagnement</h2>
+        </div>
+        {% set piliers = [
+            { titre: 'Stratégie commerciale', texte: "Diagnostic de votre positionnement, choix des cibles prioritaires, construction de l'offre et du discours. Je pars de votre réalité terrain pour bâtir un plan d'action concret." },
+            { titre: 'Cycle de vente', texte: 'Prospection par téléphone, email et LinkedIn, qualification des contacts, relances, signature. Chaque étape est outillée et mesurable.' },
+            { titre: 'Pilotage', texte: 'Tableaux de bord dans le CRM, suivi des indicateurs (taux de transformation, panier moyen, durée du cycle de vente) et un point chaque semaine avec vous.' },
+            { titre: 'Relation client', texte: 'Fidélisation, ventes additionnelles, suivi des comptes clés. Le développement commercial ne s’arrête pas à la signature.' },
+            { titre: 'Outils', texte: 'CRM configuré, scripts d’appel, séquences d’emails, base de données B2B, supports de présentation : tout est prêt dès le démarrage.' },
+        ] %}
+        <div class="cws-offres__liste">
+            {% for l in piliers %}
+            <article class="cws-offre" data-controller="reveal">
+                <div class="cws-offre__tete">
+                    <span class="cws-num" aria-hidden="true">{{ '%02d'|format(loop.index) }}</span>
+                    <h3 class="cws-offre__titre">{{ l.titre }}</h3>
+                </div>
+                <div class="cws-offre__corps"><p>{{ l.texte|insecables }}</p></div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ====== 4. ARGUMENT CLÉ (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">La différence</span>
+            <h2 class="home-section-title">Quelqu'un qui a vendu, pas un consultant qui explique comment vendre</h2>
+            <p>J'ai fait du terrain pendant des années&nbsp;: prospection, négociation, closing, direction commerciale. Je ne vous rends pas un rapport, je mets les mains dans votre prospection avec vous.</p>
+        </div>
+        <p class="cws-signature__more"><a href="/page/a-propos#parcours">Mon parcours <span class="cw-arrow" aria-hidden="true">→</span></a></p>
+    </div>
+</section>
+
+{# ====== 5. CE QUI EST INCLUS ====== #}
+<section class="cws-section" id="inclus">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Ce qui est inclus</h2>
+        </div>
+        <ul class="cws-checklist">
+            <li>Prospection téléphonique et par email</li>
+            <li>Réponse aux appels d'offres</li>
+            <li>Point stratégique chaque semaine</li>
+            <li>Accès au CRM avec reporting automatique</li>
+            <li>Base de données B2B qualifiée</li>
+            <li>Formation de votre équipe si besoin</li>
+        </ul>
+        <p class="cws-rappel-prix">{{ prix|capitalize|raw }}, sans engagement.</p>
+    </div>
+</section>
+
+{# ====== 6. POUR QUI ? ====== #}
+<section class="cws-section cws-section--alt">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Pour qui&nbsp;?</h2>
+            <p>Les dirigeants de TPE et PME qui veulent accélérer leur croissance sans recruter, ou qui ont besoin d'un regard extérieur pour structurer une démarche commerciale qui fonctionne. Particulièrement adapté aux entreprises en phase de développement ou de repositionnement, en Occitanie.</p>
+        </div>
+    </div>
+</section>
+
+{# ====== 7. FAQ ====== #}
+{% set faqPage = [
+    { q: 'Quelle différence avec la prospection B2B ?', r: "La prospection B2B, c'est l'exécution : je vous apporte des rendez-vous. La direction commerciale, c'est la stratégie et le pilotage : je structure toute votre démarche commerciale et j'accompagne votre équipe." },
+    { q: 'Combien de temps faut-il pour voir des résultats ?', r: "Les premières actions démarrent dès le premier mois. Les résultats durables se construisent sur quelques mois : on fait un point régulier, et si ça ne bouge pas, on se le dit." },
+    { q: "J'ai déjà un commercial. C'est utile ?", r: "Oui, c'est même un cas fréquent : je structure sa méthode, ses outils et son suivi, et je le forme si besoin." },
+    { q: 'Vous intervenez où ?', r: "En Occitanie, en présentiel ou à distance, en partenariat avec le réseau Enleys." },
+] %}
+{% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-direction' } %}
+
+{% include 'client/_jsonld_service_commerce.html.twig' with {
+    nom: 'Direction commerciale externalisée',
+    description: service.seoDescription|default(''),
+    prix: '1650',
+    unite: 'Par mois' ~ ht ~ ', à partir de, sans engagement'
+} %}
+
+{# ====== 8. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' %}

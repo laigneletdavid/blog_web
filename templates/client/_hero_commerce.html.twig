@@ -1,0 +1,29 @@
+{# ====== HERO DES FICHES COMMERCE — bw_cws (pages B, C, D) ======
+   Fil d'Ariane, surtitre, H1 avec vague, texte, rendez-vous, mention de zone,
+   carte prix a droite (sous le texte en mobile).
+   Variables : page_nom, surtitre, h1_avant, h1_vague, h1_apres, texte,
+   carte (variables de client/_carte_prix.html.twig). #}
+{% import 'client/_macros.html.twig' as m %}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}#commerce">Le Commerce</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ page_nom }}</li>
+            </ol>
+        </nav>
+        <div class="cws-hero__grille cws-hero__grille--prix">
+            <div>
+                <p class="home-hero__overtitle">{{ surtitre }}</p>
+                <h1 class="home-hero__title">{{ h1_avant }}{{ m.vague(h1_vague) }}{{ h1_apres|default('') }}</h1>
+                <p class="home-hero__desc">{{ texte|insecables }}</p>
+                <div class="home-hero__actions">
+                    <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
+                </div>
+                {% include 'client/_zone_commerce.html.twig' %}
+            </div>
+            {% include 'client/_carte_prix.html.twig' with carte only %}
+        </div>
+    </div>
+</section>

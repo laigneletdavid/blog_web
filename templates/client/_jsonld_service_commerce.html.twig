@@ -1,0 +1,11 @@
+{# JSON-LD Service des fiches commerce : zone Occitanie et prix de l'offre.
+   Variables : nom, description, prix (nombre en texte, ex. '1650'), unite. #}
+<script type="application/ld+json">{{ {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'name': nom,
+    'description': description,
+    'areaServed': { '@type': 'AdministrativeArea', 'name': 'Occitanie' },
+    'provider': { '@type': 'ProfessionalService', 'name': site.name|default('Com Web Solutions'), 'url': absolute_url('/') },
+    'offers': { '@type': 'Offer', 'priceCurrency': 'EUR', 'price': prix, 'description': unite }
+}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
