@@ -2,7 +2,7 @@
    FICHE « APPELS D'OFFRES » — bw_cws (spec du 06/11/2026, lot D)
    Pleine largeur, sans image generique. Prix : client/_macros (prix_ao_mois,
    prix_ao_dossier). Statistiques non sourcees retirees (80 %, 2 a 5 jours).
-   A valider par David : la repartition abonnement / prix par dossier (section 5).
+   Prix du 06/11/2026 : veille et preselection par mois, montage de dossier a l'unite.
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set ht = m.ht() %}
@@ -17,7 +17,7 @@
     h1_avant: 'Ne passez plus à côté des marchés à votre ',
     h1_vague: 'portée',
     texte: "Veille, analyse des cahiers des charges, mémoire technique, dossier administratif : répondre à un appel d'offres est un métier à part entière. Je m'en charge de A à Z ; vous relisez et vous validez.",
-    carte: { libelle: "Appels d'offres", prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '<small>/mois</small>', complement: '+ ' ~ prixDossier ~ ' par dossier déposé', puces: ['Veille quotidienne', 'Sélection argumentée des marchés', 'Rédaction et dépôt'] }
+    carte: { libelle: "Appels d'offres", prix: m.prix_ao_mois() ~ ' €' ~ ht ~ '<small>/mois</small>', complement: '+ ' ~ prixDossier ~ ' par dossier monté', puces: ['Veille quotidienne', 'Sélection argumentée des marchés', 'Rédaction et dépôt'] }
 } %}
 
 {# ====== 2. LE CONSTAT ====== #}
@@ -74,7 +74,7 @@
         </div>
         <div class="cws-inclus-colonnes">
             <div class="cws-carte">
-                <h3>Dans l'abonnement ({{ prixMois|raw }})</h3>
+                <h3>Veille et présélection ({{ prixMois|raw }})</h3>
                 <ul class="cws-checklist">
                     <li>Veille quotidienne sur les plateformes</li>
                     <li>Sélection et recommandation des marchés</li>
@@ -85,7 +85,7 @@
                 </ul>
             </div>
             <div class="cws-carte">
-                <h3>Par dossier déposé ({{ prixDossier|raw }})</h3>
+                <h3>Montage de dossier ({{ prixDossier|raw }} par dossier)</h3>
                 <ul class="cws-checklist">
                     <li>Rédaction du mémoire technique et des pièces</li>
                     <li>Constitution du dossier administratif</li>
@@ -111,7 +111,7 @@
 {% set faqPage = [
     { q: "Je n'ai jamais répondu à un appel d'offres. C'est pour moi ?", r: "Oui. Je vous aide à constituer vos références et votre dossier administratif dès le départ." },
     { q: 'Qui signe et qui dépose ?', r: "Vous restez le candidat : vous validez et signez. Je prépare tout et je dépose pour vous." },
-    { q: 'Combien de dossiers par mois ?', r: "Autant que de marchés pertinents. Vous choisissez ceux auxquels vous répondez, et vous ne payez que les dossiers déposés." },
+    { q: 'Combien de dossiers par mois ?', r: "Autant que de marchés pertinents. Vous choisissez ceux auxquels vous répondez, et vous ne payez que les dossiers que je monte pour vous." },
     { q: 'Vous intervenez où ?', r: "La veille couvre toute la France ; je n'accompagne que les entreprises basées en Occitanie, en partenariat avec le réseau Enleys. Ailleurs, l'agence Enleys de votre région prend le relais." },
 ] %}
 {% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-ao' } %}
@@ -119,8 +119,8 @@
 {% include 'client/_jsonld_service_commerce.html.twig' with {
     nom: "Réponse aux appels d'offres externalisée",
     description: service.seoDescription|default(''),
-    prix: '375',
-    unite: 'Par mois' ~ ht ~ ', plus 150 € par dossier déposé, sans engagement'
+    prix: m.prix_ao_mois()|trim,
+    unite: 'Veille et présélection, par mois' ~ ht ~ ', plus ' ~ m.prix_ao_dossier()|trim ~ ' €' ~ ht ~ ' par dossier monté, sans engagement'
 } %}
 
 {# ====== 8. APPEL FINAL ====== #}
