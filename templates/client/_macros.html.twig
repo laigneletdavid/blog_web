@@ -44,3 +44,14 @@
    Les images vont dans public/images/references/ (voir les gabarits). #}
 {% macro ref_bm_notaire_publiee() %}{% endmacro %}
 {% macro kayre_captures_publiees() %}1{% endmacro %}
+
+{# ====== Prix des offres commerce (pages commerce, spec du 06/11/2026) ======
+   Un seul endroit pour les changer. Montants repris des anciennes pages.
+   prix_commerce_ht : mettre 1 quand David confirme que les prix sont HT ;
+   « HT » s'ajoute alors partout (m.ht()). #}
+{% macro prix_commerce_ht() %}{% endmacro %}
+{% macro ht() %}{% import _self as s %}{% if s.prix_commerce_ht()|trim is not empty %} HT{% endif %}{% endmacro %}
+{% macro prix_direction() %}1&nbsp;650{% endmacro %}
+{% macro prix_prospection() %}950{% endmacro %}
+{% macro prix_ao_mois() %}375{% endmacro %}
+{% macro prix_ao_dossier() %}150{% endmacro %}

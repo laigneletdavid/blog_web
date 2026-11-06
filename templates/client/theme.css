@@ -1340,6 +1340,153 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-temoignage-seul figcaption span { color: var(--text-muted); font-size: 0.9375rem; }
 
 /* ===========================================================================
+   Pages commerce (spec du 06/11/2026)
+   =========================================================================== */
+/* Mention de zone sous le CTA du hero : petit texte gris, point bleu devant */
+.cws-zone {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.cws-zone::before {
+  content: "";
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* Carte prix du hero : blanche, bordure fine, aplat bleu decale */
+.cws-prix-carte {
+  margin-right: 8px;
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 8px 8px 0 0 var(--primary), 0 18px 40px rgba(28, 34, 38, 0.12);
+}
+.cws-prix-carte__libelle {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+.cws-prix-carte__prix {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 3.4vw, 2.5rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+.cws-prix-carte__prix small {
+  font-size: 0.5em;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.cws-prix-carte__complement {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+.cws-prix-carte__engagement {
+  margin: 0.5rem 0 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+.cws-prix-carte .cws-puces { margin-bottom: 1.25rem; }
+.cws-hero__grille--prix { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+@media (max-width: 991.98px) {
+  .cws-hero__grille--prix { grid-template-columns: 1fr; }
+}
+
+/* Offres commerce (page d'entree) : prix et lien dans les cartes */
+.cws-offre-carte .cws-formule__prix { margin-top: auto; }
+.cws-offre-carte dl { margin: 0 0 1rem; }
+.cws-offre-carte dt {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-top: 0.75rem;
+}
+.cws-offre-carte dd { margin: 0.15rem 0 0; color: var(--text-muted); }
+
+/* Checklist « Ce qui est inclus » : coches bleues, 2 colonnes */
+.cws-checklist {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 2.5rem;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 767.98px) { .cws-checklist { grid-template-columns: 1fr; } }
+.cws-checklist li {
+  position: relative;
+  padding-left: 1.75rem;
+  color: var(--text);
+}
+.cws-checklist li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+  color: var(--primary);
+}
+.cws-rappel-prix {
+  margin: 1.75rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.125rem;
+}
+.cws-inclus-colonnes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+@media (max-width: 767.98px) { .cws-inclus-colonnes { grid-template-columns: 1fr; } }
+.cws-inclus-colonnes .cws-carte h3 { font-size: 1.125rem; }
+.cws-inclus-colonnes .cws-checklist { grid-template-columns: 1fr; }
+
+/* Barre 20/80 (prospection B2B), en CSS */
+.cws-barre {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 0 0 1.75rem;
+  font-weight: 600;
+}
+.cws-barre > div { padding: 1.25rem 1.25rem; }
+.cws-barre strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.cws-barre span { font-size: 0.9375rem; font-weight: 500; }
+.cws-barre__moi { background: var(--primary); color: #FFFFFF; }
+.cws-barre__vous { background: var(--accent); color: var(--dark); }
+@media (max-width: 575.98px) {
+  .cws-barre { grid-template-columns: 1fr; }
+}
+
+/* Liste « C'est pour vous si… » */
+.cws-liste-pour-qui {
+  max-width: 46rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text);
+}
+.cws-liste-pour-qui li + li { margin-top: 0.5rem; }
+.cws-liste-pour-qui li::marker { color: var(--primary); }
+
+/* ===========================================================================
    Motif « vague » (macro vague() de client/_macros.html.twig)
    Positionnee en CSS relativement aux mots soulignes (.wave-target).
    =========================================================================== */
