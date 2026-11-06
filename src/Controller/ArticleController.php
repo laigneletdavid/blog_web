@@ -49,6 +49,8 @@ class ArticleController extends AbstractController
         $perPage = 9;
         $paginator = $articleRepository->findPublishedPaginated($page, $perPage, $month, $year, $categorieSlug, $excludeId);
         $totalPages = max(1, (int) ceil(count($paginator) / $perPage));
+        // L'article mis en avant est exclu de la liste : il compte quand meme
+        $totalArticles = count($paginator) + ($featuredArticle !== null ? 1 : 0);
 
         // Categories pour les pills de filtrage
         $blogCategories = $categorieRepository->findAllWithPublishedArticleCount();
@@ -63,7 +65,7 @@ class ArticleController extends AbstractController
         // Options seo.blog.* : seulement pour la liste complete, pas pour un mois
         $seo = $this->seoService->resolveForPage($titlePage, null, ($month && $year) ? null : 'blog');
 
-        if ($page > 1 || count($paginator) === 0) {
+        if ($page > 1 || $totalArticles === 0) {
             $seo['noIndex'] = true;
         }
 
@@ -78,7 +80,7 @@ class ArticleController extends AbstractController
             'filterCategorie' => $categorieSlug,
             'featuredArticle' => $featuredArticle,
             'blogCategories' => $blogCategories,
-            'totalArticles' => count($paginator),
+            'totalArticles' => $totalArticles,
             'seo' => $seo,
         ]);
     }
