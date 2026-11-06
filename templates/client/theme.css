@@ -19,7 +19,7 @@
   --dark-border: rgba(255, 255, 255, 0.12);
   --dark-muted: rgba(255, 255, 255, 0.78);
   --accent-text: #B35F00;    /* orange de l'accent assombri : 4,8:1 sur blanc */
-  --primary-clair: #8AB8F5;  /* bleu de la charte eclairci pour fond fonce : 7,9:1 sur #1C2226 */
+  --primary-clair: #5B9BF0;  /* bleu eclairci pour fond fonce (liens, numeros) : 5,7:1 sur #1C2226 */
   --radius: 15px;
   --radius-md: 11px;
   --radius-lg: 15px;
@@ -129,12 +129,17 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 .cws-section--dark li {
   color: var(--dark-muted);
 }
-.cws-section--dark .home-overtitle,
-.cws-section--dark .cws-num {
+/* Regle des couleurs (spec du 06/11/2026) : sur fond fonce, surtitres et titres
+   d'accent en orange ; liens, numeros et etiquettes en bleu eclairci. */
+.cws-section--dark .home-overtitle {
+  color: var(--accent);
+}
+.cws-section--dark .cws-num,
+.cws-section--dark .cws-marche__etiquette {
   color: var(--primary-clair);
 }
 .cws-section--dark a:not(.btn) {
-  color: var(--accent);
+  color: var(--primary-clair);
 }
 .cws-card-dark {
   background: var(--dark-card);
@@ -605,7 +610,9 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 }
 .cws-carte.cws-card-dark h3 { color: #FFFFFF; }
 .cws-carte.cws-card-dark p { color: var(--dark-muted); }
-.cws-carte.cws-card-dark .cws-carte__lien { color: var(--accent); }
+.cws-carte.cws-card-dark .cws-carte__lien { color: var(--primary-clair); }
+/* Carte mise en avant : bordure haute orange (formule Blog, marche 3...) */
+.cws-carte--avant { border-top: 3px solid var(--accent); }
 @media (hover: hover) {
   .cws-carte:hover {
     color: inherit;
