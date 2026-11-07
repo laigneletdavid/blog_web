@@ -5,6 +5,7 @@ namespace App\Twig;
 use App\Entity\Menu;
 use App\Enum\VisibilityEnum;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -16,6 +17,8 @@ class AppExtension extends AbstractExtension
         public function __construct(
             private RouterInterface $router,
             private Security $security,
+            #[Autowire('%kernel.project_dir%')]
+            private string $projectDir = '',
         ) {
         }
 
@@ -29,6 +32,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('menuVisible', [$this, 'menuVisible']),
             new TwigFilter('plaintext', [$this, 'plaintext']),
             new TwigFilter('phone', [$this, 'phone']),
+            new TwigFilter('insecables', [$this, 'insecables']),
+            new TwigFilter('menuExterne', [$this, 'menuExterne']),
         ];
     }
 
@@ -36,6 +41,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('toc_extract', [$this, 'extractToc']),
+            new TwigFunction('fichier_public', [$this, 'fichierPublic']),
         ];
     }
 
@@ -157,6 +163,21 @@ class AppExtension extends AbstractExtension
      * comme il s'ecrit. Un format non reconnu ressort inchange, plutot que
      * decoupe n'importe comment.
      */
+    /**
+     * Typographie francaise des titres : espace insecable avant ? ! : ; et
+     * avant », apres «. Un titre qui passe a la ligne ne laisse plus son
+     * « ? » seul sur la ligne suivante. Seules les espaces deja presentes sont
+     * remplacees (rien n'est ajoute a « https: » ou « 10:30 »). Texte brut :
+     * l'echappement HTML de Twig reste applique ensuite.
+     */
+    public function insecables(?string $texte): string
+    {
+        $texte = (string) $texte;
+        $texte = preg_replace('/[ \x{00A0}\x{202F}]+([?!:;»])/u', "\u{00A0}$1", $texte);
+
+        return preg_replace('/«[ \x{00A0}\x{202F}]+/u', "«\u{00A0}", $texte);
+    }
+
     public function phone(?string $number): string
     {
         $brut = preg_replace('/[^\d+]/', '', (string) $number);
@@ -213,6 +234,32 @@ class AppExtension extends AbstractExtension
             '<mark>$1</mark>',
             $escaped
         );
+    }
+
+    /**
+     * Lien de menu vers un autre site (URL absolue http ou https) : le header
+     * l'ouvre dans un nouvel onglet, avec une fleche. Les liens internes du
+     * menu sont relatifs, generes depuis les routes.
+     */
+    /**
+     * Un fichier existe-t-il dans public/ ? Pour afficher une image deposee a la
+     * main (capture de reference...) seulement quand elle est la, sans jamais
+     * produire de lien casse. Chemin relatif a public/, sans remontee (..).
+     */
+    public function fichierPublic(string $chemin): bool
+    {
+        $chemin = ltrim($chemin, '/');
+        if ($chemin === '' || str_contains($chemin, '..') || $this->projectDir === '') {
+            return false;
+        }
+
+        return is_file($this->projectDir . '/public/' . $chemin);
+    }
+
+    public function menuExterne(Menu $menu): bool
+    {
+        return $menu->getTarget() === 'url'
+            && preg_match('#^https?://#i', (string) $menu->getUrl()) === 1;
     }
 
     public function menuLink(Menu $menu): string

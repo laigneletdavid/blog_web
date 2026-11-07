@@ -29,7 +29,7 @@ class FaqController extends AbstractController
         return $this->render('faq/index.html.twig', [
             'title_page' => 'Foire aux questions',
             'groups' => $groups,
-            'seo' => $this->seoService->resolveForPage('Questions fréquentes', 'Questions fréquentes : les réponses de %s aux questions que l’on nous pose le plus souvent.'),
+            'seo' => $this->seoService->resolveForPage('Questions fréquentes', 'Questions fréquentes : les réponses de %s aux questions que l’on nous pose le plus souvent.', 'faq'),
         ]);
     }
 }

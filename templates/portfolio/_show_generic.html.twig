@@ -12,7 +12,7 @@
     <article class="portfolio-detail">
         {# --- Header --- #}
         <div class="portfolio-detail__header">
-            <h1 class="portfolio-detail__title">{{ item.title }}</h1>
+            <h1 class="portfolio-detail__title">{{ item.title|insecables }}</h1>
 
             <div class="portfolio-detail__meta">
                 {% if item.category %}

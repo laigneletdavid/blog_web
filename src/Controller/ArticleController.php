@@ -20,6 +20,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/article', name: 'app_article_')]
 class ArticleController extends AbstractController
 {
+    use BlogListeTrait;
+
     public function __construct(
         private readonly SeoService $seoService,
         private readonly SiteContext $siteContext,
@@ -33,53 +35,22 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $page = max(1, $request->query->getInt('page', 1));
-        $month = $request->query->getInt('month') ?: null;
-        $year = $request->query->getInt('year') ?: null;
         $categorieSlug = $request->query->get('categorie');
+        // Le filtre par categorie a son adresse propre : /categorie/{slug}.
+        // L'ancienne forme ?categorie= y renvoie (sauf combinee a un mois).
+        if ($categorieSlug && !$request->query->getInt('month')) {
+            $categorie = $categorieRepository->findOneBy(['slug' => $categorieSlug]);
+            if ($categorie !== null) {
+                $params = ['slug' => $categorie->getSlug()];
+                if ($request->query->getInt('page', 1) > 1) {
+                    $params['page'] = $request->query->getInt('page');
+                }
 
-        // Article featured (uniquement page 1 sans filtre)
-        $featuredArticle = null;
-        $excludeId = null;
-        if ($page === 1 && !$month && !$year && !$categorieSlug) {
-            $featuredArticle = $articleRepository->findFeatured();
-            $excludeId = $featuredArticle?->getId();
+                return $this->redirectToRoute('app_categorie_show', $params, Response::HTTP_MOVED_PERMANENTLY);
+            }
         }
 
-        $perPage = 9;
-        $paginator = $articleRepository->findPublishedPaginated($page, $perPage, $month, $year, $categorieSlug, $excludeId);
-        $totalPages = max(1, (int) ceil(count($paginator) / $perPage));
-
-        // Categories pour les pills de filtrage
-        $blogCategories = $categorieRepository->findAllWithPublishedArticleCount();
-
-        // Titre dynamique
-        $titlePage = 'Tous les articles';
-        if ($month && $year) {
-            $monthNames = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-            $titlePage = sprintf('Articles de %s %d', $monthNames[$month] ?? '', $year);
-        }
-
-        $seo = $this->seoService->resolveForPage($titlePage);
-
-        if ($page > 1 || count($paginator) === 0) {
-            $seo['noIndex'] = true;
-        }
-
-        return $this->render('article/show_all.html.twig', [
-            'title_page' => $titlePage,
-            'text_page' => 'Blog',
-            'articles' => $paginator,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'filterMonth' => $month,
-            'filterYear' => $year,
-            'filterCategorie' => $categorieSlug,
-            'featuredArticle' => $featuredArticle,
-            'blogCategories' => $blogCategories,
-            'totalArticles' => count($paginator),
-            'seo' => $seo,
-        ]);
+        return $this->renderBlogListe($request, $articleRepository, $categorieRepository);
     }
 
     #[Route('/{slug}', name: 'show')]

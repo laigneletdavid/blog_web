@@ -31,20 +31,20 @@
                                                 <ul class="dropdown-menu">
                                                     {% for grandchild in child.children %}
                                                         {% if grandchild.isVisible %}
-                                                            <li><a class="dropdown-item" href="{{ grandchild|menuLink }}">{{ grandchild.name }}</a></li>
+                                                            {% include '_partials/_menu_dropdown_item.html.twig' with { item: grandchild, classe: 'dropdown-item' } only %}
                                                         {% endif %}
                                                     {% endfor %}
                                                 </ul>
                                             </li>
                                         {% else %}
-                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                            {% include '_partials/_menu_dropdown_item.html.twig' with { item: child, classe: 'dropdown-item' } only %}
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
                     {% else %}
-                        <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                        <a href="{{ menu|menuLink }}" class="nav-link"{% if menu|menuExterne %} target="_blank" rel="noopener"{% endif %}>{{ menu.name }}{% if menu|menuExterne %} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span>{% endif %}</a>
                     {% endif %}
                 {% endfor %}
             </nav>
@@ -102,10 +102,10 @@
                                 <ul class="dropdown-menu">
                                     {% for child in menu.children %}
                                         {% if child.isVisible %}
-                                            <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                            {% include '_partials/_menu_dropdown_item.html.twig' with { item: child, classe: 'dropdown-item' } only %}
                                             {% for grandchild in child.children %}
                                                 {% if grandchild.isVisible %}
-                                                    <li><a class="dropdown-item ps-4 small" href="{{ grandchild|menuLink }}">{{ grandchild.name }}</a></li>
+                                                    {% include '_partials/_menu_dropdown_item.html.twig' with { item: grandchild, classe: 'dropdown-item ps-4 small' } only %}
                                                 {% endif %}
                                             {% endfor %}
                                         {% endif %}
@@ -113,7 +113,7 @@
                                 </ul>
                             </li>
                         {% else %}
-                            <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                            <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link"{% if menu|menuExterne %} target="_blank" rel="noopener"{% endif %}>{{ menu.name }}{% if menu|menuExterne %} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span>{% endif %}</a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>

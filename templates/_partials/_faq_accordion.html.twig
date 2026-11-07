@@ -13,7 +13,7 @@
                         aria-expanded="false"
                         aria-controls="faq-home-{{ faq.id }}">
                     {% if faq.icon %}{{ bi(faq.icon, 'me-2') }}{% endif %}
-                    {{ faq.question }}
+                    {{ faq.question|insecables }}
                 </button>
             </h3>
             <div id="faq-home-{{ faq.id }}" class="accordion-collapse collapse"

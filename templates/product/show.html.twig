@@ -119,7 +119,7 @@
                            class="product-info__category">{{ product.category.name }}</a>
                     {% endif %}
 
-                    <h1 class="product-info__title">{{ product.title }}</h1>
+                    <h1 class="product-info__title">{{ product.title|insecables }}</h1>
 
                     {% if product.shortDescription %}
                         <p class="product-info__short-desc">{{ product.shortDescription }}</p>
