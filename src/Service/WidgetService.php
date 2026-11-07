@@ -27,7 +27,11 @@ class WidgetService
      */
     public function findCategories(): array
     {
-        return $this->categorieRepository->findBy( [], ['name' => 'ASC']);
+        // Categories qui ont au moins un article publie : une vide n'a rien a montrer
+        return array_map(
+            static fn (array|object $row) => is_array($row) ? $row[0] : $row,
+            $this->categorieRepository->findAllWithPublishedArticleCount(),
+        );
     }
 
     /**
