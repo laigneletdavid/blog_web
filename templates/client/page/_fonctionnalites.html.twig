@@ -44,7 +44,7 @@
         'Les contacts reçus par votre site',
         'La santé de votre site, et un conseil pour le mois prochain',
       ] },
-    { icone: 'marketing', surtitre: 'Inclus dans Click & Collect, en option sur les autres formules', titre: 'Des landing pages qui mesurent vos campagnes',
+    { icone: 'marketing', surtitre: 'Inclus dans Vente en ligne, en option sur les autres formules', titre: 'Des landing pages qui mesurent vos campagnes',
       texte: 'Une pub Google ou Facebook, un flyer avec QR code, un emailing : le visiteur arrive sur une page épurée, sans menu ni distraction. Un message, une promesse, un bouton. Et vous savez combien sont venus et combien ont répondu, campagne par campagne.',
       points: ['Pages de destination illimitées', 'Statistiques avancées par campagne', 'Prise de rendez-vous ou formulaire de contact'] },
 ] %}
@@ -52,8 +52,8 @@
 {% set options = [
     { icone: 'evenements', nom: 'Événements', prix: prix_module, texte: 'Portes ouvertes, ateliers, marchés, formations : date, lieu, description et inscription. Vos abonnés sont prévenus à chaque nouvel événement.', ideal: ['formateurs', 'associations', 'commerces avec des animations', 'thérapeutes qui organisent des ateliers'] },
     { icone: 'annuaire', nom: 'Annuaire', prix: prix_module, texte: 'Contacts, partenaires, membres ou points de vente, chacun avec sa fiche, consultables en quelques clics.', ideal: ['associations', 'réseaux professionnels', 'franchises', 'groupements d’artisans'] },
-    { icone: 'catalogue', nom: 'Catalogue', prix: prix_module, texte: 'Vos produits avec fiche, photo, description et prix : une vitrine organisée, sans vente en ligne. Inclus dans Click & Collect.', ideal: ['commerçants', 'artisans créateurs', 'producteurs', 'traiteurs'] },
-    { icone: 'marketing', nom: 'Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes. Inclus dans Click & Collect.', ideal: ['ceux qui font de la publicité en ligne', 'lancent une nouvelle offre', 'remplissent une session de formation'] },
+    { icone: 'catalogue', nom: 'Catalogue', prix: prix_module, texte: 'Vos produits avec fiche, photo, description et prix : une vitrine organisée, sans paiement en ligne. Inclus dans l’offre Vente en ligne.', ideal: ['commerçants', 'artisans créateurs', 'producteurs', 'traiteurs'] },
+    { icone: 'marketing', nom: 'Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes. Inclus dans l’offre Vente en ligne.', ideal: ['ceux qui font de la publicité en ligne', 'lancent une nouvelle offre', 'remplissent une session de formation'] },
 ] %}
 
 {% macro icone(svg, taille = 24) %}<svg xmlns="http://www.w3.org/2000/svg" width="{{ taille }}" height="{{ taille }}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">{{ svg|raw }}</svg>{% endmacro %}
@@ -94,7 +94,7 @@
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Le socle, inclus dans toutes les formules</h2>
-            <p class="home-section-subtitle">Vitrine, Blog ou Click & Collect : tout ceci est dans votre site dès la mise en ligne… et trois outils qui changent tout, détaillés juste en dessous.</p>
+            <p class="home-section-subtitle">Vitrine, Blog ou Vente en ligne : tout ceci est dans votre site dès la mise en ligne… et trois outils qui changent tout, détaillés juste en dessous.</p>
         </div>
         <ul class="cw-fonc-grille" data-controller="reveal" data-reveal-stagger-value="60">
             {% for c in socle %}
@@ -164,37 +164,41 @@
     </div>
 </section>
 
-{# ====== 5. AVEC CLICK & COLLECT ====== #}
-<section class="cw-section" id="click-collect">
+{# ====== 5. AVEC LA VENTE EN LIGNE ======
+   Ce que fait le module de vente : produits et prestations, paiement Stripe ou
+   sur place, retrait sur place, bouton de reservation vers un outil externe
+   (Product::bookingUrl). Pas de calendrier de reservation integre : ne pas le
+   promettre. #}
+<section class="cw-section" id="vente-en-ligne">
     <div class="container">
         <div class="text-center" data-controller="reveal">
-            <p class="cw-fonc-surtitre">Avec Click & Collect</p>
-            <h2 class="home-section-title">Vos clients commandent en ligne, et passent chercher</h2>
-            <p class="home-section-subtitle"><strong>Aucune commission sur vos ventes</strong> : vous ne payez que les frais Stripe standards.</p>
+            <p class="cw-fonc-surtitre">Avec la Vente en ligne</p>
+            <h2 class="home-section-title">Vendez vos produits et vos prestations, sans intermédiaire</h2>
+            <p class="home-section-subtitle"><strong>Aucune commission sur vos ventes</strong> : vous ne payez que les frais Stripe standards.</p>
         </div>
         <ul class="cw-fonc-grille cw-fonc-grille--4" data-controller="reveal" data-reveal-stagger-value="60">
             <li class="cw-fonc-carte">
                 <span class="cw-fonc-carte__icone">{{ _self.icone(icones['catalogue']) }}</span>
-                <h3 class="cw-fonc-carte__titre">Catalogue</h3>
-                <p class="cw-fonc-carte__texte">Vos produits avec fiche, photo, description, prix et catégorie. Vos clients parcourent votre offre comme dans une boutique.</p>
+                <h3 class="cw-fonc-carte__titre">Produits et prestations</h3>
+                <p class="cw-fonc-carte__texte">Chaque produit ou prestation a sa fiche, ses photos, son prix et ses variantes (« demi-journée », « journée »…). Bons cadeaux compris.</p>
             </li>
             <li class="cw-fonc-carte">
                 <span class="cw-fonc-carte__icone">{{ _self.icone(icones['commande']) }}</span>
-                <h3 class="cw-fonc-carte__titre">Commande en ligne</h3>
-                <p class="cw-fonc-carte__texte">Vos clients commandent et paient en ligne, vous êtes prévenu, ils viennent récupérer leur commande sur place.</p>
+                <h3 class="cw-fonc-carte__titre">Commande et retrait</h3>
+                <p class="cw-fonc-carte__texte">Vos clients commandent en ligne, vous êtes prévenu, ils passent chercher sur place (Click & Collect) ou viennent pour leur prestation.</p>
             </li>
             <li class="cw-fonc-carte">
                 <span class="cw-fonc-carte__icone">{{ _self.icone(icones['paiement']) }}</span>
-                <h3 class="cw-fonc-carte__titre">Paiement Stripe</h3>
-                <p class="cw-fonc-carte__texte">Paiement sécurisé par carte bancaire. Aucune commission ComWeb Studio, seulement les frais Stripe standards.</p>
+                <h3 class="cw-fonc-carte__titre">Paiement en ligne ou sur place</h3>
+                <p class="cw-fonc-carte__texte">Carte bancaire sécurisée par Stripe, ou règlement sur place : virement, chèque, espèces. À vous de choisir.</p>
             </li>
             <li class="cw-fonc-carte">
-                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['marketing']) }}</span>
-                <h3 class="cw-fonc-carte__titre">Marketing</h3>
-                <p class="cw-fonc-carte__texte">Landing pages et statistiques avancées pour mesurer vos campagnes.</p>
+                <span class="cw-fonc-carte__icone">{{ _self.icone(icones['evenements']) }}</span>
+                <h3 class="cw-fonc-carte__titre">Bouton de réservation</h3>
+                <p class="cw-fonc-carte__texte">Un gîte, une chambre, des rendez-vous : chaque fiche peut renvoyer vers votre outil de réservation (Airbnb, Booking, agenda en ligne).</p>
             </li>
         </ul>
-        <p class="cw-fonc-ideal-centre">{{ _self.ideal(['artisans créateurs', 'producteurs locaux', 'petits commerces qui vendent en complément de leur boutique']) }}</p>
+        <p class="cw-fonc-ideal-centre">{{ _self.ideal(['artisans créateurs', 'producteurs locaux', 'prestataires de services', 'gîtes et chambres d’hôtes', 'petits commerces']) }}</p>
     </div>
 </section>
 

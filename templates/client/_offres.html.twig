@@ -1,8 +1,10 @@
 {# ======================================================================
    OFFRES — source unique des formules et des prix (home + page Offres)
    Prix donnes par David (4/11/2026) : l'installation est le prix mis en
-   avant ; abonnement 30 € HT / mois, 50 € HT pour Click & Collect (commande
-   en ligne, retrait sur place, sans expedition).
+   avant ; abonnement 30 € HT / mois, 50 € HT pour Vente en ligne (produits
+   et prestations, paiement en ligne ou sur place, retrait sur place ou
+   prestation, sans expedition ; bouton de reservation vers un outil externe,
+   pas de calendrier de reservation integre).
 
    Usage : {% include 'client/_offres.html.twig' with { vue: '…' } %}
      cartes    les 3 cartes (grille) ; surPageOffres: true -> boutons vers #comparatif
@@ -20,8 +22,8 @@
       inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
     { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 30, install_ht: 550, vedette: true,
       inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags'] },
-    { nom: 'Click & Collect', accroche: 'Commande en ligne et retrait chez vous', mois_ht: 50, install_ht: 850, vedette: false,
-      inclus: ['Toute l’offre Blog', 'Module Catalogue', 'Commande en ligne, retrait sur place', 'Paiement sécurisé par Stripe', 'Module Marketing'] },
+    { nom: 'Vente en ligne', accroche: 'Vendez vos produits et vos prestations', mois_ht: 50, install_ht: 850, vedette: false,
+      inclus: ['Toute l’offre Blog', 'Catalogue de produits et de prestations', 'Commande en ligne, retrait sur place (Click & Collect)', 'Paiement par carte (Stripe) ou sur place', 'Bouton de réservation vers votre outil (Airbnb, Booking, agenda)', 'Module Marketing'] },
 ] %}
 {# Tableau comparatif : true = inclus, false = non, 'option' = en option (voir les options a la carte) #}
 {% set comparatif = [
@@ -34,9 +36,10 @@
     { libelle: 'Module FAQ', v: [true, true, true] },
     { libelle: 'Module Réalisations', v: [true, true, true] },
     { libelle: 'Module Blog — articles, catégories, tags', v: [false, true, true] },
-    { libelle: 'Module Catalogue', v: ['option', 'option', true] },
+    { libelle: 'Module Catalogue (produits et prestations)', v: ['option', 'option', true] },
     { libelle: 'Commande en ligne, retrait sur place', v: [false, false, true] },
-    { libelle: 'Paiement sécurisé par Stripe', v: [false, false, true] },
+    { libelle: 'Bouton de réservation (Airbnb, Booking, agenda)', v: [false, false, true] },
+    { libelle: 'Paiement par carte (Stripe) ou sur place', v: [false, false, true] },
     { libelle: 'Module Marketing', v: ['option', 'option', true] },
     { libelle: 'Module Événements', v: ['option', 'option', 'option'] },
     { libelle: 'Module Annuaire', v: ['option', 'option', 'option'] },
