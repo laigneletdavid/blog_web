@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block seo %}
-    <title>{{ seo.title|default('Nos réalisations') }}</title>
-    <meta name="description" content="{{ seo.description|default('Découvrez nos réalisations') }}">
+    {# Valeurs par defaut, puis le bloc commun : robots (noindex d'une liste vide), canonical, Open Graph #}
+    {% set seo = (seo|default({}))|merge({ title: seo.title|default('Nos réalisations'), description: seo.description|default('Découvrez nos réalisations') }) %}
+    {{ parent() }}
 {% endblock %}
 
 {% block body %}

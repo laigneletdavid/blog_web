@@ -46,7 +46,7 @@
                 {# --- Meta header --- #}
                 <div class="article-detail__meta">
                     {% for cat in article.categories %}
-                        <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}" class="article-detail__badge">{{ cat.name }}</a>
+                        <a href="{{ path('app_categorie_show', { slug: cat.slug }) }}" class="article-detail__badge">{{ cat.name }}</a>
                     {% endfor %}
                     {% set _published = article.publishedAt ?? article.createdAt %}
                     {% if article.author %}

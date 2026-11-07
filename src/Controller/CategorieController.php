@@ -3,16 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Categorie;
+use App\Repository\ArticleRepository;
 use App\Repository\CategorieRepository;
 use App\Service\SeoService;
 use App\Service\SiteContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/categorie', name: 'app_categorie_')]
 class CategorieController extends AbstractController
 {
+    use BlogListeTrait;
+
     public function __construct(
         private readonly SeoService $seoService,
         private readonly SiteContext $siteContext,
@@ -20,7 +24,7 @@ class CategorieController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(?Categorie $categorie, CategorieRepository $categorieRepository): Response
+    public function show(?Categorie $categorie, Request $request, ArticleRepository $articleRepository, CategorieRepository $categorieRepository): Response
     {
         if (!$this->siteContext->hasModule('blog')) {
             throw $this->createNotFoundException();
@@ -30,19 +34,6 @@ class CategorieController extends AbstractController
             throw $this->createNotFoundException('Catégorie introuvable.');
         }
 
-        $articles = $categorie->getArticles()->toArray();
-        $seo = $this->seoService->resolve($categorie);
-
-        if (count($articles) === 0) {
-            $seo['noIndex'] = true;
-        }
-
-        return $this->render('categorie/show.html.twig', [
-            'categorie' => $categorie,
-            'articles' => $articles,
-            'categories' => $categorieRepository->findAll(),
-            'title_page' => $categorie->getName(),
-            'seo' => $seo,
-        ]);
+        return $this->renderBlogListe($request, $articleRepository, $categorieRepository, $categorie);
     }
 }
