@@ -1743,7 +1743,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 .lt-rel__panel { max-width: 960px; margin: 32px auto 0; }
 .lt-rel__panel-title { margin: 0; text-align: center; font-size: 20px; font-weight: 700; color: var(--lt-text); }
 .lt-rel__edges { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
-.lt-rel__hint { margin: 20px 0 0; text-align: center; font-size: 13px; color: var(--lt-text-muted); }
+.lt-rel__hint { margin: 12px 0 0; text-align: center; font-size: 13px; color: var(--lt-text-muted); }
 /* Outil qui n'est pas devant : icone seule, le nom reste lu par les lecteurs d'ecran */
 .lt-rel__carousel .lt-rel__card.is-mini { width: auto; padding: 8px; border-radius: 16px; }
 .lt-rel__card.is-mini .lt-rel__card-lead { display: none; }
@@ -1773,8 +1773,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-rel__carousel .lt-rel__stage { width: 100%; height: 460px; margin: 0; }
     .lt-rel__carousel .lt-rel__plate { left: 4%; right: 4%; }
     .lt-rel__carousel .lt-rel__card { width: 184px; }    .lt-rel__side .lt-rel__panel { margin-top: 0; }
-    .lt-rel__side .lt-rel__panel-title,
-    .lt-rel__side .lt-rel__hint { text-align: left; }
+    .lt-rel__side .lt-rel__panel-title { text-align: left; }
     .lt-rel__side .lt-rel__edges { grid-template-columns: 1fr; }
 }
 
@@ -1848,7 +1847,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     border: 1px solid var(--lt-border);
     border-radius: var(--lt-radius-card);
 }
-.lt-story:nth-child(even) { flex-direction: row-reverse; }
+/* Pastille toujours a gauche : plus d'alternance (retour du 07/11/2026) */
 .lt-story__icon {
     flex: none;
     display: flex;
@@ -1874,8 +1873,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 .lt-final__legal a { color: inherit; }
 .lt-final__legal span { margin: 0 6px; }
 @media (max-width: 767.98px) {
-    .lt-story,
-    .lt-story:nth-child(even) { flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px; }
+    .lt-story { flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px; }
     .lt-story__icon { width: 56px; height: 56px; border-radius: 16px; }
     .lt-story__icon svg { width: 28px; height: 28px; }
 }
@@ -1999,7 +1997,7 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
 .lt-fx__tone-card { display: flex; flex-direction: column; gap: 10px; padding: 24px; border: 1px solid var(--lt-border); border-radius: 16px; background: #ffffff; }
 .lt-fx__tone-card p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--lt-text-body); }
 .lt-fx__tone-tag { font-size: 14px; font-weight: 600; color: var(--lt-primary-dark); }
-.lt-fx__tone-tag--strike { color: var(--lt-text-body); text-decoration: line-through; }
+.lt-fx__tone-tag--strike { color: var(--lt-primary); text-decoration: line-through; }
 .lt-fx__values {
     margin-top: 48px;
     padding: 48px;
@@ -2236,7 +2234,11 @@ main .page-item.active .page-link { background: var(--lt-primary); border-color:
     .lt-fx__section { padding: 72px 0; }
     .lt-fx__hero { padding: 56px 0 48px; }
     .lt-fx__values { padding: 28px 24px; }
-    .lt-fx__values-head h3 { font-size: 23px; }
+    /* Le titre des valeurs reste plus grand que leurs intitules (retour du 07/11/2026) */
+    .lt-fx__values-head h3 { font-size: 26px; }
+    .lt-fx__value-name { font-size: 20px; }
+    /* Les maquettes du hero sont decoratives : masquees sur mobile, le sommaire reste */
+    .lt-fx__collage { display: none; }
     .lt-fx__board,
     .lt-fx__duo-item,
     .lt-fx__search-mock { padding: 20px; }
