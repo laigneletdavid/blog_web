@@ -46,6 +46,7 @@
 
     <div class="lt-container lt-footer__bottom">
         <span>&copy; {{ "now"|date("Y") }} {{ site.name|default('LintellO') }}</span>
-        <span>Site propulsé par <a href="https://blogweb.comwebsolutions.fr" target="_blank" rel="noopener">BlogWeb</a></span>
+        {# Credit commun de main : le nom et l'adresse du produit ne se changent qu'a un endroit #}
+        <span>Site propulsé par {% include '_partials/_credit_link.html.twig' %}</span>
     </div>
 </footer>
