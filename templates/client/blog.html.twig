@@ -5,7 +5,7 @@
    Deux cles qui ne se melangent pas (spec vitrine) :
    - les categories rangent le TYPE : Guides pratiques, Comprendre l'IA,
      Nouveautes. Les trois portes et les onglets filtrent la liste par
-     categorie (?categorie=slug, gere par ArticleController) ;
+     categorie (/categorie/slug, meme liste que /article/) ;
    - les tags rangent le PUBLIC et l'OUTIL. Le controleur ne filtre pas la
      liste par tag : les pastilles « Pour : » menent aux pages de tag.
    L'article a la une est celui coche « mis en avant » dans l'admin
@@ -28,11 +28,13 @@
 {% set currentCat = filterCategorie|default(null) %}
 
 {% set baseParams = {} %}
+{# Une categorie a son adresse propre (/categorie/slug), sauf combinee a un mois #}
+{% set listeRoute = currentCat and not (filterMonth is defined and filterMonth) ? 'app_categorie_show' : 'app_article_show_all' %}
 {% if filterMonth is defined and filterMonth %}
     {% set baseParams = baseParams|merge({month: filterMonth, year: filterYear}) %}
 {% endif %}
 {% if currentCat %}
-    {% set baseParams = baseParams|merge({categorie: currentCat}) %}
+    {% set baseParams = baseParams|merge({slug: currentCat}) %}
 {% endif %}
 
 <div class="lt-learn">
@@ -48,7 +50,7 @@
     {# ====== LES TROIS PORTES (categories) ====== #}
     <div class="lt-container lt-doors">
         {% for f in families %}
-            <a href="{{ path('app_article_show_all', {categorie: f.slug}) }}" class="lt-door{{ currentCat == f.slug ? ' is-current' }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>
+            <a href="{{ path('app_categorie_show', {slug: f.slug}) }}" class="lt-door{{ currentCat == f.slug ? ' is-current' }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>
                 <span class="lt-door__icon" aria-hidden="true">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ f.icon }}"/></svg>
                 </span>
@@ -98,7 +100,7 @@
             <nav class="lt-segmented lt-segmented--links" aria-label="Catégorie">
                 <a href="{{ path('app_article_show_all') }}"{% if not currentCat %} aria-current="page"{% endif %}>Tous</a>
                 {% for f in families %}
-                    <a href="{{ path('app_article_show_all', {categorie: f.slug}) }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>{{ f.label }}</a>
+                    <a href="{{ path('app_categorie_show', {slug: f.slug}) }}"{% if currentCat == f.slug %} aria-current="page"{% endif %}>{{ f.label }}</a>
                 {% endfor %}
             </nav>
             <nav class="lt-learn__publics" aria-label="Contenus par public">
@@ -139,10 +141,10 @@
         {% if totalPages > 1 %}
             <nav class="lt-pagination" aria-label="Pagination">
                 {% for p in 1..totalPages %}
-                    <a href="{{ path('app_article_show_all', baseParams|merge({page: p})) }}"{% if p == currentPage %} aria-current="page"{% endif %}>{{ p }}</a>
+                    <a href="{{ path(listeRoute, baseParams|merge({page: p})) }}"{% if p == currentPage %} aria-current="page"{% endif %}>{{ p }}</a>
                 {% endfor %}
                 {% if currentPage < totalPages %}
-                    <a href="{{ path('app_article_show_all', baseParams|merge({page: currentPage + 1})) }}" class="lt-pagination__next">Suivant</a>
+                    <a href="{{ path(listeRoute, baseParams|merge({page: currentPage + 1})) }}" class="lt-pagination__next">Suivant</a>
                 {% endif %}
             </nav>
         {% endif %}

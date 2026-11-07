@@ -63,12 +63,12 @@
             <a href="{{ path('app_article_show_all') }}">Apprendre</a>
             {% if cat %}
                 <span aria-hidden="true">/</span>
-                <a href="{{ path('app_article_show_all', {categorie: cat.slug}) }}">{{ cat.name }}</a>
+                <a href="{{ path('app_categorie_show', {slug: cat.slug}) }}">{{ cat.name }}</a>
             {% endif %}
         </nav>
 
         <div class="lt-article__intro">
-            {% if cat %}<a href="{{ path('app_article_show_all', {categorie: cat.slug}) }}" class="lt-article__cat">{{ cat.name }}</a>{% endif %}
+            {% if cat %}<a href="{{ path('app_categorie_show', {slug: cat.slug}) }}" class="lt-article__cat">{{ cat.name }}</a>{% endif %}
             <h1 class="lt-article__title">{{ article.title }}</h1>
             {% if article.featuredText %}
                 <p class="lt-article__lead">{{ article.featuredText }}</p>
