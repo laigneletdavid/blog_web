@@ -46,14 +46,14 @@ class PortfolioController extends AbstractController
             ? $portfolioItemRepository->findActiveByCategory($activeCategory)
             : $portfolioItemRepository->findAllActive();
 
-        $seo = $this->seoService->resolveForPage('Portfolio');
+        $seo = $this->seoService->resolveForPage('Réalisations', 'Les sites réalisés par %s : exemples, secteurs et liens vers les sites en ligne.', 'realisations');
 
         if (count($items) === 0) {
             $seo['noIndex'] = true;
         }
 
         return $this->render('portfolio/index.html.twig', [
-            'title_page' => 'Nos realisations',
+            'title_page' => 'Nos réalisations',
             'items' => $items,
             'portfolioCategories' => $portfolioCategories,
             'activeCategory' => $activeCategory,
@@ -72,7 +72,7 @@ class PortfolioController extends AbstractController
 
         $item = $portfolioItemRepository->findOneActiveBySlug($slug);
         if (!$item) {
-            throw $this->createNotFoundException('Realisation introuvable.');
+            throw $this->createNotFoundException('Réalisation introuvable.');
         }
 
         return $this->render('portfolio/show.html.twig', [

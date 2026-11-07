@@ -12,7 +12,7 @@
             <a href="{{ path('app_event_show', { slug: event.slug }) }}" class="widget-events__link">
                 <div class="widget-events__date">
                     <span class="widget-events__day">{{ event.dateStart|date('d') }}</span>
-                    <span class="widget-events__month">{{ event.dateStart|date('M') }}</span>
+                    <span class="widget-events__month">{{ event.dateStart|format_date(pattern='MMM', locale='fr') }}</span>
                 </div>
                 <div class="widget-events__info">
                     <span class="widget-events__event-title">{{ event.title }}</span>

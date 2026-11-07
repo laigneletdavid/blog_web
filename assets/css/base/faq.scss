@@ -45,6 +45,8 @@
   .accordion-button {
     background: var(--surface);
     color: var(--text);
+    // La question est dans un h3, que Bootstrap fige en 'Inter' ($headings-font-family)
+    font-family: var(--font-body);
     font-weight: 600;
     font-size: 1rem;
     padding: 1rem 1.25rem;

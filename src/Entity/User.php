@@ -305,13 +305,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * Prenom et nom, sinon l'un des deux, sinon l'email. Un champ vide ('' enregistre
+     * par le formulaire) compte comme absent : sans ca, un compte sans nom s'affichait
+     * vide, par exemple dans la liste des auteurs d'un article.
+     */
     public function getDisplayName(): string
     {
-        if ($this->first_name && $this->name) {
-            return $this->first_name . ' ' . $this->name;
+        $parts = array_filter([$this->first_name, $this->name], static fn (?string $p) => $p !== null && trim($p) !== '');
+
+        if ($parts !== []) {
+            return implode(' ', array_map('trim', $parts));
         }
 
-        return $this->first_name ?? $this->name ?? $this->email;
+        return (string) $this->email;
     }
 
     /**

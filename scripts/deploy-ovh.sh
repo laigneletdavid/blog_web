@@ -361,7 +361,9 @@ fi
 # Supprimer .env.prod si present (ecrase les valeurs de .env.local)
 [ -f .env.prod ] && rm -f .env.prod && echo "       .env.prod supprime"
 
-PRIMARY_HOST=$(grep -E '^APP_PRIMARY_HOST=' .env.local | tail -1 | cut -d= -f2- | tr -d "\"' ")
+# « || true » : sans la variable, grep echoue et, avec pipefail, set -e
+# arretait le script ici sans rien afficher (blogweb, 04/11/2026).
+PRIMARY_HOST=$(grep -E '^APP_PRIMARY_HOST=' .env.local | tail -1 | cut -d= -f2- | tr -d "\"' " || true)
 if [ -z "$PRIMARY_HOST" ]; then
     echo "[!] APP_PRIMARY_HOST absent de .env.local : le site repond sur tous ses"
     echo "    domaines (www ou non, ancienne preprod), en double pour Google."
