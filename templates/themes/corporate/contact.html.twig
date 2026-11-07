@@ -11,7 +11,7 @@
             </ol>
         </nav>
         <h1 class="corp-contact-hero__title">{{ title_page }}</h1>
-        <p class="corp-contact-hero__desc">N'hesitez pas a nous contacter pour toute question ou demande de devis.</p>
+        <p class="corp-contact-hero__desc">N'hésitez pas à nous contacter pour toute question ou demande de devis.</p>
     </div>
 </section>
 
@@ -61,10 +61,11 @@
             <div class="col-lg-7">
                 <div class="corp-contact-form">
                     <h2 class="corp-contact-form__title">Envoyez-nous un message</h2>
-                    <p class="corp-contact-form__subtitle">Nous vous repondrons dans les plus brefs delais.</p>
+                    <p class="corp-contact-form__subtitle">Nous vous répondrons dans les plus brefs délais.</p>
                     {{ form_start(contactForm) }}
                         {{ form_widget(contactForm) }}
                         <button class="btn btn-primary btn-lg w-100 mt-3" type="submit">Envoyer le message</button>
+                        {% include '_partials/_contact_rgpd.html.twig' %}
                     {{ form_end(contactForm) }}
                 </div>
             </div>

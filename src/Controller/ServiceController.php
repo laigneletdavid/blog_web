@@ -71,9 +71,26 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException('Service introuvable.');
         }
 
-        // Page détail uniquement si le service a du contenu TipTap
-        if (empty($service->getBlocks())) {
+        // Page détail uniquement si le service a du contenu : blocs TipTap, ou
+        // HTML seul quand le texte a été écrit en SQL (comme pour Page)
+        if (!$service->hasDetail()) {
             return $this->redirectToRoute('app_service_index');
+        }
+
+        // Fil d'ariane : la rubrique du menu qui contient la fiche (« Le Web »),
+        // sinon l'index des services. Une rubrique sans page (« # ») est citee
+        // sans lien, et le JSON-LD la saute (Google veut une URL par niveau).
+        $sectionTitle = $menuRepository->findSystemByLocationAndKey('header', 'services')?->getName() ?? 'Services';
+        $sectionUrl = $this->generateUrl('app_service_index');
+        $entree = $menuRepository->findOneBy(['service' => $service, 'location' => 'header']);
+        if ($entree?->getParent() !== null) {
+            $rubrique = $entree->getParent();
+            $sectionTitle = $rubrique->getName();
+            $sectionUrl = match (true) {
+                $rubrique->getPage()?->getSlug() !== null => $this->generateUrl('app_page_show', ['slug' => $rubrique->getPage()->getSlug()]),
+                $rubrique->getTarget() === 'url' && !in_array($rubrique->getUrl(), [null, '', '#'], true) => $rubrique->getUrl(),
+                default => null,
+            };
         }
 
         return $this->render('service/show.html.twig', [
@@ -84,9 +101,8 @@ class ServiceController extends AbstractController
             // a trois niveaux. Vide sur un site dont l'offre est a plat.
             'children' => $service->getChildren(),
             'parent' => $service->getParent(),
-            // Le fil d'ariane reprend l'intitule du menu, comme la page d'index.
-            'section_title' => $menuRepository->findSystemByLocationAndKey('header', 'services')?->getName()
-                ?? 'Services',
+            'section_title' => $sectionTitle,
+            'section_url' => $sectionUrl,
             'seo' => $this->seoService->resolve($service),
         ]);
     }

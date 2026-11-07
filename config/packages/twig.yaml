@@ -8,6 +8,7 @@ twig:
         theme_service: '@App\Service\ThemeService'
         font_service: '@App\Service\FontService'
         site_context: '@App\Service\SiteContext'
+        studio_url: '%studio_url%'
 
 when@test:
     twig:
