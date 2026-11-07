@@ -26,6 +26,16 @@
   }
 }
 
+// Sur ecran etroit, un bloc pleine largeur decale de cote deborde de l'ecran
+// tant qu'il n'est pas apparu : la page defilait en largeur (bw_front, 390 px).
+// Les apparitions laterales y deviennent verticales.
+@media (max-width: 767.98px) {
+  .reveal--left,
+  .reveal--right {
+    transform: translateY(20px);
+  }
+}
+
 // --- count-up : chiffres a largeur fixe, pour que rien ne bouge pendant le compte ---
 [data-controller~="count-up"] {
   font-variant-numeric: tabular-nums;
