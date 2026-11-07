@@ -72,6 +72,8 @@ class MenuCrudController extends AbstractCrudController
                 'Page' => 'page',
                 'Catégorie' => 'categorie',
                 'URL personnalisée' => 'url',
+                'Séparateur (dans un sous-menu)' => 'separateur',
+                'Libellé non cliquable (dans un sous-menu)' => 'libelle',
             ])
             ->renderExpanded(false)
             ->setHelp('Sélectionnez le type de contenu vers lequel ce lien pointe');

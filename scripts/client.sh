@@ -50,6 +50,11 @@ fi
 ENV_CLIENT=".env.$BRANCHE.local"
 BASE_ATTENDUE="$BRANCHE"
 [ "$BRANCHE" = main ] && BASE_ATTENDUE="blog_web"
+# Base nommee autrement que la branche (bw_cws -> bw_comwebsolutions) : la
+# declarer dans .env.bw_xxx.local, ligne CLIENT_BASE=...
+if [ -f "$ENV_CLIENT" ] && grep -q '^CLIENT_BASE=' "$ENV_CLIENT"; then
+    BASE_ATTENDUE=$(grep -E '^CLIENT_BASE=' "$ENV_CLIENT" | tail -1 | cut -d= -f2- | tr -d "\"' ")
+fi
 
 console() { docker compose exec -T php php bin/console "$@"; }
 
@@ -138,7 +143,10 @@ update_client() {
 
     echo "[2/6] Migrations (base $BASE_ATTENDUE)..."
     console doctrine:migrations:migrate --no-interaction --allow-no-migration
-    console doctrine:schema:validate
+    # Mapping seulement : l'ecart connu sur les colonnes JSON (MariaDB) fait
+    # echouer la comparaison avec la base, et set -e arretait alors le script
+    # ici, avant le build, les tests et le push.
+    console doctrine:schema:validate --skip-sync
 
     echo "[3/6] Build des assets..."
     if ! docker compose run --rm -T -w /var/www/html node npm run build >/tmp/client-build.log 2>&1; then

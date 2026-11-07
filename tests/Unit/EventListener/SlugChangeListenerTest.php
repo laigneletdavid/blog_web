@@ -7,6 +7,7 @@ use App\Entity\Page;
 use App\Entity\SlugRedirect;
 use App\EventListener\SlugChangeListener;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use PHPUnit\Framework\TestCase;
 
@@ -17,6 +18,15 @@ class SlugChangeListenerTest extends TestCase
     protected function setUp(): void
     {
         $this->listener = new SlugChangeListener();
+    }
+
+    /**
+     * Un flush complet : preUpdate pendant le flush, puis postFlush a la fin.
+     */
+    private function flush(object $entity, EntityManagerInterface $em, array $changeSet): void
+    {
+        $this->listener->preUpdate(new PreUpdateEventArgs($entity, $em, $changeSet));
+        $this->listener->postFlush(new PostFlushEventArgs($em));
     }
 
     public function testSlugChangeCreeRedirect(): void
@@ -32,9 +42,30 @@ class SlugChangeListenerTest extends TestCase
                     && $redirect->getOldSlug() === 'ancien-slug'
                     && $redirect->getNewSlug() === 'nouveau-slug';
             }));
+        $em->expects($this->once())->method('flush');
 
-        $args = new PreUpdateEventArgs($article, $em, $changeSet);
-        $this->listener->preUpdate($args);
+        $this->flush($article, $em, $changeSet);
+    }
+
+    public function testRedirectEnregistreeApresLeFlushPasPendant(): void
+    {
+        $article = new Article();
+        $em = $this->createMock(EntityManagerInterface::class);
+        $changeSet = ['slug' => ['ancien-slug', 'nouveau-slug']];
+
+        // Doctrine n'insere pas une entite persistee pendant preUpdate
+        $em->expects($this->never())->method('persist');
+
+        $this->listener->preUpdate(new PreUpdateEventArgs($article, $em, $changeSet));
+    }
+
+    public function testSansChangementPostFlushNeFlushePas(): void
+    {
+        $em = $this->createMock(EntityManagerInterface::class);
+
+        $em->expects($this->never())->method('flush');
+
+        $this->listener->postFlush(new PostFlushEventArgs($em));
     }
 
     public function testPasDeChangementSlugNePersistePas(): void
@@ -45,8 +76,7 @@ class SlugChangeListenerTest extends TestCase
 
         $em->expects($this->never())->method('persist');
 
-        $args = new PreUpdateEventArgs($article, $em, $changeSet);
-        $this->listener->preUpdate($args);
+        $this->flush($article, $em, $changeSet);
     }
 
     public function testSlugVideNePersistePas(): void
@@ -57,8 +87,7 @@ class SlugChangeListenerTest extends TestCase
 
         $em->expects($this->never())->method('persist');
 
-        $args = new PreUpdateEventArgs($article, $em, $changeSet);
-        $this->listener->preUpdate($args);
+        $this->flush($article, $em, $changeSet);
     }
 
     public function testSlugNullNePersistePas(): void
@@ -69,8 +98,7 @@ class SlugChangeListenerTest extends TestCase
 
         $em->expects($this->never())->method('persist');
 
-        $args = new PreUpdateEventArgs($article, $em, $changeSet);
-        $this->listener->preUpdate($args);
+        $this->flush($article, $em, $changeSet);
     }
 
     public function testEntiteNonSuivieIgnoree(): void
@@ -81,8 +109,7 @@ class SlugChangeListenerTest extends TestCase
 
         $em->expects($this->never())->method('persist');
 
-        $args = new PreUpdateEventArgs($entity, $em, $changeSet);
-        $this->listener->preUpdate($args);
+        $this->flush($entity, $em, $changeSet);
     }
 
     public function testPageSlugChangeCreeRedirect(): void
@@ -99,7 +126,6 @@ class SlugChangeListenerTest extends TestCase
                     && $redirect->getNewSlug() === 'nouvelle-page';
             }));
 
-        $args = new PreUpdateEventArgs($page, $em, $changeSet);
-        $this->listener->preUpdate($args);
+        $this->flush($page, $em, $changeSet);
     }
 }

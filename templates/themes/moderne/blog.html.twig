@@ -32,7 +32,7 @@
             </a>
             {% for row in blogCategories %}
                 {% set cat = row[0] is defined ? row[0] : row %}
-                <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}"
+                <a href="{{ path('app_categorie_show', { slug: cat.slug }) }}"
                    class="blog-filters__pill {{ filterCategorie is defined and filterCategorie == cat.slug ? 'blog-filters__pill--active' : '' }}">
                     {{ cat.name }}
                 </a>
@@ -41,11 +41,12 @@
     {% endif %}
 
     {% set baseParams = {} %}
+    {% set listeRoute = filterCategorie is defined and filterCategorie and (filterMonth is not defined or not filterMonth) ? 'app_categorie_show' : 'app_article_show_all' %}
     {% if filterMonth is defined and filterMonth %}
         {% set baseParams = baseParams|merge({ month: filterMonth, year: filterYear }) %}
     {% endif %}
     {% if filterCategorie is defined and filterCategorie %}
-        {% set baseParams = baseParams|merge({ categorie: filterCategorie }) %}
+        {% set baseParams = baseParams|merge({ slug: filterCategorie }) %}
     {% endif %}
 </div>
 
@@ -73,15 +74,15 @@
     <nav aria-label="Pagination" class="mb-5">
         <ul class="pagination justify-content-center">
             <li class="page-item {{ currentPage <= 1 ? 'disabled' : '' }}">
-                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage - 1 })) }}">&laquo;</a>
+                <a class="page-link" href="{{ path(listeRoute, baseParams|merge({ page: currentPage - 1 })) }}">&laquo;</a>
             </li>
             {% for p in 1..totalPages %}
             <li class="page-item {{ p == currentPage ? 'active' : '' }}">
-                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: p })) }}">{{ p }}</a>
+                <a class="page-link" href="{{ path(listeRoute, baseParams|merge({ page: p })) }}">{{ p }}</a>
             </li>
             {% endfor %}
             <li class="page-item {{ currentPage >= totalPages ? 'disabled' : '' }}">
-                <a class="page-link" href="{{ path('app_article_show_all', baseParams|merge({ page: currentPage + 1 })) }}">&raquo;</a>
+                <a class="page-link" href="{{ path(listeRoute, baseParams|merge({ page: currentPage + 1 })) }}">&raquo;</a>
             </li>
         </ul>
     </nav>

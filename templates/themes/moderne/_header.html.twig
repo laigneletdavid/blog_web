@@ -23,13 +23,13 @@
                             <ul class="dropdown-menu">
                                 {% for child in menu.children %}
                                     {% if child.isVisible %}
-                                        <li><a class="dropdown-item" href="{{ child|menuLink }}">{{ child.name }}</a></li>
+                                        {% include '_partials/_menu_dropdown_item.html.twig' with { item: child, classe: 'dropdown-item' } only %}
                                     {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
                     {% else %}
-                        <a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a>
+                        <a href="{{ menu|menuLink }}" class="nav-link"{% if menu|menuExterne %} target="_blank" rel="noopener"{% endif %}>{{ menu.name }}{% if menu|menuExterne %} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span>{% endif %}</a>
                     {% endif %}
                 {% endfor %}
             </nav>
@@ -79,7 +79,7 @@
                 </div>
                 <ul class="navbar-nav mb-4">
                     {% for menu in header_menus %}
-                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link"{% if menu|menuExterne %} target="_blank" rel="noopener"{% endif %}>{{ menu.name }}{% if menu|menuExterne %} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span>{% endif %}</a></li>
                     {% endfor %}
                 </ul>
                 {% include '_partials/_cart_badge.html.twig' %}

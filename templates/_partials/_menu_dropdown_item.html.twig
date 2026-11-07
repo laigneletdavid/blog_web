@@ -1,0 +1,14 @@
+{# Entree de sous-menu, commune aux headers des themes.
+   Variables : item (Menu), classe (classes du lien, par defaut « dropdown-item »).
+   - target « separateur » : un filet ; « libelle » : un intitule non cliquable ;
+   - lien vers un autre site : nouvel onglet, rel noopener (pas de nofollow),
+     fleche ↗ en presentation texte (U+FE0E : sinon un carre bleu sur iPhone). #}
+{% if item.target == 'separateur' %}
+<li><hr class="dropdown-divider" aria-hidden="true"></li>
+{% elseif item.target == 'libelle' %}
+<li><span class="dropdown-header menu-libelle">{{ item.name }}</span></li>
+{% elseif item|menuExterne %}
+<li><a class="{{ classe|default('dropdown-item') }}" href="{{ item|menuLink }}" target="_blank" rel="noopener">{{ item.name }} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a></li>
+{% else %}
+<li><a class="{{ classe|default('dropdown-item') }}" href="{{ item|menuLink }}">{{ item.name }}</a></li>
+{% endif %}

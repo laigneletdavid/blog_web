@@ -6,7 +6,7 @@
     <div class="art-contact-hero__overlay"></div>
     <div class="container position-relative text-center">
         <h1 class="art-contact-hero__title">{{ title_page }}</h1>
-        <p class="art-contact-hero__desc">N'hesitez pas a nous ecrire, nous vous repondrons avec plaisir.</p>
+        <p class="art-contact-hero__desc">N'hésitez pas à nous écrire, nous vous répondrons avec plaisir.</p>
     </div>
 </section>
 
@@ -16,10 +16,11 @@
             {# Formulaire #}
             <div class="col-lg-7">
                 <div class="art-contact-form">
-                    <h2 class="art-contact-form__title">Ecrivez-nous</h2>
+                    <h2 class="art-contact-form__title">Écrivez-nous</h2>
                     {{ form_start(contactForm) }}
                         {{ form_widget(contactForm) }}
                         <button class="btn btn-primary btn-lg mt-3" type="submit">Envoyer</button>
+                        {% include '_partials/_contact_rgpd.html.twig' %}
                     {{ form_end(contactForm) }}
                 </div>
             </div>

@@ -46,7 +46,7 @@
                 {# --- Meta header --- #}
                 <div class="article-detail__meta">
                     {% for cat in article.categories %}
-                        <a href="{{ path('app_article_show_all', { categorie: cat.slug }) }}" class="article-detail__badge">{{ cat.name }}</a>
+                        <a href="{{ path('app_categorie_show', { slug: cat.slug }) }}" class="article-detail__badge">{{ cat.name }}</a>
                     {% endfor %}
                     {% set _published = article.publishedAt ?? article.createdAt %}
                     {% if article.author %}
@@ -63,7 +63,7 @@
                 </div>
 
                 {# --- Titre --- #}
-                <h1 class="article-detail__title">{{ article.title }}</h1>
+                <h1 class="article-detail__title">{{ article.title|insecables }}</h1>
 
                 {% if article.featuredText %}
                     <p class="article-detail__lead">{{ article.featuredText }}</p>
