@@ -20,7 +20,8 @@
                 {% endfor %}
             </nav>
             <span class="footer-copy">&copy; {{ "now"|date("Y") }} {{ site.name|default('') }}</span>
-            <span class="footer-credit ms-2">Développé avec <a href="https://blogweb.comwebsolutions.fr" target="_blank" rel="noopener">BlogWeb</a></span>
+            {# Credit commun de main : le nom et l'adresse du produit ne se changent qu'a un endroit #}
+            <span class="footer-credit ms-2">Développé avec {% include '_partials/_credit_link.html.twig' %}</span>
         </div>
     </div>
 </footer>
