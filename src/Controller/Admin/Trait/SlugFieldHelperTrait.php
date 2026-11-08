@@ -32,7 +32,7 @@ trait SlugFieldHelperTrait
         ?string $description = null,
         bool $hideOnIndex = true,
     ): SlugField {
-        $field = SlugField::new('slug')
+        $field = SlugField::new('slug', 'Adresse de la page')
             ->setTargetFieldName($targetFieldName);
 
         if ($hideOnIndex) {

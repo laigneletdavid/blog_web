@@ -14,6 +14,9 @@ parameters:
         mailer_sender_name: '%env(default:default_sender_name:MAILER_SENDER_NAME)%'
         default_sender_email: 'noreply@comwebsolutions.fr'
         default_sender_name: 'ComWeb Solutions'
+        # Adresse du site ComWeb Studio : credit du footer et liens vers le produit.
+        # Seul endroit a changer si le site Studio change d adresse.
+        studio_url: 'https://comwebstudio.fr'
 
 services:
     # default configuration for services in *this* file

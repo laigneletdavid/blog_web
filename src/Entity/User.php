@@ -64,6 +64,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $tourCompleted = false;
 
+    // Mode expert de l'admin : affiche les reglages techniques (slug, canonique, modules...)
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $adminExpert = false;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -289,13 +293,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isAdminExpert(): bool
+    {
+        return $this->adminExpert;
+    }
+
+    public function setAdminExpert(bool $adminExpert): self
+    {
+        $this->adminExpert = $adminExpert;
+
+        return $this;
+    }
+
+    /**
+     * Prenom et nom, sinon l'un des deux, sinon l'email. Un champ vide ('' enregistre
+     * par le formulaire) compte comme absent : sans ca, un compte sans nom s'affichait
+     * vide, par exemple dans la liste des auteurs d'un article.
+     */
     public function getDisplayName(): string
     {
-        if ($this->first_name && $this->name) {
-            return $this->first_name . ' ' . $this->name;
+        $parts = array_filter([$this->first_name, $this->name], static fn (?string $p) => $p !== null && trim($p) !== '');
+
+        if ($parts !== []) {
+            return implode(' ', array_map('trim', $parts));
         }
 
-        return $this->first_name ?? $this->name ?? $this->email;
+        return (string) $this->email;
+    }
+
+    /**
+     * Initiales pour la pastille auteur (pas d'avatar) : "DL" pour David Laignelet.
+     */
+    public function getInitials(): string
+    {
+        $parts = array_filter([$this->first_name, $this->name], static fn (?string $p) => $p !== null && trim($p) !== '');
+
+        if ($parts === []) {
+            $parts = [(string) $this->email];
+        }
+
+        $initials = '';
+        foreach ($parts as $part) {
+            $initials .= mb_substr(trim($part), 0, 1);
+        }
+
+        return mb_strtoupper($initials);
     }
 
     public function __toString(): string

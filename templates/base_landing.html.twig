@@ -3,6 +3,7 @@
 {% set _theme_config = theme_service.getConfig(_theme) %}
 {% set _theme_vars = theme_service.getThemeVars(_theme) %}
 {% set _appearance = theme_service.resolveAppearance() %}
+{% set _og_fallback = site ? (site.ogImage ?? site.heroImage ?? site.logo) : null %}
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,6 +34,8 @@
         <meta property="og:locale" content="fr_FR">
         {% if seo.image|default('') is not empty %}
         <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ seo.image)) }}">
+        {% elseif _og_fallback %}
+        <meta property="og:image" content="{{ absolute_url(asset('documents/medias/' ~ _og_fallback.fileName)) }}">
         {% else %}
         <meta property="og:image" content="{{ absolute_url(asset('images/logo-blogweb.jpg')) }}">
         {% endif %}

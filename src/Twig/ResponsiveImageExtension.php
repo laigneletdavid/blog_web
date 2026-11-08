@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Entity\Media;
+use App\Repository\MediaRepository;
 use App\Service\MediaProcessorService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -12,6 +13,7 @@ class ResponsiveImageExtension extends AbstractExtension
 {
     public function __construct(
         private readonly string $mediaDirectory,
+        private readonly MediaRepository $mediaRepository,
     ) {
     }
 
@@ -27,7 +29,21 @@ class ResponsiveImageExtension extends AbstractExtension
         return [
             new TwigFunction('responsive_img', [$this, 'responsiveImg'], ['is_safe' => ['html']]),
             new TwigFunction('logo_img', [$this, 'logoImg'], ['is_safe' => ['html']]),
+            new TwigFunction('media_by_id', [$this, 'mediaById']),
         ];
+    }
+
+    /**
+     * Retrouve un media par son id, pour les champs qui stockent des ids en JSON
+     * (galerie d'une realisation...). Null si l'id est vide ou le media supprime.
+     */
+    public function mediaById(mixed $id): ?Media
+    {
+        if (!is_numeric($id)) {
+            return null;
+        }
+
+        return $this->mediaRepository->find((int) $id);
     }
 
     /**
@@ -72,6 +88,7 @@ class ResponsiveImageExtension extends AbstractExtension
 
     /**
      * Retourne un tag <img> avec srcset, sizes, loading, width/height et alt contextuel.
+     * Ordre de l'alt : media.alt > $alt du gabarit > nom du media + titre de $seoContext.
      * $seoContext = entite parente (Article, Service...) pour enrichir le alt avec son titre SEO.
      */
     public function responsiveImg(
@@ -118,6 +135,13 @@ class ResponsiveImageExtension extends AbstractExtension
 
     private function buildAlt(Media $media, ?string $explicitAlt, ?object $seoContext): string
     {
+        // Alt saisi sur le media : prioritaire. L'alt passe par le gabarit
+        // et l'alt construit (nom + contexte) ne servent qu'en repli
+        $mediaAlt = $media->getAlt();
+        if ($mediaAlt !== null && $mediaAlt !== '') {
+            return $mediaAlt;
+        }
+
         if ($explicitAlt !== null && $explicitAlt !== '') {
             return $explicitAlt;
         }

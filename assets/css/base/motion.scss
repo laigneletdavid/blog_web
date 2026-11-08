@@ -1,0 +1,50 @@
+// =============================================================================
+// Animations — base commune aux controleurs reveal, count-up et typing-demo
+// Le contenu est visible sans JavaScript : seuls les controleurs posent les
+// classes d'attente (.reveal), et uniquement sur ce qui est hors de l'ecran.
+// N'anime que transform et opacity.
+// =============================================================================
+
+:root {
+  --motion-ease: cubic-bezier(.2, .7, .2, 1);
+  --motion-duration: 500ms;
+}
+
+// --- reveal : apparition au defilement, une seule fois ---
+.reveal {
+  opacity: 0;
+  transition: opacity var(--motion-duration) var(--motion-ease),
+              transform var(--motion-duration) var(--motion-ease);
+
+  &--up { transform: translateY(20px); }
+  &--left { transform: translateX(-28px); }
+  &--right { transform: translateX(28px); }
+
+  &.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// Sur ecran etroit, un bloc pleine largeur decale de cote deborde de l'ecran
+// tant qu'il n'est pas apparu : la page defilait en largeur (bw_front, 390 px).
+// Les apparitions laterales y deviennent verticales.
+@media (max-width: 767.98px) {
+  .reveal--left,
+  .reveal--right {
+    transform: translateY(20px);
+  }
+}
+
+// --- count-up : chiffres a largeur fixe, pour que rien ne bouge pendant le compte ---
+[data-controller~="count-up"] {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
