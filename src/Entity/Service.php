@@ -216,9 +216,24 @@ class Service implements SanitizableContentInterface
 
     // --- Virtual properties pour TipTap (pattern Article) ---
 
+    /**
+     * La fiche a-t-elle une page détail ? Oui avec des blocs TipTap, ou avec du
+     * HTML seul (contenu écrit en SQL ou importé, que l'éditeur reprend).
+     */
+    public function hasDetail(): bool
+    {
+        return !empty($this->blocks) || trim(strip_tags((string) $this->content)) !== '';
+    }
+
     public function getBlocksJson(): ?string
     {
-        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+        if ($this->blocks !== null) {
+            return json_encode($this->blocks, JSON_UNESCAPED_UNICODE);
+        }
+
+        // Sans blocs (contenu ecrit en SQL ou importe) : l'editeur part du HTML
+        // affiche sur le site, au lieu de s'ouvrir vide (comme Page)
+        return $this->getContent() ?: null;
     }
 
     public function setBlocksJson(?string $json): self

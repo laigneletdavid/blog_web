@@ -31,7 +31,7 @@
             <span class="product-card__category">{{ product.category.name }}</span>
         {% endif %}
 
-        <h3 class="product-card__title">{{ product.title }}</h3>
+        <h3 class="product-card__title">{{ product.title|insecables }}</h3>
 
         {% if product.shortDescription %}
             <p class="product-card__excerpt">{{ product.shortDescription|length > 100 ? product.shortDescription|slice(0, 100) ~ '…' : product.shortDescription }}</p>

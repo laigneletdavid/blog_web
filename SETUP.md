@@ -35,7 +35,10 @@ docker compose exec php php bin/console app:recaptcha:setup
 # Templates : templates/client/home.html.twig (override de la home)
 # CSS : templates/client/theme.css (surcharge du theme, charge en dernier)
 
-# 8. Vider le cache
+# 8. Remplir la fiche Referencement (admin > Referencement) — AVANT le dump de deploiement
+# Activite, cible, atouts, portee, villes, priorites, mots des clients. Relire le bilan.
+
+# 9. Vider le cache
 docker compose exec php php bin/console cache:clear
 ```
 
@@ -297,7 +300,16 @@ Se connecter a http://localhost:8080/admin puis :
 3. **Images du theme** (Reglages > Apparence) — hero, a propos, galerie, logos, temoignages (via admin Medias)
 4. **Navigation** (Reglages > Navigation) — organiser les menus par drag & drop
 5. **Contenu** — creer articles, pages, ajouter des medias
-6. **SEO** — remplir les champs SEO des pages principales
+6. **Referencement** (menu Referencement) — **obligatoire avant le dump de deploiement** :
+   - remplir la fiche d'intention : ce que propose le client, a qui, ce qui le distingue,
+     portee (local / regional / national), villes visees, priorites (memes intitules que
+     les services ou pages), mots que tapent ses clients ;
+   - fiche entreprise Google : type d'activite, horaires au format `Mo-Fr 09:00-18:00` ;
+   - titre, description et image de partage par defaut ;
+   - relire le bilan en haut de page et traiter les points orange (titres SEO des pages
+     principales, villes dans les titres et descriptions).
+   La fiche vit en base : elle part en prod avec le dump. Search Console se fait **apres**
+   la mise en ligne (voir `DEPLOY_REFERENCE.md`, section 3 bis).
 7. **Guide** — consulter Aide > Guide pour les details
 
 ### 9. Resync menus (apres changement de theme)

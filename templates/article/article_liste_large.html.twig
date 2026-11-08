@@ -14,10 +14,10 @@
                 {% if firstCat %}
                     <span class="blog-card__badge">{{ firstCat.name }}</span>
                 {% endif %}
-                <h2 class="blog-featured__title">{{ article.title }}</h2>
+                <h2 class="blog-featured__title">{{ article.title|insecables }}</h2>
                 <p class="blog-featured__excerpt">{{ article.featuredText ?: article.content|plaintext|slice(0, 200) ~ '...' }}</p>
                 <div class="blog-card__meta blog-card__meta--light">
-                    <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|date('d M Y') }}</time>
+                    <time datetime="{{ article.createdAt|date('Y-m-d') }}">{{ article.createdAt|format_date('long', locale='fr') }}</time>
                     <span class="blog-card__dot"></span>
                     <span>{{ article.content|readingTime }} min de lecture</span>
                 </div>

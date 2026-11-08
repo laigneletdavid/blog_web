@@ -4,8 +4,10 @@ namespace App\Controller\Admin;
 
 use App\Entity\Document;
 use App\Service\DocumentService;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -58,6 +60,9 @@ class DocumentCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Documents')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter un document')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier le document')
+            ->setHelp(Crud::PAGE_INDEX, 'Fichiers à télécharger depuis vos pages. Pour les images : <a href="'
+                . $this->container->get(AdminUrlGenerator::class)->unsetAll()->setController(MediaCrudController::class)->setAction(Action::INDEX)->generateUrl()
+                . '">Médias</a>.')
             ->setDefaultSort(['id' => 'DESC']);
     }
 

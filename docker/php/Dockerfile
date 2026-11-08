@@ -1,8 +1,10 @@
 FROM php:8.4-fpm-alpine AS base
 
 # System dependencies
+# icu-data-full : icu-libs n'embarque que icu-data-en, sans lui intl formate en anglais (format_date locale fr)
 RUN apk add --no-cache \
     icu-dev \
+    icu-data-full \
     libzip-dev \
     freetype-dev \
     libjpeg-turbo-dev \

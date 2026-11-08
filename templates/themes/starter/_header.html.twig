@@ -15,7 +15,7 @@
 
             <nav class="d-flex align-items-center gap-3">
                 {% for menu in header_menus %}
-                    <a href="{{ menu|menuLink }}" class="start-nav-link">{{ menu.name }}</a>
+                    <a href="{{ menu|menuLink }}" class="start-nav-link"{% if menu|menuExterne %} target="_blank" rel="noopener"{% endif %}>{{ menu.name }}{% if menu|menuExterne %} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span>{% endif %}</a>
                 {% endfor %}
                 <div class="header-search dropdown ms-3" data-controller="search">
                     <form class="d-flex align-items-center gap-2" action="{{ path('app_search_results') }}" method="get" data-search-target="form" data-api-url="{{ path('app_search') }}" data-action="search#doSearch:prevent">
@@ -60,7 +60,7 @@
                 </div>
                 <ul class="navbar-nav mb-4">
                     {% for menu in header_menus %}
-                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link">{{ menu.name }}</a></li>
+                        <li class="nav-item"><a href="{{ menu|menuLink }}" class="nav-link"{% if menu|menuExterne %} target="_blank" rel="noopener"{% endif %}>{{ menu.name }}{% if menu|menuExterne %} <span class="menu-externe" aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span>{% endif %}</a></li>
                     {% endfor %}
                 </ul>
                 {% include '_partials/_cart_badge.html.twig' %}

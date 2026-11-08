@@ -187,7 +187,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->andWhere('a.published = TRUE')
             ->leftJoin('a.featuredMedia', 'm')
             ->addSelect('m')
-            ->orderBy('a.createdAt', 'DESC')
+            ->addSelect('COALESCE(a.publishedAt, a.createdAt) AS HIDDEN publicationDate')
+            ->orderBy('publicationDate', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 

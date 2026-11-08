@@ -17,6 +17,7 @@
                 {{ form_start(contactForm) }}
                     {{ form_widget(contactForm) }}
                     <button class="btn btn-dark mt-3" type="submit">Envoyer</button>
+                    {% include '_partials/_contact_rgpd.html.twig' %}
                 {{ form_end(contactForm) }}
 
                 <div class="start-contact__info mt-5">

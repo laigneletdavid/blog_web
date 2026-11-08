@@ -339,6 +339,7 @@
     position: absolute;
     top: 0.75rem;
     left: 0.75rem;
+    right: auto; /* la base ancre le badge a droite : left + right l'etiraient */
     background: var(--primary);
     color: #fff;
     padding: 0.25rem 0.75rem;

@@ -65,6 +65,12 @@ class Article implements TimestampedInterface, SanitizableContentInterface
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Media $featuredMedia = null;
 
+    // Auteur affiche sur l'article et declare en JSON-LD. Rempli a la creation
+    // avec le compte connecte ; nullable pour les articles anterieurs
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?User $author = null;
+
     #[ORM\Column(options: ['default' => false])]
     private bool $isFeatured = false;
 
@@ -313,6 +319,18 @@ class Article implements TimestampedInterface, SanitizableContentInterface
         return $this;
     }
 
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
     public function isFeatured(): bool
     {
         return $this->isFeatured;
@@ -355,7 +373,13 @@ class Article implements TimestampedInterface, SanitizableContentInterface
      */
     public function getBlocksJson(): ?string
     {
-        return $this->blocks !== null ? json_encode($this->blocks, JSON_UNESCAPED_UNICODE) : null;
+        if ($this->blocks !== null) {
+            return json_encode($this->blocks, JSON_UNESCAPED_UNICODE);
+        }
+
+        // Sans blocs (contenu ecrit en SQL ou importe) : l'editeur part du HTML
+        // affiche sur le site, au lieu de s'ouvrir vide (comme Page)
+        return $this->getContent() ?: null;
     }
 
     public function setBlocksJson(?string $json): self

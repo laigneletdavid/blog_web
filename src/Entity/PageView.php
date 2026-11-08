@@ -26,9 +26,6 @@ class PageView
     private ?string $ipHash = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    private ?string $userAgent = null;
-
-    #[ORM\Column(length: 500, nullable: true)]
     private ?string $referer = null;
 
     #[ORM\Column(options: ['default' => false])]
@@ -83,18 +80,6 @@ class PageView
     public function setIpHash(string $ipHash): self
     {
         $this->ipHash = $ipHash;
-
-        return $this;
-    }
-
-    public function getUserAgent(): ?string
-    {
-        return $this->userAgent;
-    }
-
-    public function setUserAgent(?string $userAgent): self
-    {
-        $this->userAgent = $userAgent;
 
         return $this;
     }

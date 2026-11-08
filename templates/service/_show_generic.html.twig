@@ -3,7 +3,11 @@
         <nav aria-label="breadcrumb" class="{{ service.image ? 'page-hero__breadcrumb' : '' }}">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-                <li class="breadcrumb-item"><a href="{{ path('app_service_index') }}">{{ section_title|default('Services') }}</a></li>
+                {% if section_url is defined and section_url is null %}
+                <li class="breadcrumb-item">{{ section_title|default('Services') }}</li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{{ section_url|default(path('app_service_index')) }}">{{ section_title|default('Services') }}</a></li>
+                {% endif %}
                 <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
             </ol>
         </nav>
@@ -23,12 +27,12 @@
                  loading="lazy">
             <div class="page-hero__overlay">
                 {{ fil_ariane|raw }}
-                <h1 class="page-hero__title">{{ service.title }}</h1>
+                <h1 class="page-hero__title">{{ service.title|insecables }}</h1>
             </div>
         </div>
     {% else %}
         {{ fil_ariane|raw }}
-        <h1 class="title-one mb-4">{{ service.title }}</h1>
+        <h1 class="title-one mb-4">{{ service.title|insecables }}</h1>
     {% endif %}
 
     <article class="service-detail">
