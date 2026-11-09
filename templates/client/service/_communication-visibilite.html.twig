@@ -1,0 +1,240 @@
+{# ======================================================================
+   FICHE « COMMUNICATION ET VISIBILITÉ » — bw_cws (brief du 09/11/2026)
+   Offre Com : 4 modules independants (pas des paliers), un pack, une mise en
+   place unique. Prix : client/_macros (prix_com_*). Le texte vit ici ; en base,
+   la fiche garde titre, slug, resume et SEO.
+   Voix : David garde la strategie et la vente (« je ») ; l'execution est faite
+   par une equipe (« on »). Aucun resultat chiffre promis : on s'engage sur les
+   moyens et on montre les resultats.
+   Les 3 questions de la FAQ sont aussi en base (FAQ de la home et /faq) :
+   si une reponse change, la changer aux deux endroits.
+   ====================================================================== #}
+{% import 'client/_macros.html.twig' as m %}
+{# Prix en nombres (les macros renvoient du texte) #}
+{% set prix = {} %}
+{% for cle, valeur in { fiche: m.prix_com_fiche(), blog: m.prix_com_blog(), reseaux: m.prix_com_reseaux(), seo: m.prix_com_seo(), pack: m.prix_com_pack(), mise_en_place: m.prix_com_mise_en_place() } %}
+    {% set prix = prix|merge({ (cle): (('' ~ valeur)|trim) + 0 }) %}
+{% endfor %}
+{% set offreLancement = m.offre_lancement_com()|trim is not empty %}
+{% set modules = [
+    { cle: 'fiche', nom: 'Fiche Google', titre: 'Être trouvé sur Google', prix: prix.fiche, engagement: 'Sans engagement au-delà du 1er mois',
+      texte: "Votre fiche Google, c'est souvent la première chose que voit un client qui cherche près de chez lui. On la garde vivante et à jour.",
+      puces: ['4 publications par mois', 'Réponses à vos avis', 'Horaires, services et photos à jour', 'Un mini-rapport chaque mois'] },
+    { cle: 'blog', nom: 'Blog', titre: 'Publier des articles qui attirent', prix: prix.blog, engagement: 'Engagement 3 mois, puis mensuel',
+      texte: "Des articles qui répondent aux questions de vos clients, pour remonter sur Google et être repris par les IA.",
+      puces: ['2 articles par mois', 'Écrits pour Google et pour les IA : questions-réponses, définitions, FAQ', 'Mis en ligne sur votre site'] },
+    { cle: 'reseaux', nom: 'Réseaux', titre: 'Animer vos réseaux', prix: prix.reseaux, engagement: 'Engagement 3 mois, puis mensuel',
+      texte: "Une présence régulière sur deux réseaux, sans y passer vos soirées.",
+      puces: ['8 à 12 posts par mois sur 2 réseaux', 'Textes, photos génériques et infographies fournis', 'Vidéos non incluses'] },
+    { cle: 'seo', nom: 'SEO + GEO', titre: 'Être visible sur Google et dans les IA', prix: prix.seo, engagement: 'Engagement 6 mois, puis mensuel',
+      texte: "Le travail de fond sur votre site, et le suivi de ce que les IA disent de vous : ChatGPT, Perplexity, Gemini.",
+      puces: ['Audit de départ et optimisations', 'Suivi des positions sur vos mots-clés', 'Suivi des citations dans les IA', 'Un rapport détaillé'] },
+] %}
+{% set totalModules = 0 %}
+{% for mod in modules %}{% set totalModules = totalModules + mod.prix %}{% endfor %}
+{{ m.symbole_vague() }}
+
+{# ====== 1. HERO + CARTE PRIX ====== #}
+<section class="home-hero cws-hero cws-hero--page">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb cws-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}#com">La Com</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Communication et visibilité</li>
+            </ol>
+        </nav>
+        <div class="cws-hero__grille cws-hero__grille--prix">
+            <div>
+                <p class="home-hero__overtitle">La com — Communication et visibilité</p>
+                <h1 class="home-hero__title">Votre présence en ligne, tenue {{ m.vague('chaque mois') }}</h1>
+                <p class="home-hero__desc">{{ "Vous savez qu'il faut être visible, mais vous n'avez pas le temps de publier ni de suivre. On le fait pour vous, et chaque mois vous recevez un rapport clair : ce qui a été fait, et ce que ça donne."|insecables }}</p>
+                <div class="home-hero__actions">
+                    <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
+                </div>
+                <p class="cws-zone">Partout en France, à distance&nbsp;; sur place en Occitanie (Toulouse, Montpellier, Comminges…).</p>
+            </div>
+            {% include 'client/_carte_prix.html.twig' with {
+                libelle: 'Offre Com — 4 modules au choix',
+                prix: '<small>dès</small> ' ~ prix.fiche ~ ' € HT<small>/mois</small>',
+                complement: 'Fiche Google, blog, réseaux, SEO + GEO',
+                engagement: 'Engagement de 1 à 6 mois selon le module',
+                puces: ['Vous choisissez vos modules', 'Un rapport clair chaque mois', 'Un bilan en euros chaque trimestre'],
+                lien_ancre: '#modules',
+                lien_libelle: 'Voir les 4 modules'
+            } only %}
+        </div>
+    </div>
+</section>
+
+{# ====== 2. LES MODULES ====== #}
+<section class="cws-section cws-section--alt" id="modules">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Choisissez vos modules</span>
+            <h2 class="home-section-title">Un module, ou plusieurs&nbsp;: vous composez</h2>
+            <p>{{ "Ce ne sont pas des paliers. Chaque module se prend seul ou avec d'autres, selon ce dont vous avez besoin. Sa durée d'engagement correspond au temps que le levier met à donner des résultats : une fiche Google réagit en quelques semaines, un blog et des réseaux en quelques mois, le référencement suit un cycle de six mois."|insecables }}</p>
+        </div>
+        <ul class="cws-cartes cws-cartes--4 cws-modules" data-controller="reveal" data-reveal-stagger-value="90">
+            {% for mod in modules %}
+            <li class="cws-marche cws-module" id="module-{{ mod.cle }}">
+                <span class="cws-marche__etiquette">Module · {{ mod.nom }}</span>
+                <h3 class="cws-marche__titre">{{ mod.titre }}</h3>
+                <p>{{ mod.texte|insecables }}</p>
+                <ul class="cws-puces">
+                    {% for p in mod.puces %}<li>{{ p|insecables }}</li>{% endfor %}
+                </ul>
+                <p class="cws-formule__prix cws-formule__prix--ligne">{{ m.euros(mod.prix) }} HT&nbsp;<span>/mois</span></p>
+                <p class="cws-module__engagement">{{ mod.engagement }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% if offreLancement %}
+        <p class="cws-encadre cws-module__lancement"><strong>Offre de lancement&nbsp;:</strong> -20&nbsp;% pendant les 3 premiers mois, pour les 5 premiers clients.</p>
+        {% endif %}
+    </div>
+</section>
+
+{# ====== 3. LE PACK ET LA MISE EN PLACE ====== #}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le pack</span>
+            <h2 class="home-section-title">Tout gérer, en une seule offre</h2>
+        </div>
+        <div class="cws-cartes" data-controller="reveal" data-reveal-stagger-value="90">
+            <div class="cws-carte cws-formule cws-carte--avant">
+                <h3>Visibilité complète</h3>
+                <p class="cws-formule__prix cws-formule__prix--ligne">{{ m.euros(prix.pack) }} HT&nbsp;<span>/mois</span></p>
+                <p class="cws-formule__plus">Les 4 modules, au lieu de {{ m.euros(totalModules) }} HT</p>
+                <p>{{ "Fiche Google, blog, réseaux et SEO + GEO. Engagement 6 mois, puisqu'il contient le référencement. Pas d'autre remise sur les combinaisons : la grille reste simple."|insecables }}</p>
+            </div>
+            <div class="cws-carte cws-formule">
+                <h3>Mise en place</h3>
+                <p class="cws-formule__prix cws-formule__prix--ligne">{{ m.euros(prix.mise_en_place) }} HT&nbsp;<span>une fois</span></p>
+                <p class="cws-formule__plus">Quel que soit le nombre de modules</p>
+                <p>{{ "Un diagnostic de départ et votre fiche Google remise à neuf. C'est la base de tout le reste."|insecables }} <a href="#demarrage">Le détail</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====== 4. COMMENT ÇA SE PASSE ====== #}
+{% set etapes = [
+    { titre: 'Un rendez-vous gratuit', texte: "On regarde votre situation ensemble et on choisit les modules qui ont du sens pour vous." },
+    { titre: 'La mise en place, une fois', texte: "Diagnostic de départ (état de votre fiche, 5 à 10 mots-clés locaux, un test dans les IA, quelques recommandations) et fiche Google remise à neuf : catégories, description, horaires, services, photos, liens. " ~ m.euros(prix.mise_en_place) ~ " HT." },
+    { titre: 'Chaque mois, on publie', texte: "On prépare, vous validez (surtout au début), on publie." },
+    { titre: 'Chaque mois, un rapport', texte: "Une page claire : ce qui a été fait, ce que ça donne, ce qui vient." },
+    { titre: 'Chaque trimestre, un bilan en euros', texte: "Combien de demandes sont arrivées, et si l'abonnement est rentabilisé." },
+] %}
+<section class="cws-section cws-section--alt" id="demarrage">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Concrètement, comment ça se passe&nbsp;?</h2>
+        </div>
+        <ol class="cws-etapes cws-etapes--5" data-controller="reveal" data-reveal-stagger-value="70">
+            {% for e in etapes %}
+            <li class="cws-etape">
+                <span class="cws-etape__num" aria-hidden="true">{{ loop.index }}</span>
+                <h3 class="cws-etape__titre">{{ e.titre }}</h3>
+                <p>{{ e.texte|insecables }}</p>
+            </li>
+            {% endfor %}
+        </ol>
+        <p class="cws-formules__note">Vous avez déjà un site sur <a href="{{ m.lien_studio() }}" target="_blank" rel="noopener">ComWeb Studio<span class="visually-hidden"> (nouvel onglet)</span></a>&nbsp;? La mise en place correspond à l'option Marketing de Studio, qui ajoute les statistiques et les landing pages.</p>
+    </div>
+</section>
+
+{# ====== 5. LE RAPPORT MENSUEL (fonce) ====== #}
+<section class="cws-section cws-section--dark">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Le rapport</span>
+            <h2 class="home-section-title">Ce que vous recevez chaque mois</h2>
+            <p>Une page, lisible en 2 minutes. Un seul rapport, même si vous avez pris plusieurs modules.</p>
+        </div>
+        <ul class="cws-atouts" data-controller="reveal" data-reveal-stagger-value="70">
+            <li><h3>3 chiffres clés</h3><p>{{ "Comparés au mois de départ : par exemple les appels depuis votre fiche Google, les visites du site, les nouveaux avis."|insecables }}</p></li>
+            <li><h3>Ce qui a été fait</h3><p>Les publications, les articles, les réponses aux avis, les optimisations du mois.</p></li>
+            <li><h3>Ce qui est prévu</h3><p>Le programme du mois suivant, pour que vous sachiez où on va.</p></li>
+        </ul>
+        <p class="cws-section__texte">{{ "Je ne vous promets pas de chiffres à l'avance. Je m'engage sur le travail fait, et je vous montre les résultats."|insecables }}</p>
+    </div>
+</section>
+
+{# ====== 6. EXEMPLES DE COMBINAISONS ======
+   Situations types, sans client reel. Totaux calcules depuis les prix. #}
+{% set exemples = [
+    { situation: 'Artisan qui démarre', modules: 'Fiche Google', total: prix.fiche },
+    { situation: 'Site en place, mais personne ne le lit', modules: 'Fiche Google + Blog', total: prix.fiche + prix.blog },
+    { situation: 'Commerce local actif', modules: 'Fiche Google + Réseaux', total: prix.fiche + prix.reseaux },
+    { situation: 'PME avec un site déjà riche', modules: 'SEO + GEO', total: prix.seo },
+    { situation: 'Tout gérer', modules: 'Pack Visibilité complète', total: prix.pack },
+] %}
+<section class="cws-section">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Pour vous projeter</span>
+            <h2 class="home-section-title">Quelques combinaisons</h2>
+        </div>
+        <div class="cws-combos">
+            <table>
+                <thead><tr><th scope="col">Situation</th><th scope="col">Modules</th><th scope="col">Par mois</th></tr></thead>
+                <tbody>
+                    {% for e in exemples %}
+                    <tr><th scope="row">{{ e.situation }}</th><td>{{ e.modules }}</td><td>{{ m.euros(e.total) }} HT</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="cws-formules__note">Mise en place en plus&nbsp;: {{ m.euros(prix.mise_en_place) }} HT, une seule fois.</p>
+    </div>
+</section>
+
+{# ====== 7. CONDITIONS ====== #}
+<section class="cws-section cws-section--alt" id="conditions">
+    <div class="container">
+        <div class="cws-section__head">
+            <h2 class="home-section-title">Les conditions</h2>
+        </div>
+        <ul class="cws-checklist">
+            <li>Tous les prix sont hors taxes.</li>
+            <li>Chaque module garde sa propre durée d'engagement, même combiné.</li>
+            <li>Un seul rapport mensuel regroupe tous vos modules.</li>
+            <li>Mise en place ({{ m.euros(prix.mise_en_place) }} HT) facturée une seule fois, quel que soit le nombre de modules.</li>
+            <li>Client ComWeb Studio&nbsp;: la mise en place correspond à l'option Marketing de Studio, statistiques et landing pages en plus.</li>
+            <li>Réseaux&nbsp;: les vidéos ne sont pas incluses.</li>
+            {% if offreLancement %}<li>Offre de lancement&nbsp;: -20&nbsp;% pendant les 3 premiers mois, pour les 5 premiers clients.</li>{% endif %}
+        </ul>
+    </div>
+</section>
+
+{# ====== 8. FAQ (memes reponses qu'en base, FAQ 13 a 15) ====== #}
+{% set faqPage = [
+    { q: "Combien de temps avant d'être plus visible sur Google ?", r: "Ça dépend du levier. Une fiche Google bien tenue donne des effets en quelques semaines. Un blog et le référencement demandent plutôt 3 à 6 mois : Google met du temps à faire confiance à un site. C'est pour ça que les durées d'engagement ne sont pas les mêmes d'un module à l'autre." },
+    { q: 'Être cité par ChatGPT ou Perplexity, c’est possible ?', r: "Oui, et ça se travaille : c'est ce qu'on appelle le GEO. Les IA reprennent des contenus clairs et bien structurés, qui répondent aux vraies questions de vos clients. Elles s'appuient aussi sur une présence cohérente partout : votre fiche Google, votre site, vos réseaux. Personne ne peut garantir d'être cité, mais on peut vous rendre facile à citer, et on vérifie chaque mois si vous l'êtes." },
+    { q: 'Qu’est-ce que je dois fournir ?', r: "Vos accès (fiche Google, site, réseaux), les informations sur votre activité, et vos limites : ce que vous ne voulez pas voir publié. Au début, vous validez les contenus avant publication. Pour les réseaux, on fournit les textes, des photos génériques et des infographies. Les vidéos ne sont pas incluses." },
+] %}
+{% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-com' } %}
+
+{# ====== JSON-LD : Service (le fil d'Ariane et WebPage viennent du coeur) ====== #}
+{% set offresJson = [] %}
+{% for mod in modules %}
+    {% set offresJson = offresJson|merge([{ nom: 'Module ' ~ mod.nom, prix: mod.prix, unite: 'HT par mois. ' ~ mod.engagement ~ '.' }]) %}
+{% endfor %}
+{% set offresJson = offresJson|merge([
+    { nom: 'Pack Visibilité complète', prix: prix.pack, unite: 'HT par mois, les 4 modules. Engagement 6 mois.' },
+    { nom: 'Mise en place', prix: prix.mise_en_place, unite: 'HT, une seule fois : diagnostic de départ et fiche Google remise à neuf.' },
+]) %}
+{% include 'client/_jsonld_service_commerce.html.twig' with {
+    nom: 'Communication et visibilité en ligne',
+    description: service.seoDescription|default(''),
+    zone: 'France',
+    offres: offresJson
+} %}
+
+{# ====== 9. APPEL FINAL ====== #}
+{% include 'client/_cta_final.html.twig' with {
+    cta_titre: 'On regarde ensemble votre visibilité ?',
+    cta_texte: "30 minutes, gratuit. On regarde votre fiche Google, votre site et ce que les IA disent de vous, et je vous dis par où commencer."
+} %}

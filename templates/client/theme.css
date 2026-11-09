@@ -1760,3 +1760,76 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
   .home-features__card--link:hover, .home-testimonial:hover, .cws-carte:hover,
   .service-card:hover, .blog-card:hover { transform: none; }
 }
+
+/* ===========================================================================
+   Offre Com (brief du 09/11/2026) : modules, pack, combinaisons
+   Cartes des modules = style des marches de la home, sur une grille plate
+   (ce ne sont pas des paliers : pas d escalier ni de numero d ordre).
+   =========================================================================== */
+ul.cws-cartes { list-style: none; margin: 0; padding: 0; }
+.cws-module .cws-puces { flex-grow: 1; margin-bottom: 1.25rem; }
+.cws-module .cws-formule__prix { margin: 0 0 0.25rem; }
+.cws-module__engagement {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.cws-modules > .cws-module:nth-child(even) .cws-marche__etiquette { color: var(--accent-text); }
+.cws-module__lancement { margin-top: 2rem; }
+/* Prix de depart d une section (« dès 149 € HT/mois ») */
+.cws-section__prix {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--primary);
+}
+/* Tableau des combinaisons */
+.cws-combos { overflow-x: auto; }
+.cws-combos table {
+  width: 100%;
+  max-width: 52rem;
+  border-collapse: collapse;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.cws-combos th,
+.cws-combos td {
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.cws-combos thead th {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--surface);
+}
+.cws-combos tbody th { font-weight: 600; color: var(--text); }
+.cws-combos td:last-child { font-family: var(--font-display); font-weight: 700; white-space: nowrap; }
+.cws-combos tbody tr:last-child th,
+.cws-combos tbody tr:last-child td { border-bottom: 0; }
+/* Bandeau commerce de la home (le pilier Commerce passe en retrait) */
+.cws-bandeau {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding: 1.5rem 2rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-lg);
+}
+.cws-bandeau p { margin: 0; color: var(--text); }
+.cws-bandeau__titre { font-family: var(--font-display); font-weight: 700; }
+.cws-section.cws-section--bandeau {
+  padding-top: 0 !important;
+  padding-bottom: calc(var(--section-space) / 2) !important;
+}
+.cws-section--bandeau .cws-bandeau { margin-top: calc(var(--section-space) / 2); }
+.cws-equipe { margin-top: 2rem; text-align: center; }
+.cws-equipe__texte { margin: 0; color: var(--dark-muted); }
+.cws-atouts + .cws-section__texte { margin-top: 2.5rem; }

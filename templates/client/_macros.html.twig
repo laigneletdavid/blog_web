@@ -65,3 +65,24 @@
 {# Appels d'offres (David, 06/11/2026) : veille et preselection par mois, montage par dossier #}
 {% macro prix_ao_mois() %}175{% endmacro %}
 {% macro prix_ao_dossier() %}250{% endmacro %}
+
+{# ====== Offre Com (brief du 09/11/2026) ======
+   Modules independants, combinables librement (ce ne sont pas des paliers).
+   Prix HT par mois ; engagement en mois (1 = sans engagement au-dela du 1er mois).
+   La mise en place est facturee une fois, quel que soit le nombre de modules ;
+   pour un client ComWeb Studio, c'est l'option Marketing de Studio (meme prix,
+   a garder identique : bw_front, client/_offres.html.twig, options_prix.marketing). #}
+{% macro prix_com_fiche() %}149{% endmacro %}
+{% macro prix_com_blog() %}199{% endmacro %}
+{% macro prix_com_reseaux() %}249{% endmacro %}
+{% macro prix_com_seo() %}349{% endmacro %}
+{% macro prix_com_pack() %}849{% endmacro %}
+{% macro prix_com_mise_en_place() %}290{% endmacro %}
+{# Offre de lancement : '1' = affichee, '' = masquee (a confirmer par David avant
+   mise en ligne). Texte dans client/service/_communication-visibilite. #}
+{% macro offre_lancement_com() %}{% endmacro %}
+{# Chargee de com (execution de l'offre Com) presentee sur le site : '1' = oui.
+   Emplacement pret dans la home (bloc signature) ; photo et texte a fournir. #}
+{% macro chargee_com_presentee() %}{% endmacro %}
+{# Page de l'offre Com : un seul endroit pour son adresse #}
+{% macro lien_com() %}/service/communication-visibilite{% endmacro %}

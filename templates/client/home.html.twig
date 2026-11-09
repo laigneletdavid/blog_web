@@ -5,11 +5,16 @@
    - appels d'offres gardes en offre 03 (« ça existe », David, 05/11/2026) ;
    - hero : « Je vends depuis 2000, je code depuis 2016 » (aligne sur la frise de Studio) ;
    - H1 : « Site internet et prospection commerciale » (le web d abord) = les mots que la cible cherche
-     (« site internet » plutot que « web » ou « digital »). #}
+     (« site internet » plutot que « web » ou « digital »).
+   Positionnement du 09/11/2026 : trois piliers dans l'ordre Com, Web, Commerce.
+   - H1 : « Site internet et visibilité locale » ;
+   - section Com (4 modules) avant le web, commerce reduit a un bandeau Enleys ;
+   - FAQ : 3 questions com a la place des 3 questions commerce (gardees sur /faq). #}
 {% import 'client/_macros.html.twig' as m %}
 {% set lienRdv = m.lien_rdv() %}
-{# FAQ de la home : commerce + web, reponses reprises de /faq (ids en base) #}
-{% set faqHomeIds = [1, 3, 4, 8, 12] %}
+{# FAQ de la home : com + web, reponses reprises de /faq (ids en base) #}
+{% set faqHomeIds = [13, 14, 15, 8, 12] %}
+{% set lienCom = m.lien_com()|trim %}
 {% set faqHome = [] %}
 {% for id in faqHomeIds %}
     {% for faq in faqs|default([]) %}{% if faq.id == id %}{% set faqHome = faqHome|merge([faq]) %}{% endif %}{% endfor %}
@@ -23,11 +28,11 @@
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
                 <p class="home-hero__overtitle">Un seul interlocuteur · Comminges, Toulouse, Montpellier et toute l'Occitanie</p>
-                <h1 class="home-hero__title">Site internet et prospection commerciale&nbsp;: un seul objectif, vos nouveaux {{ m.vague('clients') }}.</h1>
-                <p class="home-hero__desc">Je vends depuis 2000, je code depuis 2016. Aujourd'hui je mets les deux au service de votre entreprise. Pas de jargon, pas de chargé de compte : un seul interlocuteur, du premier appel à la mise en ligne.</p>
+                <h1 class="home-hero__title">Site internet et visibilité locale&nbsp;: un seul objectif, vos nouveaux {{ m.vague('clients') }}.</h1>
+                <p class="home-hero__desc">Je vends depuis 2000, je code depuis 2016. Aujourd'hui je mets les deux au service de votre entreprise&nbsp;: un site pensé pour être trouvé et pour faire venir des clients, pas seulement pour exister. Pas de jargon, pas de chargé de compte : un seul interlocuteur, du premier appel à la mise en ligne.</p>
                 <div class="home-hero__actions">
                     <a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
-                    <a href="#offres" class="btn btn-outline-primary btn-lg">Voir ce que je fais</a>
+                    <a href="#com" class="btn btn-outline-primary btn-lg">Voir ce que je fais</a>
                 </div>
             </div>
             {% if site.heroImage %}
@@ -49,19 +54,19 @@
             <h2 class="home-section-title">Ça vous parle&nbsp;?</h2>
         </div>
         <div class="home-features__grid home-features__grid--3" data-controller="reveal" data-reveal-stagger-value="90">
-            <a href="/page/developpement-commercial" class="home-features__card home-features__card--link">
-                <h3 class="home-features__title">«&nbsp;On n'a personne pour prospecter&nbsp;»</h3>
-                <p class="home-features__desc">Vous êtes dirigeant, vous faites tout — y compris le commercial. Sauf que prospecter prend du temps, de la méthode et de la régularité. Vous savez que ça bloque, mais vous ne pouvez pas embaucher un directeur commercial.</p>
-                <span class="home-features__link">Développement commercial →</span>
+            <a href="{{ lienCom }}" class="home-features__card home-features__card--link">
+                <h3 class="home-features__title">«&nbsp;Personne ne nous trouve sur Google&nbsp;»</h3>
+                <p class="home-features__desc">Votre fiche Google est vide ou pas à jour, votre site ne remonte pas, et vos concurrents apparaissent avant vous. Vos clients vous cherchent, mais ils trouvent les autres.</p>
+                <span class="home-features__link">La com, dès {{ m.prix_com_fiche() }}&nbsp;€&nbsp;HT/mois →</span>
             </a>
-            <a href="/service/votre-site-web" class="home-features__card home-features__card--link">
+            <a href="{{ lienCom }}" class="home-features__card home-features__card--link">
                 <h3 class="home-features__title">«&nbsp;Notre site ne nous rapporte rien&nbsp;»</h3>
-                <p class="home-features__desc">Il est en ligne, il est «&nbsp;joli&nbsp;», mais personne ne vous contacte depuis. Il ne remonte pas sur Google, il est lent, mal maintenu, ou vous ne pouvez rien modifier sans appeler votre prestataire.</p>
-                <span class="home-features__link">Votre site web →</span>
+                <p class="home-features__desc">Il est en ligne, il est «&nbsp;joli&nbsp;», mais personne ne vous contacte depuis. Un site sans contenu ni animation reste invisible&nbsp;: il ne fait pas venir de clients tout seul.</p>
+                <span class="home-features__link">Le faire vivre →</span>
             </a>
             <a href="/page/pourquoi-un-seul-interlocuteur" class="home-features__card home-features__card--link">
                 <h3 class="home-features__title">«&nbsp;Notre agence web ne comprend pas notre business&nbsp;»</h3>
-                <p class="home-features__desc">Votre agence parle pixels et responsive. Votre commercial parle pipe et closing. Personne ne fait le lien entre les deux. Résultat : un site qui ne vend pas et une prospection qui n'a pas de support digital.</p>
+                <p class="home-features__desc">Votre agence parle pixels et responsive. Vous, vous parlez clients et chiffre d'affaires. Personne ne fait le lien entre ce que vous vendez et ce que votre site raconte. Résultat&nbsp;: un joli site qui ne vous amène personne.</p>
                 <span class="home-features__link">Pourquoi un seul interlocuteur →</span>
             </a>
         </div>
@@ -73,23 +78,65 @@
     <div class="container">
         <div class="cws-section__head">
             <span class="home-overtitle">Pourquoi un seul interlocuteur</span>
-            <h2 class="home-section-title">Votre commercial et votre webmaster, c'est la même personne.</h2>
+            <h2 class="home-section-title">Votre site et ce qui le fait vivre, pensés ensemble.</h2>
         </div>
         <div class="cws-signature__grid">
             <div class="cws-signature__col">
-                <h3>Le web</h3>
-                <p>Des sites et des outils qui servent à vendre, pas à faire joli. Je les conçois et je les code moi-même.</p>
+                <h3>La com</h3>
+                <p>Faire vivre votre présence en ligne chaque mois&nbsp;: fiche Google, blog, réseaux, Google et les IA. Avec un vrai suivi des résultats.</p>
             </div>
             <div class="cws-signature__lien" data-controller="wave-draw">
                 <span class="cws-signature__axe" aria-hidden="true"><span class="vague__clip"><svg class="vague__trait" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg></span></span>
                 <span class="cws-signature__label">Un seul interlocuteur</span>
             </div>
             <div class="cws-signature__col">
-                <h3>Le commerce</h3>
-                <p>Trouver des clients, structurer la prospection, répondre aux appels d'offres. Ce que j'ai fait sur le terrain pendant des années.</p>
+                <h3>Le web</h3>
+                <p>Des sites et des outils qui servent à vendre, pas à faire joli. Je les conçois et je les code moi-même.</p>
             </div>
         </div>
+        {# Chargee de com : emplacement pret, affiche quand David le decide
+           (m.chargee_com_presentee). Photo, prenom et deux lignes a fournir : rien d'invente. #}
+        {% if m.chargee_com_presentee()|trim is not empty %}
+        <div class="cws-equipe">
+            {# TODO CONTENU : photo (public/images/equipe/chargee-com.webp), prenom, deux lignes #}
+            <p class="cws-equipe__texte"><strong>[Prénom]</strong>, chargée de communication&nbsp;: [deux lignes de présentation].</p>
+        </div>
+        {% endif %}
         <p class="cws-signature__more"><a href="/page/pourquoi-un-seul-interlocuteur">Pourquoi c'est plus efficace <span class="cw-arrow" aria-hidden="true">→</span></a></p>
+    </div>
+</section>
+
+{# ====== 3 bis. LA COM (brief du 09/11/2026) ======
+   Avant le web. Memes cartes que les marches du web, sur une grille plate :
+   les modules se combinent, ce ne sont pas des paliers. Prix : client/_macros. #}
+{% set modulesCom = [
+    { nom: 'Fiche Google', titre: 'Être trouvé sur Google', texte: 'Publications, réponses aux avis, informations à jour.', prix: m.prix_com_fiche(), engagement: 'Sans engagement' },
+    { nom: 'Blog', titre: 'Publier des articles qui attirent', texte: '2 articles par mois, écrits pour Google et pour les IA.', prix: m.prix_com_blog(), engagement: 'Engagement 3 mois' },
+    { nom: 'Réseaux', titre: 'Animer vos réseaux', texte: '8 à 12 posts par mois sur 2 réseaux, textes et visuels fournis.', prix: m.prix_com_reseaux(), engagement: 'Engagement 3 mois' },
+    { nom: 'SEO + GEO', titre: 'Être visible sur Google et dans les IA', texte: 'Audit, optimisations, suivi des positions et des citations dans ChatGPT, Perplexity…', prix: m.prix_com_seo(), engagement: 'Engagement 6 mois' },
+] %}
+<section class="cws-section cws-section--alt" id="com">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">La com</span>
+            <h2 class="home-section-title">Être trouvé, publier, animer&nbsp;: on fait vivre votre présence en ligne</h2>
+            <p>Vous choisissez les modules dont vous avez besoin, on s'occupe du reste chaque mois, avec un rapport clair.</p>
+            <p class="cws-section__prix">Dès {{ m.prix_com_fiche() }}&nbsp;€&nbsp;HT/mois</p>
+        </div>
+        <ul class="cws-cartes cws-cartes--4 cws-modules" data-controller="reveal" data-reveal-stagger-value="90">
+            {% for mod in modulesCom %}
+            <li class="cws-marche cws-module">
+                <span class="cws-marche__etiquette">{{ mod.nom }}</span>
+                <h3 class="cws-marche__titre">{{ mod.titre }}</h3>
+                <p>{{ mod.texte|insecables }}</p>
+                <ul class="cws-puces">
+                    <li>{{ mod.prix }}&nbsp;€&nbsp;HT/mois</li>
+                    <li>{{ mod.engagement }}</li>
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+        <p class="cws-signature__more"><a href="{{ lienCom }}" class="cws-offre__lien">Composer mon offre <span class="cw-arrow" aria-hidden="true">→</span></a></p>
     </div>
 </section>
 
@@ -122,6 +169,7 @@
                         <li>Prix fixe, dès 450 € HT</li>
                         <li>Vous modifiez vos textes vous-même</li>
                         <li>Prêt pour Google</li>
+                        <li>Option&nbsp;: <a href="{{ lienCom }}">on le fait vivre pour vous</a></li>
                     </ul>
                     <a href="/service/votre-site-web" class="cws-carte__lien">Votre site web <span class="cw-arrow" aria-hidden="true">→</span></a>
                 </li>
@@ -176,40 +224,28 @@
     </div>
 </section>
 
-{# ====== 5. OFFRES COMMERCE (apres le web, brief du 05/11/2026) ====== #}
-<section class="cws-section cws-offres" id="commerce">
+{# ====== 5. LE COMMERCE, EN RETRAIT (09/11/2026) ======
+   Bandeau apres le web : Enleys a sa propre com. Les 3 fiches commerce restent
+   en ligne, accessibles par la page Developpement commercial et le pied de page.
+   Ancre #commerce gardee : fil d'Ariane des pages commerce. #}
+<section class="cws-section cws-section--bandeau" id="commerce">
     <div class="container">
-        <div class="cws-section__head">
-            <span class="home-overtitle">Le commerce</span>
-            <h2 class="home-section-title">Développer vos ventes, sans recruter</h2>
+        <div class="cws-bandeau">
+            <div>
+                <p class="cws-bandeau__titre">Besoin de prospection B2B&nbsp;?</p>
+                <p>En Occitanie, je travaille en partenariat avec le réseau <a href="{{ m.lien_enleys() }}" target="_blank" rel="noopener">Enleys <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>&nbsp;: prospection, direction commerciale externalisée, appels d'offres.</p>
+            </div>
+            <a href="/page/developpement-commercial" class="cws-offre__lien">Développement commercial <span class="cw-arrow" aria-hidden="true">→</span></a>
         </div>
-        {% set offres = [
-            { num: '01', titre: 'Externalisation commerciale B2B', texte: 'Je prends en charge votre prospection de A à Z : ciblage, appels par une équipe dédiée, qualification des contacts. Vous recevez des leads qualifiés et vous vous concentrez sur la signature.', lien: '/service/externalisation-commerciale-b2b' },
-            { num: '02', titre: 'Direction commerciale externalisée', texte: "Vous n'avez pas de directeur commercial ? Je joue ce rôle à temps partagé : diagnostic, plan d'action, formation de votre équipe, suivi des résultats.", lien: '/service/direction-commerciale-externalisee' },
-            { num: '03', titre: "Réponse aux appels d'offres", texte: 'Je repère les marchés publics et privés à votre portée, j\'analyse le dossier, je rédige et je dépose votre réponse.', lien: '/service/externalisation-appels-d-offres' },
-        ] %}
-        <div class="cws-offres__liste">
-            {% for o in offres %}
-            <article class="cws-offre" data-controller="reveal">
-                <div class="cws-offre__tete">
-                    <span class="cws-num" aria-hidden="true">{{ o.num }}</span>
-                    <h3 class="cws-offre__titre">{{ o.titre }}</h3>
-                </div>
-                <div class="cws-offre__corps">
-                    <p>{{ o.texte }}</p>
-                    <a href="{{ o.lien }}" class="cws-offre__lien">Découvrir l'offre<span class="visually-hidden"> {{ o.titre }}</span> <span class="cw-arrow" aria-hidden="true">→</span></a>
-                </div>
-            </article>
-            {% endfor %}
-        </div>
-        {% include 'client/_zone_commerce.html.twig' %}
     </div>
 </section>
 
 {# ====== 6. CHIFFRES : retiree (decision David, 05/11/2026) ====== #}
 
 {# ====== 8. TEMOIGNAGES ======
-   Titre en base : « Nom — Entreprise » (entreprise facultative). #}
+   Titre en base : « Nom — Entreprise » (entreprise facultative).
+   Jusqu'a 6 (09/11/2026) : de la place pour les futurs temoignages com,
+   a ajouter en base (galerie, emplacement testimonial). Rien d'invente. #}
 {% set testimonials = site.getGalleryBySlot('testimonial') %}
 {% if testimonials|length > 0 %}
 <section class="home-testimonials">
@@ -218,7 +254,7 @@
             <h2 class="home-section-title">Ils ont travaillé avec moi</h2>
         </div>
         <div class="cws-temoignages" data-controller="reveal" data-reveal-stagger-value="90">
-            {% for item in testimonials|slice(0, 3) %}
+            {% for item in testimonials|slice(0, 6) %}
             {% set parts = item.title|default('')|split(' — ', 2) %}
             <figure class="cws-temoignage">
                 <span class="cws-temoignage__guillemet" aria-hidden="true">“</span>
