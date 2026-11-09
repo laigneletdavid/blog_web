@@ -3,9 +3,9 @@
    Offre Com : 4 modules independants (pas des paliers), un pack, une mise en
    place unique. Prix : client/_macros (prix_com_*). Le texte vit ici ; en base,
    la fiche garde titre, slug, resume et SEO.
-   Voix : David garde la strategie et la vente (« je ») ; l'execution est faite
-   par une equipe (« on »). Aucun resultat chiffre promis : on s'engage sur les
-   moyens et on montre les resultats.
+   Voix : « je » partout (David, 09/11/2026), meme si une chargee de com execute.
+   Zone : le local d'abord (Comminges, Occitanie). Aucun resultat chiffre promis :
+   engagement sur les moyens, resultats montres.
    Les 3 questions de la FAQ sont aussi en base (FAQ de la home et /faq) :
    si une reponse change, la changer aux deux endroits.
    ====================================================================== #}
@@ -18,7 +18,7 @@
 {% set offreLancement = m.offre_lancement_com()|trim is not empty %}
 {% set modules = [
     { cle: 'fiche', nom: 'Fiche Google', titre: 'Être trouvé sur Google', prix: prix.fiche, engagement: 'Sans engagement au-delà du 1er mois',
-      texte: "Votre fiche Google, c'est souvent la première chose que voit un client qui cherche près de chez lui. On la garde vivante et à jour.",
+      texte: "Votre fiche Google, c'est souvent la première chose que voit un client qui cherche près de chez lui. Je la garde vivante et à jour.",
       puces: ['4 publications par mois', 'Réponses à vos avis', 'Horaires, services et photos à jour', 'Un mini-rapport chaque mois'] },
     { cle: 'blog', nom: 'Blog', titre: 'Publier des articles qui attirent', prix: prix.blog, engagement: 'Engagement 3 mois, puis mensuel',
       texte: "Des articles qui répondent aux questions de vos clients, pour remonter sur Google et être repris par les IA.",
@@ -48,11 +48,11 @@
             <div>
                 <p class="home-hero__overtitle">La com — Communication et visibilité</p>
                 <h1 class="home-hero__title">Votre présence en ligne, tenue {{ m.vague('chaque mois') }}</h1>
-                <p class="home-hero__desc">{{ "Vous savez qu'il faut être visible, mais vous n'avez pas le temps de publier ni de suivre. On le fait pour vous, et chaque mois vous recevez un rapport clair : ce qui a été fait, et ce que ça donne."|insecables }}</p>
+                <p class="home-hero__desc">{{ "Vous savez qu'il faut être visible, mais vous n'avez pas le temps de publier ni de suivre. Je le fais pour vous, et chaque mois vous recevez un rapport clair : ce qui a été fait, et ce que ça donne."|insecables }}</p>
                 <div class="home-hero__actions">
                     <a href="{{ m.lien_rdv() }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
                 </div>
-                <p class="cws-zone">Partout en France, à distance&nbsp;; sur place en Occitanie (Toulouse, Montpellier, Comminges…).</p>
+                <p class="cws-zone">Basé en Comminges, pour les entreprises du Comminges et de toute l'Occitanie (Toulouse, Montpellier…).</p>
             </div>
             {% include 'client/_carte_prix.html.twig' with {
                 libelle: 'Offre Com — 4 modules au choix',
@@ -121,9 +121,9 @@
 
 {# ====== 4. COMMENT ÇA SE PASSE ====== #}
 {% set etapes = [
-    { titre: 'Un rendez-vous gratuit', texte: "On regarde votre situation ensemble et on choisit les modules qui ont du sens pour vous." },
+    { titre: 'Un rendez-vous gratuit', texte: "Je regarde votre situation et je vous aide à choisir les modules qui ont du sens pour vous." },
     { titre: 'La mise en place, une fois', texte: "Diagnostic de départ (état de votre fiche, 5 à 10 mots-clés locaux, un test dans les IA, quelques recommandations) et fiche Google remise à neuf : catégories, description, horaires, services, photos, liens. " ~ m.euros(prix.mise_en_place) ~ " HT." },
-    { titre: 'Chaque mois, on publie', texte: "On prépare, vous validez (surtout au début), on publie." },
+    { titre: 'Chaque mois, je publie', texte: "Je prépare, vous validez (surtout au début), je publie." },
     { titre: 'Chaque mois, un rapport', texte: "Une page claire : ce qui a été fait, ce que ça donne, ce qui vient." },
     { titre: 'Chaque trimestre, un bilan en euros', texte: "Combien de demandes sont arrivées, et si l'abonnement est rentabilisé." },
 ] %}
@@ -156,7 +156,7 @@
         <ul class="cws-atouts" data-controller="reveal" data-reveal-stagger-value="70">
             <li><h3>3 chiffres clés</h3><p>{{ "Comparés au mois de départ : par exemple les appels depuis votre fiche Google, les visites du site, les nouveaux avis."|insecables }}</p></li>
             <li><h3>Ce qui a été fait</h3><p>Les publications, les articles, les réponses aux avis, les optimisations du mois.</p></li>
-            <li><h3>Ce qui est prévu</h3><p>Le programme du mois suivant, pour que vous sachiez où on va.</p></li>
+            <li><h3>Ce qui est prévu</h3><p>Le programme du mois suivant, pour que vous sachiez où je vais.</p></li>
         </ul>
         <p class="cws-section__texte">{{ "Je ne vous promets pas de chiffres à l'avance. Je m'engage sur le travail fait, et je vous montre les résultats."|insecables }}</p>
     </div>
@@ -212,8 +212,8 @@
 {# ====== 8. FAQ (memes reponses qu'en base, FAQ 13 a 15) ====== #}
 {% set faqPage = [
     { q: "Combien de temps avant d'être plus visible sur Google ?", r: "Ça dépend du levier. Une fiche Google bien tenue donne des effets en quelques semaines. Un blog et le référencement demandent plutôt 3 à 6 mois : Google met du temps à faire confiance à un site. C'est pour ça que les durées d'engagement ne sont pas les mêmes d'un module à l'autre." },
-    { q: 'Être cité par ChatGPT ou Perplexity, c’est possible ?', r: "Oui, et ça se travaille : c'est ce qu'on appelle le GEO. Les IA reprennent des contenus clairs et bien structurés, qui répondent aux vraies questions de vos clients. Elles s'appuient aussi sur une présence cohérente partout : votre fiche Google, votre site, vos réseaux. Personne ne peut garantir d'être cité, mais on peut vous rendre facile à citer, et on vérifie chaque mois si vous l'êtes." },
-    { q: 'Qu’est-ce que je dois fournir ?', r: "Vos accès (fiche Google, site, réseaux), les informations sur votre activité, et vos limites : ce que vous ne voulez pas voir publié. Au début, vous validez les contenus avant publication. Pour les réseaux, on fournit les textes, des photos génériques et des infographies. Les vidéos ne sont pas incluses." },
+    { q: 'Être cité par ChatGPT ou Perplexity, c’est possible ?', r: "Oui, et ça se travaille : c'est ce qu'on appelle le GEO. Les IA reprennent des contenus clairs et bien structurés, qui répondent aux vraies questions de vos clients. Elles s'appuient aussi sur une présence cohérente partout : votre fiche Google, votre site, vos réseaux. Personne ne peut garantir d'être cité, mais je peux vous rendre facile à citer, et je vérifie chaque mois si vous l'êtes." },
+    { q: 'Qu’est-ce que je dois fournir ?', r: "Vos accès (fiche Google, site, réseaux), les informations sur votre activité, et vos limites : ce que vous ne voulez pas voir publié. Au début, vous validez les contenus avant publication. Pour les réseaux, je fournis les textes, des photos génériques et des infographies. Les vidéos ne sont pas incluses." },
 ] %}
 {% include 'client/_faq_page.html.twig' with { faqItems: faqPage, faqId: 'faq-com' } %}
 
@@ -229,12 +229,12 @@
 {% include 'client/_jsonld_service_commerce.html.twig' with {
     nom: 'Communication et visibilité en ligne',
     description: service.seoDescription|default(''),
-    zone: 'France',
+    zone: 'Occitanie',
     offres: offresJson
 } %}
 
 {# ====== 9. APPEL FINAL ====== #}
 {% include 'client/_cta_final.html.twig' with {
-    cta_titre: 'On regarde ensemble votre visibilité ?',
-    cta_texte: "30 minutes, gratuit. On regarde votre fiche Google, votre site et ce que les IA disent de vous, et je vous dis par où commencer."
+    cta_titre: 'Un point sur votre visibilité ?',
+    cta_texte: "30 minutes, gratuit. Je regarde votre fiche Google, votre site et ce que les IA disent de vous, et je vous dis par où commencer."
 } %}
