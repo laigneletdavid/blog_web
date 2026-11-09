@@ -53,7 +53,7 @@
     { icone: 'evenements', nom: 'Événements', prix: prix_module, texte: 'Portes ouvertes, ateliers, marchés, formations : date, lieu, description et inscription. Vos abonnés sont prévenus à chaque nouvel événement.', ideal: ['formateurs', 'associations', 'commerces avec des animations', 'thérapeutes qui organisent des ateliers'] },
     { icone: 'annuaire', nom: 'Annuaire', prix: prix_module, texte: 'Contacts, partenaires, membres ou points de vente, chacun avec sa fiche, consultables en quelques clics.', ideal: ['associations', 'réseaux professionnels', 'franchises', 'groupements d’artisans'] },
     { icone: 'catalogue', nom: 'Catalogue', prix: prix_module, texte: 'Vos produits avec fiche, photo, description et prix : une vitrine organisée, sans paiement en ligne. Inclus dans l’offre Vente en ligne.', ideal: ['commerçants', 'artisans créateurs', 'producteurs', 'traiteurs'] },
-    { icone: 'marketing', nom: 'Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes. Inclus dans l’offre Vente en ligne.', ideal: ['ceux qui font de la publicité en ligne', 'lancent une nouvelle offre', 'remplissent une session de formation'] },
+    { icone: 'marketing', nom: 'Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes, plus un diagnostic de départ et votre fiche Google remise à neuf. Statistiques et landing pages incluses dans l’offre Vente en ligne.', ideal: ['ceux qui veulent être trouvés près de chez eux', 'font de la publicité en ligne', 'lancent une nouvelle offre'], lien: 'https://www.comwebsolutions.fr/service/communication-visibilite', lien_libelle: 'L’animation chaque mois : l’offre Com' },
 ] %}
 
 {% macro icone(svg, taille = 24) %}<svg xmlns="http://www.w3.org/2000/svg" width="{{ taille }}" height="{{ taille }}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">{{ svg|raw }}</svg>{% endmacro %}
@@ -216,11 +216,12 @@
                 <h3 class="cw-options__nom">{{ o.nom }}</h3>
                 <p class="cw-options__prix"><strong>+{{ m.euros(o.prix) }} HT</strong> <span>({{ m.euros(o.prix * 1.2) }} TTC)</span></p>
                 <p class="cw-options__texte">{{ o.texte }}</p>
+                {% if o.lien is defined %}<p class="cw-options__lien"><a href="{{ o.lien }}" target="_blank" rel="noopener">{{ o.lien_libelle }}<span class="visually-hidden"> (nouvel onglet)</span> <span aria-hidden="true">→</span></a></p>{% endif %}
                 {{ _self.ideal(o.ideal) }}
             </li>
             {% endfor %}
         </ul>
-        <p class="cw-sources">Événements, Annuaire et Catalogue : {{ m.euros(prix_module) }} HT chacun, une seule fois. Marketing : {{ m.euros(prix_marketing) }} HT. Le blog est inclus dans l'offre Blog.</p>
+        <p class="cw-sources">Événements, Annuaire et Catalogue : {{ m.euros(prix_module) }} HT chacun, une seule fois. Marketing : {{ m.euros(prix_marketing) }} HT, une seule fois. Le blog est inclus dans l'offre Blog.</p>
     </div>
 </section>
 

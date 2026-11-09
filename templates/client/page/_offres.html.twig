@@ -36,7 +36,7 @@
 {# Options a la carte : prix dans client/_offres.html.twig (TTC = HT x 1,2) #}
 {% set options = [
     { nom: 'Module supplémentaire', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'module' })|trim, texte: 'Événements, Annuaire, Catalogue… : ajoutez le module dont vous avez besoin, hors Blog et Marketing.' },
-    { nom: 'Module Marketing', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'marketing' })|trim, texte: 'Landing pages et statistiques avancées. Déjà inclus dans Vente en ligne.' },
+    { nom: 'Option Marketing', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'marketing' })|trim, texte: 'Statistiques avancées et landing pages, plus la mise en place de votre visibilité : diagnostic de départ et fiche Google remise à neuf. Une seule fois. Statistiques et landing pages déjà incluses dans Vente en ligne.', lien: 'https://www.comwebsolutions.fr/service/communication-visibilite', lien_libelle: 'Faire vivre votre visibilité chaque mois : l’offre Com' },
     { nom: 'Design sur mesure', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'design' })|trim, texte: 'Nous intégrons le design spécifique de votre choix à la place des thèmes proposés.' },
     { nom: 'Rédaction des contenus', prix_ht: null, texte: 'Pas le temps d’écrire ? Nous rédigeons les textes de votre site.' },
     { nom: 'Fonctionnalité spécifique', prix_ht: null, texte: 'Un besoin qui sort des modules existants ? On en parle, puis on le chiffre.' },
@@ -125,6 +125,7 @@
                     {% else %}<strong>Sur devis</strong>{% endif %}
                 </p>
                 <p class="cw-options__texte">{{ o.texte }}</p>
+                {% if o.lien is defined %}<p class="cw-options__lien"><a href="{{ o.lien }}" target="_blank" rel="noopener">{{ o.lien_libelle }}<span class="visually-hidden"> (nouvel onglet)</span> <span aria-hidden="true">→</span></a></p>{% endif %}
             </li>
             {% endfor %}
         </ul>
