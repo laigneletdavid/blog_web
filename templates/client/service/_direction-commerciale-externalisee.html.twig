@@ -15,7 +15,7 @@
     h1_avant: 'Un directeur commercial, sans le coût d’un ',
     h1_vague: 'CDI',
     texte: "Vous n'avez pas de directeur commercial en interne ? Je joue ce rôle à temps partagé : je structure votre développement commercial, je le pilote avec vous chaque semaine et je forme votre équipe.",
-    carte: { libelle: 'Direction commerciale externalisée', prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Point stratégique chaque semaine', 'Prospection et appels d’offres intégrés', 'CRM et reporting inclus'] }
+    carte: { libelle: 'Direction commerciale externalisée', prix: 'dès ' ~ m.prix_direction() ~ ' €' ~ ht ~ '<small>/mois</small>', puces: ['Point stratégique chaque semaine', 'Veille des appels d’offres incluse', 'CRM et reporting inclus'] }
 } %}
 
 {# ====== 2. LE CONSTAT ====== #}
@@ -68,25 +68,32 @@
     </div>
 </section>
 
-{# ====== 5. CE QUI EST INCLUS ====== #}
+{# ====== 5. CE QUE JE PRENDS EN CHARGE (David, 10/11/2026) ======
+   Un catalogue d'outils, pas un forfait ou tout est fait chaque mois : les
+   leviers sont choisis a la reunion de cadrage, selon la strategie definie.
+   Appels d'offres : la veille est comprise, le montage de dossier est en option
+   (prix_ao_dossier). Les appels de l'equipe de teleoperateurs relevent de
+   l'offre Prospection B2B. #}
 <section class="cws-section" id="inclus">
     <div class="container">
         <div class="cws-section__head">
-            <h2 class="home-section-title">Ce qui est inclus</h2>
+            <h2 class="home-section-title">Ce que je prends en charge</h2>
+            <p>Je peux intervenir sur tout votre cycle commercial. On commence par ce qui compte le plus pour vous, selon la stratégie définie.</p>
         </div>
         <ul class="cws-checklist">
-            <li>Prospection téléphonique et par email</li>
-            <li>Réponse aux appels d'offres</li>
-            <li>Point stratégique chaque semaine</li>
-            <li>Accès au CRM avec reporting automatique</li>
-            <li>Base de données B2B qualifiée</li>
-            <li>Formation de votre équipe si besoin</li>
             <li>Audit gratuit au démarrage, par téléphone</li>
-            <li>Recrutement de vos commerciaux si besoin</li>
-            <li>Marketing et communication commerciale</li>
+            <li>Plan d'action commercial</li>
+            <li>Point stratégique chaque semaine</li>
+            <li>Organisation et pilotage de votre prospection (téléphone et email)</li>
+            <li>Veille des appels d'offres</li>
+            <li>Base de données B2B qualifiée</li>
+            <li>Accès au CRM, avec reporting automatique</li>
             <li>Optimisation de votre CRM</li>
+            <li>Argumentaires et supports commerciaux</li>
+            <li>Formation de votre équipe</li>
+            <li>Recrutement de vos commerciaux</li>
         </ul>
-        <p class="cws-rappel-prix">{{ ('D' ~ prix|slice(1))|raw }}, sans engagement.</p>
+        <p class="cws-rappel-prix">{{ ('D' ~ prix|slice(1))|raw }}, sans engagement. En option&nbsp;: le montage de vos dossiers d'appels d'offres, {{ m.prix_ao_dossier() }}&nbsp;€{{ ht }} par dossier.</p>
     </div>
 </section>
 
