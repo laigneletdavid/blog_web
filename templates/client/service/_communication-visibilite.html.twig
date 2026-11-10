@@ -17,7 +17,7 @@
 {% endfor %}
 {% set offreLancement = m.offre_lancement_com()|trim is not empty %}
 {% set modules = [
-    { cle: 'fiche', nom: 'Fiche Google', titre: 'Être trouvé sur Google', prix: prix.fiche, engagement: 'Sans engagement au-delà du 1er mois',
+    { cle: 'fiche', nom: 'Fiche Google', titre: 'Être trouvé sur Google', prix: prix.fiche, engagement: 'Sans engagement',
       texte: "Votre fiche Google, c'est souvent la première chose que voit un client qui cherche près de chez lui. Je la garde vivante et à jour.",
       puces: ['4 publications par mois', 'Réponses à vos avis', 'Horaires, services et photos à jour', 'Un mini-rapport chaque mois'] },
     { cle: 'blog', nom: 'Blog', titre: 'Publier des articles qui attirent', prix: prix.blog, engagement: 'Engagement 3 mois, puis mensuel',
@@ -58,7 +58,7 @@
                 libelle: 'Offre Com — 4 modules au choix',
                 prix: '<small>à partir de</small> ' ~ prix.fiche ~ ' € HT<small>/mois</small>',
                 complement: 'Fiche Google, blog, réseaux, SEO + GEO',
-                engagement: 'Engagement de 1 à 6 mois selon le module',
+                engagement: 'Sans engagement ou jusqu’à 6 mois, selon le module',
                 puces: ['Vous choisissez vos modules', 'Un rapport clair chaque mois', 'Un bilan en euros chaque trimestre'],
                 lien_ancre: '#modules',
                 lien_libelle: 'Voir les 4 modules'
@@ -199,7 +199,7 @@
         </div>
         <ul class="cws-checklist">
             <li>Tous les prix sont hors taxes.</li>
-            <li>Chaque module garde sa propre durée d'engagement, même combiné.</li>
+            <li>Chaque module garde sa propre durée d'engagement, même combiné. Le pack Visibilité complète, lui, vous engage 6 mois pour l'ensemble.</li>
             <li>Un seul rapport mensuel regroupe tous vos modules.</li>
             <li>Mise en place ({{ m.euros(prix.mise_en_place) }} HT) facturée une seule fois, quel que soit le nombre de modules.</li>
             <li>Client ComWeb Studio&nbsp;: la mise en place correspond à l'option Marketing de Studio, statistiques et landing pages en plus.</li>
