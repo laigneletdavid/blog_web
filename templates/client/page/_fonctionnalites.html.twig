@@ -44,16 +44,16 @@
         'Les contacts reçus par votre site',
         'La santé de votre site, et un conseil pour le mois prochain',
       ] },
-    { icone: 'marketing', surtitre: 'Inclus dans Vente en ligne, en option sur les autres formules', titre: 'Des landing pages qui mesurent vos campagnes',
+    { icone: 'marketing', surtitre: 'Option Marketing — landing pages incluses dans Vente en ligne', titre: 'Des landing pages qui mesurent vos campagnes',
       texte: 'Une pub Google ou Facebook, un flyer avec QR code, un emailing : le visiteur arrive sur une page épurée, sans menu ni distraction. Un message, une promesse, un bouton. Et vous savez combien sont venus et combien ont répondu, campagne par campagne.',
-      points: ['Pages de destination illimitées', 'Statistiques avancées par campagne', 'Prise de rendez-vous ou formulaire de contact'] },
+      points: ['Pages de destination illimitées', 'Statistiques avancées par campagne', 'Prise de rendez-vous ou formulaire de contact', 'Avec l’option : diagnostic de départ et fiche Google remise à neuf'] },
 ] %}
 
 {% set options = [
     { icone: 'evenements', nom: 'Événements', prix: prix_module, texte: 'Portes ouvertes, ateliers, marchés, formations : date, lieu, description et inscription. Vos abonnés sont prévenus à chaque nouvel événement.', ideal: ['formateurs', 'associations', 'commerces avec des animations', 'thérapeutes qui organisent des ateliers'] },
     { icone: 'annuaire', nom: 'Annuaire', prix: prix_module, texte: 'Contacts, partenaires, membres ou points de vente, chacun avec sa fiche, consultables en quelques clics.', ideal: ['associations', 'réseaux professionnels', 'franchises', 'groupements d’artisans'] },
     { icone: 'catalogue', nom: 'Catalogue', prix: prix_module, texte: 'Vos produits avec fiche, photo, description et prix : une vitrine organisée, sans paiement en ligne. Inclus dans l’offre Vente en ligne.', ideal: ['commerçants', 'artisans créateurs', 'producteurs', 'traiteurs'] },
-    { icone: 'marketing', nom: 'Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes, plus un diagnostic de départ et votre fiche Google remise à neuf. Statistiques et landing pages incluses dans l’offre Vente en ligne.', ideal: ['ceux qui veulent être trouvés près de chez eux', 'font de la publicité en ligne', 'lancent une nouvelle offre'], lien: 'https://www.comwebsolutions.fr/service/communication-visibilite', lien_libelle: 'L’animation chaque mois : l’offre Com' },
+    { icone: 'marketing', nom: 'Option Marketing', prix: prix_marketing, texte: 'Landing pages et statistiques avancées pour vos campagnes, plus un diagnostic de départ et votre fiche Google remise à neuf. Statistiques et landing pages incluses dans l’offre Vente en ligne.', ideal: ['ceux qui veulent être trouvés près de chez eux', 'font de la publicité en ligne', 'lancent une nouvelle offre'], lien: 'https://www.comwebsolutions.fr/service/communication-visibilite', lien_libelle: 'L’animation chaque mois : l’offre Com' },
 ] %}
 
 {% macro icone(svg, taille = 24) %}<svg xmlns="http://www.w3.org/2000/svg" width="{{ taille }}" height="{{ taille }}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">{{ svg|raw }}</svg>{% endmacro %}
@@ -221,7 +221,7 @@
             </li>
             {% endfor %}
         </ul>
-        <p class="cw-sources">Événements, Annuaire et Catalogue : {{ m.euros(prix_module) }} HT chacun, une seule fois. Marketing : {{ m.euros(prix_marketing) }} HT, une seule fois. Le blog est inclus dans l'offre Blog.</p>
+        <p class="cw-sources">Événements, Annuaire et Catalogue : {{ m.euros(prix_module) }} HT chacun, une seule fois. Option Marketing : {{ m.euros(prix_marketing) }} HT, une seule fois. Le blog est inclus dans l'offre Blog.</p>
     </div>
 </section>
 
