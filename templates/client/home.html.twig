@@ -89,6 +89,43 @@
 </section>
 {% endif %}
 
+{# ====== 3.8 TEMOIGNAGES ======
+   Sous les sites clients depuis le 10/11/2026 (politique commerciale v1) :
+   avis des clients en reference, a demander puis saisir dans l'admin. #}
+{# TODO CONTENU : témoignage (citation, prénom, métier, ville), à saisir dans l'admin
+   (galerie du site, emplacement « testimonial ») : texte = citation, titre = « Prénom, métier, ville ».
+   0 avis : section masquée. 1 avis : citation mise en avant. 2 ou 3 : grille de cartes. #}
+{% set testimonials = site.getGalleryBySlot('testimonial') %}
+{% if testimonials|length == 1 %}
+{% set avis = testimonials|first %}
+<section class="home-testimonials home-testimonials--single">
+    <div class="container">
+        <h2 class="visually-hidden">Ce que disent nos clients</h2>
+        <figure class="home-quote" data-controller="reveal">
+            <svg class="home-quote__vague" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg>
+            <blockquote class="home-quote__text">
+                <p>{{ avis.content }}</p>
+            </blockquote>
+            <figcaption class="home-quote__author">
+                {% if avis.media %}
+                <img src="{{ asset('documents/medias/' ~ (avis.media.webpFileName ?? avis.media.fileName)) }}" alt="" class="home-quote__avatar" width="56" height="56" loading="lazy">
+                {% endif %}
+                <span>{{ avis.title }}</span>
+            </figcaption>
+        </figure>
+    </div>
+</section>
+{% elseif testimonials|length > 1 %}
+<section class="home-testimonials">
+    <div class="container">
+        <div data-controller="reveal">
+            <h2 class="home-section-title text-center">Ce que disent nos clients</h2>
+            {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
 {# ====== 3.4 POURQUOI PAS WORDPRESS ====== #}
 <section class="home-wordpress-compare">
     <div class="container">
@@ -142,22 +179,26 @@
     </div>
 </section>
 
-{# ====== 3.6 COMMENT CA MARCHE : 4 etapes ====== #}
+{# ====== 3.6 COMMENT CA MARCHE : 5 etapes ====== #}
 {# Parcours valide par David le 4/11/2026 : une vraie discussion d'abord (prise de rendez-vous
    Google Agenda, nouvel onglet), le questionnaire ensuite. Etapes 3 et 4 reprises des cartes
-   de service ; les pages /service/* restent en ligne. #}
+   de service ; les pages /service/* restent en ligne.
+   Etape 5 et encadre (politique commerciale v1, 10/11/2026) : le parcours ne
+   s'arrete plus a la mise en ligne ; lien vers l'offre Com de comwebsolutions.fr. #}
+{% set lienCom = 'https://www.comwebsolutions.fr/service/communication-visibilite' %}
 {% set lienRendezVous = m.lien_rdv() %}
 {% set etapes = [
     { titre: 'On parle de votre projet', texte: 'Autour d’un café, au téléphone ou en visio : 30 minutes pour comprendre votre métier et vos besoins. Gratuit et sans engagement.', lien: lienRendezVous, libelle: 'Réserver un créneau', externe: true },
     { titre: 'On installe en 48 h', texte: 'Vous remplissez un questionnaire guidé, on s’occupe du reste : nom de domaine, hébergement, sécurité.', lien: '/service/votre-site-est-pret-en-48-h' },
     { titre: 'Vous écrivez, simplement', texte: 'Vous racontez votre métier, vos services, avec un éditeur simple comme Word. Pas besoin de coder.', lien: '/service/vous-gerez-votre-contenu-en-toute-autonomie' },
     { titre: 'En ligne, et on reste là', texte: 'Formation de 30 min, guide écrit et support continu : un seul interlocuteur pour vos questions.', lien: '/service/on-ne-vous-laisse-pas-seul-apres-la-livraison' },
+    { titre: 'On le fait vivre (si vous voulez)', texte: 'Un site seul ne fait pas venir les clients. Fiche Google, articles, réseaux : on peut s’en occuper pour vous, avec un rapport chaque mois.', lien: lienCom, libelle: 'Voir l’offre Communication', externe: true },
 ] %}
 <section class="home-steps">
     <div class="container">
         <div class="text-center" data-controller="reveal">
             <h2 class="home-section-title">Comment ça se passe concrètement</h2>
-            <p class="home-section-subtitle">De notre premier échange à votre site en ligne, voici ce que vous allez vivre.</p>
+            <p class="home-section-subtitle">De notre premier échange à votre site en ligne, et après, voici ce que vous allez vivre.</p>
         </div>
         <ol class="home-steps__list" data-controller="reveal" data-reveal-stagger-value="70">
             {% for e in etapes %}
@@ -175,6 +216,10 @@
             </li>
             {% endfor %}
         </ol>
+        <div class="home-steps__apres" data-controller="reveal">
+            <p>Un site livré en 48&nbsp;h, c’est bien. Un site que vos clients trouvent, c’est mieux.</p>
+            <a href="{{ lienCom }}" target="_blank" rel="noopener">Voir l’offre Communication<span class="visually-hidden"> (nouvel onglet)</span> &rarr;</a>
+        </div>
     </div>
 </section>
 
@@ -192,41 +237,6 @@
         </div>
     </div>
 </section>
-
-{# ====== 3.8 TEMOIGNAGES ====== #}
-{# TODO CONTENU : témoignage (citation, prénom, métier, ville), à saisir dans l'admin
-   (galerie du site, emplacement « testimonial ») : texte = citation, titre = « Prénom, métier, ville ».
-   0 avis : section masquée. 1 avis : citation mise en avant. 2 ou 3 : grille de cartes. #}
-{% set testimonials = site.getGalleryBySlot('testimonial') %}
-{% if testimonials|length == 1 %}
-{% set avis = testimonials|first %}
-<section class="home-testimonials home-testimonials--single">
-    <div class="container">
-        <h2 class="visually-hidden">Ce que disent nos clients</h2>
-        <figure class="home-quote" data-controller="reveal">
-            <svg class="home-quote__vague" aria-hidden="true" viewBox="0 0 200 20" preserveAspectRatio="none"><use href="#bw-vague"/></svg>
-            <blockquote class="home-quote__text">
-                <p>{{ avis.content }}</p>
-            </blockquote>
-            <figcaption class="home-quote__author">
-                {% if avis.media %}
-                <img src="{{ asset('documents/medias/' ~ (avis.media.webpFileName ?? avis.media.fileName)) }}" alt="" class="home-quote__avatar" width="56" height="56" loading="lazy">
-                {% endif %}
-                <span>{{ avis.title }}</span>
-            </figcaption>
-        </figure>
-    </div>
-</section>
-{% elseif testimonials|length > 1 %}
-<section class="home-testimonials">
-    <div class="container">
-        <div data-controller="reveal">
-            <h2 class="home-section-title text-center">Ce que disent nos clients</h2>
-            {% include '_partials/_testimonials_grid.html.twig' with { testimonials: testimonials } %}
-        </div>
-    </div>
-</section>
-{% endif %}
 
 {# ====== PRODUITS / EVENEMENTS / PORTFOLIO (modules, vides aujourd'hui) ====== #}
 {% if featuredProducts|default([])|length > 0 %}

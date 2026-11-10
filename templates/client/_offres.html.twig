@@ -11,6 +11,10 @@
    Google remise a neuf. Vente en ligne inclut les statistiques et les landing
    pages ; le diagnostic et la fiche Google restent en option (confirme 09/11/2026).
    Meme prix a garder sur bw_cws (client/_macros, prix_com_mise_en_place).
+   Cartes (politique commerciale v1, 10/11/2026) : l'option Marketing est
+   affichee sous chaque formule, avec son contenu (champ marketing).
+   Packs de lancement : packs_prix ci-dessous (vide = pack masque), memes
+   montants que bw_cws (client/_macros, prix_pack_*).
 
    Usage : {% include 'client/_offres.html.twig' with { vue: '…' } %}
      cartes    les 3 cartes (grille) ; surPageOffres: true -> boutons vers #comparatif
@@ -24,11 +28,11 @@
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set offres = [
-    { nom: 'Vitrine', accroche: 'Vos clients vous trouvent enfin sur Google', mois_ht: 30, install_ht: 450, vedette: false,
+    { nom: 'Vitrine', accroche: 'Vos clients vous trouvent enfin sur Google', mois_ht: 30, install_ht: 450, vedette: false, marketing: 'complet',
       inclus: ['Pages personnalisées', 'SEO intégré', 'Formulaire de contact sécurisé', '6 thèmes + personnalisation', 'Modules Services, FAQ et Réalisations', 'Hébergement + maintenance'] },
-    { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 30, install_ht: 550, vedette: true,
+    { nom: 'Blog', accroche: 'Montrez votre expertise et attirez des clients', mois_ht: 30, install_ht: 550, vedette: true, marketing: 'complet',
       inclus: ['Toute l’offre Vitrine', 'Module Blog — articles, catégories, tags'] },
-    { nom: 'Vente en ligne', accroche: 'Vendez vos produits et vos prestations', mois_ht: 50, install_ht: 850, vedette: false,
+    { nom: 'Vente en ligne', accroche: 'Vendez vos produits et vos prestations', mois_ht: 50, install_ht: 850, vedette: false, marketing: 'fiche',
       inclus: ['Toute l’offre Blog', 'Catalogue de produits et de prestations', 'Commande en ligne, retrait sur place ou prestation', 'Paiement par carte (Stripe) ou sur place', 'Bouton de réservation vers votre outil (Airbnb, Booking, agenda)', 'Statistiques avancées et landing pages'] },
 ] %}
 {# Tableau comparatif : true = inclus, false = non, 'option' = en option (voir les options a la carte) #}
@@ -54,6 +58,13 @@
 {% set ttc = 1.2 %}
 {# Options a la carte, prix HT (page Tarifs, page Fonctionnalites) #}
 {% set options_prix = { module: 100, marketing: 290, design: 250 } %}
+{# Packs, prix HT ; '' = masque (refonte : prix a fixer par David) #}
+{% set packs_prix = { lancement: 1790, refonte: '' } %}
+{# Contenu de l'option Marketing selon la formule #}
+{% set marketing_detail = {
+    complet: 'statistiques avancées, landing pages, diagnostic de départ et mise à jour de votre fiche Google, une seule fois',
+    fiche: 'diagnostic de départ et mise à jour de votre fiche Google, une seule fois (statistiques et landing pages déjà incluses)',
+} %}
 
 {% if vue == 'cartes' %}
 <div class="home-pricing__grid" data-controller="reveal" data-reveal-stagger-value="70">
@@ -75,6 +86,9 @@
             <ul class="home-pricing__list">
                 {% for i in o.inclus %}<li>{{ i }}</li>{% endfor %}
             </ul>
+            {% if o.marketing|default(false) %}
+            <p class="home-pricing__option"><strong>Option Marketing&nbsp;: {{ m.euros(options_prix.marketing) }} HT</strong> {{ marketing_detail[o.marketing] }}.</p>
+            {% endif %}
         </div>
         <div class="home-pricing__card-footer">
             {% if surPageOffres|default(false) %}
@@ -132,6 +146,8 @@
 {% set d = offres|first %}{{ m.vague('À partir de ' ~ m.euros(d.install_ht) ~ ' HT') }} <span class="cw-nowrap">+ {{ d.mois_ht }} € HT / mois</span>
 
 {% elseif vue == 'prix_option' %}{{ options_prix[option] }}
+
+{% elseif vue == 'prix_pack' %}{{ packs_prix[pack] }}
 
 {% elseif vue == 'vitrine_install' %}{{ m.euros((offres|first).install_ht) }}
 

@@ -34,9 +34,10 @@
 ] %}
 
 {# Options a la carte : prix dans client/_offres.html.twig (TTC = HT x 1,2) #}
+{% set lienCom = 'https://www.comwebsolutions.fr/service/communication-visibilite' %}
 {% set options = [
     { nom: 'Module supplémentaire', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'module' })|trim, texte: 'Événements, Annuaire, Catalogue… : ajoutez le module dont vous avez besoin (le Blog et l’option Marketing ont leur propre prix).' },
-    { nom: 'Option Marketing', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'marketing' })|trim, texte: 'Statistiques avancées et landing pages, plus la mise en place de votre visibilité : diagnostic de départ et fiche Google remise à neuf. Une seule fois. Statistiques et landing pages déjà incluses dans Vente en ligne.', lien: 'https://www.comwebsolutions.fr/service/communication-visibilite', lien_libelle: 'Faire vivre votre visibilité chaque mois : l’offre Com' },
+    { nom: 'Option Marketing', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'marketing' })|trim, texte: 'Statistiques avancées, landing pages, diagnostic de départ et mise à jour de votre fiche Google. Une seule fois. Avec Vente en ligne, statistiques et landing pages sont déjà incluses : l’option apporte le diagnostic et la fiche Google.', lien: 'https://www.comwebsolutions.fr/service/communication-visibilite', lien_libelle: 'Faire vivre votre visibilité chaque mois : l’offre Com' },
     { nom: 'Design sur mesure', prix_ht: include('client/_offres.html.twig', { vue: 'prix_option', option: 'design' })|trim, texte: 'Nous intégrons le design spécifique de votre choix à la place des thèmes proposés.' },
     { nom: 'Rédaction des contenus', prix_ht: null, texte: 'Pas le temps d’écrire ? Nous rédigeons les textes de votre site.' },
     { nom: 'Fonctionnalité spécifique', prix_ht: null, texte: 'Un besoin qui sort des modules existants ? On en parle, puis on le chiffre.' },
@@ -63,6 +64,52 @@
         </p>
     </div>
 </section>
+
+{# ====== 2 bis. LES PACKS (politique commerciale v1, 10/11/2026) ======
+   Personas « creation » et « refonte ». Forfaits de lancement de 3 mois, jamais
+   « abonnement ». Prix : client/_offres.html.twig (packs_prix) ; un pack sans
+   prix n'est pas affiche (refonte en attente du prix de David). #}
+{% set packLancement = include('client/_offres.html.twig', { vue: 'prix_pack', pack: 'lancement' })|trim %}
+{% set packRefonte = include('client/_offres.html.twig', { vue: 'prix_pack', pack: 'refonte' })|trim %}
+{% if packLancement is not empty or packRefonte is not empty %}
+<section class="cw-section" id="packs">
+    <div class="container">
+        <div class="text-center" data-controller="reveal">
+            <h2 class="home-section-title">Vous lancez votre activité&nbsp;?{% if packRefonte is not empty %} Vous refaites votre site&nbsp;?{% endif %}</h2>
+            <p class="home-section-subtitle">Le site, sa mise en route et ses premiers mois de visibilité, dans un forfait de lancement de 3 mois.</p>
+        </div>
+        <div class="cw-packs{{ packLancement is not empty and packRefonte is not empty ? ' cw-packs--2' }}" data-controller="reveal" data-reveal-stagger-value="70">
+            {% if packLancement is not empty %}
+            <div class="cw-packs__item">
+                <p class="cw-packs__pour">Vous lancez votre activité</p>
+                <h3 class="cw-packs__nom">Pack lancement</h3>
+                <p class="cw-packs__prix"><strong>{{ m.euros(packLancement + 0) }} HT</strong> <span>({{ m.euros((packLancement + 0) * 1.2) }} TTC), forfait de lancement de 3 mois</span></p>
+                <ul class="home-pricing__list">
+                    <li>Votre site, formule Blog</li>
+                    <li>L’option Marketing&nbsp;: statistiques avancées, landing pages, diagnostic de départ et mise à jour de votre fiche Google</li>
+                    <li>Pendant 3 mois, <a href="{{ lienCom }}" target="_blank" rel="noopener">le suivi de votre fiche Google et 2 articles par mois<span class="visually-hidden"> (nouvel onglet)</span></a></li>
+                </ul>
+                <p class="cw-packs__note">Payable en une fois ou en trois fois.</p>
+            </div>
+            {% endif %}
+            {% if packRefonte is not empty %}
+            <div class="cw-packs__item">
+                <p class="cw-packs__pour">Vous refaites votre site</p>
+                <h3 class="cw-packs__nom">Pack refonte</h3>
+                <p class="cw-packs__prix"><strong>{{ m.euros(packRefonte + 0) }} HT</strong> <span>({{ m.euros((packRefonte + 0) * 1.2) }} TTC)</span></p>
+                <ul class="home-pricing__list">
+                    <li>Votre nouveau site</li>
+                    <li>L’option Marketing&nbsp;: statistiques avancées, landing pages, diagnostic de départ et mise à jour de votre fiche Google</li>
+                    <li>3 mois de lancement</li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <p class="cw-packs__suite">Au bout des 3 mois, votre site reste en ligne avec sa formule&nbsp;; la suite de la communication, c’est vous qui décidez.</p>
+        <p class="text-center"><a href="{{ m.lien_rdv() }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">On en parle 30 minutes&nbsp;?<span class="visually-hidden"> (nouvel onglet)</span><span class="cw-arrow" aria-hidden="true">&rarr;</span></a></p>
+    </div>
+</section>
+{% endif %}
 
 {# ====== 3. LE COUT SUR 3 ANS ET CE QUE COUVRE L'ABONNEMENT ====== #}
 <section class="cw-section cw-section--alt" id="trois-ans">
