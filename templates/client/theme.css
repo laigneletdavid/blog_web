@@ -279,6 +279,17 @@ h3, .h3, h4, .h4, h5, h6 { font-weight: 500; }
 @media (max-width: 768px) {
   .home-features__grid--3 { grid-template-columns: 1fr; }
 }
+/* 4 cartes depuis le 10/11/2026 (carte createur) : 4, puis 2, puis 1 colonne */
+.home-features__grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 1199px) {
+  .home-features__grid--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .home-features__grid--4 { grid-template-columns: 1fr; }
+}
 .home-features__card--link {
   display: flex;
   flex-direction: column;
@@ -1833,3 +1844,9 @@ ul.cws-cartes { list-style: none; margin: 0; padding: 0; }
 .cws-equipe { margin-top: 2rem; text-align: center; }
 .cws-equipe__texte { margin: 0; color: var(--dark-muted); }
 .cws-atouts + .cws-section__texte { margin-top: 2.5rem; }
+
+/* Packs de lancement (/service/votre-site-web#packs, 10/11/2026) */
+.cws-packs { max-width: 52rem; margin-inline: auto; }
+.cws-packs:not(.cws-cartes--2) { grid-template-columns: 1fr; max-width: 32rem; }
+.cws-packs .cws-puces { margin: 1rem 0; }
+.cws-packs__cta { text-align: center; margin-top: 1.5rem; }

@@ -8,7 +8,7 @@
      (« site internet » plutot que « web » ou « digital »).
    Positionnement du 09/11/2026 : trois piliers dans l'ordre Com, Web, Commerce.
    - H1 : « Site internet et visibilité locale » ;
-   - section Com (4 modules) avant le web, commerce reduit a un bandeau Enleys ;
+   - section Com (4 modules) avant le web ; bandeau Enleys retire le 10/11/2026 ;
    - FAQ : 3 questions com a la place des 3 questions commerce (gardees sur /faq). #}
 {% import 'client/_macros.html.twig' as m %}
 {% set lienRdv = m.lien_rdv() %}
@@ -29,7 +29,7 @@
             <div class="col-lg-7">
                 <p class="home-hero__overtitle">Un seul interlocuteur · Comminges, Toulouse, Montpellier et toute l'Occitanie</p>
                 <h1 class="home-hero__title">Site internet et visibilité locale&nbsp;: un seul objectif, vos nouveaux {{ m.vague('clients') }}.</h1>
-                <p class="home-hero__desc">Je vends depuis 2000, je code depuis 2016. Aujourd'hui je mets les deux au service de votre entreprise&nbsp;: un site pensé pour être trouvé et pour faire venir des clients, pas seulement pour exister. Pas de jargon, pas de chargé de compte : un seul interlocuteur, du premier appel à la mise en ligne.</p>
+                <p class="home-hero__desc">J'ai été vendeur avant d'être développeur. Alors je ne m'arrête pas au site&nbsp;: je vous aide à trouver des clients.</p>
                 <div class="home-hero__actions">
                     <a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">Prendre rendez-vous (gratuit)<span class="visually-hidden"> (nouvel onglet)</span></a>
                     <a href="#com" class="btn btn-outline-primary btn-lg">Voir ce que je fais</a>
@@ -53,7 +53,7 @@
             <span class="home-overtitle">Les problèmes que je résous</span>
             <h2 class="home-section-title">Ça vous parle&nbsp;?</h2>
         </div>
-        <div class="home-features__grid home-features__grid--3" data-controller="reveal" data-reveal-stagger-value="90">
+        <div class="home-features__grid home-features__grid--4" data-controller="reveal" data-reveal-stagger-value="90">
             <a href="{{ lienCom }}" class="home-features__card home-features__card--link">
                 <h3 class="home-features__title">«&nbsp;Personne ne nous trouve sur Google&nbsp;»</h3>
                 <p class="home-features__desc">Votre fiche Google est vide ou pas à jour, votre site ne remonte pas, et vos concurrents apparaissent avant vous. Vos clients vous cherchent, mais ils trouvent les autres.</p>
@@ -68,6 +68,11 @@
                 <h3 class="home-features__title">«&nbsp;Notre agence web ne comprend pas notre business&nbsp;»</h3>
                 <p class="home-features__desc">Votre agence parle pixels et responsive. Vous, vous parlez clients et chiffre d'affaires. Personne ne fait le lien entre ce que vous vendez et ce que votre site raconte. Résultat&nbsp;: un joli site qui ne vous amène personne.</p>
                 <span class="home-features__link">Pourquoi un seul interlocuteur →</span>
+            </a>
+            <a href="/service/votre-site-web#packs" class="home-features__card home-features__card--link">
+                <h3 class="home-features__title">«&nbsp;Je lance mon activité et je ne sais pas par où commencer&nbsp;»</h3>
+                <p class="home-features__desc">Site, fiche Google, réseaux&nbsp;: je pose d'abord avec vous un plan simple pour trouver vos premiers clients, puis je mets tout en place.</p>
+                <span class="home-features__link">Lancer ma présence en ligne →</span>
             </a>
         </div>
     </div>
@@ -224,21 +229,10 @@
     </div>
 </section>
 
-{# ====== 5. LE COMMERCE, EN RETRAIT (09/11/2026) ======
-   Bandeau apres le web : Enleys a sa propre com. Les 3 fiches commerce restent
-   en ligne, accessibles par la page Developpement commercial et le pied de page.
-   Ancre #commerce gardee : fil d'Ariane des pages commerce. #}
-<section class="cws-section cws-section--bandeau" id="commerce">
-    <div class="container">
-        <div class="cws-bandeau">
-            <div>
-                <p class="cws-bandeau__titre">Besoin de prospection B2B&nbsp;?</p>
-                <p>En Occitanie, je travaille en partenariat avec le réseau <a href="{{ m.lien_enleys() }}" target="_blank" rel="noopener">Enleys <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a>&nbsp;: prospection, direction commerciale externalisée, appels d'offres.</p>
-            </div>
-            <a href="/page/developpement-commercial" class="cws-offre__lien">Développement commercial <span class="cw-arrow" aria-hidden="true">→</span></a>
-        </div>
-    </div>
-</section>
+{# ====== 5. LE COMMERCE : retire de l'accueil (politique commerciale v1, 10/11/2026) ======
+   Enleys reste en coulisses, propose seulement si le besoin se presente. Les
+   pages commerce restent en ligne : pied de page, carte 03 de la page A propos.
+   Le fil d'Ariane des pages commerce pointe vers /page/developpement-commercial. #}
 
 {# ====== 6. CHIFFRES : retiree (decision David, 05/11/2026) ====== #}
 

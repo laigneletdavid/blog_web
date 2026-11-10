@@ -84,5 +84,14 @@
 {# Chargee de com (execution de l'offre Com) presentee sur le site : '1' = oui.
    Emplacement pret dans la home (bloc signature) ; photo et texte a fournir. #}
 {% macro chargee_com_presentee() %}{% endmacro %}
+{# ====== Packs de lancement (politique commerciale v1, 10/11/2026) ======
+   Forfaits a duree claire, jamais le mot « abonnement ». Affiches sur
+   /service/votre-site-web#packs. Prix HT en nombre ; vide = pack masque.
+   Pack lancement : site Studio Blog + option Marketing + fiche Google et blog
+   pendant 3 mois (1 974 € HT au detail), payable en une ou trois fois.
+   Pack refonte : prix a fixer par David (« autour de 1 000 € ») et contenu
+   des « 3 mois de lancement » a preciser avant de l'afficher. #}
+{% macro prix_pack_lancement() %}1790{% endmacro %}
+{% macro prix_pack_refonte() %}{% endmacro %}
 {# Page de l'offre Com : un seul endroit pour son adresse #}
 {% macro lien_com() %}/service/communication-visibilite{% endmacro %}

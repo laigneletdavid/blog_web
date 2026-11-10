@@ -11,6 +11,7 @@
    ====================================================================== #}
 {% import 'client/_macros.html.twig' as m %}
 {% set lienStudio = m.lien_studio()|trim %}
+{% set lienCom = m.lien_com()|trim %}
 {% set bmPubliee = m.ref_bm_notaire_publiee()|trim is not empty and fichier_public('images/references/bm-notaire-home.webp') %}
 {% set capture = null %}
 {% if bmPubliee %}
@@ -152,6 +153,53 @@
         <p class="cws-formules__note">Sans engagement, hébergement et maintenance compris. · <a href="{{ lienStudio }}/page/offres" target="_blank" rel="noopener">Comparer les formules en détail <span aria-hidden="true">&#x2197;&#xFE0E;</span><span class="visually-hidden"> (nouvel onglet)</span></a></p>
     </div>
 </section>
+
+{# ====== 6 bis. LES PACKS (politique commerciale v1, 10/11/2026) ======
+   Forfaits de lancement a duree claire, sans le mot « abonnement ». Prix dans
+   client/_macros (prix_pack_*) ; un pack sans prix n'est pas affiche. #}
+{% set lienRdv = m.lien_rdv()|trim %}
+{% set packLancement = ('' ~ m.prix_pack_lancement())|trim %}
+{% set packRefonte = ('' ~ m.prix_pack_refonte())|trim %}
+{% if packLancement is not empty or packRefonte is not empty %}
+<section class="cws-section" id="packs">
+    <div class="container">
+        <div class="cws-section__head">
+            <span class="home-overtitle">Les packs</span>
+            <h2 class="home-section-title">Démarrer avec tout ce qu'il faut</h2>
+            <p>Le site, sa mise en route et ses premiers mois de visibilité, dans un forfait à durée claire.</p>
+        </div>
+        <div class="cws-cartes{{ packLancement is not empty and packRefonte is not empty ? ' cws-cartes--2' }} cws-packs" data-controller="reveal" data-reveal-stagger-value="90">
+            {% if packLancement is not empty %}
+            <div class="cws-carte cws-formule cws-carte--avant">
+                <span class="cws-marche__etiquette">Pour les créateurs</span>
+                <h3>Pack lancement</h3>
+                <p class="cws-formule__prix">{{ m.euros(packLancement + 0) }} HT <span>pour 3 mois</span></p>
+                <ul class="cws-puces">
+                    <li>Votre site ComWeb Studio, formule Blog</li>
+                    <li>L'option Marketing&nbsp;: diagnostic de départ et fiche Google remise à neuf</li>
+                    <li>Pendant 3 mois, <a href="{{ lienCom }}">je tiens votre fiche Google et j'alimente votre blog</a></li>
+                </ul>
+                <p>Payable en une fois ou en trois fois.</p>
+            </div>
+            {% endif %}
+            {% if packRefonte is not empty %}
+            <div class="cws-carte cws-formule">
+                <span class="cws-marche__etiquette">Pour remplacer votre site</span>
+                <h3>Pack refonte</h3>
+                <p class="cws-formule__prix">{{ m.euros(packRefonte + 0) }} HT</p>
+                <ul class="cws-puces">
+                    <li>Votre nouveau site ComWeb Studio</li>
+                    <li>L'option Marketing&nbsp;: diagnostic de départ et fiche Google remise à neuf</li>
+                    <li>3 mois de lancement</li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <p class="cws-formules__note">Au bout des 3 mois, votre site reste en ligne avec sa formule&nbsp;; la suite de la com, c'est vous qui décidez.</p>
+        <p class="cws-packs__cta"><a href="{{ lienRdv }}" target="_blank" rel="noopener" class="btn btn-accent btn-lg">On en parle 30 minutes&nbsp;?<span class="visually-hidden"> (nouvel onglet)</span></a></p>
+    </div>
+</section>
+{% endif %}
 
 {# ====== 7. COMMENT ÇA SE PASSE ====== #}
 <section class="cws-section">
