@@ -54,6 +54,15 @@ DirectoryIndex index.php
 
     RewriteEngine On
 
+    # Annuaire : chaque combinaison de tags fait une URL, les robots les
+    # parcourent sans fin (180 000 pages par jour sur un client, novembre
+    # 2026). A partir de deux tags, refuse aux robots par Apache, sans
+    # demarrer PHP. Un seul tag reste permis (liens du nuage de tags).
+    RewriteCond %{REQUEST_URI} ^/annuaire/?$
+    RewriteCond %{QUERY_STRING} (^|&)tags(\[|%5B)[1-9] [NC]
+    RewriteCond %{HTTP_USER_AGENT} (bot|crawl|spider|externalagent) [NC]
+    RewriteRule ^ - [F,L]
+
     # Tout en https, en 301. Derriere le frontal OVH, %{HTTPS} n'est pas
     # fiable : le http se reconnait au port 80 (teste sur bw_lintello). Le
     # choix du domaine (www ou non, anciennes preprod) est fait par Symfony,
