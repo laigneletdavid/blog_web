@@ -54,6 +54,13 @@ DirectoryIndex index.php
 
     RewriteEngine On
 
+    # Prodici : deux familles de tags (metiers, villes), donc trois tags ou
+    # plus ne vient jamais d'un visiteur : refuse a tous, y compris aux robots
+    # deguises en navigateur. A revoir si une troisieme famille est ajoutee.
+    RewriteCond %{REQUEST_URI} ^/annuaire/?$
+    RewriteCond %{QUERY_STRING} (^|&)tags(\[|%5B)[2-9] [NC]
+    RewriteRule ^ - [F,L]
+
     # Annuaire : chaque combinaison de tags fait une URL, les robots les
     # parcourent sans fin (180 000 pages par jour sur un client, novembre
     # 2026). A partir de deux tags, refuse aux robots par Apache, sans
